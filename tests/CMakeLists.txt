@@ -26,7 +26,7 @@ set(MY_TESTS_CPP
 add_executable(my_tests ${MY_TESTS_CPP} ${MY_TESTS_HEADERS})
 
 # Linking against GTest and our MD code
-target_link_libraries(my_tests PUBLIC my_md_lib gtest gtest_main)
+target_link_libraries(my_tests PUBLIC my_lib gtest gtest_main)
 
 # Discover Google tests
 gtest_discover_tests(my_tests)
