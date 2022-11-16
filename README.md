@@ -7,3 +7,4 @@ with
  [CMake](https://cmake.org/), github is here [HPC MD Github sekelton](https://github.com/IMTEK-Simulation/cmake-skeleton).
 
 Main problem that i can see is the missing special locality of the arrays 
+Basically other extreme from arrays, ll/strips are somewhat in between. 

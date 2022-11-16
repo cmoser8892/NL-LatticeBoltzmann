@@ -1,5 +1,6 @@
 // Include a library file to make sure proper includes are set
 #include <gtest/gtest.h>
+#include <Eigen/Dense>
 
 // Demonstrate some basic assertions.
 TEST(HelloTest, BasicAssertions) {
@@ -7,4 +8,8 @@ TEST(HelloTest, BasicAssertions) {
     EXPECT_STRNE("hello", "world");
     // Expect equality.
     EXPECT_EQ(7 * 6, 42);
+}
+
+TEST(MiscTest, TestTemplate) {
+    EXPECT_TRUE(true);
 }
