@@ -4,7 +4,7 @@ include(FetchContent)
 
 # Define project info
 project(
-  my_general_code # change name here
+  NL-LatticeBoltzmann # change name here
   VERSION 0.0.1
   LANGUAGES CXX
   DESCRIPTION
