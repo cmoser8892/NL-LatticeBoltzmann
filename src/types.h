@@ -8,6 +8,7 @@
 #include <Eigen/Dense>
 
 using array_t = Eigen::ArrayXd;
+using matrix_t = Eigen::ArrayXXd;
 
 typedef enum nodeIdentifier {
     NONE = 0,
