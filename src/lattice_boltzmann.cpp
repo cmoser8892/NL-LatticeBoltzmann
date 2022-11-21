@@ -4,6 +4,7 @@
 // constructor should be the only thing needed
 node::node(int dimensions, int channels, array_t position) {
     data.resize(channels);
+    copy.resize(channels);
     u.resize(dimensions);
     position.resize(dimensions);
     position = position;

@@ -26,9 +26,15 @@ array_t equilibrium(node* node) {
     return_array(8) = 1.0/36 * node->rho * (1 + three_ux_uy_m - nine_uxuy + uu);
     return return_array;
 }
+// create a copy array copy values into data (asynchron) copy from old array to new one
+void streaming_step1(node* node) {
+    for( int i = 0; i < node->data.size(); ++i) {
+        node->neighbors.at(i)->copy(i) = node->data(i);
+    }
+}
 
-void streaming(node* node) {
-    // prob the hard method
+void streaming_step2(node* node) {
+    node->data = node->copy;
 }
 
 void collision(node* node) {

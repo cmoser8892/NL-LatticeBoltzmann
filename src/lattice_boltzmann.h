@@ -20,6 +20,7 @@ class node {
   public:
     node_identifier_t node_type;
     array_t data; // doesnt have a set size; maybe could also do with a vector
+    array_t copy;
     std::vector<node*> neighbors;
     // macro values are local
     double rho;
