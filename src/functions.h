@@ -7,7 +7,7 @@
 
 #include "types.h"
 #include "lattice_boltzmann.h"
-
+extern double relaxation;
 array_t equilibrium(node* node);
 void streaming(node* node);
 void collision(node* node);
