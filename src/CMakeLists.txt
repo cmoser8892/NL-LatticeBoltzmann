@@ -1,10 +1,10 @@
 # List of headers
 set(MY_HEADERS
-        lattice_boltzmann.h types.h)
+        lattice_boltzmann.h types.h functions.h)
 
 # List of implementation files
 set(MY_CPP
-        lattice_boltzmann.cpp)
+        lattice_boltzmann.cpp functions.cpp)
 
 # Create a static library
 add_library(my_lib STATIC ${MY_CPP} ${MY_HEADERS})

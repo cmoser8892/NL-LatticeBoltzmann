@@ -9,13 +9,15 @@
 #include "types.h"
 // for completeness
 class node;
-typedef double (*equilibrium_function) (node* node);
-typedef void (*streaming) (node* node); // could also do boundary conditions there?!
-typedef void (*collision) (node* node);
+extern array_t velocity_set;
+// functions
+typedef array_t (*equilibrium_function) (node* node);
+typedef void (*streaming_function) (node* node); // could also do boundary conditions there?!
+typedef void (*collision_function) (node* node);
 typedef void (*calculate_macro_values) (node* node);
 
 class node {
-  private:
+  public:
     node_identifier_t node_type;
     array_t data; // doesnt have a set size; maybe could also do with a vector
     std::vector<node*> neighbors;
@@ -24,13 +26,13 @@ class node {
     array_t u;
     array_t position;
     // pointer to functions no idea if they can work on the data and if i should
-    // implemnte that here?!
-    equilibrium_function equilibrium_function;
-    streaming streaming_function;
-    collision collision;
-  public:
+    // implemement that here?!
+    equilibrium_function equilibrium_func;
+    streaming_function streaming_func;
+    collision_function collision_func;
+    calculate_macro_values macro_func;
+    // methods
     node(int dimensions, int channels, array_t positions);
-    void run();
 };
 
 class simulation {
