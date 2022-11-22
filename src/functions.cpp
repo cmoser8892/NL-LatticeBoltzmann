@@ -28,8 +28,13 @@ array_t equilibrium(node* node) {
 }
 // create a copy array copy values into data (asynchron) copy from old array to new one
 void streaming_step1(node* node) {
-    for( int i = 0; i < node->data.size(); ++i) {
-        node->neighbors.at(i)->copy(i) = node->data(i);
+    if(node->neighbors.empty() == true) {
+        return;
+    }
+    for( int i = 1; i < node->data.size(); ++i) {
+        if(node->neighbors.at(i-1) != nullptr) {
+            node->neighbors.at(i-1)->copy(i) = node->data(i);
+        }
     }
 }
 
@@ -47,4 +52,8 @@ void macro( node* node) {
                   (node->data(3)+node->data(6) +node->data(7)))/node->rho;
     node->u(1) = ((node->data(2)+node->data(5)+node->data(6))-
                   (node->data(4)+node->data(7) +node->data(8)))/node->rho;
+}
+
+void moving_wall(node * node) {
+
 }

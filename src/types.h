@@ -9,9 +9,7 @@
 
 using array_t = Eigen::ArrayXd;
 using matrix_t = Eigen::ArrayXXd;
-
-array_t velocity_d2q9 =  {{1,1,0,-1,0 ,1,-1,-1, 1}
-                        ,{0,0,1,0 ,-1,1, 1,-1,-1}};
+using point_t = Eigen::Vector2d;
 
 typedef enum nodeIdentifier {
     NONE = 0,

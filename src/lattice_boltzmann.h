@@ -9,7 +9,7 @@
 #include "types.h"
 // for completeness
 class node;
-extern array_t velocity_set;
+extern matrix_t velocity_set;
 // functions
 typedef array_t (*equilibrium_function) (node* node);
 typedef void (*streaming_function) (node* node); // could also do boundary conditions there?!
@@ -33,16 +33,21 @@ class node {
     collision_function collision_func;
     calculate_macro_values macro_func;
     // methods
-    node(int dimensions, int channels, array_t positions);
+    node(int dimensions, int channels, array_t positions, node_identifier_t type);
 };
 
 class simulation {
   private:
     std::vector<node*> nodes;
     int dimensions, channels;
+    int size_x,size_y;
+    int limit_x, limit_y;
+    //
+    node_identifier_t determine_node_type(int pox, int poy);
+    void determine_neighbours();
   public:
     simulation() = default;
-    void init(void);
+    void init(int six, int siy);
     void run(void);
 };
 

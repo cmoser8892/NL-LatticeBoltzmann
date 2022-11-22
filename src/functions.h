@@ -13,4 +13,5 @@ void streaming_step1(node* node);
 void streaming_step2(node* node);
 void collision(node* node);
 void macro(node * node);
+void moving_wall(node * node);
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H
