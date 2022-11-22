@@ -72,7 +72,7 @@ void simulation::init(int six, int siy) {
         }
     }
     // determine neighbours
-    determine_neighbours();
+    //determine_neighbours();
 }
 
 void simulation::run() {

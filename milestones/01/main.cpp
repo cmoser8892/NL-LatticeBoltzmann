@@ -13,8 +13,8 @@ int main(int argc, char *argv[]) {
     simulation sim;
     auto time = clock();
     sim.init(size_x, size_y);
+    std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
     sim.run();
-    time = clock() -time;
-    std::cout << double(time)/CLOCKS_PER_SEC << std::endl;
+    std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
 }
 
