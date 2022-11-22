@@ -6,19 +6,13 @@ matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
 
 /// nodes
 // constructor should be the only thing needed
-node::node(int dimensions, int channels, array_t position, node_identifier_t type) {
+node::node(int dimensions, int channels, array_t pos, node_identifier_t type) {
     node_type = type;
     rho = 1;
     data.resize(channels);
     copy.resize(channels);
     u.resize(dimensions);
-    position.resize(dimensions);
-    position = position;
-    // neighbors are not setup here after creation
-    equilibrium_func = nullptr;
-    streaming_func = nullptr;
-    collision_func = nullptr;
-    macro_func = nullptr;
+    position = pos;
 }
 
 /// simulation run class
@@ -37,6 +31,7 @@ void simulation::determine_neighbours() {
         for(int i = 1; i < node->data.size();++i) {
             // this is prob the most lazy implementation ever
             array_t search;
+            bool found = false;
             search.resize(dimensions);
             if( node->node_type == BODY) {
                 search = node->position + velocity_set(i);
@@ -49,14 +44,14 @@ void simulation::determine_neighbours() {
                 // poy = lim need 256 to 478
             }
             // search function kinda lazy i know
-            auto n = nodes.begin();
-            while( n != nodes.end()) {
-                if((n.operator*()->position(0) == search(0)) &&
-                    (n.operator*()->position(1) == search(1))) {
-                    node->neighbors.push_back(n.operator*());
-                    break;
+            for(auto s : nodes) {
+                if((s->position(0) == search(0)) && (s->position(1) == search(1))){
+                    node->neighbors.push_back(s);
+                    found = true;
                 }
-                ++n;
+            }
+            if(found == false) {
+                node->neighbors.push_back(nullptr);
             }
         }
     }
@@ -70,15 +65,14 @@ void simulation::init(int six, int siy) {
     // create nodes
     for( int x = 0; x < six; ++x) {
         for(int y = 0; y < siy; ++y) {
-            array_t position;
-            position.resize(dimensions);
-            position << six, siy;
+            array_t p = {{double(x)},{double(y)}};
             node_identifier_t type = determine_node_type(x,y);
-            node* n = new node(dimensions,channels, position, type);
+            node* n = new node(dimensions,channels, p, type);
             nodes.push_back(n);
         }
     }
     // determine neighbours
+    determine_neighbours();
 }
 
 void simulation::run() {
@@ -91,5 +85,8 @@ void simulation::run() {
     }
 }
 
+std::vector<node*> simulation::access() {
+    return nodes;
+}
 
 

@@ -27,13 +27,8 @@ class node {
     array_t u;
     array_t position;
     // pointer to functions no idea if they can work on the data and if i should
-    // implemement that here?!
-    equilibrium_function equilibrium_func;
-    streaming_function streaming_func;
-    collision_function collision_func;
-    calculate_macro_values macro_func;
     // methods
-    node(int dimensions, int channels, array_t positions, node_identifier_t type);
+    node(int dimensions, int channels, array_t pos, node_identifier_t type);
 };
 
 class simulation {
@@ -49,6 +44,7 @@ class simulation {
     simulation() = default;
     void init(int six, int siy);
     void run(void);
+    std::vector<node*> access();
 };
 
 #endif // MY_LATTICE_BOLTZMANN_H
