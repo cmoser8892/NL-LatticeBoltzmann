@@ -1,8 +1,5 @@
 #include "lattice_boltzmann.h"
 #include "functions.h"
-matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
-                         {0,0,1,0 ,-1,1, 1,-1,-1}};
-
 
 /// nodes
 // constructor should be the only thing needed
@@ -43,7 +40,7 @@ void simulation::determine_neighbours() {
                 // pox = lim need 158 to 376
                 // poy = lim need 256 to 478
             }
-            // search function kinda lazy i know
+            // search function kinda lazy i know todo
             for(auto s : nodes) {
                 if((s->position(0) == search(0)) && (s->position(1) == search(1))){
                     node->neighbors.push_back(s);

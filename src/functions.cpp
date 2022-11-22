@@ -2,6 +2,9 @@
 #include <cmath>
 /// globals
 double relaxation = 0.5;
+matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
+                         {0,0,1,0 ,-1,1, 1,-1,-1}};
+
 /// implementation is for d2q9
 array_t equilibrium(node* node) {
     array_t return_array;
