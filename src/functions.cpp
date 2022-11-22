@@ -55,5 +55,5 @@ void macro( node* node) {
 }
 
 void moving_wall(node * node) {
-
+    //TODO
 }

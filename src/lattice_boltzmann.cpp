@@ -72,12 +72,12 @@ void simulation::init(int six, int siy) {
         }
     }
     // determine neighbours
-    //determine_neighbours();
+    determine_neighbours();
 }
 
 void simulation::run() {
     for(auto node: nodes) {
-        // streaming includes bounce back in the most basic form (no u wall)
+        // streaming includes bounce back in the most basic form (no u wall thou todo)
         streaming_step1(node);
         streaming_step2(node);
         macro(node);
