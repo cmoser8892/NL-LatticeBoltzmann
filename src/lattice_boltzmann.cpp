@@ -23,9 +23,7 @@ node_identifier_t simulation::determine_node_type(int pox, int poy) {
     }
     return return_value;
 }
-/**
- *
- */
+
 void simulation::determine_neighbours() {
     // neighbours 1 to channels
     for (auto node : nodes) {
@@ -66,11 +64,12 @@ node* simulation::search_neighbour_node(node *hunter, array_t prey) {
         reference_iter += counter; // crashes if outside of the normal domain
         auto m = reference_iter.operator*();
         if(compare_arrays(m->position, prey)) {
-            return_node = m;
+            if(m->node_type == BODY)
+                return_node = m;
         }
         else {
             std::cout << "Couldnt find neighbor node, try again" << std::endl;
-            // old functionality fallback i guess
+            // brute force search function as a fallback
             for(auto s : nodes) {
                 if((s->position(0) == prey(0)) && (s->position(1) == prey(1))){
                     return_node = s;;
