@@ -42,7 +42,7 @@ class simulation {
     //
     node_identifier_t determine_node_type(int pox, int poy);
     void determine_neighbours();
-
+    bool check_still_in_sim_space(array_t position);
   public:
     node* search_neighbour_node(node* hunter, array_t prey);
     simulation() = default;

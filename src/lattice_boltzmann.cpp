@@ -45,7 +45,7 @@ void simulation::determine_neighbours() {
                 // pox = lim need 158 to 376
                 // poy = lim need 256 to 478
             }
-            search_neighbour_node(node,search);
+            node->neighbors.push_back(search_neighbour_node(node,search));
         }
     }
 }
@@ -53,29 +53,46 @@ void simulation::determine_neighbours() {
 node* simulation::search_neighbour_node(node *hunter, array_t prey) {
     // basic old search function fallthrough?!
     node* return_node = nullptr;
-    // get own postion
-    array_t search_position = hunter->position;
-    // calculate a counter form the hunter to the prey
-    array_t bullet = prey - search_position;
-    int counter = int(bullet.x() + bullet.y()*size_x);
-    // set up an iterator for quick reference
-    auto reference_iter = nodes.begin()+hunter->array_position;
-    // add the counter calculated beforehand should be the right point
-    reference_iter += counter // crashes if outside of the normal domain
-    auto m = reference_iter.operator*();
-    if(compare_arrays(m->position, prey)) {
-        return_node = m;
-    }
-    else {
-        // old functionality
-        for(auto s : nodes) {
-            if((s->position(0) == prey(0)) && (s->position(1) == prey(1))){
-                return_node = s;
-                break;
+    if (check_still_in_sim_space(prey))
+    {
+        // get own postion
+        array_t search_position = hunter->position;
+        // calculate a counter form the hunter to the prey
+        array_t bullet = prey - search_position;
+        int counter = int(round(bullet.x() + bullet.y()*size_x));
+        // set up an iterator for quick reference
+        auto reference_iter = nodes.begin()+hunter->array_position;
+        // add the counter calculated beforehand should be the right point
+        reference_iter += counter; // crashes if outside of the normal domain
+        auto m = reference_iter.operator*();
+        if(compare_arrays(m->position, prey)) {
+            return_node = m;
+        }
+        else {
+            std::cout << "Couldnt find neighbor node, try again" << std::endl;
+            // old functionality fallback i guess
+            for(auto s : nodes) {
+                if((s->position(0) == prey(0)) && (s->position(1) == prey(1))){
+                    return_node = s;;
+                    break;
+                }
             }
         }
     }
     return return_node;
+}
+
+bool simulation::check_still_in_sim_space(array_t position) {
+    bool return_value = true;
+    if(position.x() < 0)
+        return_value = false;
+    if(position.y() < 0)
+        return_value = false;
+    if(position.x() > limit_x)
+        return_value = false;
+    if(position.y() > limit_y)
+        return_value = false;
+    return return_value;
 }
 
 void simulation::init(int six, int siy) {
@@ -84,12 +101,14 @@ void simulation::init(int six, int siy) {
     dimensions = 2;
     channels = 9;
     // create nodes
-    for( int y = 0; y < six; ++y) {
-        for(int x = 0; x < siy; ++x) {
+    int counter = 0;
+    for( int y = 0; y < siy; ++y) {
+        for(int x = 0; x < six; ++x) {
             array_t p = {{double(x)},{double(y)}};
             node_identifier_t type = determine_node_type(x,y);
-            node* n = new node(dimensions,channels, p, type,y+x);
+            node* n = new node(dimensions,channels, p, type,counter);
             nodes.push_back(n);
+            counter++;
         }
     }
     // determine neighbours
