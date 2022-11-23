@@ -9,7 +9,6 @@
 
 using array_t = Eigen::ArrayXd;
 using matrix_t = Eigen::ArrayXXd;
-using point_t = Eigen::Vector2d;
 
 typedef enum nodeIdentifier {
     NONE = 0,
