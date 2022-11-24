@@ -36,12 +36,7 @@ void simulation::determine_neighbours() {
                 search = node->position + velocity_set(i);
             }
             if (node->node_type == BOUNDARY) {
-                // todo exclude nonsense nodes
                 search = node->position - velocity_set(i);
-                // pox = 0   need 367 to 185
-                // poy = 0   need 478 to 256
-                // pox = lim need 158 to 376
-                // poy = lim need 256 to 478
             }
             node->neighbors.push_back(search_neighbour_node(node,search));
         }
@@ -64,6 +59,7 @@ node* simulation::search_neighbour_node(node *hunter, array_t prey) {
         reference_iter += counter; // crashes if outside of the normal domain
         auto m = reference_iter.operator*();
         if(compare_arrays(m->position, prey)) {
+            // only include body nodes
             if(m->node_type == BODY)
                 return_node = m;
         }
