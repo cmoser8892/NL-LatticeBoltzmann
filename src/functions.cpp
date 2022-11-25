@@ -60,7 +60,7 @@ void macro( node* node) {
 void moving_wall(node * node,int side_pos,double uw) {
     /// only for y :p
     // we look for boundary nodes and then see where they want to go maximum would be 3
-    // maybe lock equation to the node?! more function pointers
+    // maybe lock equation to the node?! more function pointers todo
     if (node->node_type == BOUNDARY) {
         if(node->position.y() == side_pos) {
             int count = 0;
