@@ -114,6 +114,7 @@ void simulation::run() {
     for(auto node: nodes) {
         // streaming includes bounce back in the most basic form (no u wall thou todo)
         streaming_step1(node);
+        moving_wall(node,limit_y,0.1);
         streaming_step2(node);
         macro(node);
         collision(node);

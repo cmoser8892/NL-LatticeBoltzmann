@@ -31,7 +31,7 @@ array_t equilibrium(node* node) {
 }
 // create a copy array copy values into data (asynchron) copy from old array to new one
 void streaming_step1(node* node) {
-    if(node->neighbors.empty() == true) {
+    if(node->neighbors.empty()) {
         return;
     }
     for( int i = 1; i < node->data.size(); ++i) {
@@ -57,6 +57,27 @@ void macro( node* node) {
                   (node->data(4)+node->data(7) +node->data(8)))/node->rho;
 }
 
-void moving_wall(node * node) {
-    node
+void moving_wall(node * node,int side_pos,double uw) {
+    /// only for y :p
+    // we look for boundary nodes and then see where they want to go maximum would be 3
+    // maybe lock equation to the node?! more function pointers
+    if (node->node_type == BOUNDARY) {
+        if(node->position.y() == side_pos) {
+            int count = 0;
+            for( int i = 1; i < node->data.size(); ++i) {
+                if(node->neighbors.at(i-1) != nullptr) {
+                    if(count == 0) {
+                        ++count;
+                    }
+                    else if(count == 1) {
+                        ++count;
+                        node->neighbors.at(i-1)->copy(i) -= 1.0/6*uw;
+                    }
+                    else if(count == 2) {
+                        node->neighbors.at(i-1)->copy(i) += 1.0/6*uw;
+                    }
+                }
+            }
+        }
+    }
 }
