@@ -19,5 +19,6 @@ int main(int argc, char *argv[]) {
     std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
     // prob takes way to long in the way that it is programmed right now
     // mainly memory bound
+    sim.get_data();
 }
 

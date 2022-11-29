@@ -47,7 +47,8 @@ class simulation {
     node* search_neighbour_node(node* hunter, array_t prey);
     simulation() = default;
     void init(int six, int siy);
-    void run(void);
+    void run();
+    void get_data();
     std::vector<node*> access();
 };
 

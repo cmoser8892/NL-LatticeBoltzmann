@@ -58,7 +58,7 @@ void macro( node* node) {
 }
 
 void moving_wall(node * node,int side_pos,double uw) {
-    /// only for y :p
+    /// only for y + i hate it couse very manual
     // we look for boundary nodes and then see where they want to go maximum would be 3
     // maybe lock equation to the node?! more function pointers todo
     if (node->node_type == BOUNDARY) {
@@ -80,4 +80,12 @@ void moving_wall(node * node,int side_pos,double uw) {
             }
         }
     }
+}
+
+void write_ux(node* node, flowfield_t* ux) {
+    ux->operator()(int(node->position(0)),int(node->position(1))) = node->u(0);
+}
+
+void write_uy(node* node, flowfield_t * uy) {
+    uy->operator()(int(node->position(0)),int(node->position(1))) = node->u(1);
 }
