@@ -9,6 +9,7 @@ bool compare_arrays(array_t a1, array_t a2) {
         return false;
     }
     else {
+        // comparing doubles is cringe
         for(int i = 0; i < a1.size(); ++i) {
             if(a1(i) != a2(i)) {
                 return false;

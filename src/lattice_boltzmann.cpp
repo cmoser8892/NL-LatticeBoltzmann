@@ -29,6 +29,10 @@ void simulation::determine_neighbours() {
     for (auto node : nodes) {
         // i gives the channel number
         std::cout << node->position << std::endl << std::endl;
+        array_t a = {{1},{1}};
+        if(compare_arrays(node->position,a)) {
+            a = {{2},{2}};
+        }
         node->neighbors.push_back(nullptr); // todo convenience programming
         for(int i = 1; i < node->data.size();++i) {
             // this is prob the most lazy implementation ever
@@ -53,8 +57,7 @@ void simulation::determine_neighbours() {
 node* simulation::search_neighbour_node(node *hunter, array_t prey) {
     // basic old search function fallthrough?!
     node* return_node = nullptr;
-    if (check_still_in_sim_space(prey))
-    {
+    if (check_still_in_sim_space(prey)) {
         // get own postion
         array_t search_position = hunter->position;
         // calculate a counter form the hunter to the prey
@@ -66,9 +69,7 @@ node* simulation::search_neighbour_node(node *hunter, array_t prey) {
         reference_iter += counter; // crashes if outside of the normal domain
         auto m = reference_iter.operator*();
         if(compare_arrays(m->position, prey)) {
-            // only include body nodes
-            if(m->node_type == BODY)
-                return_node = m;
+            return_node = m;
         }
         else {
             std::cout << "Couldnt find neighbor node, try again" << std::endl;
