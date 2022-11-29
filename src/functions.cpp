@@ -1,5 +1,7 @@
 #include "functions.h"
 #include <cmath>
+#include <iostream>
+
 /// globals
 double relaxation = 0.5;
 matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
@@ -35,8 +37,8 @@ void streaming_step1(node* node) {
         return;
     }
     for( int i = 1; i < node->data.size(); ++i) {
-        if(node->neighbors.at(i-1) != nullptr) {
-            node->neighbors.at(i-1)->copy(i) = node->data(i);
+        if(node->neighbors.at(i) != nullptr) {
+            node->neighbors.at(i)->copy(i) = node->data(i);
         }
     }
 }
@@ -50,12 +52,13 @@ void collision(node* node) {
 }
 
 void macro( node* node) {
-    node->rho = node->data.sum();
+    node->rho = node->data.sum(); // problem if 0!!
     node->u(0) = ((node->data(1)+node->data(5)+node->data(8))-
                   (node->data(3)+node->data(6) +node->data(7)))/node->rho;
     node->u(1) = ((node->data(2)+node->data(5)+node->data(6))-
                   (node->data(4)+node->data(7) +node->data(8)))/node->rho;
 }
+
 
 void moving_wall(node * node,int side_pos,double uw) {
     /// only for y + i hate it couse very manual
@@ -82,10 +85,21 @@ void moving_wall(node * node,int side_pos,double uw) {
     }
 }
 
+// write the ux component of the flowfield
 void write_ux(node* node, flowfield_t* ux) {
     ux->operator()(int(node->position(0)),int(node->position(1))) = node->u(0);
 }
 
+// writes the uy_component of a flowfield
 void write_uy(node* node, flowfield_t * uy) {
     uy->operator()(int(node->position(0)),int(node->position(1))) = node->u(1);
+}
+
+void debug_node_neighbors(node* node) {
+    // writes the node neigbors of a node for debugging
+    std::cout << node->array_position << std::endl;
+    for(auto n: node->neighbors) {
+        if(n != nullptr)
+            std::cout << n->position << std::endl << std::endl;
+    }
 }

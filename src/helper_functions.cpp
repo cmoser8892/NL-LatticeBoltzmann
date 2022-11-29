@@ -25,6 +25,6 @@ void write_flowfield_data(flowfield_t * field, std::string filename) {
     // preamble size infos
     // print out the rows first then to file
     for(int i = 0; i < field->rows(); ++i)
-        out << field->row(i) << std::endl;
+        std::cout << field->row(i) << std::endl;
     out.close();
 }

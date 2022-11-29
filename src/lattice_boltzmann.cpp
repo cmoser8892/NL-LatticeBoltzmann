@@ -8,15 +8,15 @@
 node::node(int dimensions, int channels, array_t pos, node_identifier_t type,int ar_pos) {
     node_type = type;
     rho = 1;
-    data.resize(channels);
-    copy.resize(channels);
-    u.resize(dimensions);
+    data.setZero(channels);
+    copy.setZero(channels);
+    u.setZero(dimensions);
     position = pos;
     array_position = ar_pos;
 }
 
 /// simulation run class
-node_identifier_t simulation::determine_node_type(int pox, int poy) {
+node_identifier_t simulation::determine_node_type(int pox, int poy) const {
     node_identifier_t return_value = BODY;
     if( pox == 0 || poy == 0 || pox == limit_x || poy == limit_y) {
         return_value = BOUNDARY;
@@ -28,6 +28,8 @@ void simulation::determine_neighbours() {
     // neighbours 1 to channels
     for (auto node : nodes) {
         // i gives the channel number
+        std::cout << node->position << std::endl << std::endl;
+        node->neighbors.push_back(nullptr); // todo convenience programming
         for(int i = 1; i < node->data.size();++i) {
             // this is prob the most lazy implementation ever
             array_t search;
@@ -39,8 +41,13 @@ void simulation::determine_neighbours() {
                 search = node->position - velocity_set(i);
             }
             node->neighbors.push_back(search_neighbour_node(node,search));
+            std::cout << node->neighbors.at(i) << std::endl;
         }
+        std::cout << std::endl;
     }
+    //
+    for(auto node: nodes)
+        debug_node_neighbors(node);
 }
 
 node* simulation::search_neighbour_node(node *hunter, array_t prey) {
@@ -77,7 +84,7 @@ node* simulation::search_neighbour_node(node *hunter, array_t prey) {
     return return_node;
 }
 
-bool simulation::check_still_in_sim_space(array_t position) {
+bool simulation::check_still_in_sim_space(array_t position) const {
     bool return_value = true;
     if(position.x() < 0)
         return_value = false;
@@ -102,6 +109,8 @@ void simulation::init(int six, int siy) {
             array_t p = {{double(x)},{double(y)}};
             node_identifier_t type = determine_node_type(x,y);
             node* n = new node(dimensions,channels, p, type,counter);
+            n->data = equilibrium(n);
+            n->copy = equilibrium(n);
             nodes.push_back(n);
             counter++;
         }
@@ -112,9 +121,10 @@ void simulation::init(int six, int siy) {
 
 void simulation::run() {
     for(auto node: nodes) {
-        // streaming includes bounce back in the most basic form (no u wall thou todo)
         streaming_step1(node);
         moving_wall(node,limit_y,0.1);
+    }
+    for (auto node: nodes) {
         streaming_step2(node);
         macro(node);
         collision(node);
