@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
     time = clock();
-    for(int i = 0; i < 1156; ++i)
+    for(int i = 0; i < 10000; ++i)
         sim.run(); // takes about a min
     std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
     // prob takes way to long in the way that it is programmed right now

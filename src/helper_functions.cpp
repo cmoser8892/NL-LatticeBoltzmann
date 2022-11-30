@@ -28,5 +28,6 @@ void write_flowfield_data(flowfield_t * field, std::string filename) {
     // print out the rows first then to file
     for(int i = 0; i < field->rows(); ++i)
         std::cout << field->row(i) << std::endl;
+    std::cout << std::endl;
     out.close();
 }

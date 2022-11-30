@@ -28,33 +28,25 @@ void simulation::determine_neighbours() {
     // neighbours 1 to channels
     for (auto node : nodes) {
         // i gives the channel number
-        //std::cout << node->position << std::endl << std::endl;
-        array_t a = {{1},{1}};
-        if(compare_arrays(node->position,a)) {
-            a = {{2},{2}};
-        }
         node->neighbors.push_back(nullptr); // todo convenience programming
         for(int i = 1; i < node->data.size();++i) {
             // this is prob the most lazy implementation ever
             array_t search;
             search.resize(dimensions);
+            search.setConstant(-1);
             if( node->node_type == BODY) {
                 search = node->position + velocity_set(i);
+                node->neighbors.push_back(search_neighbour_node_body(node, search));
             }
             if (node->node_type == BOUNDARY) {
-                search = node->position - velocity_set(i);
+                // this is always the same node for that specific couse
+                node->neighbors.push_back(search_neighbour_node_boundary(node));
             }
-            node->neighbors.push_back(search_neighbour_node(node,search));
-            //std::cout << node->neighbors.at(i) << std::endl;
         }
-        //std::cout << std::endl;
     }
-    //
-    for(auto node: nodes)
-        debug_node_neighbors(node);
 }
 
-node* simulation::search_neighbour_node(node *hunter, array_t prey) {
+node* simulation::search_neighbour_node_body(node *hunter, array_t prey) {
     // basic old search function fallthrough?!
     node* return_node = nullptr;
     if (check_still_in_sim_space(prey)) {
