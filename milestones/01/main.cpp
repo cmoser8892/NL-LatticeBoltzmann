@@ -7,15 +7,15 @@
 
 int main(int argc, char *argv[]) {
     /// init + run functional test for timing and stuff
-    int size_x = 3;
-    int size_y = 3;
+    int size_x = 5;
+    int size_y = 5;
     simulation sim;
     auto time = clock();
     sim.init(size_x, size_y);
 
     std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
     time = clock();
-    for(int i = 0; i < 100; ++i)
+    for(int i = 0; i < 1156; ++i)
         sim.run(); // takes about a min
     std::cout << double(clock()-time)/CLOCKS_PER_SEC << std::endl;
     // prob takes way to long in the way that it is programmed right now
