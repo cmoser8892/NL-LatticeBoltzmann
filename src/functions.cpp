@@ -42,7 +42,8 @@ void streaming_step1(node* node) {
         }
     }
 }
-
+/// todo the main problem here is that i dont part the bounce back from the streaming
+/// they are still two steps done in the same cycle as we do halfway bb  not fullway
 void streaming_step2(node* node) {
     node->data = node->copy;
 }
