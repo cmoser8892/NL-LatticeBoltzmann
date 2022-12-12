@@ -5,7 +5,7 @@
 
 /// nodes
 // constructor should be the only thing needed
-node::node(int dimensions, int channels, array_t pos, node_identifier_t type,int ar_pos) {
+node::node(int dimensions, int channels, array_t pos, nodeIdentifier_t type,int ar_pos) {
     node_type = type;
     rho = 1;
     data.setZero(channels);
@@ -16,8 +16,8 @@ node::node(int dimensions, int channels, array_t pos, node_identifier_t type,int
 }
 
 /// simulation run class
-node_identifier_t simulation::determine_node_type(int pox, int poy) const {
-    node_identifier_t return_value = BODY;
+nodeIdentifier_t simulation::determine_node_type(int pox, int poy) const {
+    nodeIdentifier_t return_value = BODY;
     if( pox == 0 || poy == 0 || pox == limit_x || poy == limit_y) {
         return_value = BOUNDARY;
     }
@@ -44,17 +44,15 @@ void simulation::determine_neighbours() {
             if (node->node_type == BOUNDARY) {
                 search = node->position - velocity_set(i);
             }
-            node->neighbors.push_back(search_neighbour_node(node,search));
-            std::cout << node->neighbors.at(i) << std::endl;
+            node->neighbors.push_back(search_neighbour_node_body(node,search));
         }
-        std::cout << std::endl;
     }
     //
     for(auto node: nodes)
         debug_node_neighbors(node);
 }
 
-node* simulation::search_neighbour_node(node *hunter, array_t prey) {
+node* simulation::search_neighbour_node_body(node *hunter, array_t prey) {
     // basic old search function fallthrough?!
     node* return_node = nullptr;
     if (check_still_in_sim_space(prey)) {
@@ -108,7 +106,7 @@ void simulation::init(int six, int siy) {
     for( int y = 0; y < siy; ++y) {
         for(int x = 0; x < six; ++x) {
             array_t p = {{double(x)},{double(y)}};
-            node_identifier_t type = determine_node_type(x,y);
+            nodeIdentifier_t type = determine_node_type(x,y);
             node* n = new node(dimensions,channels, p, type,counter);
             n->data = equilibrium(n);
             n->copy = equilibrium(n);

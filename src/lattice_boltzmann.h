@@ -19,7 +19,7 @@ typedef void (*calculate_macro_values) (node* node);
 class node {
   public:
     int array_position;
-    node_identifier_t node_type;
+    nodeIdentifier_t node_type;
     array_t data; // doesnt have a set size; maybe could also do with a vector
     array_t copy;
     std::vector<node*> neighbors;
@@ -29,7 +29,7 @@ class node {
     array_t position;
     // pointer to functions no idea if they can work on the data and if i should
     // methods
-    node(int dimensions, int channels, array_t pos, node_identifier_t type,
+    node(int dimensions, int channels, array_t pos, nodeIdentifier_t type,
          int array_position);
 };
 
@@ -40,7 +40,7 @@ class simulation {
     int size_x,size_y; // prob best to put them into arrays
     int limit_x, limit_y;
     //
-    node_identifier_t determine_node_type(int pox, int poy) const;
+    nodeIdentifier_t determine_node_type(int pox, int poy) const;
     void determine_neighbours();
     bool check_still_in_sim_space(array_t position) const;
   public:
