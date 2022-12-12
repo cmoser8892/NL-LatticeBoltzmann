@@ -44,7 +44,8 @@ class simulation {
     void determine_neighbours();
     bool check_still_in_sim_space(array_t position) const;
   public:
-    node* search_neighbour_node(node* hunter, array_t prey);
+    node* search_neighbour_node_body(node* hunter, array_t prey);
+    node* search_neighbour_node_boundary(node* hunter);
     simulation() = default;
     void init(int six, int siy);
     void run();

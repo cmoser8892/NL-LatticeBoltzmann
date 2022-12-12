@@ -32,7 +32,15 @@ TEST(InitTest, boundaryNeighbors) {
                     counter++;
                 }
             }
-            EXPECT_LE(counter,3);
+            EXPECT_EQ(counter,3);
+        }
+        else if(node->node_type == BODY) {
+            int counter = 0;
+            for(auto n : node->neighbors) {
+                if(n != nullptr)
+                    counter++;
+            }
+            EXPECT_EQ(counter,8);
         }
     }
 }

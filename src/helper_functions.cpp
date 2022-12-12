@@ -11,7 +11,8 @@ bool compare_arrays(array_t a1, array_t a2) {
     else {
         // comparing doubles is cringe
         for(int i = 0; i < a1.size(); ++i) {
-            if(a1(i) != a2(i)) {
+            if(std::abs(a1(i)- a2(i)) < 1.0/DOUBLE_COMPARISON_PRECISION) {}
+            else {
                 return false;
             }
         }
@@ -27,5 +28,6 @@ void write_flowfield_data(flowfield_t * field, std::string filename) {
     // print out the rows first then to file
     for(int i = 0; i < field->rows(); ++i)
         std::cout << field->row(i) << std::endl;
+    std::cout << std::endl;
     out.close();
 }

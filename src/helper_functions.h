@@ -7,6 +7,9 @@
 
 #include "types.h"
 
+// aka 1.0/100000 or whatever stands here
+#define DOUBLE_COMPARISON_PRECISION 100000
+
 // compare an array with a point
 bool compare_arrays(array_t a1, array_t a2);
 void write_flowfield_data(flowfield_t* field,std::string filename);
