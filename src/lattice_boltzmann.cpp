@@ -28,7 +28,6 @@ void simulation::determine_neighbours() {
     // neighbours 1 to channels
     for (auto node : nodes) {
         // i gives the channel number
-        std::cout << node->position << std::endl << std::endl;
         array_t a = {{1},{1}};
         if(compare_arrays(node->position,a)) {
             a = {{2},{2}};
@@ -45,13 +44,8 @@ void simulation::determine_neighbours() {
                 search = node->position - velocity_set(i);
             }
             node->neighbors.push_back(search_neighbour_node(node,search));
-            std::cout << node->neighbors.at(i) << std::endl;
         }
-        std::cout << std::endl;
     }
-    //
-    for(auto node: nodes)
-        debug_node_neighbors(node);
 }
 
 node* simulation::search_neighbour_node(node *hunter, array_t prey) {
