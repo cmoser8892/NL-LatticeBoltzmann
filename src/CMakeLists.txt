@@ -4,7 +4,7 @@ set(MY_HEADERS
 
 # List of implementation files
 set(MY_CPP
-        lattice_boltzmann.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp)
+        lattice_boltzmann.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.h node.cpp)
 
 # Create a static library
 add_library(my_lib STATIC ${MY_CPP} ${MY_HEADERS})

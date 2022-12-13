@@ -16,8 +16,14 @@ using vector_t = Eigen::Vector2d;
 
 typedef enum nodeIdentifier {
     NONE = 0,
-    BODY,
-    BOUNDARY
+    DRY,
+    WET
 }nodeIdentifier_t;
 
+typedef enum boundaryType {
+    NO_BOUNDARY = 0, // doesnt do anything equal to an error
+    BOUNCE_BACK,
+    BOUNCE_BACK_MOVING,
+    PRESSURE
+}boundaryType_t;
 #endif // MY_GENERAL_CODE_TYPES_H

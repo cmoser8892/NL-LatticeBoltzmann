@@ -19,7 +19,7 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
 
 void boundaryPointConstructor::init_quader() {
     //
-    nodeIdentifier_t type = BOUNDARY;
+    nodeIdentifier_t type = DRY;
     point_t current;
     current.setZero();
     // go from 0 till the in x directions
