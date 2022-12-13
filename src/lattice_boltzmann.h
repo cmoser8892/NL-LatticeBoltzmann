@@ -18,7 +18,7 @@ typedef void (*calculate_macro_values) (node* node);
 
 class node {
   public:
-    int array_position;
+    handle_t handle;
     nodeIdentifier_t node_type;
     array_t data; // doesnt have a set size; maybe could also do with a vector
     array_t copy;

@@ -1,10 +1,10 @@
 # List of headers
 set(MY_HEADERS
-        lattice_boltzmann.h types.h functions.h helper_functions.h boundary_point_generator.h)
+        lattice_boltzmann.h types.h functions.h helper_functions.h boundary_point_generator.h node_generator.h)
 
 # List of implementation files
 set(MY_CPP
-        lattice_boltzmann.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.h node.cpp)
+        lattice_boltzmann.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.h node.cpp node_generator.cpp)
 
 # Create a static library
 add_library(my_lib STATIC ${MY_CPP} ${MY_HEADERS})
