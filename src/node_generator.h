@@ -24,7 +24,7 @@ typedef struct nodePoint {
 
 class node_generator {
   private:
-
+    // todo here
   public:
     std::vector<nodePoint_t*> node_infos;
 };
