@@ -37,6 +37,7 @@ class node_generator {
     int determine_correct_channel();
     void determine_neighbors();
     void linear_generation();
+    bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit node_generator(boundaryPointConstructor* p);

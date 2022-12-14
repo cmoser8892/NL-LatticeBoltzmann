@@ -16,6 +16,14 @@ TEST(InitTests, BasicBoundaryPoints) {
     EXPECT_EQ(boundaries.boundary_points.at(boundaries.boundary_points.size()-1)->point,checker);
 }
 
-TEST(InitTests, TestNumberNeighbour) {
-
+TEST(InitTests, checkNodeGeneration) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    ///
+    node_generator nodes(&boundaries);
+    nodes.init();
+    // check for right amout of nodes
+    EXPECT_EQ(nodes.node_infos.size(),size*size );
 }
