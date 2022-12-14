@@ -7,8 +7,8 @@
 
 // includes
 #include "types.h"
+#include "node.h"
 // for completeness
-class node;
 extern matrix_t velocity_set;
 // functions
 typedef array_t (*equilibrium_function) (node* node);
@@ -16,22 +16,7 @@ typedef void (*streaming_function) (node* node); // could also do boundary condi
 typedef void (*collision_function) (node* node);
 typedef void (*calculate_macro_values) (node* node);
 
-class node {
-  public:
-    handle_t handle;
-    nodeIdentifier_t node_type;
-    array_t data; // doesnt have a set size; maybe could also do with a vector
-    array_t copy;
-    std::vector<node*> neighbors;
-    // macro values are local
-    double rho;
-    array_t u;
-    array_t position;
-    // pointer to functions no idea if they can work on the data and if i should
-    // methods
-    node(int dimensions, int channels, array_t pos, nodeIdentifier_t type,
-         int array_position);
-};
+
 
 class simulation {
   private:

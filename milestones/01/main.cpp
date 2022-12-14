@@ -1,6 +1,6 @@
-#include <iostream>
-#include "lattice_boltzmann.h"
+#include "simulation.h"
 #include <ctime>
+#include <iostream>
 #ifdef USE_MPI
 #include <mpi.h>
 #endif

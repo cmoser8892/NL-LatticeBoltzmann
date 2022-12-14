@@ -55,35 +55,16 @@ void collision(node* node) {
 void macro( node* node) {
     node->rho = node->data.sum(); // problem if 0!!
     node->u(0) = ((node->data(1)+node->data(5)+node->data(8))-
-                  (node->data(3)+node->data(6) +node->data(7)))/node->rho;
+                  (node->data(3)+node->data(6) +node->data(7)))
+                 /node->rho;
     node->u(1) = ((node->data(2)+node->data(5)+node->data(6))-
-                  (node->data(4)+node->data(7) +node->data(8)))/node->rho;
+                  (node->data(4)+node->data(7) +node->data(8)))
+                 /node->rho;
 }
 
 
 void moving_wall(node * node,int side_pos,double uw) {
-    /// only for y + i hate it couse very manual
-    // we look for boundary nodes and then see where they want to go maximum would be 3
-    // maybe lock equation to the node?! more function pointers todo
-    if (node->node_type == BOUNDARY) {
-        if(node->position.y() == side_pos) {
-            int count = 0;
-            for( int i = 1; i < node->data.size(); ++i) {
-                if(node->neighbors.at(i-1) != nullptr) {
-                    if(count == 0) {
-                        ++count;
-                    }
-                    else if(count == 1) {
-                        ++count;
-                        node->neighbors.at(i-1)->copy(i) -= 1.0/6*uw;
-                    }
-                    else if(count == 2) {
-                        node->neighbors.at(i-1)->copy(i) += 1.0/6*uw;
-                    }
-                }
-            }
-        }
-    }
+
 }
 
 // write the ux component of the flowfield
@@ -97,10 +78,5 @@ void write_uy(node* node, flowfield_t * uy) {
 }
 
 void debug_node_neighbors(node* node) {
-    // writes the node neigbors of a node for debugging
-    std::cout << node->array_position << std::endl;
-    for(auto n: node->neighbors) {
-        if(n != nullptr)
-            std::cout << n->position << std::endl << std::endl;
-    }
+
 }
