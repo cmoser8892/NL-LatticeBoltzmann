@@ -29,12 +29,14 @@ typedef struct nodePoint {
  */
 class node_generator {
   private:
+    boundaryPointConstructor* points;
     bool redo = false;
     void write_data_to_file();
     bool read_data_from_file();
     void read_back_switch_case();
     int determine_correct_channel();
     void determine_neighbors();
+    void linear_generation();
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit node_generator(boundaryPointConstructor* p);

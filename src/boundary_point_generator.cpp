@@ -6,12 +6,12 @@ boundaryPointConstructor::boundaryPointConstructor(point_t s) {
     limits << s.x()-1,s.y()-1;
 }
 
-void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *start, nodeIdentifier_t n) {
+void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *start, boundaryType_t  b) {
     // goes up and down a line and inizlizes it
     for(int i = 0; i < limit; i++) {
         auto boundary_point = new boundaryPoint_t;
         boundary_point->point = *start;
-        boundary_point->type = n;
+        boundary_point->type = b;
         boundary_points.push_back(boundary_point);
         *start += dir;
     }
@@ -19,7 +19,7 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
 
 void boundaryPointConstructor::init_quader() {
     //
-    nodeIdentifier_t type = DRY;
+    boundaryType_t type = BOUNCE_BACK;
     point_t current;
     current.setZero();
     // go from 0 till the in x directions

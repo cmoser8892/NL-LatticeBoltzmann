@@ -11,12 +11,12 @@
 
 typedef struct boundaryPoint {
     point_t point;
-    nodeIdentifier_t type;
+    boundaryType_t type;
 }boundaryPoint_t;
 
 class boundaryPointConstructor {
   private:
-    void one_direction(int limit,vector_t dir,point_t* start, nodeIdentifier_t n);
+    void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
   public:
     // holds all the boundary points
     std::vector<boundaryPoint_t *> boundary_points;
