@@ -2,7 +2,7 @@
 #include "simulation.h"
 #include <gtest/gtest.h>
 
-TEST(InitTests, BasicBoundaryPoints) {
+TEST(InitTests, basicBoundaryPoints) {
     int size = 5;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
@@ -26,4 +26,25 @@ TEST(InitTests, checkNodeGeneration) {
     nodes.init();
     // check for right amout of nodes
     EXPECT_EQ(nodes.node_infos.size(),size*size );
+}
+
+TEST(InitTests, basicNeighbors) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    ///
+    node_generator nodes(&boundaries);
+    nodes.init();
+    for(auto n : nodes.node_infos) {
+        if(n->type == WET) {
+            EXPECT_EQ(n->links.size(),8);
+        }
+        else if(n->type == DRY) {
+            EXPECT_GE(n->links.size(),1);
+        }
+        else {
+            EXPECT_TRUE(false); // impossible condition
+        }
+    }
 }
