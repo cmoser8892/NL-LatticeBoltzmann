@@ -6,10 +6,10 @@
 #define MY_LATTICE_BOLTZMANN_H
 
 // includes
-#include "types.h"
-#include "node.h"
 #include "boundary_point_generator.h"
-#include "node_generator.h"
+#include "node.h"
+#include "nodeGenerator.h"
+#include "types.h"
 
 // for completeness
 extern matrix_t velocity_set;
@@ -22,12 +22,11 @@ typedef void (*calculate_macro_values) (node* node);
 class simulation {
   private:
     std::vector<node*> nodes;
-    int dimensions, channels;
-    int size_x,size_y; // prob best to put them into arrays
-    int limit_x, limit_y;
+    boundaryPointConstructor * boundary_points;
+    nodeGenerator* node_generator;
   public:
-    simulation() = default;
-    void init(int six, int siy);
+    simulation(boundaryPointConstructor* c);
+    void init();
     void run();
     void get_data();
     std::vector<node*> access();

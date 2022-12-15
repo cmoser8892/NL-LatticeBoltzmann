@@ -1,6 +1,6 @@
 
-#ifndef NL_LATTICEBOLTZMANN_NODE_GENERATOR_H
-#define NL_LATTICEBOLTZMANN_NODE_GENERATOR_H
+#ifndef NL_LATTICEBOLTZMANN_NODEGENERATOR_H
+#define NL_LATTICEBOLTZMANN_NODEGENERATOR_H
 
 /**
  * class to generate/hold all the node points and connect them
@@ -27,7 +27,7 @@ typedef struct nodePoint {
  * In the CG class we discussed memory arrangements for NL data,
  * a sort of Z shape seems most appropriate at least try to order them close in memory
  */
-class node_generator {
+class nodeGenerator {
   private:
     boundaryPointConstructor* points;
     bool redo = false;
@@ -40,8 +40,8 @@ class node_generator {
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
   public:
     std::vector<nodePoint_t*> node_infos;
-    explicit node_generator(boundaryPointConstructor* p);
+    explicit nodeGenerator(boundaryPointConstructor* p);
     void init();
 };
 
-#endif // NL_LATTICEBOLTZMANN_NODE_GENERATOR_H
+#endif // NL_LATTICEBOLTZMANN_NODEGENERATOR_H

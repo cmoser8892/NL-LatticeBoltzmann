@@ -22,7 +22,7 @@ TEST(InitTests, checkNodeGeneration) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
     ///
-    node_generator nodes(&boundaries);
+    nodeGenerator nodes(&boundaries);
     nodes.init();
     // check for right amout of nodes
     EXPECT_EQ(nodes.node_infos.size(),size*size );
@@ -34,7 +34,7 @@ TEST(InitTests, basicNeighbors) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
     ///
-    node_generator nodes(&boundaries);
+    nodeGenerator nodes(&boundaries);
     nodes.init();
     for(auto n : nodes.node_infos) {
         if(n->type == WET) {

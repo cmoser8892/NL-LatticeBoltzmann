@@ -3,11 +3,22 @@
 #include "helper_functions.h"
 #include <iostream>
 
-/// nodes
-
 /// simulation run class
-void simulation::init(int six, int siy) {
+simulation::simulation(boundaryPointConstructor *c) {
+    boundary_points = c;
+}
 
+void simulation::init() {
+    // first initialize the node generator with the boundary points
+    node_generator = new nodeGenerator(boundary_points);
+    node_generator->init();
+    // then rewrite the structure into the actual nodes
+    for(auto node_info : node_generator->node_infos) {
+        auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position);
+        nodes.push_back(n);
+    }
+    // apply channel knowledge
+    // todo
 }
 
 void simulation::run() {

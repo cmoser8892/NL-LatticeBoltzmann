@@ -1,13 +1,13 @@
-#include "node_generator.h"
+#include "nodeGenerator.h"
 #include "helper_functions.h"
 #include "simulation.h"
 #include <iostream>
 
-node_generator::node_generator(boundaryPointConstructor *p) {
+nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
 }
 
-void node_generator::linear_generation() {
+void nodeGenerator::linear_generation() {
     int handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
     vector_t one_zero = {1,0}; // is pretty much arbitray
@@ -40,7 +40,7 @@ void node_generator::linear_generation() {
     }
 }
 
-bool node_generator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point){
+bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point){
     // returns true if hit or outside false if not
     bool return_value = false;
     point_t check = check_point.base();
@@ -60,7 +60,7 @@ bool node_generator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_
     return return_value;
 }
 
-void node_generator::determine_neighbors() {
+void nodeGenerator::determine_neighbors() {
     // go in all directions and search for a match then put channel and and respective handle down
     for(auto n : node_infos) {
         // go though relevant channels
@@ -96,16 +96,16 @@ void node_generator::determine_neighbors() {
 
 
 
-bool node_generator::read_data_from_file() {
+bool nodeGenerator::read_data_from_file() {
     return false;
 }
 
-void node_generator::write_data_to_file() {
+void nodeGenerator::write_data_to_file() {
     // nop
 }
 
 // public
-void node_generator::init() {
+void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();
         determine_neighbors();
