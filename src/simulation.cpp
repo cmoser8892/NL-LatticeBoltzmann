@@ -15,6 +15,8 @@ void simulation::init() {
     // then rewrite the structure into the actual nodes
     for(auto node_info : node_generator->node_infos) {
         auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position);
+        n->data.resize(velocity_set.cols());
+        // todo make sure there are the right sizes and so on
         nodes.push_back(n);
     }
     // apply channel knowledge
