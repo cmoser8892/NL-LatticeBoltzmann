@@ -1,5 +1,6 @@
 #include "node_generator.h"
 #include "helper_functions.h"
+#include "simulation.h"
 #include <iostream>
 
 node_generator::node_generator(boundaryPointConstructor *p) {
@@ -44,8 +45,8 @@ bool node_generator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_
     bool return_value = false;
     point_t check = check_point.base();
     // right now just does a linear search to check if point hit or not
-    for(auto p : points->boundary_points) {
-        if(compare_two_points(&check,&p->point)) {
+    for(auto point : points->boundary_points) {
+        if(compare_two_points(&check,&point->point)) {
             return_value = true;
             break;
         }
@@ -60,10 +61,36 @@ bool node_generator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_
 }
 
 void node_generator::determine_neighbors() {
+    // go in all directions and search for a match then put channel and and respective handle down
+    for(auto n : node_infos) {
+        for(int i = 1; i < CHANNELS; ++i) {
+            point_t current = n->position + velocity_set(i);
+            for(auto search : node_infos) {
+                auto temp = point_t(search->position);
+                if(compare_two_points(&current, &temp)) {
+                    auto link = new toLinks_t;
+                    link->handle = search->handle;
+                    link->channel = i;
+                }
+            }
+        }
+    }
+}
+
+
+
+bool node_generator::read_data_from_file() {
+    return false;
+}
+
+void node_generator::write_data_to_file() {
     // nop
 }
 
+// public
 void node_generator::init() {
-    linear_generation();
-    determine_neighbors();
+    if(!read_data_from_file()) {
+        linear_generation();
+        determine_neighbors();
+    }
 }

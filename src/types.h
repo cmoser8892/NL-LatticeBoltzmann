@@ -7,6 +7,8 @@
 
 #include <Eigen/Dense>
 
+#define CHANNELS 9
+
 using array_t = Eigen::ArrayXd;
 using matrix_t = Eigen::ArrayXXd;
 using flowfield_t = Eigen::ArrayXXd;
