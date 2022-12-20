@@ -48,3 +48,15 @@ TEST(InitTests, basicNeighbors) {
         }
     }
 }
+
+TEST(InitTests,simulation_init_basic_test) {
+    // init the boundary points -> then init the simulation ( and with it the node generator)
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    //
+    simulation sim(&boundaries);
+    sim.init();
+
+}

@@ -10,11 +10,6 @@
 #include "types.h"
 #include "boundary_point_generator.h"
 
-typedef struct toLinks {
-    int channel;
-    handle_t handle;
-}toLinks_t;
-
 typedef struct nodePoint {
     handle_t handle;
     array_t position;

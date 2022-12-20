@@ -31,22 +31,6 @@ array_t equilibrium(node* node) {
     return_array(8) = 1.0/36 * node->rho * (1 + three_ux_uy_m - nine_uxuy + uu);
     return return_array;
 }
-// create a copy array copy values into data (asynchron) copy from old array to new one
-void streaming_step1(node* node) {
-    if(node->neighbors.empty()) {
-        return;
-    }
-    for( int i = 1; i < node->data.size(); ++i) {
-        if(node->neighbors.at(i) != nullptr) {
-            node->neighbors.at(i)->copy(i) = node->data(i);
-        }
-    }
-}
-/// todo the main problem here is that i dont part the bounce back from the streaming
-/// they are still two steps done in the same cycle as we do halfway bb  not fullway
-void streaming_step2(node* node) {
-    node->data = node->copy;
-}
 
 void collision(node* node) {
     node->data -= relaxation*(node->data - equilibrium(node));
@@ -62,18 +46,15 @@ void macro( node* node) {
                  /node->rho;
 }
 
-
-void moving_wall(node * node,int side_pos,double uw) {
-
-}
-
 // write the ux component of the flowfield
 void write_ux(node* node, flowfield_t* ux) {
+    // dont ask this looks ugly
     ux->operator()(int(node->position(0)),int(node->position(1))) = node->u(0);
 }
 
 // writes the uy_component of a flowfield
 void write_uy(node* node, flowfield_t * uy) {
+    // dont ask this looks ugly
     uy->operator()(int(node->position(0)),int(node->position(1))) = node->u(1);
 }
 

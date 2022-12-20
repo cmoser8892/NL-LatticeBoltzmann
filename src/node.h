@@ -10,7 +10,7 @@ class node {
     nodeIdentifier_t node_type;
     array_t data;
     array_t copy;
-    std::vector<node*> neighbors;
+    std::vector<toLinks_t*> neighbors;
     // macro values are local
     double rho;
     array_t u;

@@ -8,6 +8,7 @@ node::node(handle_t h, int dimensions, int channels, array_t pos) {
     node_type = WET;
     rho = 1;
     data.setZero(channels);
+    // todo make this variable ?!
     copy.setZero(channels);
     u.setZero(dimensions);
     position = pos;

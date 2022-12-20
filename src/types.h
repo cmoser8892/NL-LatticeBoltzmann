@@ -29,4 +29,10 @@ typedef enum boundaryType {
     BOUNCE_BACK_MOVING,
     PRESSURE
 }boundaryType_t;
+
+typedef struct toLinks {
+    int channel;
+    handle_t handle; // form 1 to n -1 for valid handles
+}toLinks_t;
+
 #endif // MY_GENERAL_CODE_TYPES_H

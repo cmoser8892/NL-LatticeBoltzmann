@@ -10,8 +10,6 @@
 
 extern double relaxation;
 array_t equilibrium(node* node);
-void streaming_step1(node* node);
-void streaming_step2(node* node);
 void collision(node* node);
 void macro(node * node);
 // writeing methods

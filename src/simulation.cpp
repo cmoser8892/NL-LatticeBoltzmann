@@ -4,6 +4,42 @@
 #include <iostream>
 
 /// simulation run class
+// private
+void simulation::stream_links(node* n) {
+    for(auto link : n->neighbors) {
+        handle_t partner_handle = link->handle;
+        int channel = link->channel;
+        long array_position = long(partner_handle) - 1;
+        // correct positioning prob
+        // nodes.at(array_position)->data(channel) =
+    }
+}
+
+void simulation::streaming_step_1() {
+    for(auto node : nodes) {
+        if(node->node_type == WET) {
+
+        }
+    }
+}
+
+void simulation::streaming_step_2() {
+    // basically just copy over data
+    for(auto node : nodes) {
+        node->data = node->copy;
+    }
+}
+
+void simulation::bounce_back() {
+    // aka a streaming step on boundary nodes only
+    for(auto node : nodes) {
+        if(node->node_type == DRY) {
+
+        }
+    }
+}
+
+// public
 simulation::simulation(boundaryPointConstructor *c) {
     boundary_points = c;
 }
@@ -17,10 +53,9 @@ void simulation::init() {
         auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position);
         n->data.resize(velocity_set.cols());
         // todo make sure there are the right sizes and so on
+        n->neighbors = node_info->links; // should copy everything not quite sure thou
         nodes.push_back(n);
     }
-    // apply channel knowledge
-    // todo
 }
 
 void simulation::run() {
@@ -31,6 +66,8 @@ void simulation::get_data() {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
+    long size_x = long(round(boundary_points->size.x()));
+    long size_y = long(round(boundary_points->size.y()));
     ux.resize(size_x,size_y);
     uy.resize(size_x,size_y);
     rho.resize(size_x,size_y);

@@ -24,6 +24,10 @@ class simulation {
     std::vector<node*> nodes;
     boundaryPointConstructor * boundary_points;
     nodeGenerator* node_generator;
+    void stream_links(node* n);
+    void streaming_step_1();
+    void bounce_back();
+    void streaming_step_2();
   public:
     simulation(boundaryPointConstructor* c);
     void init();
