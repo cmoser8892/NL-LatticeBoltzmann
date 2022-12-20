@@ -22,6 +22,7 @@ bool compare_arrays(array_t a1, array_t a2) {
 
 // writes the data to
 void write_flowfield_data(flowfield_t * field, std::string filename) {
+
     std::ofstream out;
     out.open(filename);
     // preamble size infos

@@ -58,6 +58,11 @@ void write_uy(node* node, flowfield_t * uy) {
     uy->operator()(int(node->position(0)),int(node->position(1))) = node->u(1);
 }
 
+void write_rho(node* node, flowfield_t * rho) {
+    // dont ask this looks ugly
+    rho->operator()(int(node->position(0)),int(node->position(1))) = node->rho;
+}
+
 void debug_node_neighbors(node* node) {
 
 }

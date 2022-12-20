@@ -51,6 +51,7 @@ TEST(InitTests, basicNeighbors) {
 
 TEST(InitTests,simulation_init_basic_test) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
+    // this is just a run test to see weather or not anything crashes durin 1 run
     int size = 5;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
@@ -58,5 +59,7 @@ TEST(InitTests,simulation_init_basic_test) {
     //
     simulation sim(&boundaries);
     sim.init();
-
+    for(int i = 0; i< 100; ++i)
+        im.run();
+    sim.get_data();
 }

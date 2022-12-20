@@ -11,14 +11,14 @@ void simulation::stream_links(node* n) {
         int channel = link->channel;
         long array_position = long(partner_handle) - 1;
         // correct positioning prob
-        // nodes.at(array_position)->data(channel) =
+        nodes.at(array_position)->copy(channel)  = n->data(channel);
     }
 }
 
 void simulation::streaming_step_1() {
     for(auto node : nodes) {
         if(node->node_type == WET) {
-
+            stream_links(node);
         }
     }
 }
@@ -34,7 +34,7 @@ void simulation::bounce_back() {
     // aka a streaming step on boundary nodes only
     for(auto node : nodes) {
         if(node->node_type == DRY) {
-
+            stream_links(node);
         }
     }
 }
@@ -54,12 +54,25 @@ void simulation::init() {
         n->data.resize(velocity_set.cols());
         // todo make sure there are the right sizes and so on
         n->neighbors = node_info->links; // should copy everything not quite sure thou
+        n->rho = 1;
+        n->u.setZero();
+        n->data = equilibrium(n);
         nodes.push_back(n);
     }
 }
 
 void simulation::run() {
-
+    // run all substeps
+    // moving wall missing i guess
+    streaming_step_1();
+    bounce_back();
+    streaming_step_2();
+    for(auto n : nodes) {
+        macro(n);
+    }
+    for(auto n : nodes) {
+        collision(n);
+    }
 }
 
 void simulation::get_data() {
@@ -75,6 +88,7 @@ void simulation::get_data() {
         // 2 methods that could be made into on, but for some indices
         write_ux(node,&ux);
         write_uy(node,&uy);
+        write_rho(node,&rho);
     }
     // write to a file otherwise useless
     write_flowfield_data(&ux, "ux_flowfield");
