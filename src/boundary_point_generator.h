@@ -16,7 +16,7 @@ typedef struct boundaryPoint {
 
 class boundaryPointConstructor {
   private:
-    void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
+    // nada
   public:
     // holds all the boundary points
     std::vector<boundaryPoint_t *> boundary_points;
@@ -26,6 +26,7 @@ class boundaryPointConstructor {
     //
     explicit boundaryPointConstructor(point_t s);
     // initizlies a quader
+    void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
     void init_quader();
 };
 

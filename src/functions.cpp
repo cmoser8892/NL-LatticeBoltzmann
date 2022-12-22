@@ -20,7 +20,7 @@ array_t equilibrium(node* node) {
     double three_ux_uy_p = 3 * ( node->u(0) + node->u(1));
     double three_ux_uy_m = 3 * ( node->u(0) - node->u(1));
     double nine_uxuy = 9 * ( node->u(0) * node->u(1));
-    return_array(0) = 2.0/9 * node->rho * (2-3*uu);
+    return_array(0) = 2.0/9 * node->rho * (2- uu);
     return_array(1) = 1.0/18 * node->rho * (2 + six_ux + nine_uxx - uu);
     return_array(2) = 1.0/18 * node->rho * (2 + six_uy + nine_uyy - uu);
     return_array(3) = 1.0/18 * node->rho * (2 - six_ux + nine_uyy - uu);

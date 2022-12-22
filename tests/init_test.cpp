@@ -59,7 +59,7 @@ TEST(InitTests,simulation_init_basic_test) {
     //
     simulation sim(&boundaries);
     sim.init();
-    for(int i = 0; i< 100; ++i)
+    for(int i = 0; i< 1; ++i)
         sim.run();
     sim.get_data(false);
 }
