@@ -21,15 +21,19 @@ bool compare_arrays(array_t a1, array_t a2) {
 }
 
 // writes the data to
-void write_flowfield_data(flowfield_t * field, std::string filename) {
-
+void write_flowfield_data(flowfield_t * field, std::string filename, bool write_to_file) {
     std::ofstream out;
     out.open(filename);
     // preamble size infos
     // print out the rows first then to file
-    for(int i = 0; i < field->rows(); ++i)
-        std::cout << field->row(i) << std::endl;
-    std::cout << std::endl;
+    for(int i = 0; i < field->rows(); ++i) {
+        if(write_to_file) {
+            out << field->row(i) << std::endl;
+        }
+        else {
+            std::cout << field->row(i) << std::endl;
+        }
+    }
     out.close();
 }
 

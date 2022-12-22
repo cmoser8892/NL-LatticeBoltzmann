@@ -124,7 +124,7 @@ void simulation::run() {
     }
 }
 
-void simulation::get_data() {
+void simulation::get_data(bool write_to_file) {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
@@ -140,9 +140,9 @@ void simulation::get_data() {
         write_rho(node,&rho);
     }
     // write to a file otherwise useless
-    write_flowfield_data(&ux, "ux_flowfield");
-    write_flowfield_data(&uy, "uy_flowfield");
-    write_flowfield_data(&rho, "rho_flowfield");
+    write_flowfield_data(&ux, "ux_data_file",write_to_file);
+    write_flowfield_data(&uy, "uy_data_file",write_to_file);
+    write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 
 std::vector<node*> simulation::access() {

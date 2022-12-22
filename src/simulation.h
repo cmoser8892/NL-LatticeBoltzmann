@@ -34,7 +34,7 @@ class simulation {
     simulation(boundaryPointConstructor* c);
     void init();
     void run();
-    void get_data();
+    void get_data(bool write_to_file);
     std::vector<node*> access();
 };
 
