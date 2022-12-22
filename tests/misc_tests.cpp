@@ -144,7 +144,6 @@ TEST(StreamTest, one_D_streaming_channel_three) {
     // the -3 is wierd, but if u think about it last tow nodes
     // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
     sm.nodes.at(size-3)->data(3) = 1;
-    std::cout << sm.nodes.at(size-3)->handle << std::endl;
     // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
     for(int i = size-2; i > 0; --i) {
         // go check
@@ -164,4 +163,32 @@ TEST(StreamTest, one_D_streaming_channel_three) {
 
 TEST(BounceBackTesting, South) {
     // we need to generate two nodes and only really consider the bb
+    // generate two points we have two bounary nodes and one wet node
+    // in this case we are interested in channel 1 to 3 bb
+    int size = 2;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,BOUNCE_BACK);
+    boundaries.set_point(&end  ,BOUNCE_BACK);
+    simulation sm(&boundaries);
+    sm.init();
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->data.setZero();
+        /** useful debug fragement
+        std::cout << node->handle << std::endl;
+        std::cout << node->neighbors.size() << std::endl;
+        std::cout << node->position << std::endl;
+        std::cout << std::endl;
+         */
+    }
+    // set the value of channel 1 in the middle node to 1
+    // should reappear in channel 3
+    sm.nodes.at(0)->data(1) = 1;
+    sm.streaming_step_1();
+    sm.bounce_back();
+    sm.streaming_step_2();
+    EXPECT_EQ(sm.nodes.at(0)->data(3),1);
 }

@@ -26,7 +26,7 @@ int simulation::links_correct_channel(node * n, int link_channel) {
     else {
         throw std::invalid_argument("unknown node type");
     }
-    return link_channel;
+    return return_channel;
 }
 
 int simulation::switch_link_dimensions(int link_channel) {
@@ -84,6 +84,7 @@ void simulation::bounce_back() {
     // when doing a bounce back it is crucical that all the data is already in data and not in copy!!!
     for(auto node : nodes) {
         if(node->node_type == DRY) {
+            node->data = node->copy;
             stream_links(node);
         }
     }
