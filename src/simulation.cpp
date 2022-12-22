@@ -8,11 +8,60 @@
 void simulation::stream_links(node* n) {
     for(auto link : n->neighbors) {
         handle_t partner_handle = link->handle;
-        int channel = link->channel;
+        int channel = links_correct_channel(n,link->channel);
         long array_position = long(partner_handle) - 1;
         // correct positioning prob
         nodes.at(array_position)->copy(channel)  = n->data(channel);
     }
+}
+
+int simulation::links_correct_channel(node * n, int link_channel) {
+    int return_channel = -1;
+    if(n->node_type == WET) {
+        return_channel = link_channel;
+    }
+    else if( n-> node_type == DRY) {
+        return_channel = switch_link_dimensions(link_channel);
+    }
+    else {
+        throw std::invalid_argument("unknown node type");
+    }
+    return link_channel;
+}
+
+int simulation::switch_link_dimensions(int link_channel) {
+    // aka hiding an ugly switch case
+    int return_channel = -1;
+    switch(link_channel) {
+    case 1:
+        return_channel = 3;
+        break;
+    case 2:
+        return_channel = 4;
+        break;
+    case 3:
+        return_channel = 1;
+        break;
+    case 4:
+        return_channel = 2;
+        break;
+    case 5:
+        return_channel = 7;
+        break;
+    case 6:
+        return_channel = 8;
+        break;
+    case 7:
+        return_channel = 5;
+        break;
+    case 8:
+        return_channel = 6;
+        break;
+    default:
+        throw std::invalid_argument("not possible dimension");
+        break;
+    }
+    return return_channel;
 }
 
 void simulation::streaming_step_1() {
