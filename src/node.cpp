@@ -3,9 +3,15 @@
 //
 #include "node.h"
 
-node::node(handle_t h, int dimensions, int channels, array_t pos) {
+node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type ) {
     handle = h;
-    node_type = WET;
+    boundary_type = type;
+    if(type == NO_BOUNDARY) {
+        node_type = WET;
+    }
+    else {
+        node_type = DRY;
+    }
     rho = 1;
     data.setZero(channels);
     // todo make this variable ?!
@@ -13,10 +19,4 @@ node::node(handle_t h, int dimensions, int channels, array_t pos) {
     u.setZero(dimensions);
     position = pos;
 
-}
-
-boundary::boundary(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type)
-    : node(h,dimensions,channels,pos){
-    node_type = DRY;
-    boundary_type = type;
 }

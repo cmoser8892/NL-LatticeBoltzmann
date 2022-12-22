@@ -8,6 +8,7 @@ class node {
   public:
     handle_t handle;
     nodeIdentifier_t node_type;
+    boundaryType_t boundary_type;
     array_t data;
     array_t copy;
     std::vector<toLinks_t*> neighbors;
@@ -17,15 +18,8 @@ class node {
     array_t position;
     // pointer to functions no idea if they can work on the data and if i should
     // methods
-    node(handle_t handle, int dimensions, int channels, array_t pos);
+    node(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
 };
 
-class boundary : public node {
-    // a boundary is a special kind of node
-    // they are stored
-  public:
-    boundaryType_t boundary_type;
-    boundary(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type);
-};
 
 #endif // NL_LATTICEBOLTZMANN_NODE_H

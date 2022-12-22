@@ -16,7 +16,7 @@ TEST(FunctionalTest, correct_equilibrium) {
     array_t pos;
     pos.resize(3);
     pos << 1,2,4;
-    auto n = new node(h,dimension,channels,pos);
+    auto n = new node(h,dimension,channels,pos,NO_BOUNDARY);
     n->rho = 1;
     n->u.setZero();
     n->data = equilibrium(n);
@@ -67,7 +67,7 @@ TEST(FunctionalTest,correct_macro) {
     array_t pos;
     pos.resize(3);
     pos << 1,2,4;
-    auto n = new node(h,dimension,channels,pos);
+    auto n = new node(h,dimension,channels,pos,NO_BOUNDARY);
     n->rho = 1;
     n->u.setZero();
     n->data = equilibrium(n);

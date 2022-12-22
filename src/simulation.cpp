@@ -101,7 +101,7 @@ void simulation::init() {
     node_generator->init();
     // then rewrite the structure into the actual nodes
     for(auto node_info : node_generator->node_infos) {
-        auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position);
+        auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position,node_info->boundary);
         n->data.resize(velocity_set.cols());
         // todo make sure there are the right sizes and so on
         n->neighbors = node_info->links; // should copy everything not quite sure thou
@@ -116,10 +116,10 @@ void simulation::run() {
     // run all substeps
     // moving wall missing i guess
     streaming_step_1();
-    // bounce_back();
+    bounce_back();
     streaming_step_2();
     for(auto n : nodes) {
-        //macro(n);
+        macro(n);
     }
     for(auto n : nodes) {
         collision(n);
