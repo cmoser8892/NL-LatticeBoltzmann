@@ -165,7 +165,7 @@ TEST(BounceBackTesting, South) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
     // in this case we are interested in channel 1 to 3 bb
-    int size = 2;
+    int size = 3;
     point_t start = {0,0};
     point_t end = {size,0};
     point_t sim_area = {size,1};
@@ -185,10 +185,13 @@ TEST(BounceBackTesting, South) {
          */
     }
     // set the value of channel 1 in the middle node to 1
-    // should reappear in channel 3
-    sm.nodes.at(0)->data(1) = 1;
+    // should reappear in channel 3 and vice versa
+    // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
+    sm.nodes.at(0)->data(3) = 1;
+    sm.nodes.at(1)->data(1) = 1;
     sm.streaming_step_1();
-    sm.bounce_back();
     sm.streaming_step_2();
-    EXPECT_EQ(sm.nodes.at(0)->data(3),1);
+    sm.bounce_back();
+    EXPECT_EQ(sm.nodes.at(1)->data(3),1);
+    EXPECT_EQ(sm.nodes.at(0)->data(1),1);
 }

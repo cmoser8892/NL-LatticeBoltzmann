@@ -8,7 +8,7 @@
 void simulation::stream_links(node* n) {
     for(auto link : n->neighbors) {
         handle_t partner_handle = link->handle;
-        int channel = links_correct_channel(n,link->channel);
+        int channel = link->channel;
         long array_position = long(partner_handle) - 1;
         // correct positioning prob
         nodes.at(array_position)->copy(channel)  = n->data(channel);
@@ -84,8 +84,16 @@ void simulation::bounce_back() {
     // when doing a bounce back it is crucical that all the data is already in data and not in copy!!!
     for(auto node : nodes) {
         if(node->node_type == DRY) {
-            node->data = node->copy;
-            stream_links(node);
+            for(auto link : node->neighbors) {
+                handle_t partner_handle = link->handle;
+                int link_channel = link->channel;
+                int from_channel = links_correct_channel(node,link_channel);
+                long array_position = long(partner_handle) - 1;
+                // correct positioning prob
+                double data = node->data(from_channel);
+                // directlly write into the data
+                nodes.at(array_position)->data(link_channel)  = data;
+            }
         }
     }
 }
@@ -116,8 +124,8 @@ void simulation::run() {
     // run all substeps
     // moving wall missing i guess
     streaming_step_1();
-    bounce_back();
     streaming_step_2();
+    bounce_back();
     for(auto n : nodes) {
         macro(n);
     }
