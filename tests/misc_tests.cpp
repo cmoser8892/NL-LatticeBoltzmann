@@ -95,25 +95,27 @@ TEST(FunctionalTest,correct_macro) {
 }
 
 TEST(StreamTest, one_D_streaming_channel_one) {
-    int size = 5;
-    vector_t dir = {1,0};
+    // for the streaming test the last two points have to be ignored (aka DRY nodes)
+    int size = 20;
     point_t start = {0,0};
-    point_t p = {size,1};
-    boundaryPointConstructor boundaries(p);
-    boundaries.one_direction(3,dir,&start,NO_BOUNDARY);
+    point_t end = {size,0};
+    point_t sim_area = {size,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,NO_BOUNDARY);
+    boundaries.set_point(&end  ,NO_BOUNDARY);
     simulation sm(&boundaries);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
     }
-    //manual streaming channel 1
+    //manual streaming channel 1 start at handle 1 at 1,0 to handle 4 at 4,0
     sm.nodes.at(0)->data(1) = 1;
-    for(int i; i < sm.nodes.size(); ++i) {
+    for(int i = 1; i < size; ++i) {
         // go check
         for(auto node : sm.nodes) {
             int expect = 0;
-            if(node->handle -1 == i) {
+            if(node->handle == i) {
                 expect = 1;
             }
             EXPECT_EQ(expect, node->data(1));
@@ -125,12 +127,13 @@ TEST(StreamTest, one_D_streaming_channel_one) {
 }
 
 TEST(StreamTest, one_D_streaming_channel_three) {
-    int size = 5;
-    vector_t dir = {1,0};
+    int size = 20;
     point_t start = {0,0};
-    point_t p = {size,1};
-    boundaryPointConstructor boundaries(p);
-    boundaries.one_direction(3,dir,&start,NO_BOUNDARY);
+    point_t end = {size,0};
+    point_t sim_area = {size,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,NO_BOUNDARY);
+    boundaries.set_point(&end  ,NO_BOUNDARY);
     simulation sm(&boundaries);
     sm.init();
     // zero the data
@@ -138,20 +141,24 @@ TEST(StreamTest, one_D_streaming_channel_three) {
         node->data.setZero();
     }
     //manual streaming channel 1
-    sm.nodes.at(size-1)->data(3) = 1;
-    for(int i = size-1; i > -1; --i) {
-        // execute two steps
-        sm.streaming_step_1();
-        sm.streaming_step_2();
+    // the -3 is wierd, but if u think about it last tow nodes
+    // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
+    sm.nodes.at(size-3)->data(3) = 1;
+    std::cout << sm.nodes.at(size-3)->handle << std::endl;
+    // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
+    for(int i = size-2; i > 0; --i) {
         // go check
         for(auto node : sm.nodes) {
             // std::cout << node->neighbors.size() << std::endl;
             int expect = 0;
-            if(node->handle -1 == i) {
+            if(node->handle == i) {
                 expect = 1;
             }
-            // EXPECT_EQ(expect, node->data(1));
+            EXPECT_EQ(expect, node->data(3));
         }
+        // execute two steps
+        sm.streaming_step_1();
+        sm.streaming_step_2();
     }
 }
 

@@ -61,5 +61,5 @@ TEST(InitTests,simulation_init_basic_test) {
     sim.init();
     for(int i = 0; i< 1; ++i)
         sim.run();
-    sim.get_data(false);
+    // sim.get_data(false);
 }
