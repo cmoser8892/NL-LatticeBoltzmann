@@ -81,6 +81,7 @@ void simulation::streaming_step_2() {
 
 void simulation::bounce_back() {
     // aka a streaming step on boundary nodes only
+    // when doing a bounce back it is crucical that all the data is already in data and not in copy!!!
     for(auto node : nodes) {
         if(node->node_type == DRY) {
             stream_links(node);

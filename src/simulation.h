@@ -27,11 +27,11 @@ class simulation {
     void stream_links(node* n);
     int links_correct_channel(node* n, int link_channel);
     int switch_link_dimensions(int link_channel);
+  public:
+    simulation(boundaryPointConstructor* c);
     void streaming_step_1();
     void bounce_back();
     void streaming_step_2();
-  public:
-    simulation(boundaryPointConstructor* c);
     void init();
     void run();
     void get_data(bool write_to_file);

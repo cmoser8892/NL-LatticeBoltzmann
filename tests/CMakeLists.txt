@@ -19,8 +19,8 @@ set(MY_TESTS_HEADERS
 )
 
 set(MY_TESTS_CPP
-  test_hello_world.cpp misc_tests.cpp
-        stream_tests.cpp init_test.cpp)
+        misc_tests.cpp
+        init_test.cpp)
 
 # Creating the test executable
 add_executable(my_tests ${MY_TESTS_CPP} ${MY_TESTS_HEADERS})
