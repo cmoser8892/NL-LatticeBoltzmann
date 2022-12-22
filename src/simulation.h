@@ -21,13 +21,13 @@ typedef void (*calculate_macro_values) (node* node);
 
 class simulation {
   private:
-    std::vector<node*> nodes;
     boundaryPointConstructor * boundary_points;
     nodeGenerator* node_generator;
     void stream_links(node* n);
     int links_correct_channel(node* n, int link_channel);
     int switch_link_dimensions(int link_channel);
   public:
+    std::vector<node*> nodes;
     simulation(boundaryPointConstructor* c);
     void streaming_step_1();
     void bounce_back();

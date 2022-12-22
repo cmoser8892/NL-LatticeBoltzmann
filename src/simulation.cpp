@@ -115,10 +115,10 @@ void simulation::run() {
     // run all substeps
     // moving wall missing i guess
     streaming_step_1();
-    bounce_back();
+    // bounce_back();
     streaming_step_2();
     for(auto n : nodes) {
-        macro(n);
+        //macro(n);
     }
     for(auto n : nodes) {
         collision(n);
