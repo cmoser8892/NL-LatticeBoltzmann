@@ -196,16 +196,16 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     EXPECT_EQ(sm.nodes.at(0)->data(1),1);
 }
 
-TEST(BounceBackTesting, Verticals_one_three) {
+TEST(BounceBackTesting, Oblique_five_seven) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
     // in this case we are interested in channel 1 to 3 bb
     int size = 3;
     point_t start = {0,0};
-    point_t end = {0,size};
-    point_t sim_area = {1,size};
+    point_t end = {size,size};
+    point_t sim_area = {size,size};
     // need to be able to prime the boundary point construtor
-    vector_t node_generation = {0,1};
+    vector_t node_generation = {1,1};
     boundaryPointConstructor boundaries(sim_area);
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
@@ -224,16 +224,49 @@ TEST(BounceBackTesting, Verticals_one_three) {
         std::cout << node->position << std::endl;
         std::cout << std::endl;
          */
-
     }
     // set the value of channel 1 in the middle node to 1
     // should reappear in channel 3 and vice versa
     // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
-    sm.nodes.at(0)->data(4) = 1;
-    sm.nodes.at(1)->data(2) = 1;
+    sm.nodes.at(0)->data(7) = 1;
+    sm.nodes.at(1)->data(5) = 1;
     sm.streaming_step_1();
     sm.streaming_step_2();
     sm.bounce_back();
-    EXPECT_EQ(sm.nodes.at(1)->data(4),1);
-    EXPECT_EQ(sm.nodes.at(0)->data(2),1);
+    EXPECT_EQ(sm.nodes.at(0)->data(5),1);
+    EXPECT_EQ(sm.nodes.at(1)->data(7),1);
+}
+
+TEST(BounceBackTesting, Oblique_six_eight) {
+    // we need to generate two nodes and only really consider the bb
+    // generate two points we have two bounary nodes and one wet node
+    // in this case we are interested in channel 1 to 3 bb
+    int size = 3;
+    point_t start = {0,size};
+    point_t end = {size,0 };
+    point_t sim_area = {size,size};
+    // need to be able to prime the boundary point construtor
+    vector_t node_generation = {1,-1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,BOUNCE_BACK);
+    boundaries.set_point(&end  ,BOUNCE_BACK);
+    nodeGenerator gen(&boundaries);
+    gen.set_discovery_vector(node_generation);
+    gen.init();
+    simulation sm(&boundaries,&gen);
+    sm.init();
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->data.setZero();
+    }
+    // set the value of channel 1 in the middle node to 1
+    // should reappear in channel 3 and vice versa
+    // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
+    sm.nodes.at(0)->data(6) = 1;
+    sm.nodes.at(1)->data(8) = 1;
+    sm.streaming_step_1();
+    sm.streaming_step_2();
+    sm.bounce_back();
+    EXPECT_EQ(sm.nodes.at(0)->data(8),1);
+    EXPECT_EQ(sm.nodes.at(1)->data(6),1);
 }
