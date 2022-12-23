@@ -63,3 +63,19 @@ TEST(InitTests,simulation_init_basic_test) {
         sim.run();
     //sim.get_data(false);
 }
+
+TEST(InitTests, slidingLidBoundaries) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    double limit_y = boundaries.limits.y();
+    for(auto b : boundaries.boundary_points) {
+        if(b->point.y() == limit_y) {
+            EXPECT_EQ(b->type, BOUNCE_BACK_MOVING);
+        }
+        else {
+            EXPECT_EQ(b->type, BOUNCE_BACK);
+        }
+    }
+}

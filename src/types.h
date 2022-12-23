@@ -1,7 +1,9 @@
-//
-// Created by workstation on 16.11.22.
-//
-
+/**
+ * Thoughts:
+ * got more or less two possiblities to implement moving bbs
+ * do it addhoc style
+ * or create a full boundary representation of a sliding lid and then use that
+ */
 #ifndef MY_GENERAL_CODE_TYPES_H
 #define MY_GENERAL_CODE_TYPES_H
 
@@ -27,7 +29,7 @@ typedef enum boundaryType {
     NO_BOUNDARY = 0, // doesnt do anything equal to an error
     BOUNCE_BACK,
     BOUNCE_BACK_MOVING,
-    PRESSURE
+    PRESSURE_PERIODIC
 }boundaryType_t;
 
 typedef struct toLinks {

@@ -1,4 +1,4 @@
-
+#include <iostream>
 #include "boundary_point_generator.h"
 
 boundaryPointConstructor::boundaryPointConstructor(point_t s) {
@@ -40,4 +40,18 @@ void boundaryPointConstructor::init_quader() {
     // go through x
     direction = {0,-1};
     one_direction(int(limits.y()),direction,&current, type);
+}
+
+void boundaryPointConstructor::init_sliding_lid() {
+    // greate a slinding lid container with the given sizes
+    //in our case y max is the boundary that is moving
+    // so all boundaries with y = y_max are BOUNDARY_MOVING
+    // init a quader
+    double limit_y = limits.y();
+    init_quader();
+    for(auto b : boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->type = BOUNCE_BACK_MOVING;
+        }
+    }
 }
