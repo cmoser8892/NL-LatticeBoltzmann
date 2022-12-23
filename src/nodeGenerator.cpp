@@ -10,9 +10,8 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
 void nodeGenerator::linear_generation() {
     int handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
-    vector_t one_zero = {1,0}; // is pretty much arbitray
     for(auto p : points->boundary_points) {
-        point_t current = p->point + one_zero;
+        point_t current = p->point + discovery_vector;
         while(!check_other_boundary_hit(p,current)) {
             auto n = new nodePoint_t;
             n->handle = handle_counter;
@@ -22,7 +21,7 @@ void nodeGenerator::linear_generation() {
             // dont forget to increase the handle counter each time
             handle_counter++;
             node_infos.push_back(n);
-            current += one_zero;
+            current += discovery_vector;
         }
     }
     // lastlly add the boundary points
@@ -105,6 +104,9 @@ void nodeGenerator::write_data_to_file() {
 }
 
 // public
+void nodeGenerator::set_discovery_vector(vector_t set) {
+    discovery_vector = set;
+}
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();

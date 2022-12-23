@@ -26,6 +26,7 @@ class nodeGenerator {
   private:
     boundaryPointConstructor* points;
     bool redo = false;
+    vector_t discovery_vector = {1, 0};
     void write_data_to_file();
     bool read_data_from_file();
     void read_back_switch_case();
@@ -36,6 +37,7 @@ class nodeGenerator {
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);
+    void set_discovery_vector(vector_t set);
     void init();
 };
 

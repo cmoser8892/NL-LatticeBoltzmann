@@ -204,6 +204,7 @@ TEST(BounceBackTesting, Verticals_one_three) {
     point_t start = {0,0};
     point_t end = {0,size};
     point_t sim_area = {1,size};
+    // need to be able to prime the boundary point construtor
     boundaryPointConstructor boundaries(sim_area);
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
