@@ -205,19 +205,25 @@ TEST(BounceBackTesting, Verticals_one_three) {
     point_t end = {0,size};
     point_t sim_area = {1,size};
     // need to be able to prime the boundary point construtor
+    vector_t node_generation = {0,1};
     boundaryPointConstructor boundaries(sim_area);
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
-    simulation sm(&boundaries);
+    nodeGenerator gen(&boundaries);
+    gen.set_discovery_vector(node_generation);
+    gen.init();
+    simulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
         //useful debug fragement
+        /**
         std::cout << node->handle << std::endl;
         std::cout << node->neighbors.size() << std::endl;
         std::cout << node->position << std::endl;
         std::cout << std::endl;
+         */
 
     }
     // set the value of channel 1 in the middle node to 1

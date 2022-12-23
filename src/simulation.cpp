@@ -103,10 +103,21 @@ simulation::simulation(boundaryPointConstructor *c) {
     boundary_points = c;
 }
 
+simulation::simulation(boundaryPointConstructor *c, nodeGenerator *g) {
+    boundary_points = c;
+    node_generator = g;
+}
+
 void simulation::init() {
     // first initialize the node generator with the boundary points
-    node_generator = new nodeGenerator(boundary_points);
-    node_generator->init();
+    if(boundary_points == nullptr) {
+        throw std::invalid_argument("no Boundary Points given");
+    }
+    if(node_generator == nullptr) {
+        // if the node generator hasnt run we have to run him
+        node_generator = new nodeGenerator(boundary_points);
+        node_generator->init();
+    }
     // then rewrite the structure into the actual nodes
     for(auto node_info : node_generator->node_infos) {
         auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position,node_info->boundary);
