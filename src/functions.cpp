@@ -66,8 +66,14 @@ void write_rho(node* node, flowfield_t * rho) {
     rho->operator()(int(node->position(0)),int(node->position(1))) = node->rho;
 }
 
-void debug_node_neighbors(node* node) {
-    std::cout << "No function" << std::endl;
+void debug_node(node* node, bool printing) {
+    // print out the data values and calculate the density
+    if(printing) {
+        std::cout << "Data" << std::endl;
+        std::cout << node->data << std::endl;
+        std::cout << "rho" << std::endl;
+        std::cout << node->data.sum() << std::endl<< std::endl;
+    }
 }
 
 double bb_switch_channel(int link_channel, double uw) {

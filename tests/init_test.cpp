@@ -116,14 +116,18 @@ TEST(InitTests, sim_init_correct_values) {
 TEST(InitTests,simulation_init_run) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
     // this is just a run test to see weather or not anything crashes durin 1 run
-    int size = 5;
+    int size = 52;
+    int steps = 5;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     //
     simulation sim(&boundaries);
     sim.init();
-    for(int i = 0; i < 1; ++i)
+    debug_node(sim.nodes.at(0),true);
+    for(int i = 0; i < steps; ++i) {
         sim.run();
+        debug_node(sim.nodes.at(0),true);
+    }
     sim.get_data(false);
 }

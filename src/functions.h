@@ -18,5 +18,5 @@ void write_rho(node* node, flowfield_t* rho);
 void write_ux(node* node, flowfield_t* uy); // writes velocity based on the place in the field
 void write_uy(node* node,flowfield_t* ux);
 // debug method
-void debug_node_neighbors(node* node);
+void debug_node(node* node, bool printing);
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H

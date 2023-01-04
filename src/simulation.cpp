@@ -97,7 +97,7 @@ void simulation::bounce_back() {
                 if(node->boundary_type == BOUNCE_BACK_MOVING) {
                     // apply the correct function to the channels
                     // no correction for different dry densities (rho_wall)
-                    data += bb_switch_channel(link_channel,0.5);
+                    data += bb_switch_channel(link_channel,0.1);
                 }
                 // directly write into the data
                 nodes.at(array_position)->data(link_channel)  = data;
