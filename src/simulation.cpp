@@ -75,7 +75,9 @@ void simulation::streaming_step_1() {
 void simulation::streaming_step_2() {
     // basically just copy over data
     for(auto node : nodes) {
-        node->data = node->copy;
+        if(node->node_type == WET) {
+            node->data = node->copy;
+        }
     }
 }
 
@@ -85,18 +87,23 @@ void simulation::bounce_back() {
     for(auto node : nodes) {
         if(node->node_type == DRY) {
             for(auto link : node->neighbors) {
+                // just for read ability will be optimized by the compiler
                 handle_t partner_handle = link->handle;
                 int link_channel = link->channel;
                 int from_channel = links_correct_channel(node,link_channel);
                 long array_position = long(partner_handle) - 1;
                 // correct positioning prob
-                double data = node->data(from_channel);
+                double data = node->copy(from_channel);
+                if(node->boundary_type == BOUNCE_BACK_MOVING) {
+                    std::cout << "H " << std::endl;
+                }
                 // directlly write into the data
                 nodes.at(array_position)->data(link_channel)  = data;
             }
         }
     }
 }
+
 
 // public
 simulation::simulation(boundaryPointConstructor *c) {
