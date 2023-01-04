@@ -1,5 +1,7 @@
 
 #include "simulation.h"
+#include "helper_functions.h"
+#include "functions.h"
 #include <gtest/gtest.h>
 
 TEST(InitTests, basicBoundaryPoints) {
@@ -49,7 +51,69 @@ TEST(InitTests, basicNeighbors) {
     }
 }
 
-TEST(InitTests,simulation_init_basic_test) {
+TEST(InitTests, init_sliding_Lid_boundaries) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    //  check weather or not the top nodes are flagged as moving
+    for( auto b: boundaries.boundary_points) {
+        if(b->point.y() == size -1) {
+            EXPECT_EQ(b->type, BOUNCE_BACK_MOVING);
+        }
+    }
+}
+
+TEST(InitTests, init_sliding_Lid_simulation) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    simulation sim(&boundaries);
+    sim.init();
+    //  check weather or not the top nodes are flagged as moving
+    for(auto n : sim.nodes) {
+        if(n->position(1) == size -1) {
+            EXPECT_EQ(n->node_type,DRY);
+            EXPECT_EQ(n->boundary_type,BOUNCE_BACK_MOVING);
+        }
+    }
+}
+
+TEST(InitTests, sim_init_correct_values) {
+    // when  started velocity should be 0 and rho 1
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    //
+    simulation sim(&boundaries);
+    sim.init();
+    // get the data info a flow field
+    flowfield_t ux;
+    flowfield_t uy;
+    flowfield_t rho;
+    ux.resize(size,size);
+    uy.resize(size,size);
+    rho.resize(size,size);
+    for(auto node: sim.nodes) {
+        // 2 methods that could be made into on, but for some indices
+        write_ux(node,&ux);
+        write_uy(node,&uy);
+        write_rho(node,&rho);
+    }
+    // check
+    for(int i = 0; i < size; ++i) {
+        for(int j = 0; j < size; ++j) {
+            EXPECT_EQ(0,ux(i,j));
+            EXPECT_EQ(0,uy(i,j));
+            EXPECT_EQ(1, rho(i,j));
+        }
+    }
+}
+
+
+TEST(InitTests,simulation_init_run) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
     // this is just a run test to see weather or not anything crashes durin 1 run
     int size = 5;
@@ -59,23 +123,7 @@ TEST(InitTests,simulation_init_basic_test) {
     //
     simulation sim(&boundaries);
     sim.init();
-    for(int i = 0; i< 1; ++i)
+    for(int i = 0; i < 10; ++i)
         sim.run();
-    //sim.get_data(false);
-}
-
-TEST(InitTests, slidingLidBoundaries) {
-    int size = 5;
-    point_t p = {size,size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_sliding_lid();
-    double limit_y = boundaries.limits.y();
-    for(auto b : boundaries.boundary_points) {
-        if(b->point.y() == limit_y) {
-            EXPECT_EQ(b->type, BOUNCE_BACK_MOVING);
-        }
-        else {
-            EXPECT_EQ(b->type, BOUNCE_BACK);
-        }
-    }
+    sim.get_data(false);
 }
