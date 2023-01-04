@@ -5,6 +5,7 @@
 #include <mpi.h>
 #endif
 
+/// doenst work anymore is legacy code i guess before the refactoring in dec 22
 int main(int argc, char *argv[]) {
     /// init + run functional test for timing and stuff
     int size_x = 3;

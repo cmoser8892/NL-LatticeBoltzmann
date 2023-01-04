@@ -83,7 +83,7 @@ void simulation::streaming_step_2() {
 
 void simulation::bounce_back() {
     // aka a streaming step on boundary nodes only
-    // when doing a bounce back it is crucical that all the data is already in data and not in copy!!!
+    // when doing a bounce back it is crucical that all (wet) data is already in data and not in copy!!!
     for(auto node : nodes) {
         if(node->node_type == DRY) {
             for(auto link : node->neighbors) {
@@ -92,12 +92,14 @@ void simulation::bounce_back() {
                 int link_channel = link->channel;
                 int from_channel = links_correct_channel(node,link_channel);
                 long array_position = long(partner_handle) - 1;
-                // correct positioning prob
+                // correct positioning
                 double data = node->copy(from_channel);
                 if(node->boundary_type == BOUNCE_BACK_MOVING) {
-                    std::cout << "H " << std::endl;
+                    // apply the correct function to the channels
+                    // no correction for different dry densities (rho_wall)
+                    data += bb_switch_channel(link_channel,0.5);
                 }
-                // directlly write into the data
+                // directly write into the data
                 nodes.at(array_position)->data(link_channel)  = data;
             }
         }

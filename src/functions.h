@@ -12,6 +12,7 @@ extern double relaxation;
 array_t equilibrium(node* node);
 void collision(node* node);
 void macro(node * node);
+double bb_switch_channel(int link_channel, double uw);
 // writeing methods
 void write_rho(node* node, flowfield_t* rho);
 void write_ux(node* node, flowfield_t* uy); // writes velocity based on the place in the field

@@ -3,7 +3,9 @@
 #include <iostream>
 
 /// globals
-double relaxation = 0.5;
+double re = 1000; int base_length = 50;
+double u_wall = 0.1;
+double relaxation = (2*re)/(6*base_length*u_wall+re);
 matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
                          {0,0,1,0 ,-1,1, 1,-1,-1}};
 
@@ -65,5 +67,22 @@ void write_rho(node* node, flowfield_t * rho) {
 }
 
 void debug_node_neighbors(node* node) {
+    std::cout << "No function" << std::endl;
+}
 
+double bb_switch_channel(int link_channel, double uw) {
+    // incomplete all around implementation only for top side aka channels 7 and 8
+    double return_value = 0;
+    switch(link_channel) {
+    case 7:
+        return_value = -1.0/6 * u_wall;
+        break;
+    case 8:
+        return_value = 1.0/6 * u_wall;
+        break;
+    default:
+        // nop
+        break;
+    }
+    return return_value;
 }
