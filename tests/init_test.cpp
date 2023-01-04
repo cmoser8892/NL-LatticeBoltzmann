@@ -119,7 +119,7 @@ TEST(InitTests,simulation_init_run) {
     int size = 5;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_quader();
+    boundaries.init_sliding_lid();
     //
     simulation sim(&boundaries);
     sim.init();
