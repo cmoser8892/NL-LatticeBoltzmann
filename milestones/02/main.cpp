@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     sim.init();
     for(int i = 0; i < steps; ++i) {
         sim.run();
-        if(i % 100) {
+        if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
     }
