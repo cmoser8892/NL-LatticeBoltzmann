@@ -108,6 +108,7 @@ TEST(StreamTest, one_D_streaming_channel_one) {
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
+        node->copy.setZero();
     }
     //manual streaming channel 1 start at handle 1 at 1,0 to handle 4 at 4,0
     sm.nodes.at(0)->data(1) = 1;
@@ -139,6 +140,7 @@ TEST(StreamTest, one_D_streaming_channel_three) {
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
+        node->copy.setZero();
     }
     //manual streaming channel 1
     // the -3 is wierd, but if u think about it last tow nodes

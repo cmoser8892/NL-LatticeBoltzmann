@@ -64,7 +64,6 @@ void simulation::streaming_step_1() {
                 // correct positioning prob
                 nodes.at(array_position)->copy(channel)  = node->data(channel);
             }
-            debug_node(node,true);
         }
     }
 }
@@ -74,7 +73,6 @@ void simulation::streaming_step_2() {
     for(auto node : nodes) {
         if(node->node_type == WET) {
             node->data = node->copy;
-            debug_node(node,true);
         }
     }
 }
@@ -101,7 +99,6 @@ void simulation::bounce_back() {
                 nodes.at(array_position)->data(link_channel)  = data;
             }
         }
-        debug_node(node,true);
     }
 }
 
@@ -117,14 +114,14 @@ simulation::simulation(boundaryPointConstructor *c, nodeGenerator *g) {
 }
 
 void simulation::init() {
-    /// todo still klunky
-    double re = 1000; int base_length = 1;
-    u_wall = 0.1;
-    relaxation = (2*re)/(6*base_length*u_wall+re);
     // first initialize the node generator with the boundary points
     if(boundary_points == nullptr) {
         throw std::invalid_argument("no Boundary Points given");
     }
+    /// todo dumb / setup for sliding lid
+    double re = 1000; double base_length = boundary_points->size.x() - 2;
+    u_wall = 0.1;
+    relaxation = (2*re)/(6*base_length*u_wall+re);
     if(node_generator == nullptr) {
         // if the node generator hasnt run we have to run him
         node_generator = new nodeGenerator(boundary_points);
