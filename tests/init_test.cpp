@@ -116,7 +116,8 @@ TEST(InitTests, sim_init_correct_values) {
 TEST(InitTests,simulation_init_run) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
     // this is just a run test to see weather or not anything crashes durin 1 run
-    int size = 3;
+    int size = 10;
+    int sim_size = size-2;
     int steps = 5;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
@@ -129,20 +130,34 @@ TEST(InitTests,simulation_init_run) {
         // debug one node flow?!
         sim.run();
         // everything should go out and than in...
-        EXPECT_EQ(sim.nodes.at(0)->rho, 1);
+        for(int i = 0; i < sim_size; ++i) {
+            EXPECT_EQ(sim.nodes.at(i)->rho, 1);
+        }
     }
 }
 
 TEST(InitTests,simulation_sliding_lid) {
-    int size = 52;
-    int steps = 5;
+    int size = 102;
+    int steps = 30;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     //
     simulation sim(&boundaries);
     sim.init();
-    // debug_node(sim.nodes.at(0),true);
+    // auxiliary test
+    // retest weather or not the top nodes have the right identification
+    for( auto n : sim.nodes) {
+        if(n->node_type == DRY) {
+            if(n->position(1) == size-1) {
+                EXPECT_EQ(n->boundary_type, BOUNCE_BACK_MOVING);
+            }
+            else {
+                EXPECT_EQ(n->boundary_type, BOUNCE_BACK);
+            }
+        }
+    }
+    // sim runs
     for(int i = 0; i < steps; ++i) {
         // debug one node flow?!
         sim.run();

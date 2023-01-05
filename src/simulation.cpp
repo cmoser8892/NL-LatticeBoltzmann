@@ -93,7 +93,7 @@ void simulation::bounce_back() {
                 if(node->boundary_type == BOUNCE_BACK_MOVING) {
                     // apply the correct function to the channels
                     // no correction for different dry densities (rho_wall)
-                    data += bb_switch_channel(link_channel,u_wall);
+                    data += bb_switch_channel(from_channel,u_wall);
                 }
                 // directly write into the data
                 nodes.at(array_position)->data(link_channel)  = data;
@@ -122,6 +122,7 @@ void simulation::init() {
     double re = 1000; double base_length = boundary_points->size.x() - 2;
     u_wall = 0.1;
     relaxation = (2*re)/(6*base_length*u_wall+re);
+    std::cout << relaxation << std::endl;
     if(node_generator == nullptr) {
         // if the node generator hasnt run we have to run him
         node_generator = new nodeGenerator(boundary_points);

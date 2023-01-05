@@ -32,7 +32,7 @@ array_t equilibrium(node* node) {
 }
 
 void collision(node* node, double relaxation) {
-    node->data -= relaxation *(node->data - equilibrium(node));
+    node->data -= relaxation * (node->data - equilibrium(node));
 }
 
 void macro( node* node) {
@@ -73,14 +73,14 @@ void debug_node(node* node, bool printing) {
     }
 }
 
-double bb_switch_channel(int link_channel, double uw) {
+double bb_switch_channel(int from_channel, double uw) {
     // incomplete all around implementation only for top side aka channels 7 and 8
     double return_value = 0;
-    switch(link_channel) {
-    case 7:
+    switch(from_channel) {
+    case 5:
         return_value = -1.0/6 * uw;
         break;
-    case 8:
+    case 6:
         return_value = 1.0/6 * uw;
         break;
     default:
