@@ -66,6 +66,8 @@ void write_rho(node* node, flowfield_t * rho) {
 void debug_node(node* node, bool printing) {
     // print out the data values and calculate the density
     if(printing) {
+        std::cout << "Position" << std::endl;
+        std::cout << node->position << std::endl;
         std::cout << "Data" << std::endl;
         std::cout << node->data << std::endl;
         std::cout << "rho" << std::endl;

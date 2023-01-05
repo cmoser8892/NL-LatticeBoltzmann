@@ -4,17 +4,17 @@
 #include "helper_functions.h"
 
 // compares two arrays point by point
-bool compare_arrays(array_t a1, array_t a2) {
-    if(a1.size() != a2.size()){
+bool node_position_comparison(node* n, array_t* position) {
+    array_t* node_position = &n->position;
+    // check same size
+    if(node_position->size() != position->size()) {
         return false;
     }
-    else {
-        // comparing doubles is cringe
-        for(int i = 0; i < a1.size(); ++i) {
-            if(std::abs(a1(i)- a2(i)) < 1.0/DOUBLE_COMPARISON_PRECISION) {}
-            else {
-                return false;
-            }
+    // check same values
+    for(int i = 0; i < node_position->size(); ++i) {
+        if(node_position->operator()(i) == position->operator()(i)) {}
+        else {
+            return false;
         }
     }
     return true;
@@ -58,4 +58,20 @@ bool compare_two_points(point_t* p1, point_t* p2 ) {
         return_value = false;
     }
     return return_value;
+}
+
+bool same_index(node* n) {
+    // array wise comparison
+    array_t pos = n->position;
+    for(auto n: pos) {
+        for(auto comp : pos) {
+            // == didnt know is a buildin c++ comparator
+            if(n == comp) {
+            }
+            else {
+                return false;
+            }
+        }
+    }
+    return true;
 }
