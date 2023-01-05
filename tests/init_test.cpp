@@ -126,7 +126,10 @@ TEST(InitTests,simulation_init_run) {
     sim.init();
     debug_node(sim.nodes.at(0),true);
     for(int i = 0; i < steps; ++i) {
+        // debug one node flow?!
         sim.run();
+        // everything should go out and than in...
+        EXPECT_EQ(sim.nodes.at(0)->rho, 1);
         debug_node(sim.nodes.at(0),true);
     }
     sim.get_data(false);
