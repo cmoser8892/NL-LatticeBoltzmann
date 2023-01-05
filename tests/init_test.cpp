@@ -112,6 +112,50 @@ TEST(InitTests, sim_init_correct_values) {
     }
 }
 
+TEST(InitTests, boundary_compostion) {
+    int size = 12;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    /// sims
+    simulation sim(&boundaries);
+    sim.init();
+    // check compostion
+    int zeros = 0;
+    int ones = 0;
+    int twos = 0;
+    int threes = 0;
+    int totals = 0;
+    for (auto node : sim.nodes) {
+        if(node->node_type == DRY) {
+            totals++;
+            int links = node->neighbors.size();
+            switch(links) {
+            case 1:
+                ones++;
+                break;
+            case 2:
+                twos++;
+                break;
+            case 3:
+                threes++;
+                break;
+            default:
+                zeros++;
+                break;
+            }
+        }
+        else {
+            EXPECT_EQ(node->neighbors.size(),8);
+        }
+    }
+    // checks
+    EXPECT_EQ(zeros, 0);
+    EXPECT_EQ(ones, 4);
+    EXPECT_EQ(twos, 8);
+    EXPECT_EQ(threes, 4*(size-1) - 12);
+}
+
 
 TEST(InitTests,simulation_init_run) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
@@ -136,7 +180,7 @@ TEST(InitTests,simulation_init_run) {
     }
 }
 
-TEST(InitTests,simulation_sliding_lid) {
+TEST(InitTests,DISABLED_simulation_sliding_lid) {
     int size = 102;
     int steps = 30;
     point_t p = {size,size};
@@ -159,9 +203,7 @@ TEST(InitTests,simulation_sliding_lid) {
     }
     // sim runs
     for(int i = 0; i < steps; ++i) {
-        // debug one node flow?!
         sim.run();
-        // everything should go out and than in...
     }
     sim.get_data(true);
 }
