@@ -94,7 +94,7 @@ TEST(FunctionalTest,correct_macro) {
     EXPECT_NEAR(n->u(1), 10, 1e-10);
 }
 
-TEST(StreamTest, one_D_streaming_channel_one) {
+TEST(StreamTests, one_D_streaming_channel_one) {
     // for the streaming test the last two points have to be ignored (aka DRY nodes)
     int size = 20;
     point_t start = {0,0};
@@ -127,7 +127,7 @@ TEST(StreamTest, one_D_streaming_channel_one) {
     }
 }
 
-TEST(StreamTest, one_D_streaming_channel_three) {
+TEST(StreamTests, one_D_streaming_channel_three) {
     int size = 20;
     point_t start = {0,0};
     point_t end = {size,0};

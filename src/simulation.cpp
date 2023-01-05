@@ -24,7 +24,7 @@ int simulation::switch_link_dimensions(int link_channel) {
     int return_channel = -1;
     switch(link_channel) {
     case 1:
-        return_channel = 8;
+        return_channel = 3;
         break;
     case 2:
         return_channel = 4;
