@@ -64,6 +64,7 @@ void simulation::streaming_step_1() {
                 // correct positioning prob
                 nodes.at(array_position)->copy(channel)  = node->data(channel);
             }
+            debug_node(node,true);
         }
     }
 }
@@ -73,6 +74,7 @@ void simulation::streaming_step_2() {
     for(auto node : nodes) {
         if(node->node_type == WET) {
             node->data = node->copy;
+            debug_node(node,true);
         }
     }
 }
@@ -99,6 +101,7 @@ void simulation::bounce_back() {
                 nodes.at(array_position)->data(link_channel)  = data;
             }
         }
+        debug_node(node,true);
     }
 }
 
@@ -136,6 +139,7 @@ void simulation::init() {
         n->rho = 1;
         n->u.setZero();
         n->data = equilibrium(n);
+        n->copy = n->data;
         nodes.push_back(n);
     }
 }

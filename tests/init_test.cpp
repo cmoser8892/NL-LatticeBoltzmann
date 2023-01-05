@@ -124,7 +124,7 @@ TEST(InitTests,simulation_init_run) {
     //
     simulation sim(&boundaries);
     sim.init();
-    debug_node(sim.nodes.at(0),true);
+    // debug_node(sim.nodes.at(0),true);
     for(int i = 0; i < steps; ++i) {
         // debug one node flow?!
         sim.run();
