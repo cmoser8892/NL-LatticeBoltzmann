@@ -5,16 +5,6 @@
 
 /// simulation run class
 // private
-void simulation::stream_links(node* n) {
-    for(auto link : n->neighbors) {
-        handle_t partner_handle = link->handle;
-        int channel = link->channel;
-        long array_position = long(partner_handle) - 1;
-        // correct positioning prob
-        nodes.at(array_position)->copy(channel)  = n->data(channel);
-    }
-}
-
 int simulation::links_correct_channel(node * n, int link_channel) {
     int return_channel = -1;
     if(n->node_type == WET) {
@@ -67,7 +57,13 @@ int simulation::switch_link_dimensions(int link_channel) {
 void simulation::streaming_step_1() {
     for(auto node : nodes) {
         if(node->node_type == WET) {
-            stream_links(node);
+            for(auto link : node->neighbors) {
+                handle_t partner_handle = link->handle;
+                int channel = link->channel;
+                long array_position = long(partner_handle) - 1;
+                // correct positioning prob
+                nodes.at(array_position)->copy(channel)  = node->data(channel);
+            }
         }
     }
 }
