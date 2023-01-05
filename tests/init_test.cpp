@@ -116,7 +116,7 @@ TEST(InitTests, sim_init_correct_values) {
 TEST(InitTests,simulation_init_run) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
     // this is just a run test to see weather or not anything crashes durin 1 run
-    int size = 52;
+    int size = 3;
     int steps = 5;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);

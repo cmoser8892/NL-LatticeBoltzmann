@@ -3,9 +3,6 @@
 #include <iostream>
 
 /// globals
-double re = 1000; int base_length = 50;
-double u_wall = 0.1;
-double relaxation = (2*re)/(6*base_length*u_wall+re);
 matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
                          {0,0,1,0 ,-1,1, 1,-1,-1}};
 
@@ -34,8 +31,8 @@ array_t equilibrium(node* node) {
     return return_array;
 }
 
-void collision(node* node) {
-    node->data -= relaxation*(node->data - equilibrium(node));
+void collision(node* node, double relaxation) {
+    node->data -= relaxation *(node->data - equilibrium(node));
 }
 
 void macro( node* node) {
@@ -72,7 +69,7 @@ void debug_node(node* node, bool printing) {
         std::cout << "Data" << std::endl;
         std::cout << node->data << std::endl;
         std::cout << "rho" << std::endl;
-        std::cout << node->data.sum() << std::endl<< std::endl;
+        std::cout << node->rho << std::endl<< std::endl;
     }
 }
 
@@ -81,10 +78,10 @@ double bb_switch_channel(int link_channel, double uw) {
     double return_value = 0;
     switch(link_channel) {
     case 7:
-        return_value = -1.0/6 * u_wall;
+        return_value = -1.0/6 * uw;
         break;
     case 8:
-        return_value = 1.0/6 * u_wall;
+        return_value = 1.0/6 * uw;
         break;
     default:
         // nop

@@ -21,6 +21,8 @@ typedef void (*calculate_macro_values) (node* node);
 
 class simulation {
   private:
+    double relaxation;
+    double u_wall;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
     void stream_links(node* n);

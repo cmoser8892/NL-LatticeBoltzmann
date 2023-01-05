@@ -10,7 +10,7 @@
 
 extern double relaxation;
 array_t equilibrium(node* node);
-void collision(node* node);
+void collision(node* node,double relaxation);
 void macro(node * node);
 double bb_switch_channel(int link_channel, double uw);
 // writeing methods
