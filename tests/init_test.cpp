@@ -201,3 +201,24 @@ TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
         }
     }
 }
+
+TEST(InitTests, simulation_link_positions) {
+    /// check weather or not the links point to the correct node
+    int size = 6;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    //
+    simulation sim(&boundaries);
+    sim.init();
+    for(auto node : sim.nodes) {
+        for(auto link : node->neighbors) {
+            point_t position = node->position;
+            vector_t vector = velocity_set.col(link->channel);
+            point_t expected_position = position + vector;
+            unsigned long partner_array_position = link->handle -1;
+            point_t partner_position = sim.nodes.at(partner_array_position)->position;
+            EXPECT_EQ(partner_position,expected_position);
+        }
+    }
+}
