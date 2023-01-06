@@ -89,3 +89,38 @@ double bb_switch_channel(int from_channel, double uw) {
     }
     return return_value;
 }
+
+int switch_link_dimensions(int link_channel) {
+    // aka hiding an ugly switch case
+    int return_channel = -1;
+    switch(link_channel) {
+    case 1:
+        return_channel = 3;
+        break;
+    case 2:
+        return_channel = 4;
+        break;
+    case 3:
+        return_channel = 1;
+        break;
+    case 4:
+        return_channel = 2;
+        break;
+    case 5:
+        return_channel = 7;
+        break;
+    case 6:
+        return_channel = 8;
+        break;
+    case 7:
+        return_channel = 5;
+        break;
+    case 8:
+        return_channel = 6;
+        break;
+    default:
+        throw std::invalid_argument("not possible dimension");
+        break;
+    }
+    return return_channel;
+}

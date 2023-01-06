@@ -20,8 +20,6 @@ class simulation {
     double u_wall;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
-    int links_correct_channel(node* n, int link_channel);
-    int switch_link_dimensions(int link_channel);
   public:
     std::vector<node*> nodes;
     explicit simulation(boundaryPointConstructor* c);
