@@ -119,7 +119,8 @@ void simulation::init() {
         throw std::invalid_argument("no Boundary Points given");
     }
     /// todo dumb / setup for sliding lid
-    double re = 1000; double base_length = boundary_points->size.x() - 2;
+    double re = 1000;
+    double base_length = boundary_points->size.x() - 2;
     u_wall = 0.1;
     relaxation = (2*re)/(6*base_length*u_wall+re);
     if(node_generator == nullptr) {
