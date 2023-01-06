@@ -180,8 +180,8 @@ TEST(InitTests,simulation_init_run) {
     }
 }
 
-TEST(InitTests,DISABLED_simulation_sliding_lid) {
-    int size = 102;
+TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
+    int size = 12;
     int steps = 30;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
@@ -201,9 +201,4 @@ TEST(InitTests,DISABLED_simulation_sliding_lid) {
             }
         }
     }
-    // sim runs
-    for(int i = 0; i < steps; ++i) {
-        sim.run();
-    }
-    sim.get_data(true);
 }

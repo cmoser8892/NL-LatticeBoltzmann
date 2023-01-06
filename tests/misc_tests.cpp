@@ -192,6 +192,7 @@ TEST(StreamTests, one_D_streaming_channel_three) {
 
 TEST(StreamTests, one_D_streaming_channel_two) {
     int size = 20;
+    int channel = 2;
     point_t start = {0,0};
     point_t end = {0,size};
     point_t sim_area = {1,size};
@@ -213,7 +214,7 @@ TEST(StreamTests, one_D_streaming_channel_two) {
     //manual streaming channel 1
     // the -3 is wierd, but if u think about it last tow nodes
     // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
-    sm.nodes.at(0)->data(2) = 1;
+    sm.nodes.at(0)->data(channel) = 1;
     // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
     for(int i = 1; i < size; ++i) {
         // go check
@@ -223,7 +224,7 @@ TEST(StreamTests, one_D_streaming_channel_two) {
             if(node->handle == i) {
                 expect = 1;
             }
-            EXPECT_EQ(expect, node->data(2));
+            EXPECT_EQ(expect, node->data(channel));
         }
         // execute two steps
         sm.streaming_step_1();
@@ -273,6 +274,173 @@ TEST(StreamTests, one_D_streaming_channel_four) {
     }
 }
 
+TEST(StreamTests, one_D_streaming_channel_five) {
+    int size = 20;
+    int channel = 5;
+    point_t start = {0,0};
+    point_t end = {size,size};
+    point_t sim_area = {size,size};
+    // need to be able to prime the boundary point construtor
+    vector_t node_generation = {1,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,NO_BOUNDARY);
+    boundaries.set_point(&end  ,NO_BOUNDARY);
+    nodeGenerator gen(&boundaries);
+    gen.set_discovery_vector(node_generation);
+    gen.init();
+    simulation sm(&boundaries,&gen);
+    sm.init();
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->data.setZero();
+        node->copy.setZero();
+    }
+    //manual streaming channel 1
+    // the -3 is wierd, but if u think about it last tow nodes
+    // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
+    sm.nodes.at(0)->data(channel) = 1;
+    // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
+    for(int i = 1; i < size; ++i) {
+        // go check
+        for(auto node : sm.nodes) {
+            // std::cout << node->neighbors.size() << std::endl;
+            int expect = 0;
+            if(node->handle == i) {
+                expect = 1;
+            }
+            EXPECT_EQ(expect, node->data(channel));
+        }
+        // execute two steps
+        sm.streaming_step_1();
+        sm.streaming_step_2();
+    }
+}
+
+TEST(StreamTests, one_D_streaming_channel_seven) {
+    int size = 20;
+    int channel = 7;
+    point_t start = {0,0};
+    point_t end = {size,size};
+    point_t sim_area = {size,size};
+    // need to be able to prime the boundary point construtor
+    vector_t node_generation = {1,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,NO_BOUNDARY);
+    boundaries.set_point(&end  ,NO_BOUNDARY);
+    nodeGenerator gen(&boundaries);
+    gen.set_discovery_vector(node_generation);
+    gen.init();
+    simulation sm(&boundaries,&gen);
+    sm.init();
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->data.setZero();
+        node->copy.setZero();
+    }
+    //manual streaming channel 1
+    // the -3 is wierd, but if u think about it last tow nodes
+    // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
+    sm.nodes.at(size-3)->data(channel) = 1;
+    // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
+    for(int i = size-2; i > 0; --i) {
+        // go check
+        for(auto node : sm.nodes) {
+            // std::cout << node->neighbors.size() << std::endl;
+            int expect = 0;
+            if(node->handle == i) {
+                expect = 1;
+            }
+            EXPECT_EQ(expect, node->data(channel));
+        }
+        // execute two steps
+        sm.streaming_step_1();
+        sm.streaming_step_2();
+    }
+}
+
+TEST(StreamTests, one_D_streaming_channel_six) {
+    int size = 20;
+    int channel = 6;
+    point_t start = {size,0};
+    point_t end = {0,size};
+    point_t sim_area = {size,size};
+    // need to be able to prime the boundary point construtor
+    vector_t node_generation = {-1,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,NO_BOUNDARY);
+    boundaries.set_point(&end  ,NO_BOUNDARY);
+    nodeGenerator gen(&boundaries);
+    gen.set_discovery_vector(node_generation);
+    gen.init();
+    simulation sm(&boundaries,&gen);
+    sm.init();
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->data.setZero();
+        node->copy.setZero();
+    }
+    //manual streaming channel 1
+    // the -3 is wierd, but if u think about it last tow nodes
+    // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
+    sm.nodes.at(0)->data(channel) = 1;
+    // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
+    for(int i = 1; i < size; ++i) {
+        // go check
+        for(auto node : sm.nodes) {
+            // std::cout << node->neighbors.size() << std::endl;
+            int expect = 0;
+            if(node->handle == i) {
+                expect = 1;
+            }
+            EXPECT_EQ(expect, node->data(channel));
+        }
+        // execute two steps
+        sm.streaming_step_1();
+        sm.streaming_step_2();
+    }
+}
+
+TEST(StreamTests, one_D_streaming_channel_eight) {
+    int size = 20;
+    int channel = 8;
+    point_t start = {size,0};
+    point_t end = {0,size};
+    point_t sim_area = {size,size};
+    // need to be able to prime the boundary point construtor
+    vector_t node_generation = {-1,1};
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.set_point(&start,NO_BOUNDARY);
+    boundaries.set_point(&end  ,NO_BOUNDARY);
+    nodeGenerator gen(&boundaries);
+    gen.set_discovery_vector(node_generation);
+    gen.init();
+    simulation sm(&boundaries,&gen);
+    sm.init();
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->data.setZero();
+        node->copy.setZero();
+    }
+    //manual streaming channel 1
+    // the -3 is wierd, but if u think about it last tow nodes
+    // have handle 20 and 19 in array 19 and 18 so last on is 17 in array
+    sm.nodes.at(size-3)->data(channel) = 1;
+    // aka 20 nodes in total numbered 1 to 20 last two a boundary so we ignore those
+    for(int i = size-2; i > 0; --i) {
+        // go check
+        for(auto node : sm.nodes) {
+            // std::cout << node->neighbors.size() << std::endl;
+            int expect = 0;
+            if(node->handle == i) {
+                expect = 1;
+            }
+            EXPECT_EQ(expect, node->data(channel));
+        }
+        // execute two steps
+        sm.streaming_step_1();
+        sm.streaming_step_2();
+    }
+}
 
 TEST(StreamTests, combinded_test_boundary_consistent) {
     // checks leakages form the boundary nodes
