@@ -111,10 +111,10 @@ TEST(FunctionalTest, equilibrium123) {
     n->data = equilibrium(n);
     /// expections
     EXPECT_EQ(n->data(0), rho * 2/9 *(2 - 3* (ux*ux +uy*uy)));
-    EXPECT_EQ(n->data(1),rho * 1/9 * (2 + 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(n->data(2),rho * 1/9 * (2 + 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(n->data(3),rho * 1/9 * (2 - 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(n->data(4),rho * 1/9 * (2 - 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(1),rho * 1/18 * (2 + 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(2),rho * 1/18 * (2 + 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(3),rho * 1/18 * (2 - 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(4),rho * 1/18 * (2 - 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->data(5),rho * 1/36 *(1 + 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->data(6),rho * 1/36 *(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->data(7),rho * 1/36 *(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));

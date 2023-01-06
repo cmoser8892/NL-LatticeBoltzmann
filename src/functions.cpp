@@ -22,7 +22,7 @@ array_t equilibrium(node* node) {
     return_array(0) = 2.0/9 * node->rho * (2- uu);
     return_array(1) = 1.0/18 * node->rho * (2 + six_ux + nine_uxx - uu);
     return_array(2) = 1.0/18 * node->rho * (2 + six_uy + nine_uyy - uu);
-    return_array(3) = 1.0/18 * node->rho * (2 - six_ux + nine_uyy - uu);
+    return_array(3) = 1.0/18 * node->rho * (2 - six_ux + nine_uxx - uu);
     return_array(4) = 1.0/18 * node->rho * (2 - six_uy + nine_uyy - uu);
     return_array(5) = 1.0/36 * node->rho * (1 + three_ux_uy_p + nine_uxuy + uu);
     return_array(6) = 1.0/36 * node->rho * (1 - three_ux_uy_m - nine_uxuy + uu);
