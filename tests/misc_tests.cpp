@@ -96,6 +96,8 @@ TEST(FunctionalTest,correct_macro) {
 }
 
 TEST(FunctionalTest, equilibrium123) {
+    /// testing the equilbirum function
+    // todo maybe introduce some fuzzing ?!
     handle_t h = 1;
     double rho = 1;
     double ux = 2;
@@ -119,6 +121,21 @@ TEST(FunctionalTest, equilibrium123) {
     EXPECT_EQ(n->data(6),rho * 1/36 *(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->data(7),rho * 1/36 *(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->data(8),rho * 1/36 *(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+}
+
+TEST(FunctionalTest, macro123) {
+    handle_t h = 1;
+    int dimension = 2;
+    int channels = 9;
+    array_t pos;
+    pos.resize(3);
+    pos << 1,2,4;
+    auto n = new node(h,dimension,channels,pos,NO_BOUNDARY);
+    n->data << 1,2,3,4,5,6,7,8,9;
+    macro(n);
+    EXPECT_EQ(45, n->rho);
+    EXPECT_NEAR(-2.0/45,n->u(0),1e-10);
+    EXPECT_NEAR(-6.0/45,n->u(1), 1e-10);
 }
 
 TEST(StreamTests, one_D_streaming_channel_one) {

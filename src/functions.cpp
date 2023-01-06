@@ -39,11 +39,9 @@ void macro( node* node) {
     node->rho = node->data.sum(); // problem if 0!!
     node->u(0) = ((node->data(1)+node->data(5)+node->data(8))-
                   (node->data(3)+node->data(6) +node->data(7)));
-    node->u(0) = node->u(0)/node->rho;
     node->u(1) = ((node->data(2)+node->data(5)+node->data(6))-
-                  (node->data(4)+node->data(7) +node->data(8)))
-                 /node->rho;
-    node->u(1) = node->u(1)/node->rho;
+                  (node->data(4)+node->data(7) +node->data(8)));
+    node->u /= node->rho;
 }
 
 // write the ux component of the flowfield
@@ -83,7 +81,7 @@ double bb_switch_channel(int from_channel, double uw) {
         return_value = -1.0/6 * uw;
         break;
     case 6:
-        return_value = 1.0/6 * uw;
+        return_value = +1.0/6 * uw;
         break;
     default:
         // nop
