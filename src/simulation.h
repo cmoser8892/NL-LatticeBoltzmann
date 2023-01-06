@@ -13,11 +13,6 @@
 
 // for completeness
 extern matrix_t velocity_set;
-// functions
-typedef array_t (*equilibrium_function) (node* node);
-typedef void (*streaming_function) (node* node); // could also do boundary conditions there?!
-typedef void (*collision_function) (node* node);
-typedef void (*calculate_macro_values) (node* node);
 
 class simulation {
   private:
@@ -25,12 +20,11 @@ class simulation {
     double u_wall;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
-    void stream_links(node* n);
     int links_correct_channel(node* n, int link_channel);
     int switch_link_dimensions(int link_channel);
   public:
     std::vector<node*> nodes;
-    simulation(boundaryPointConstructor* c);
+    explicit simulation(boundaryPointConstructor* c);
     simulation(boundaryPointConstructor* c,nodeGenerator* g);
     void streaming_step_1();
     void bounce_back();

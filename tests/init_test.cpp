@@ -182,7 +182,6 @@ TEST(InitTests,simulation_init_run) {
 
 TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
     int size = 12;
-    int steps = 30;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
