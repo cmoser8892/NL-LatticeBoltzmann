@@ -103,7 +103,7 @@ void simulation::run() {
         macro(n);
     }
     for(auto n : nodes) {
-        collision(n,simulation::relaxation);
+        collision(n,relaxation);
     }
 }
 
