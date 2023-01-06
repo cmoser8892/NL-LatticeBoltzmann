@@ -547,11 +547,11 @@ TEST(StreamTests, DISABLED_combinded_test_1_step) {
     std::vector<int> index_codes;
     array_t  corner_1(2); corner_1 << 1,1;
     int code_104 = 104;
-    array_t  corner_2(2); corner_2 << 4,1; ;
+    array_t  corner_2(2); corner_2 << sim_size,1; ;
     int code_107 = 107;
-    array_t  corner_3(2); corner_3 << 4,4;
+    array_t  corner_3(2); corner_3 << sim_size,sim_size;
     int code_126 = 126;
-    array_t  corner_4(2); corner_4 << 1,4;
+    array_t  corner_4(2); corner_4 << 1,sim_size;
     int code_202 = 202;
     index_corners.push_back(corner_1);
     index_corners.push_back(corner_2);
@@ -614,6 +614,7 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
+        node->copy.setZero();
         /** useful debug fragement
         std::cout << node->handle << std::endl;
         std::cout << node->neighbors.size() << std::endl;
@@ -654,6 +655,7 @@ TEST(BounceBackTesting, Horizontals_two_four) {
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
+        node->copy.setZero();
         /** useful debug fragement
         std::cout << node->handle << std::endl;
         std::cout << node->neighbors.size() << std::endl;
@@ -695,6 +697,7 @@ TEST(BounceBackTesting, Oblique_five_seven) {
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
+        node->copy.setZero();
         //useful debug fragement
         /**
         std::cout << node->handle << std::endl;
@@ -736,6 +739,7 @@ TEST(BounceBackTesting, Oblique_six_eight) {
     // zero the data
     for(auto node : sm.nodes) {
         node->data.setZero();
+        node->copy.setZero();
     }
     // set the value of channel 1 in the middle node to 1
     // should reappear in channel 3 and vice versa
@@ -747,4 +751,59 @@ TEST(BounceBackTesting, Oblique_six_eight) {
     sm.bounce_back();
     EXPECT_EQ(sm.nodes.at(0)->data(8),1);
     EXPECT_EQ(sm.nodes.at(1)->data(6),1);
+}
+
+TEST(BounceBackTesting, moving) {
+    /// test the actual moving code
+    /// if this still doesnt work out ill do poisioulle flow...
+    // probable cause leakage into channels that have nothing to do
+    // in the corners ?!
+    // put a bunch of 1 into the top middle node of a 3x3 simspace
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    simulation sim(&boundaries);
+    sim.init();
+    // zero the data
+    for(auto node : sim.nodes) {
+        node->data.setZero();
+        node->copy.setZero();
+    }
+    // points of interest and codes
+    std::vector<handle_t> handles;
+    std::vector<array_t> index_corners;
+    std::vector<int> index_codes;
+    array_t  poi_1(2); poi_1 << 2,1;
+    int code_104 = 104;
+    array_t  poi_2(2); poi_2 << 2,3; ;
+    int code_107 = 107;
+    index_corners.push_back(poi_1);
+    index_corners.push_back(poi_2);
+    index_codes.push_back(code_104);
+    index_codes.push_back(code_107);
+    // place the codes into the nodes
+    for( int i = 0; i < 2; ++i) {
+        for(auto node: sim.nodes) {
+            if(node_position_comparison(node,&index_corners.at(i))) {
+                // safe the handle for checking results
+                handles.push_back(node->handle);
+                // put data in
+                for(int j = 0; j < node->data.size(); ++j) {
+                    // node->data(j) = index_codes.at(i) * 10 + j;
+                }
+                node->copy = node->data;
+            }
+        }
+    }
+    // run the bb sequence
+    sim.streaming_step_1();
+    sim.streaming_step_2();
+    sim.bounce_back();
+    // check results
+    int position_poi_1 = int(handles.at(0)-1);
+    int position_poi_2 = int(handles.at(1)-1);
+    for(auto node : sim.nodes) {
+        debug_node(node,true);
+    }
 }
