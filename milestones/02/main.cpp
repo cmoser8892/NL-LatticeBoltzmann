@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
     int size = 102;
-    int steps = 100000;
+    int steps = 10000;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();

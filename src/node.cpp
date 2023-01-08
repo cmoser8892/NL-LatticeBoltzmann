@@ -2,6 +2,7 @@
 // Created by christoph on 13.12.22.
 //
 #include "node.h"
+#include "functions.h"
 
 node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type ) {
     handle = h;
@@ -18,5 +19,4 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
     copy.setZero(channels);
     u.setZero(dimensions);
     position = pos;
-
 }

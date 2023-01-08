@@ -99,7 +99,7 @@ TEST(FunctionalTest, equilibrium123) {
     /// testing the equilbirum function
     // todo maybe introduce some fuzzing ?!
     handle_t h = 1;
-    double rho = 1;
+    double rho = 4;
     double ux = 2;
     double uy = 3;
     int dimension = 2;
@@ -527,77 +527,6 @@ TEST(StreamTests, combinded_test_boundary_consistent) {
     }
 }
 
-TEST(StreamTests, DISABLED_combinded_test_1_step) {
-    /// hard to get that one right
-    // set some codes in the corners and see how it moves around
-    // also checks leakages form the boundary nodes
-    // setup sim
-    int size = 6;
-    int sim_size = size-2;
-    int steps = 1;
-    point_t p = {size,size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_quader();
-    simulation sim(&boundaries);
-    sim.init();
-    // zero the sim space and
-    // set specific codes to the corners and observe them
-    // (if someone gets where they from expect spaghetti lmao)
-    std::vector<array_t> index_corners;
-    std::vector<int> index_codes;
-    array_t  corner_1(2); corner_1 << 1,1;
-    int code_104 = 104;
-    array_t  corner_2(2); corner_2 << sim_size,1; ;
-    int code_107 = 107;
-    array_t  corner_3(2); corner_3 << sim_size,sim_size;
-    int code_126 = 126;
-    array_t  corner_4(2); corner_4 << 1,sim_size;
-    int code_202 = 202;
-    index_corners.push_back(corner_1);
-    index_corners.push_back(corner_2);
-    index_corners.push_back(corner_3);
-    index_corners.push_back(corner_4);
-    index_codes.push_back(code_104);
-    index_codes.push_back(code_107);
-    index_codes.push_back(code_126);
-    index_codes.push_back(code_202);
-    /// zero the nodes and then put the codes in
-    for(auto node : sim.nodes) {
-        if(node->node_type == WET) {
-            node->data = 0;
-            node->copy = 0;
-            macro(node);
-        }
-        else {
-            node->data = 1;
-            node->copy = 1;
-            macro(node);
-        }
-    }
-    // 4 corners
-    for( int i = 0; i < 4; ++i) {
-        for(auto node: sim.nodes) {
-            if(node_position_comparison(node,&index_corners.at(i))) {
-                // increment
-                for(int j = 0; j < node->data.size(); ++j) {
-                    node->data(j) = index_codes.at(i) * 10 + j;
-                }
-                node->copy = node->data;
-            }
-        }
-    }
-    // run checks rest is preamble
-    for(int i = 0; i < steps; i++) {
-        sim.streaming_step_1();
-        sim.streaming_step_2();
-        sim.bounce_back();
-        // check
-        for(auto node : sim.nodes) {
-            debug_node(node,true);
-        }
-    }
-}
-
 TEST(BounceBackTesting, Horizontals_one_three) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
@@ -787,4 +716,9 @@ TEST(BounceBackTesting, moving) {
             }
         }
     }
+}
+
+TEST(StreamTests, swtich_link_dimensios) {
+    //
+    EXPECT_TRUE(false);
 }
