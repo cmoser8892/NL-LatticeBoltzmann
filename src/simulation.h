@@ -14,6 +14,11 @@
 // for completeness
 extern matrix_t velocity_set;
 
+typedef struct simulation_parameters {
+    double relaxation;
+    double u_wall;
+}simulation_parameters_t;
+
 class simulation {
   private:
     double relaxation;
