@@ -696,6 +696,12 @@ TEST(BounceBackTesting, moving) {
     boundaries.init_sliding_lid();
     simulation sim(&boundaries);
     sim.init();
+    double re = 1000;
+    double base_length = sim_size - 2;
+    simulation_parameters params;
+    params.u_wall = 0.1;
+    params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
+    sim.set_simulation_parameters(params);
     // zero the data
     for(auto node : sim.nodes) {
         node->data.setZero();

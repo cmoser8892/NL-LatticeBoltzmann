@@ -44,7 +44,7 @@ void simulation::bounce_back() {
                 if(node->boundary_type == BOUNCE_BACK_MOVING) {
                     // apply the correct function to the channels
                     // no correction for different dry densities (rho_wall)
-                    data += bb_switch_channel(from_channel,u_wall);
+                    data += bb_switch_channel(from_channel,parameters.u_wall);
                 }
                 // directly write into the data
                 nodes.at(array_position)->data(link_channel)  = data;
@@ -64,16 +64,16 @@ simulation::simulation(boundaryPointConstructor *c, nodeGenerator *g) {
     node_generator = g;
 }
 
+void simulation::set_simulation_parameters(simulation_parameters_t t) {
+    parameters = t;
+}
+
+
 void simulation::init() {
     // first initialize the node generator with the boundary points
     if(boundary_points == nullptr) {
         throw std::invalid_argument("no Boundary Points given");
     }
-    /// todo dumb / setup for sliding lid
-    double re = 1000;
-    double base_length = boundary_points->size.x() - 2;
-    u_wall = 0.1;
-    relaxation = (2*re)/(6*base_length*u_wall+re);
     if(node_generator == nullptr) {
         // if the node generator hasnt run we have to run him
         node_generator = new nodeGenerator(boundary_points);
@@ -103,7 +103,7 @@ void simulation::run() {
         macro(n);
     }
     for(auto n : nodes) {
-        collision(n,relaxation);
+        collision(n,parameters.relaxation);
     }
 }
 

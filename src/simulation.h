@@ -15,20 +15,20 @@
 extern matrix_t velocity_set;
 
 typedef struct simulation_parameters {
-    double relaxation;
-    double u_wall;
+    double relaxation = 0.5;
+    double u_wall = 0;
 }simulation_parameters_t;
 
 class simulation {
   private:
-    double relaxation;
-    double u_wall;
+    simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
   public:
     std::vector<node*> nodes;
     explicit simulation(boundaryPointConstructor* c);
     simulation(boundaryPointConstructor* c,nodeGenerator* g);
+    void set_simulation_parameters(simulation_parameters_t t);
     void streaming_step_1();
     void bounce_back();
     void streaming_step_2();
