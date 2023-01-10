@@ -35,7 +35,6 @@ class simulation {
     void init();
     void run();
     void get_data(bool write_to_file);
-    std::vector<node*> access();
 };
 
 #endif // MY_LATTICE_BOLTZMANN_H

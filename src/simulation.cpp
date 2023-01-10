@@ -106,7 +106,11 @@ void simulation::run() {
         collision(n,parameters.relaxation);
     }
 }
-
+/**
+ * @fn void simulation::get_data(bool write_to_file)
+ * @brief puts the ux, uy and rho of individual nodes into a flow-field for visualization
+ * @param write_to_file write to file or to cout
+ */
 void simulation::get_data(bool write_to_file) {
     flowfield_t ux;
     flowfield_t uy;
@@ -126,10 +130,6 @@ void simulation::get_data(bool write_to_file) {
     write_flowfield_data(&ux, "ux_data_file",write_to_file);
     write_flowfield_data(&uy, "uy_data_file",write_to_file);
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
-}
-
-std::vector<node*> simulation::access() {
-    return nodes;
 }
 
 
