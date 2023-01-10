@@ -113,6 +113,9 @@ TEST(InitTests, sim_init_correct_values) {
 }
 
 TEST(InitTests, boundary_compostion) {
+    // checks how many links boundary nodes have corners have 1 (total of 4)
+    // adjacent ones 2 (total of 8)
+    // the rest has 3
     int size = 12;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
@@ -204,7 +207,7 @@ TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
 
 TEST(InitTests, simulation_link_positions) {
     /// check weather or not the links point to the correct node
-    int size = 6;
+    int size = 8;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();

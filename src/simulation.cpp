@@ -8,6 +8,8 @@
 void simulation::streaming_step_1() {
     for(auto node : nodes) {
         if(node->node_type == WET) {
+            // very important so that we later not rewrite the value back to equilibrium
+            node->copy(0) = node->data(0);
             for(auto link : node->neighbors) {
                 handle_t partner_handle = link->handle;
                 int channel = link->channel;

@@ -100,7 +100,7 @@ TEST(FunctionalTest, equilibrium123) {
     // todo maybe introduce some fuzzing ?!
     handle_t h = 1;
     double rho = 4;
-    double ux = 2;
+    double ux = 6;
     double uy = 3;
     int dimension = 2;
     int channels = 9;
@@ -724,7 +724,38 @@ TEST(BounceBackTesting, moving) {
     }
 }
 
-TEST(StreamTests, swtich_link_dimensios) {
+TEST(StreamTests, channel_0_persistent) {
+    // test weather or not values in channel 0 persist throu streaming
+    int size = 5;
+    int steps = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    // simulation init
+    simulation sim(&boundaries);
+    sim.init();
+    // parameters
+    double re = 1000;
+    double base_length = size - 2;
+    simulation_parameters params;
+    params.u_wall = 0.1;
+    params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
+    sim.set_simulation_parameters(params);
+
     //
-    EXPECT_TRUE(false);
+    for(int i = 0; i < steps; ++i) {
+        double before_data_value = sim.nodes.at(0)->data(0);
+        sim.streaming_step_1();
+        sim.streaming_step_2();
+        sim.bounce_back();
+        // after streaming the before data value in channel 0 should still be there
+        EXPECT_EQ(before_data_value, sim.nodes.at(0)->data(0));
+        for(auto n : sim.nodes) {
+            macro(n);
+        }
+        for(auto n : sim.nodes) {
+            collision(n,params.relaxation);
+        }
+
+    }
 }
