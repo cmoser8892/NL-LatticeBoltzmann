@@ -9,7 +9,6 @@ void simulation::streaming_step_1() {
     for(auto node : nodes) {
         if(node->node_type == WET) {
             // very important so that we later not rewrite the value back to equilibrium
-            node->copy(0) = node->data(0);
             for(auto link : node->neighbors) {
                 handle_t partner_handle = link->handle;
                 int channel = link->channel;
@@ -22,10 +21,12 @@ void simulation::streaming_step_1() {
 }
 
 void simulation::streaming_step_2() {
-    // basically just copy over data
+    // basically just copy over data, importantly not channel 0!
     for(auto node : nodes) {
         if(node->node_type == WET) {
-            node->data = node->copy;
+            for(int i = 1; i < node->data.size(); ++i) {
+                node->data(i) = node->copy(i);
+            }
         }
     }
 }
