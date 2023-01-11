@@ -2,6 +2,7 @@
 #include "helper_functions.h"
 #include "simulation.h"
 #include <iostream>
+#include <fstream>
 
 nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
@@ -100,16 +101,63 @@ bool nodeGenerator::read_data_from_file() {
 }
 
 void nodeGenerator::write_data_to_file() {
-    // nop
+    std::string file_name = "stored_nodes_file";
+    std::ofstream  out;
+    out.open(file_name);
+    for(const auto i : node_infos) {
+        // todo investigate if there is a better way to hand out data than in a file will have to do for now thou
+        // general type info
+        out << "| ";
+        out << i->handle << " | "
+            << i->type << " | "
+            << i->boundary << " | " ;
+        // position
+        out << "(";
+        auto iter = i->position.begin();
+        // unlike std containers no trailing end is added
+        do {
+            out << iter.operator*();
+            iter++;
+            if(iter != i->position.end()) {
+                out <<  ", ";
+            }
+        }while(iter != i->position.end());
+        out << ") | ";
+        // links + neighbours handles
+        auto it = i->links.begin();
+        // unlike std containers no trailing end is added
+        while (it != i->links.end()) {
+            out << "(" << it.operator*()->channel << ", "
+                << it.operator*()->handle << ")";
+            if(it < i->links.end()-1) {
+                out << ", ";
+            }
+            it++;
+        }
+        out << " |";
+        out << std::endl;
+    }
+    out.close();
 }
 
 // public
+/**
+ * @fn void nodeGenerator::set_discovery_vector(vector_t set)
+ * @brief set the 2D discovery vector, the function linear generation will use that vector during node discovery
+ * @param set the discovery vector
+ */
 void nodeGenerator::set_discovery_vector(vector_t set) {
     discovery_vector = set;
 }
+
+/**
+ * @fn void nodeGenerator::init()
+ * @brief initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that
+ */
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();
         determine_neighbors();
+        write_data_to_file();
     }
 }

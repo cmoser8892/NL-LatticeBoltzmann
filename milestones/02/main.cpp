@@ -5,6 +5,7 @@
  * save initialization somewhere just do it once!!
  * incorporate more boundary methods
  * parallelize for equal nodes in a true NL structure
+ * add doxygen docu, recheck old projects on a common standard
  */
 #include "simulation.h"
 #include <ctime>
