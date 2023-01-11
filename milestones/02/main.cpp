@@ -1,3 +1,11 @@
+/**
+ * todos:
+ * canvas scheme for initialization
+ * grouping based on Ns
+ * save initialization somewhere just do it once!!
+ * incorporate more boundary methods
+ * parallelize for equal nodes in a true NL structure
+ */
 #include "simulation.h"
 #include <ctime>
 #include <iostream>
