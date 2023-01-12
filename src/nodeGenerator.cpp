@@ -108,11 +108,93 @@ bool nodeGenerator::read_data_from_file() {
         std::string line;
         data_file.open(file_name);
         while(getline(data_file,line)) {
-            std::cout << line << std::endl;
+            // chop up the line to extract the information
+            std::string delimiter = "|";
+            size_t pos = 0;
+            readBack_t chop = HANDLE;
+            std::string token;
+            // create a node
+            auto node_point = new nodePoint_t;
+            while ((pos = line.find(delimiter)) != std::string::npos) {
+                token = line.substr(0, pos);
+                read_back_switch_case(node_point,token,&chop);
+                line.erase(0, pos + delimiter.length());
+            }
+            // last part is not choped off and still in the line string
+            read_back_switch_case(node_point,line,&chop);
+            node_infos.push_back(node_point);
         }
         return_value = true;
     }
     return return_value;
+}
+
+void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t* chop) {
+    switch(*chop) {
+    case HANDLE:
+        n->handle = std::stoull(s); // hopefully correct
+        *chop = TYPE;
+        break;
+    case TYPE:
+        n->type = static_cast<nodeIdentifier_t>(std::stoi(s));
+        *chop = BOUNDARY;
+        break;
+    case BOUNDARY:
+        n->boundary = static_cast<boundaryType_t>(std::stoi(s));
+        *chop = POSITION;
+        break;
+    case POSITION: {
+        point_t point;
+        std::string delimiter = ", ";
+        std::string token = s.substr(0, s.find(delimiter));
+        s.erase(0, s.find(delimiter) + delimiter.length());
+        // todo find out how to program for different length scales
+        point.x() = std::stod(token);
+        point.y() = std::stod(s);
+        n->position = point;
+        *chop= LINKS;
+        break;
+    }
+    case LINKS: {
+        std::string delimiter = ";";
+        std::string komma = ",";
+        size_t pos = 0;
+        std::string channel_handle;
+        std::string channel;
+        std::string handle;
+        // partition by ; then partition by ,
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+            // partition the ,
+            auto link = new toLinks_t;
+            channel_handle = s.substr(0, pos);
+            channel = s.substr(0, s.find(komma));
+            channel_handle.erase(0, s.find(komma) + komma.length());
+            handle = channel_handle;
+            // delete the last part
+            s.erase(0, pos + delimiter.length());
+            // put the data in
+            link->channel = std::stoi(channel);
+            link->handle = std::stoull(handle);
+            n->links.push_back(link);
+        }
+        // last element
+        // chop up into handle and channel
+        auto link = new toLinks_t;
+        channel_handle = s;
+        channel = s.substr(0, s.find(komma));
+        channel_handle.erase(0, s.find(komma) + komma.length());
+        handle = channel_handle;
+        // put the data in
+        link->channel = std::stoi(channel);
+        link->handle = std::stoull(handle);
+        n->links.push_back(link);
+        // set the next state
+        *chop = ERROR;
+        break;
+    }
+    default:
+        throw std::invalid_argument("Error while parsing");
+    }
 }
 
 void nodeGenerator::write_data_to_file(bool write) {
@@ -125,12 +207,10 @@ void nodeGenerator::write_data_to_file(bool write) {
     for(const auto i : node_infos) {
         // todo investigate if there is a better way to hand out data than in a file will have to do for now thou
         // general type info
-        out << "| ";
         out << i->handle << " | "
             << i->type << " | "
             << i->boundary << " | " ;
         // position
-        out << "(";
         auto iter = i->position.begin();
         // unlike std containers no trailing end is added
         do {
@@ -140,19 +220,18 @@ void nodeGenerator::write_data_to_file(bool write) {
                 out <<  ", ";
             }
         }while(iter != i->position.end());
-        out << ") | ";
+        out << " | ";
         // links + neighbours handles
         auto it = i->links.begin();
         // unlike std containers no trailing end is added
         while (it != i->links.end()) {
-            out << "(" << it.operator*()->channel << ", "
-                << it.operator*()->handle << ")";
+            out << it.operator*()->channel << ", "
+                << it.operator*()->handle;
             if(it < i->links.end()-1) {
                 out << " ; ";
             }
             it++;
         }
-        out << " |";
         out << std::endl;
     }
     out.close();

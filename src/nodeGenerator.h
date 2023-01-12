@@ -18,6 +18,14 @@ typedef struct nodePoint {
     boundaryType_t boundary; // ignored if node type is wet
 }nodePoint_t;
 
+typedef enum readBack {
+    HANDLE = 0,
+    TYPE,
+    BOUNDARY,
+    POSITION,
+    LINKS,
+    ERROR = 255
+}readBack_t;
 /**
  * In the CG class we discussed memory arrangements for NL data,
  * a sort of Z shape seems most appropriate at least try to order them close in memory
@@ -31,8 +39,7 @@ class nodeGenerator {
     vector_t discovery_vector = {1, 0};
     void write_data_to_file(bool write);
     bool read_data_from_file();
-    void read_back_switch_case();
-    int determine_correct_channel();
+    void read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t *chop);
     void determine_neighbors();
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
