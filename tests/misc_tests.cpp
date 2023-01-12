@@ -759,3 +759,40 @@ TEST(StreamTests, channel_0_persistent) {
 
     }
 }
+
+TEST(FunctionalTest, read_write) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    /// run the first node generator
+    nodeGenerator nodes(&boundaries);
+    nodes.set_redo_save(true, true);
+    nodes.init();
+    /// run a second one but relay on the result of the first one
+    nodeGenerator nodes2(&boundaries);
+    nodes2.set_redo_save(false,false);
+    nodes2.init();
+    // check for right amout of nodes in both containers
+    EXPECT_EQ(nodes.node_infos.size(),size*size );
+    ASSERT_EQ(nodes.node_infos.size(),nodes2.node_infos.size());
+    // check the values they should agree
+    for(int i = 0; i < nodes.node_infos.size(); ++i) {
+        auto n1 = nodes.node_infos.at(i);
+        auto n2 = nodes2.node_infos.at(i);
+        // check
+        EXPECT_EQ(n1->handle,n2->handle);
+        EXPECT_EQ(n1->type,n2->type);
+        EXPECT_EQ(n1->boundary,n2->boundary);
+        // check prior sizes
+        ASSERT_EQ(n1->position.size(), n2->position.size());
+        ASSERT_EQ(n1->links.size(), n2->links.size());
+        for(int j = 0; j < n1->position.size(); ++j) {
+            EXPECT_EQ(n1->position(j), n2->position(j));
+        }
+        for(int j = 0; j < n1->links.size(); ++j) {
+            EXPECT_EQ(n1->links.at(j)->handle, n2->links.at(j)->handle);
+            EXPECT_EQ(n1->links.at(j)->channel,n2->links.at(j)->channel);
+        }
+    }
+}

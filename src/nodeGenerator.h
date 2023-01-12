@@ -25,9 +25,11 @@ typedef struct nodePoint {
 class nodeGenerator {
   private:
     boundaryPointConstructor* points;
-    bool redo = false;
+    std::string file_name = "stored_nodes_file";
+    bool redo = true;
+    bool save = false;
     vector_t discovery_vector = {1, 0};
-    void write_data_to_file();
+    void write_data_to_file(bool write);
     bool read_data_from_file();
     void read_back_switch_case();
     int determine_correct_channel();
@@ -38,6 +40,7 @@ class nodeGenerator {
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);
     void set_discovery_vector(vector_t set);
+    void set_redo_save(bool r, bool s);
     void init();
 };
 

@@ -3,6 +3,7 @@
 #include "simulation.h"
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
@@ -97,11 +98,28 @@ void nodeGenerator::determine_neighbors() {
 
 
 bool nodeGenerator::read_data_from_file() {
-    return false;
+    // redo the struct
+    if(redo) {return false;}
+    // functional body
+    bool return_value = false;
+    std::filesystem::path file{file_name};
+    if(std::filesystem::exists(file)) {
+        std::ifstream data_file;
+        std::string line;
+        data_file.open(file_name);
+        while(getline(data_file,line)) {
+            std::cout << line << std::endl;
+        }
+        return_value = true;
+    }
+    return return_value;
 }
 
-void nodeGenerator::write_data_to_file() {
-    std::string file_name = "stored_nodes_file";
+void nodeGenerator::write_data_to_file(bool write) {
+    /// only write when given the task
+    if(!write) {
+        return;
+    }
     std::ofstream  out;
     out.open(file_name);
     for(const auto i : node_infos) {
@@ -130,7 +148,7 @@ void nodeGenerator::write_data_to_file() {
             out << "(" << it.operator*()->channel << ", "
                 << it.operator*()->handle << ")";
             if(it < i->links.end()-1) {
-                out << ", ";
+                out << " ; ";
             }
             it++;
         }
@@ -150,6 +168,10 @@ void nodeGenerator::set_discovery_vector(vector_t set) {
     discovery_vector = set;
 }
 
+void nodeGenerator::set_redo_save(bool r, bool s) {
+    redo = r;
+    save = s;
+}
 /**
  * @fn void nodeGenerator::init()
  * @brief initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that
@@ -158,6 +180,6 @@ void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();
         determine_neighbors();
-        write_data_to_file();
+        write_data_to_file(save);
     }
 }
