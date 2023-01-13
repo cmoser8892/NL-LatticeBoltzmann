@@ -145,49 +145,28 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
         break;
     case POSITION: {
         point_t point;
+        n->position = point; // trick to set the array to the size of a point
         std::string delimiter = ", ";
-        std::string token = s.substr(0, s.find(delimiter));
-        s.erase(0, s.find(delimiter) + delimiter.length());
-        // todo find out how to program for different length scales
-        point.x() = std::stod(token);
-        point.y() = std::stod(s);
-        n->position = point;
+        std::vector<std::string> split = split_string(s,delimiter);
+        int i = 0;
+        for(const auto& pos : split) {
+            n->position(i) = std::stod(pos);
+            i++;
+        }
         *chop= LINKS;
         break;
     }
     case LINKS: {
         std::string delimiter = ";";
         std::string komma = ",";
-        size_t pos = 0;
-        std::string channel_handle;
-        std::string channel;
-        std::string handle;
-        // partition by ; then partition by ,
-        while ((pos = s.find(delimiter)) != std::string::npos) {
-            // partition the ,
+        std::vector<std::string> split = split_string(s,delimiter);
+        for(auto part : split) {
+            std::vector<std::string> sub_split = split_string(part,komma);
             auto link = new toLinks_t;
-            channel_handle = s.substr(0, pos);
-            channel = s.substr(0, s.find(komma));
-            channel_handle.erase(0, s.find(komma) + komma.length());
-            handle = channel_handle;
-            // delete the last part
-            s.erase(0, pos + delimiter.length());
-            // put the data in
-            link->channel = std::stoi(channel);
-            link->handle = std::stoull(handle);
+            link->channel = std::stoi(sub_split.at(0));
+            link->handle = std::stoull(sub_split.at(1));
             n->links.push_back(link);
         }
-        // last element
-        // chop up into handle and channel
-        auto link = new toLinks_t;
-        channel_handle = s;
-        channel = s.substr(0, s.find(komma));
-        channel_handle.erase(0, s.find(komma) + komma.length());
-        handle = channel_handle;
-        // put the data in
-        link->channel = std::stoi(channel);
-        link->handle = std::stoull(handle);
-        n->links.push_back(link);
         // set the next state
         *chop = ERROR;
         break;
