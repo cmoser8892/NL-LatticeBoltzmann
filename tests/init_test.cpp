@@ -2,6 +2,7 @@
 #include "simulation.h"
 #include "helper_functions.h"
 #include "functions.h"
+#include "straight.h"
 #include <gtest/gtest.h>
 
 TEST(InitTests, basicBoundaryPoints) {
@@ -234,6 +235,23 @@ TEST(InitTests, simulation_board) {
     boundaries.init_quader();
     nodeGenerator gen(&boundaries);
     gen.init(size);
+    // Test if we get the right size
     EXPECT_EQ(gen.node_infos.size(), size*size);
+}
 
+TEST(InitTests, straigts) {
+    unsigned int sub_size = 8;
+    point_t p = {sub_size,sub_size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    straight_generator st(&boundaries);
+    st.init();
+    // test size
+    EXPECT_EQ(st.straights.size(),boundaries.boundary_points.size());
+    // check if we take the vector + lenght we end up at the next boundary point
+    for(auto s : st.straights) {
+        point_t p = s->point;
+        point_t next = p + s->direction*s->length;
+        // todo
+    }
 }

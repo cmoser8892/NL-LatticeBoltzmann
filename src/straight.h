@@ -22,6 +22,7 @@ class straight_generator {
     void calculate_all_straights();
     void reduce();
   public:
+    std::vector<straight_t*> straights;
     explicit straight_generator(boundaryPointConstructor* p);
     void init();
     void calculate_intersections();
