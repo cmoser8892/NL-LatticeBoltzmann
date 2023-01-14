@@ -20,7 +20,7 @@ using vector_t = Eigen::Vector2d;
 
 using handle_t = size_t; // not 0 and max_size
 typedef enum nodeIdentifier {
-    NONE = 0,
+    UNKNOWN = 0,
     DRY,
     WET
 }nodeIdentifier_t;

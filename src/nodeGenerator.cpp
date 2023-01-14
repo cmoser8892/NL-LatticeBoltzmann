@@ -216,6 +216,25 @@ void nodeGenerator::write_data_to_file(bool write) {
     out.close();
 }
 
+void nodeGenerator::board_creation(unsigned int size) {
+    // create a drawing board of nodes with side lengths size
+    handle_t handle_counter = 1;
+    for(int i = 0; i < size; ++i) {
+        for(int j = 0; j < size; ++j) {
+            point_t point = {i,j};
+            auto n = new nodePoint_t;
+            n->handle = handle_counter;
+            n->position = point;
+            n->type = UNKNOWN;
+            n->boundary = NO_BOUNDARY;
+            // dont forget to increase the handle counter each time
+            handle_counter++;
+            node_infos.push_back(n);
+        }
+    }
+}
+
+
 // public
 /**
  * @fn void nodeGenerator::set_discovery_vector(vector_t set)
@@ -238,6 +257,13 @@ void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();
         determine_neighbors();
+        write_data_to_file(save);
+    }
+}
+
+void nodeGenerator::init(unsigned int size) {
+    if(!read_data_from_file()) {
+        board_creation(size);
         write_data_to_file(save);
     }
 }

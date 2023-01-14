@@ -43,12 +43,14 @@ class nodeGenerator {
     void determine_neighbors();
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
+    void board_creation(unsigned int size);
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);
     void set_discovery_vector(vector_t set);
     void set_redo_save(bool r, bool s);
     void init();
+    void init(unsigned int size);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODEGENERATOR_H

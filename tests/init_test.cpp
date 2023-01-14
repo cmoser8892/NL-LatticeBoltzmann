@@ -225,3 +225,15 @@ TEST(InitTests, simulation_link_positions) {
         }
     }
 }
+
+TEST(InitTests, simulation_board) {
+    unsigned int size = 10;
+    unsigned int sub_size = 8;
+    point_t p = {sub_size,sub_size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    EXPECT_EQ(gen.node_infos.size(), size*size);
+
+}
