@@ -4,6 +4,14 @@
 
 #include "types.h"
 
+typedef struct nodePoint {
+    handle_t handle;
+    array_t position;
+    nodeIdentifier_t type;
+    std::vector<toLinks_t*> links;
+    boundaryType_t boundary; // ignored if node type is wet
+}nodePoint_t;
+
 class node {
   public:
     handle_t handle;

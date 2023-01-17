@@ -47,6 +47,10 @@ void straight_generator::init() {
     calculate_all_straights();
 }
 
-void straight_generator::calculate_intersections() {
-    // todo
+int straight_generator::calculate_intersections(nodePoint_t* point) {
+    int number_of_intersections = 0;
+    // determine straight to the mass center
+
+
+    return number_of_intersections;
 }

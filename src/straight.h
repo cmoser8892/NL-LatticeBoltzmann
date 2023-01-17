@@ -6,6 +6,7 @@
 #define NL_LATTICEBOLTZMANN_STRAIGHT_H
 
 #include "types.h"
+#include "node.h"
 #include "boundary_point_generator.h"
 
 typedef struct straight {
@@ -27,6 +28,6 @@ class straight_generator {
     std::vector<surface_t *> surfaces;
     explicit straight_generator(boundaryPointConstructor* p);
     void init();
-    void calculate_intersections();
+    int calculate_intersections(nodePoint_t* point);
 };
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H
