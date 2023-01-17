@@ -25,11 +25,13 @@ void straight_generator::calculate_all_straights() {
             next_iter = iter + 1;
         }
         // fill the values
-        auto s  = new straight_t;
-        s->point = iter.operator*()->point;
-        s->direction = (next_iter.operator*()->point - iter.operator*()->point);
-        s->length = s->direction.norm();
-        straights.push_back(s);
+        auto s  = new surface_t ;
+        s->point = (next_iter.operator*()->point - iter.operator*()->point);
+        // rotate the vector by 90 degrees forward (doesnt really matter which direction)
+        s->direction = {s->point.y(),-s->point.x()};
+        // put the point in the middle
+        s->point /= 0.5;
+        surfaces.push_back(s);
         iter++;
     }
 }

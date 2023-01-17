@@ -239,7 +239,7 @@ TEST(InitTests, simulation_board) {
     EXPECT_EQ(gen.node_infos.size(), size*size);
 }
 
-TEST(InitTests, straigts) {
+TEST(InitTests, sufaces) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
@@ -247,11 +247,5 @@ TEST(InitTests, straigts) {
     straight_generator st(&boundaries);
     st.init();
     // test size
-    EXPECT_EQ(st.straights.size(),boundaries.boundary_points.size());
-    // check if we take the vector + lenght we end up at the next boundary point
-    for(auto s : st.straights) {
-        point_t p = s->point;
-        point_t next = p + s->direction*s->length;
-        // todo
-    }
+    EXPECT_EQ(st.surfaces.size(),boundaries.boundary_points.size());
 }
