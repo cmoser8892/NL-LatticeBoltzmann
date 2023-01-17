@@ -51,11 +51,13 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     int number_of_intersections = 0;
     // determine straight to the mass center
     straight_t straight;
-    straight.point = node_point->position;
-    straight.direction = mass_center - straight.point;
+    straight.point = node_point->position; // => o
+    straight.direction = mass_center - straight.point; // => d
     // go through the surface and take a look
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
+        // surf->point => r
+        // surf->direction => n
         double t = (surf->point - straight.point).dot(straight.direction)
                    /(surf->direction.dot(straight.direction));
         if((t <= -0.5) && (t >= 0.5)) {

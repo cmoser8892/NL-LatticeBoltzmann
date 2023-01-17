@@ -227,18 +227,6 @@ TEST(InitTests, simulation_link_positions) {
     }
 }
 
-TEST(InitTests, simulation_board) {
-    unsigned int size = 10;
-    unsigned int sub_size = 8;
-    point_t p = {sub_size,sub_size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_quader();
-    nodeGenerator gen(&boundaries);
-    gen.init(size);
-    // Test if we get the right size
-    EXPECT_EQ(gen.node_infos.size(), size*size);
-}
-
 TEST(InitTests, sufaces) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
@@ -249,3 +237,16 @@ TEST(InitTests, sufaces) {
     // test size
     EXPECT_EQ(st.surfaces.size(),boundaries.boundary_points.size());
 }
+
+TEST(InitTests, reduced_surface) {
+    unsigned int size = 10;
+    unsigned int sub_size = 8;
+    point_t p = {sub_size,sub_size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    // chekc if 8x8
+    EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size);
+}
+

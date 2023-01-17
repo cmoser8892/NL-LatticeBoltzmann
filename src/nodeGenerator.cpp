@@ -234,7 +234,18 @@ void nodeGenerator::board_creation(unsigned int size) {
     }
 }
 
-
+void nodeGenerator::check_nodes() {
+    straight_generator straight(points);
+    straight.init();
+    auto iter = node_infos.begin();
+    while(iter != node_infos.end()) {
+        // it its not inside remove it
+        if(!straight.node_inside(iter.operator*())) {
+            node_infos.erase(iter);
+        }
+        iter++;
+    }
+}
 // public
 /**
  * @fn void nodeGenerator::set_discovery_vector(vector_t set)

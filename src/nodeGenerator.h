@@ -10,6 +10,7 @@
 #include "types.h"
 #include "node.h"
 #include "boundary_point_generator.h"
+#include "straight.h"
 
 typedef enum readBack {
     HANDLE = 0,
@@ -37,6 +38,7 @@ class nodeGenerator {
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
     void board_creation(unsigned int size);
+    void check_nodes();
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);
