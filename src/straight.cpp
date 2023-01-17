@@ -44,3 +44,7 @@ void straight_generator::init() {
     calculate_mass_center();
     calculate_all_straights();
 }
+
+void straight_generator::calculate_intersections() {
+    // todo
+}
