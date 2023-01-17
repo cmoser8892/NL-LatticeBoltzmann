@@ -275,6 +275,7 @@ void nodeGenerator::init() {
 void nodeGenerator::init(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
+        check_nodes();
         write_data_to_file(save);
     }
 }

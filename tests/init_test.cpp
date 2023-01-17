@@ -248,5 +248,11 @@ TEST(InitTests, reduced_surface) {
     gen.init(size);
     // chekc if 8x8
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size);
+    int i = 0;
+    for(auto n : gen.node_infos) {
+        if(n->type == DRY) {
+            std::cout << i++ << std::endl;
+        }
+    }
 }
 
