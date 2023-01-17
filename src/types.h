@@ -32,6 +32,16 @@ typedef enum boundaryType {
     PRESSURE_PERIODIC
 }boundaryType_t;
 
+/**
+ * Note on the toLinks_t:
+ * In the final implemntation it should be handle + channel to directlly
+ * access the correct node and channel.
+ * To get the channel: handle % Number_of_channels
+ * To get the correct node: handle / Number_of_channels
+ * maybe some shninanigans with 0 and max size_t
+ * currentlly handles are only valid if > 0 and smaller < Max size
+ * may have to be changed, also we get like 9e18 valid nodes
+ */
 typedef struct toLinks {
     int channel;
     handle_t handle; // form 1 to n -1 for valid handles
