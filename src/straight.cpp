@@ -47,10 +47,30 @@ void straight_generator::init() {
     calculate_all_straights();
 }
 
-int straight_generator::calculate_intersections(nodePoint_t* point) {
+int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     int number_of_intersections = 0;
     // determine straight to the mass center
-
-
+    straight_t straight;
+    straight.point = node_point->position;
+    straight.direction = mass_center - straight.point;
+    // go through the surface and take a look
+    for(auto surf : surfaces) {
+        // t = ((r - o)·n)/(n·d)
+        double t = (surf->point - straight.point).dot(straight.direction)
+                   /(surf->direction.dot(straight.direction));
+        if((t <= -0.5) && (t >= 0.5)) {
+            number_of_intersections++;
+        }
+    }
     return number_of_intersections;
+}
+
+bool straight_generator::node_inside(nodePoint_t *point) {
+    // even out; odd in
+    bool return_value = true;
+    int value = calculate_intersections(point);
+    if(value % 2 == 0) {
+        return_value = false;
+    }
+    return return_value;
 }

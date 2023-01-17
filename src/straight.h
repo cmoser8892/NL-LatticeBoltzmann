@@ -23,11 +23,12 @@ class straight_generator {
     point_t mass_center;
     void calculate_mass_center();
     void calculate_all_straights();
+    int calculate_intersections(nodePoint_t* point);
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<surface_t *> surfaces;
     explicit straight_generator(boundaryPointConstructor* p);
     void init();
-    int calculate_intersections(nodePoint_t* point);
+    bool node_inside(nodePoint_t *point);
 };
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H
