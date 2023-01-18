@@ -258,6 +258,7 @@ TEST(InitTests, chopped_boundaries) {
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_chopped_sliding_lid({1,1},4);
+    EXPECT_EQ(boundaries.boundary_points.size(), (sub_size-1)*4);
     // check if even with the bulge the sizes are still the same
     EXPECT_EQ(boundaries.boundary_points.size(),(sub_size-1)*4);
     // generator
