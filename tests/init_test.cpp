@@ -253,7 +253,7 @@ TEST(InitTests, reduced_surface) {
 }
 
 TEST(InitTests, chopped_boundaries) {
-    unsigned int size = 10;
+    unsigned int size = 6;
     unsigned int sub_size = 4;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
