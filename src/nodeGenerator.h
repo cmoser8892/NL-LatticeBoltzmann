@@ -38,7 +38,9 @@ class nodeGenerator {
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
     void board_creation(unsigned int size);
-    void check_nodes();
+    void check_nodes(handle_t* current);
+    void add_boundary_nodes(handle_t* current);
+
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);

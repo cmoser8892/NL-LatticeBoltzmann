@@ -26,11 +26,10 @@ void straight_generator::calculate_all_straights() {
         }
         // fill the values
         auto s  = new surface_t;
-        s->point = (next_iter.operator*()->point - iter.operator*()->point);
+        s->point = iter.operator*()->point;
         // rotate the vector by 90 degrees forward (doesnt really matter which direction)
-        s->direction = {s->point.y(),-s->point.x()};
+        s->direction = (next_iter.operator*()->point - iter.operator*()->point);
         // put the point in the middle
-        s->point /= 0.5;
         surfaces.push_back(s);
         iter++;
     }
@@ -49,19 +48,33 @@ void straight_generator::init() {
 
 int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     int number_of_intersections = 0;
+    // corner case mass center lays on point
+    point_t p = node_point->position;
+    if(p == mass_center) {
+        return 1;
+    }
     // determine straight to the mass center
     straight_t straight;
-    straight.point = node_point->position; // => o
-    straight.direction = mass_center - straight.point; // => d
+    straight.point = node_point->position; // => r
+    straight.direction = mass_center - straight.point;
+    vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
-        // surf->point => r
-        // surf->direction => n
-        double t = (surf->point - straight.point).dot(straight.direction)
-                   /(surf->direction.dot(straight.direction));
-        if((t <= -0.5) && (t >= 0.5)) {
-            number_of_intersections++;
+        // surf->point => o
+        // surf->direction => d
+        double t = ((straight.point - surf->point).dot(normal))/
+                   (normal.dot(surf->direction));
+        if((t >= 0) && (t <= 0)) {
+            // also check if positive in straght direction
+            vector_t surface_normal = {surf->direction.y(), -surf->direction.x()};
+            // same equation surface straight swapped
+            double s = (((surf->point - straight.point)).dot(surface_normal))
+                       /(surface_normal.dot(straight.direction));
+            if(s >= 0) {
+                number_of_intersections++;
+            }
+            // corner case mass center lays on point
         }
     }
     return number_of_intersections;
@@ -69,10 +82,6 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
 
 bool straight_generator::node_inside(nodePoint_t *point) {
     // even out; odd in
-    bool return_value = true;
     int value = calculate_intersections(point);
-    if(value % 2 == 0) {
-        return_value = false;
-    }
-    return return_value;
+    return ((value%2) == 0);
 }

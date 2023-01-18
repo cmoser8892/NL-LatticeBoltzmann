@@ -234,16 +234,34 @@ void nodeGenerator::board_creation(unsigned int size) {
     }
 }
 
-void nodeGenerator::check_nodes() {
+void nodeGenerator::check_nodes(handle_t* current) {
     straight_generator straight(points);
     straight.init();
-    auto iter = node_infos.begin();
-    while(iter != node_infos.end()) {
-        // it its not inside remove it
-        if(!straight.node_inside(iter.operator*())) {
-            node_infos.erase(iter);
+    std::vector<nodePoint_t*> reformed_nodes;
+    for(auto n : node_infos) {
+        if(!straight.node_inside(n)) {
+            n->handle = *current;
+            n->boundary = NO_BOUNDARY;
+            n->type = WET;
+            reformed_nodes.push_back(n);
         }
-        iter++;
+    }
+    node_infos = reformed_nodes;
+}
+
+void nodeGenerator::add_boundary_nodes(handle_t* current) {
+    // lastlly add the boundary points
+    for(auto p : points->boundary_points) {
+        // std::cout << p << std::endl;
+        // set all the variables except the links
+        auto n = new nodePoint_t;
+        n->handle = *current;
+        n->position = p->point;
+        n->type = DRY;
+        n->boundary = p->type;
+        // dont forget to increase the handle counter each time
+        (*current)++;
+        node_infos.push_back(n);
     }
 }
 // public
@@ -275,7 +293,10 @@ void nodeGenerator::init() {
 void nodeGenerator::init(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
-        check_nodes();
+        handle_t handle_counter = 1;
+        check_nodes(&handle_counter);
+        add_boundary_nodes(&handle_counter);
+        determine_neighbors();
         write_data_to_file(save);
     }
 }

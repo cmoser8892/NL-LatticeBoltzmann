@@ -241,8 +241,8 @@ TEST(InitTests, sufaces) {
 }
 
 TEST(InitTests, reduced_surface) {
-    unsigned int size = 10;
-    unsigned int sub_size = 8;
+    unsigned int size = 6;
+    unsigned int sub_size = 4;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader({1,1});
@@ -250,9 +250,5 @@ TEST(InitTests, reduced_surface) {
     gen.init(size);
     // chekc if 8x8
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size);
-    int i = 0;
-    for(auto n : gen.node_infos) {
-        std::cout << n->position.x() << " " << n->position.y() << std::endl;
-    }
 }
 
