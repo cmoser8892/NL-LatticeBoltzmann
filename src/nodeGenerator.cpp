@@ -10,7 +10,7 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
 }
 
 void nodeGenerator::linear_generation() {
-    int handle_counter = 1;
+    handle_t handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
     for(auto p : points->boundary_points) {
         point_t current = p->point + discovery_vector;
@@ -26,19 +26,7 @@ void nodeGenerator::linear_generation() {
             current += discovery_vector;
         }
     }
-    // lastlly add the boundary points
-    for(auto p : points->boundary_points) {
-        // std::cout << p << std::endl;
-        // set all the variables except the links
-        auto n = new nodePoint_t;
-        n->handle = handle_counter;
-        n->position = p->point;
-        n->type = DRY;
-        n->boundary = p->type;
-        // dont forget to increase the handle counter each time
-        handle_counter++;
-        node_infos.push_back(n);
-    }
+    add_boundary_nodes(&handle_counter);
 }
 
 bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point){
