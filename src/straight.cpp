@@ -69,7 +69,7 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
             // also check if positive in straght direction
             vector_t surface_normal = {surf->direction.y(), -surf->direction.x()};
             // same equation surface straight swapped
-            double s = (((surf->point - straight.point)).dot(surface_normal))
+            double s = ((surf->point - straight.point).dot(surface_normal))
                        /(surface_normal.dot(straight.direction));
             if(s >= 0) {
                 number_of_intersections++;
@@ -77,6 +77,9 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
             // corner case mass center lays on point
         }
     }
+    std::cout << "Result" << std::endl;
+    std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
+    std::cout << number_of_intersections << std::endl;
     return number_of_intersections;
 }
 

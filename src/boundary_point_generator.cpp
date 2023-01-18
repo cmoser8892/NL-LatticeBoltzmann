@@ -22,28 +22,36 @@ void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
 }
 
 void boundaryPointConstructor::init_quader() {
-    //
-    boundaryType_t type = BOUNCE_BACK;
     point_t current;
     current.setZero();
+    init_quader(current);
+}
+
+void boundaryPointConstructor::init_chopped_quader(point_t point, int chopfactor) {
+    if(chopfactor < 2) {
+        throw std::runtime_error("unrealitic chopfactor");
+    }
+    boundaryType_t type = BOUNCE_BACK;
+    point_t current = point;
     // go from 0 till the in x directions
+    int chop_x = int(size.x()/chopfactor);
+    int chop_y = int(size.y()/chopfactor);
     vector_t direction;
     // go through x
     direction = {1,0};
-    one_direction(int(limits.x()),direction,&current, type);
-    // go through x
+    one_direction(int(limits.x())-chop_x,direction,&current, type);
     direction = {0,1};
-    one_direction(int(limits.y()),direction,&current, type);
-    // go through x
+    one_direction(chop_y,direction,&current, type);
+    direction = {1,0};
+    one_direction(chop_x,direction,&current, type);
+    direction = {0,1};
+    one_direction(int(limits.y())-chop_y,direction,&current, type);
+    // go through y
     direction = {-1,0};
     one_direction(int(limits.x()),direction,&current, type);
     // go through x
     direction = {0,-1};
     one_direction(int(limits.y()),direction,&current, type);
-}
-
-void boundaryPointConstructor::init_chopped_quader(point_t point) {
-
 }
 
 void boundaryPointConstructor::init_quader(point_t p) {
@@ -81,9 +89,9 @@ void boundaryPointConstructor::init_sliding_lid() {
 }
 
 
-void boundaryPointConstructor::init_chopped_sliding_lid() {
+void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopfactor) {
     double limit_y = limits.y();
-    init_quader();
+    init_chopped_quader(start,chopfactor);
     for(auto b : boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;
