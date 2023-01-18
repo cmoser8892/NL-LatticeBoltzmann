@@ -42,6 +42,26 @@ void boundaryPointConstructor::init_quader() {
     one_direction(int(limits.y()),direction,&current, type);
 }
 
+void boundaryPointConstructor::init_quader(point_t p) {
+    //
+    boundaryType_t type = BOUNCE_BACK;
+    point_t current = p;
+    // go from 0 till the in x directions
+    vector_t direction;
+    // go through x
+    direction = {1,0};
+    one_direction(int(limits.x()),direction,&current, type);
+    // go through x
+    direction = {0,1};
+    one_direction(int(limits.y()),direction,&current, type);
+    // go through x
+    direction = {-1,0};
+    one_direction(int(limits.x()),direction,&current, type);
+    // go through x
+    direction = {0,-1};
+    one_direction(int(limits.y()),direction,&current, type);
+}
+
 void boundaryPointConstructor::init_sliding_lid() {
     // greate a slinding lid container with the given sizes
     //in our case y max is the boundary that is moving

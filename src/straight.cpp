@@ -25,7 +25,7 @@ void straight_generator::calculate_all_straights() {
             next_iter = iter + 1;
         }
         // fill the values
-        auto s  = new surface_t ;
+        auto s  = new surface_t;
         s->point = (next_iter.operator*()->point - iter.operator*()->point);
         // rotate the vector by 90 degrees forward (doesnt really matter which direction)
         s->direction = {s->point.y(),-s->point.x()};

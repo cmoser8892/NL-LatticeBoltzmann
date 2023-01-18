@@ -231,10 +231,12 @@ TEST(InitTests, sufaces) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_quader();
+    boundaries.init_quader({0,1});
     straight_generator st(&boundaries);
     st.init();
     // test size
+    EXPECT_EQ(boundaries.boundary_points.size(),4*(sub_size-1));
+    EXPECT_EQ(st.surfaces.size(),4*(sub_size-1));
     EXPECT_EQ(st.surfaces.size(),boundaries.boundary_points.size());
 }
 
@@ -243,16 +245,14 @@ TEST(InitTests, reduced_surface) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_quader();
+    boundaries.init_quader({1,1});
     nodeGenerator gen(&boundaries);
     gen.init(size);
     // chekc if 8x8
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size);
     int i = 0;
     for(auto n : gen.node_infos) {
-        if(n->type == DRY) {
-            std::cout << i++ << std::endl;
-        }
+        std::cout << n->position.x() << " " << n->position.y() << std::endl;
     }
 }
 
