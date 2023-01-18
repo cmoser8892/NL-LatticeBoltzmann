@@ -42,6 +42,10 @@ void boundaryPointConstructor::init_quader() {
     one_direction(int(limits.y()),direction,&current, type);
 }
 
+void boundaryPointConstructor::init_chopped_quader(point_t point) {
+
+}
+
 void boundaryPointConstructor::init_quader(point_t p) {
     //
     boundaryType_t type = BOUNCE_BACK;
@@ -67,6 +71,17 @@ void boundaryPointConstructor::init_sliding_lid() {
     //in our case y max is the boundary that is moving
     // so all boundaries with y = y_max are BOUNDARY_MOVING
     // init a quader
+    double limit_y = limits.y();
+    init_quader();
+    for(auto b : boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->type = BOUNCE_BACK_MOVING;
+        }
+    }
+}
+
+
+void boundaryPointConstructor::init_chopped_sliding_lid() {
     double limit_y = limits.y();
     init_quader();
     for(auto b : boundary_points) {

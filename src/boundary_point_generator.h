@@ -29,8 +29,10 @@ class boundaryPointConstructor {
     void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
     void set_point(point_t* p, boundaryType_t b);
     void init_quader();
+    void init_chopped_quader(point_t start);
     void init_quader(point_t start);
     void init_sliding_lid();
+    void init_chopped_sliding_lid();
 };
 
 #endif // NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H
