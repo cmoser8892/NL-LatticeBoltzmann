@@ -65,7 +65,7 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
         // surf->direction => d
         double t = ((straight.point - surf->point).dot(normal))/
                    (normal.dot(surf->direction));
-        if((t >= 0) && (t <= 0)) {
+        if((t >= 0) && (t <= 1)) {
             // also check if positive in straght direction
             vector_t surface_normal = {surf->direction.y(), -surf->direction.x()};
             // same equation surface straight swapped
