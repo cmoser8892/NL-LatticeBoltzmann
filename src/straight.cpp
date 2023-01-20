@@ -47,6 +47,12 @@ void straight_generator::init() {
 }
 
 int straight_generator::calculate_intersections(nodePoint_t* node_point) {
+    /**
+     * 3 passes have to be made to calculate to calcuate a valid intersection
+     *  1 does the straight hit the surface in the area between the two points that define it
+     *  2 how does the straight hit the surface (posetive or negative we only care about posetiv
+     *  3 have we already hit an edgepoint
+     */
     int number_of_intersections = 0;
     // corner case mass center lays on point
     point_t p = node_point->position;

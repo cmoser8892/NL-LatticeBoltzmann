@@ -27,18 +27,19 @@ void boundaryPointConstructor::init_quader() {
     init_quader(current);
 }
 
-void boundaryPointConstructor::init_chopped_quader(point_t point, int chopfactor) {
-    if(chopfactor == 0) {
-        chopfactor = 2147483647;
+void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
+    // devider is a devider
+    if(devider == 0) {
+        devider = 2147483647;
     }
-    if(chopfactor < 2) {
-        throw std::runtime_error("unrealitic chopfactor");
+    if(devider < 2) {
+        throw std::runtime_error("unrealitic devider");
     }
     boundaryType_t type = BOUNCE_BACK;
     point_t current = point;
     // go from 0 till the in x directions
-    int chop_x = int(size.x()/chopfactor);
-    int chop_y = int(size.y()/chopfactor);
+    int chop_x = int(size.x()/ devider);
+    int chop_y = int(size.y()/ devider);
     vector_t direction;
     // go through x
     direction = {1,0};
@@ -95,6 +96,53 @@ void boundaryPointConstructor::init_sliding_lid() {
 void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopfactor) {
     double limit_y = limits.y() + start.y();
     init_chopped_quader(start,chopfactor);
+    for(auto b : boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->type = BOUNCE_BACK_MOVING;
+        }
+    }
+}
+
+void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chopsize) {
+    if(chopsize >= size.x()) {
+        throw std::runtime_error("recheck sizes");
+    }
+    if(chopsize >= size.y()) {
+        throw std::runtime_error("recheck sizes");
+    }
+    boundaryType_t type = BOUNCE_BACK;
+    point_t current = start;
+    int size_x = int(limits.x());
+    int size_y = int(limits.y());
+    // go from 0 till the in x directions
+    vector_t direction;
+    // go through x
+    direction = {1,0};
+    one_direction(size_x,direction,&current, type);
+    // go through y side
+    direction = {0,1};
+    one_direction((size_y-chopsize)/2,direction,&current, type);
+    // cut
+    direction = {-1,0};
+    one_direction(chopsize,direction,&current,type);
+    direction = {0,1};
+    one_direction(chopsize,direction,&current,type);
+    direction = {1,0};
+    one_direction(chopsize,direction,&current,type);
+    // fill the rest of the side
+    direction = {0,1};
+    one_direction((size_y-chopsize)/2 + (size_y-chopsize)%2,direction,&current, type);
+    // go through y
+    direction = {-1,0};
+    one_direction(int(limits.x()),direction,&current, type);
+    // go through x
+    direction = {0,-1};
+    one_direction(int(limits.y()),direction,&current, type);
+}
+
+void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int chopsize) {
+    double limit_y = limits.y() + start.y();
+    init_quader_side_chopped(start,chopsize);
     for(auto b : boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;

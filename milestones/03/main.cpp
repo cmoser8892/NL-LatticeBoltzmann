@@ -2,13 +2,13 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-    int steps = 10000;
+    int steps = 30000;
     unsigned int size = 132;
     unsigned int sub_size = 102;
     point_t c = {size,size};
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_chopped_sliding_lid({20,10},3);
+    boundaries.init_sliding_lid_side_chopped({20,10},30);
     nodeGenerator gen(&boundaries);
     gen.init(size);
     simulation sim(&boundaries,&gen);
