@@ -78,6 +78,27 @@ void boundaryPointConstructor::init_quader(point_t p) {
     one_direction(int(limits.y()),direction,&current, type);
 }
 
+void boundaryPointConstructor::init_quader(point_t p,vector_t size) {
+    boundaryType_t type = BOUNCE_BACK;
+    point_t current = p;
+    // go from 0 till the in x directions
+    vector_t direction;
+    int size_x = int(size.x());
+    int size_y = int(size.y());
+    // go through x
+    direction = {1,0};
+    one_direction(size_x,direction,&current, type);
+    // go through x
+    direction = {0,1};
+    one_direction(size_y,direction,&current, type);
+    // go through x
+    direction = {-1,0};
+    one_direction(size_x,direction,&current, type);
+    // go through x
+    direction = {0,-1};
+    one_direction(size_y,direction,&current, type);
+}
+
 void boundaryPointConstructor::init_sliding_lid() {
     // greate a slinding lid container with the given sizes
     //in our case y max is the boundary that is moving
@@ -143,6 +164,17 @@ void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chops
 void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int chopsize) {
     double limit_y = limits.y() + start.y();
     init_quader_side_chopped(start,chopsize);
+    for(auto b : boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->type = BOUNCE_BACK_MOVING;
+        }
+    }
+}
+
+void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t continues, vector_t inner_size) {
+    init_quader(start);
+    init_quader(continues,size);
+    double limit_y = limits.y() + start.y();
     for(auto b : boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;

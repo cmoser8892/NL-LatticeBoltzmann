@@ -31,11 +31,12 @@ class boundaryPointConstructor {
     void init_quader();
     void init_chopped_quader(point_t start, int devider);
     void init_quader(point_t start);
+    void init_quader(point_t start,vector_t size);
     void init_sliding_lid();
     void init_chopped_sliding_lid(point_t start, int devider);
     void init_quader_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_side_chopped(point_t start, int chopsize);
-    void init_quader_inner_quader(point_t start, point_t continues, int inner_size);
+    void init_sliding_lid_inner(point_t start, point_t cntiues, vector_t inner_size);
 };
 
 #endif // NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H

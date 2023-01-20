@@ -8,7 +8,8 @@ int main(int argc, char *argv[]) {
     point_t c = {size,size};
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_sliding_lid_side_chopped({20,10},30);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({20,10},{30,20},{5,5});
     nodeGenerator gen(&boundaries);
     gen.init(size);
     simulation sim(&boundaries,&gen);
