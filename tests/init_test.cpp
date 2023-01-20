@@ -276,11 +276,6 @@ TEST(InitTests, chopped_boundaries) {
     // generator
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    for(auto n : gen.node_infos) {
-        std::cout << n->handle << std::endl;
-        if(n->type == WET)
-            std::cout << n->position.x() << " " << n->position.y() << std::endl;
-    }
     // check correct node amount
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size-1);
 }
