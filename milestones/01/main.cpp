@@ -1,7 +1,7 @@
 #include <iostream>
 #include "types.h"
-using namespace std;
 
+using namespace std;
 
 int main(){
   cout << "hi" << endl;

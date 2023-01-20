@@ -65,7 +65,7 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     straight.direction = mass_center - straight.point;
     vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look
-    std::vector<double> previous_ss;
+    std::vector<point_t> already_found;
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
         // surf->point => o
@@ -76,19 +76,18 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
             // check if direction of the finding is posetiv in the direction of the vector
             vector_t surface_normal = {surf->direction.y(),-surf->direction.x()};
             double s = ((surf->point-straight.point).dot(surface_normal))/(surface_normal.dot(straight.direction));
-            if(s >= 0) {
-                bool add = true;
-                // might be a bad idea no just check s and not o +sd
-                // but it should be alright
-                for (auto ps : previous_ss) {
-                    if(ps == s) {
-                        add = false;
-                    }
+            point_t point = straight.point + s*straight.direction;
+            bool add = true;
+            // might be a bad idea no just check s and not o +sd
+            // but it should be alright
+            for (auto ps : already_found) {
+                if(ps == point) {
+                    add = false;
                 }
-                previous_ss.push_back(s);
-                if(add) {
-                    number_of_intersections++;
-                }
+            }
+            already_found.push_back(point);
+            if(add) {
+                number_of_intersections++;
             }
         }
     }

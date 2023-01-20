@@ -49,7 +49,7 @@ bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* 
 }
 
 bool compare_two_points(point_t* p1, point_t* p2 ) {
-    // todo double comparison :)(
+    // double comparison is actually == standard
     bool return_value = true;
     if( p1->x() != p2->x()) {
         return_value = false;
