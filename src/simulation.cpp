@@ -114,12 +114,12 @@ void simulation::run() {
  * @brief puts the ux, uy and rho of individual nodes into a flow-field for visualization
  * @param write_to_file write to file or to cout
  */
-void simulation::get_data(bool write_to_file) {
+void simulation::get_data(bool write_to_file, point_t original_size) {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
-    long size_x = long(round(boundary_points->size.x()));
-    long size_y = long(round(boundary_points->size.y()));
+    long size_x = long(round(original_size.x()));
+    long size_y = long(round(original_size.y()));
     ux.resize(size_x,size_y);
     uy.resize(size_x,size_y);
     rho.resize(size_x,size_y);

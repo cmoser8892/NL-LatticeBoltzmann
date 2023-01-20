@@ -1,24 +1,17 @@
-/**
- * todos:
- * canvas scheme for initialization
- * grouping based on Ns
- * save initialization somewhere just do it once!!
- * incorporate more boundary methods
- * parallelize for equal nodes in a true NL structure
- * add doxygen docu, recheck old projects on a common standard
- */
 #include "simulation.h"
-#include <ctime>
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-    int size = 102;
     int steps = 10000;
-    point_t p = {size,size};
+    unsigned int size = 132;
+    unsigned int sub_size = 102;
+    point_t c = {size,size};
+    point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_sliding_lid();
-    // init the sim runner
-    simulation sim(&boundaries);
+    boundaries.init_chopped_sliding_lid({20,10},0);
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    simulation sim(&boundaries,&gen);
     sim.init();
     // init sim parameters
     double re = 1000;
@@ -34,6 +27,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Step: " << i << std::endl;
         }
     }
-    sim.get_data(true,p);
+    sim.get_data(true,c);
+
     return 0;
 }

@@ -245,11 +245,23 @@ TEST(InitTests, reduced_surface) {
     unsigned int sub_size = 4;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_quader({1,1});
+    boundaries.init_chopped_sliding_lid({1,1},0);
     nodeGenerator gen(&boundaries);
     gen.init(size);
     // chekc if 8x8
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size);
+    int bb_moving_counter = 0;
+    for (auto n : gen.node_infos) {
+        if(n->boundary == BOUNCE_BACK_MOVING) {
+            bb_moving_counter++;
+        }
+    }
+    EXPECT_EQ(bb_moving_counter,4);
+    for(auto n : gen.node_infos) {
+        if(n->type == WET) {
+            EXPECT_EQ(n->links.size(),8);
+        }
+    }
 }
 
 TEST(InitTests, chopped_boundaries) {
@@ -265,6 +277,7 @@ TEST(InitTests, chopped_boundaries) {
     nodeGenerator gen(&boundaries);
     gen.init(size);
     for(auto n : gen.node_infos) {
+        std::cout << n->handle << std::endl;
         if(n->type == WET)
             std::cout << n->position.x() << " " << n->position.y() << std::endl;
     }

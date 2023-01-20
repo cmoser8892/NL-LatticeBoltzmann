@@ -28,6 +28,9 @@ void boundaryPointConstructor::init_quader() {
 }
 
 void boundaryPointConstructor::init_chopped_quader(point_t point, int chopfactor) {
+    if(chopfactor == 0) {
+        chopfactor = 2147483647;
+    }
     if(chopfactor < 2) {
         throw std::runtime_error("unrealitic chopfactor");
     }
@@ -90,7 +93,7 @@ void boundaryPointConstructor::init_sliding_lid() {
 
 
 void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopfactor) {
-    double limit_y = limits.y();
+    double limit_y = limits.y() + start.y();
     init_chopped_quader(start,chopfactor);
     for(auto b : boundary_points) {
         if(b->point.y() == limit_y) {

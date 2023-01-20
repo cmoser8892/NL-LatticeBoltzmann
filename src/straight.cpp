@@ -59,7 +59,7 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     straight.direction = mass_center - straight.point;
     vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look
-    std::cout << "Result" << std::endl;
+    // std::cout << "Result" << std::endl;
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
         // surf->point => o
@@ -70,13 +70,13 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
             // check if direction of the finding is posetiv in the direction of the vector
             vector_t surface_normal = {surf->direction.y(),-surf->direction.x()};
             double s = ((surf->point-straight.point).dot(surface_normal))/(surface_normal.dot(straight.direction));
-            std::cout<< "t:" << t << ", s:" << s << std::endl;
+            // std::cout<< "t:" << t << ", s:" << s << std::endl;
             if(s >= 0.0)
                 number_of_intersections++;
         }
     }
-    std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
-    std::cout << number_of_intersections << std::endl;
+    //std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
+    // std::cout << number_of_intersections << std::endl;
     return number_of_intersections;
 }
 

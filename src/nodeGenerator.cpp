@@ -232,6 +232,7 @@ void nodeGenerator::check_nodes(handle_t* current) {
             n->boundary = NO_BOUNDARY;
             n->type = WET;
             reformed_nodes.push_back(n);
+            (*current)++;
         }
     }
     node_infos = reformed_nodes;
