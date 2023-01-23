@@ -56,9 +56,6 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     int number_of_intersections = 0;
     // corner case mass center lays on point
     point_t p = node_point->position;
-    if(p == mass_center) {
-        return 1;
-    }
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point->position; // => r
@@ -94,9 +91,11 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
             }
         }
     }
-    std::cout << "Result" << std::endl;
-    std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
-    std::cout << number_of_intersections << std::endl;
+    if(0) {
+        std::cout << "Result" << std::endl;
+        std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
+        std::cout << number_of_intersections << std::endl;
+    }
     return number_of_intersections;
 }
 

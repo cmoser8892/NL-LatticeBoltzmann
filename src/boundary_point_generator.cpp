@@ -172,8 +172,10 @@ void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int 
 }
 
 void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t continues, vector_t inner_size) {
-    init_quader(start);
-    init_quader(continues,size);
+    init_quader(start,limits);
+    vector_t inner_limits;
+    inner_limits << inner_size.x()-1,inner_size.y()-1;
+    init_quader(continues,inner_limits);
     double limit_y = limits.y() + start.y();
     for(auto b : boundary_points) {
         if(b->point.y() == limit_y) {
