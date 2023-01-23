@@ -280,3 +280,16 @@ TEST(InitTests, chopped_boundaries) {
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size-1);
 }
 
+TEST(InitTests, outer_inner_quader) {
+    unsigned int size = 10;
+    unsigned int outer_size = 7;
+    unsigned int inner_size = 2;
+    point_t c = {size,size};
+    point_t p = {sub_size,sub_size};
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({1,1},{3,3},{inner_size,inner_size});
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+}
+

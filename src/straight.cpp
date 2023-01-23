@@ -62,10 +62,11 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point->position; // => r
-    straight.direction = mass_center - straight.point;
+    straight.direction =  mass_center - straight.point;
     vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look
     std::vector<point_t> already_found;
+    already_found.clear();
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
         // surf->point => o
@@ -76,21 +77,26 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
             // check if direction of the finding is posetiv in the direction of the vector
             vector_t surface_normal = {surf->direction.y(),-surf->direction.x()};
             double s = ((surf->point-straight.point).dot(surface_normal))/(surface_normal.dot(straight.direction));
-            point_t point = straight.point + s*straight.direction;
-            bool add = true;
-            // might be a bad idea no just check s and not o +sd
-            // but it should be alright
-            for (auto ps : already_found) {
-                if(ps == point) {
-                    add = false;
+            if(s >= 0) {
+                point_t point = straight.point + s*straight.direction;
+                bool add = true;
+                // might be a bad idea no just check s and not o +sd
+                // but it should be alright
+                for (auto ps : already_found) {
+                    if(ps == point) {
+                        add = false;
+                    }
                 }
-            }
-            already_found.push_back(point);
-            if(add) {
-                number_of_intersections++;
+                already_found.push_back(point);
+                if(add) {
+                    number_of_intersections++;
+                }
             }
         }
     }
+    std::cout << "Result" << std::endl;
+    std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
+    std::cout << number_of_intersections << std::endl;
     return number_of_intersections;
 }
 
