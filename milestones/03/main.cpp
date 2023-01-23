@@ -6,10 +6,10 @@ int main(int argc, char *argv[]) {
     unsigned int size = 132;
     unsigned int sub_size = 102;
     point_t c = {size,size};
-    point_t p = {sub_size,sub_size};
+    point_t p = {sub_size,sub_size+20};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({2,2},{27,27},{50,50});
+    boundaries.init_sliding_lid_inner({12,6},{39,27},{27,45});
     nodeGenerator gen(&boundaries);
     gen.init(size);
     simulation sim(&boundaries,&gen);

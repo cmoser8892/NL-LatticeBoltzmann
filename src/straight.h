@@ -30,5 +30,6 @@ class straight_generator {
     explicit straight_generator(boundaryPointConstructor* p);
     void init();
     bool node_inside(nodePoint_t *point);
+    bool node_intersections(nodePoint_t *point);
 };
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H
