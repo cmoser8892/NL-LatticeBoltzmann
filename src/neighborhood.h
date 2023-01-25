@@ -10,7 +10,7 @@ now to actual neighbourhood stuff:
 - sort via cell indexes (like in the md class)
 - z-shape ordering (used in particle simulations, and my favorite)
 - hashed mapping
- --> hard question which algorightm has the best querry time to the neighbors
+ --> hard question which algorithm has the best query time to the neighbors
  */
 
 
