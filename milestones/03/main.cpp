@@ -29,6 +29,5 @@ int main(int argc, char *argv[]) {
         }
     }
     sim.get_data(true,c);
-
     return 0;
 }
