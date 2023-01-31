@@ -127,6 +127,26 @@ uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z) {
     return c;
 }
 
+uint32_t bit_extraleaving_2d_x(uint64_t v) {
+    return _pext_u64(v,0x5555555555555555);
+}
+
+uint32_t bit_extraleaving_2d_y(uint64_t v) {
+    return _pext_u64(v,0xaaaaaaaaaaaaaaaa);
+}
+
+uint32_t bit_extraleaving_3d_x(uint64_t v) {
+    return _pext_u64(v,0x9249249249249249);
+}
+
+uint32_t bit_extraleaving_3d_y(uint64_t v) {
+    return _pext_u64(v,0x2492492492492492);
+}
+
+uint32_t bit_extraleaving_3d_z(uint64_t v) {
+    return _pext_u64(v,0x4924924924924924);
+}
+
 bool compare_handles(nodePoint_t *a, nodePoint_t *b) {
     return a->handle < b->handle;
 }

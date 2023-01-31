@@ -18,7 +18,7 @@ using flowfield_t = Eigen::ArrayXXd;
 using point_t = Eigen::Vector2d;
 using vector_t = Eigen::Vector2d;
 
-using handle_t = uint64_t; // not 0 and max_size
+using handle_t = uint64_t; // counter to denote a node
 
 typedef struct coordinate {
     unsigned x;

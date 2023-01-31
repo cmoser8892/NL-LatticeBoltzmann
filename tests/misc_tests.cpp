@@ -823,3 +823,18 @@ TEST(Orderingtests, bitInterleaving) {
     EXPECT_EQ(bit_interleaving_3d(0x0,0x0,0x0),0x0);
     EXPECT_EQ(bit_interleaving_3d(0xFFFFFF,0xFFFFFF,0xFFFFFF),0x7FFFFFFFFFFFFFFF);
 }
+
+TEST(Orderingtests,bit_in_out) {
+    uint32_t x = 2;
+    uint32_t y = 5;
+    uint32_t z = 6;
+    // 3d
+    uint64_t o = bit_interleaving_3d(x,y,z);
+    EXPECT_EQ(x, bit_extraleaving_3d_x(o));
+    EXPECT_EQ(y, bit_extraleaving_3d_y(o));
+    EXPECT_EQ(z, bit_extraleaving_3d_z(o));
+    // 2d
+    o = bit_interleaving_2d(x,y);
+    EXPECT_EQ(x, bit_extraleaving_2d_x(o));
+    EXPECT_EQ(y, bit_extraleaving_2d_y(o));
+}

@@ -1,6 +1,7 @@
 #include "nodeGenerator.h"
 #include "helper_functions.h"
 #include "simulation.h"
+#include "neighborhood.h"
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -293,6 +294,8 @@ void nodeGenerator::init(unsigned int size) {
         check_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         // todo sort
+        //orderingNodes o;
+        //o.order(node_infos);
         determine_neighbors();
         write_data_to_file(save);
     }
