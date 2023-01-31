@@ -17,5 +17,7 @@ bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* 
 bool compare_two_points(point_t* p1, point_t* p2 );
 bool same_index(node* n);
 std::vector<std::string> split_string (std::string s, std::string delimiter);
-uint64_t bit_interleaving_2d(uint32_t, uint32_t);
+uint64_t bit_interleaving(uint32_t x, uint32_t y);
+    uint64_t bit_interleaving_2d(uint32_t, uint32_t);
+uint64_t bit_interleaving_3d(uint32_t, uint32_t, uint32_t);
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

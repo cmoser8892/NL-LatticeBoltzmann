@@ -18,6 +18,11 @@ enable_testing()
 
 # We work with C++17 (-std=c++17)
 set(CMAKE_CXX_STANDARD 17)
+# trying out intrinic fkts
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=nehalem")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1 -msse4.2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 
 # Try to find Eigen if it is installed
 find_package(Eigen3 3.4.0 EXACT NO_MODULE)

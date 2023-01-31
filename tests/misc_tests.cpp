@@ -813,5 +813,6 @@ TEST(Orderingtests, basics) {
 
 
 TEST(Orderingtests, bitInterleaving) {
-    EXPECT_EQ(bit_interleaving_2d(2,3),7);
+    EXPECT_EQ(bit_interleaving(2,3), 0xE);
+    EXPECT_EQ(bit_interleaving_2d(2,3),0xE);
 }
