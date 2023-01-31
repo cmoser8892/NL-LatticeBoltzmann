@@ -799,13 +799,11 @@ TEST(FunctionalTest, read_write) {
 }
 
 TEST(Orderingtests, basics) {
-    unsigned int size = 6;
-    unsigned int sub_size = 4;
-    point_t p = {sub_size,sub_size};
+    unsigned int size = 5;
+    point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_chopped_sliding_lid({1,1},0);
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init();
     handle_t i = 1;
     for(auto n : gen.node_infos) {
         EXPECT_EQ(i++,n->handle);
