@@ -30,6 +30,7 @@ class nodeGenerator {
     std::string file_name = "stored_nodes_file";
     bool redo = true;
     bool save = false;
+    bool no_ordering = false;
     vector_t discovery_vector = {1, 0};
     void write_data_to_file(bool write);
     bool read_data_from_file();
@@ -46,6 +47,7 @@ class nodeGenerator {
     explicit nodeGenerator(boundaryPointConstructor* p);
     void set_discovery_vector(vector_t set);
     void set_redo_save(bool r, bool s);
+    void set_no_ordering();
     void init();
     void init(unsigned int size);
 };

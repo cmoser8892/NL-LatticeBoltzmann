@@ -389,6 +389,7 @@ TEST(StreamTests, one_D_streaming_channel_six) {
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
+    gen.set_no_ordering();
     gen.init();
     simulation sm(&boundaries,&gen);
     sm.init();
@@ -431,6 +432,7 @@ TEST(StreamTests, one_D_streaming_channel_eight) {
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
+    gen.set_no_ordering();
     gen.init();
     simulation sm(&boundaries,&gen);
     sm.init();
@@ -539,7 +541,10 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     boundaryPointConstructor boundaries(sim_area);
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
-    simulation sm(&boundaries);
+    nodeGenerator gen(&boundaries);
+    gen.set_no_ordering();
+    gen.init();
+    simulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -579,6 +584,7 @@ TEST(BounceBackTesting, Horizontals_two_four) {
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
+    gen.set_no_ordering();
     gen.init();
     simulation sm(&boundaries,&gen);
     sm.init();
@@ -621,6 +627,7 @@ TEST(BounceBackTesting, Oblique_five_seven) {
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
+    gen.set_no_ordering();
     gen.init();
     simulation sm(&boundaries,&gen);
     sm.init();
@@ -662,6 +669,7 @@ TEST(BounceBackTesting, Oblique_six_eight) {
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
+    gen.set_no_ordering();
     gen.set_discovery_vector(node_generation);
     gen.init();
     simulation sm(&boundaries,&gen);

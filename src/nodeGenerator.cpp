@@ -270,6 +270,12 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
     redo = r;
     save = s;
 }
+
+void nodeGenerator::set_no_ordering() {
+    // some tests requiere nodes to be at expected postions
+    // makes thous not break
+    no_ordering = true;
+}
 /**
  * @fn void nodeGenerator::init()
  * @brief initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that
@@ -278,8 +284,10 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();
-        orderingNodes o;
-        o.order(node_infos);
+        if(!no_ordering) {
+            orderingNodes o;
+            o.order(node_infos);
+        }
         determine_neighbors();
         write_data_to_file(save);
     }

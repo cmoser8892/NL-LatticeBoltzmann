@@ -9,7 +9,7 @@
 
 /// todo curb down
 // order nodes base on the z spacial curve
-void orderingNodes::order(std::vector<nodePoint_t*> nodes) {
+void orderingNodes::order(std::vector<nodePoint_t*> &nodes) {
    // compute grid cell coordinates and store indices
    for(auto node  : nodes) {
        // we round down to make little cells of full integers

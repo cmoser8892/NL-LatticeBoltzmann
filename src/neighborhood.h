@@ -32,7 +32,7 @@ class orderingNodes {
   private:
     std::vector<orderedCell_t*> cells;
   public:
-    void order(std::vector<nodePoint_t*> nodes);
+    void order(std::vector<nodePoint_t*> &nodes);
 };
 
 
