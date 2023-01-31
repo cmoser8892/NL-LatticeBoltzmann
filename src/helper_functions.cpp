@@ -110,5 +110,19 @@ uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z) {
     x |= mask;
     y |= mask;
     z |= mask;
-    return _pdep_u64(x,0x5555555555555555) | _pdep_u64(y,0xaaaaaaaaaaaaaaaa);
+    /*
+    // mask generator
+    for(int i = 63; i >= 0; --i) {
+        if(i%3== 2) {
+            std::cout << "1";
+        }
+        else {
+            std::cout << "0";
+        }
+    }
+     */
+    uint64_t c =   _pdep_u64(x,0x9249249249249249)
+                 | _pdep_u64(y,0x2492492492492492)
+                 | _pdep_u64(z,0x4924924924924924);
+    return c;
 }
