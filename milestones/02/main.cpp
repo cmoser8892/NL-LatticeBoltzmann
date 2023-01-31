@@ -20,7 +20,11 @@ int main(int argc, char *argv[]) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     // init the sim runner
-    simulation sim(&boundaries);
+    nodeGenerator gen(&boundaries);
+    //gen.set_no_ordering();
+    gen.init();
+    // gen.set_no_ordering();
+    simulation sim(&boundaries,&gen);
     sim.init();
     // init sim parameters
     double re = 1000;
@@ -38,7 +42,7 @@ int main(int argc, char *argv[]) {
     }
     sim.get_data(true,p);
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-    std::cout << "Took " <<duration.count()<< "s" << std::endl;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds >(stop - start);
+    std::cout << "Took " <<duration.count()<< " ms" << std::endl;
     return 0;
 }

@@ -7,7 +7,6 @@
 #include <iostream>
 #include <algorithm>
 
-/// todo curb down
 // order nodes base on the z spacial curve
 void orderingNodes::order(std::vector<nodePoint_t*> &nodes) {
    // compute grid cell coordinates and store indices
