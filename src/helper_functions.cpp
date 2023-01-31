@@ -107,9 +107,9 @@ uint64_t bit_interleaving_2d(uint32_t x, uint32_t y) {
 uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z) {
     // mask out the first part
     uint32_t mask = 0x0001FFFFF;
-    x |= mask;
-    y |= mask;
-    z |= mask;
+    x &= mask;
+    y &= mask;
+    z &= mask;
     /*
     // mask generator
     for(int i = 63; i >= 0; --i) {

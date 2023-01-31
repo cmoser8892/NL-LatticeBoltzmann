@@ -815,5 +815,11 @@ TEST(Orderingtests, basics) {
 TEST(Orderingtests, bitInterleaving) {
     EXPECT_EQ(bit_interleaving(2,3), 0xE);
     EXPECT_EQ(bit_interleaving_2d(2,3),0xE);
-    EXPECT_EQ(bit_interleaving_3d(1,1,1),0x8);
+    EXPECT_EQ(bit_interleaving_3d(1,1,1),0x7);
+    EXPECT_EQ(bit_interleaving_3d(3,3,3),0x3F);
+    EXPECT_EQ(bit_interleaving_3d(7,7,7),0x1FF);
+    // maximums
+    EXPECT_EQ(bit_interleaving_3d(0x1FFFFF,0x1FFFFF,0x1FFFFF),0x7FFFFFFFFFFFFFFF);
+    EXPECT_EQ(bit_interleaving_3d(0x0,0x0,0x0),0x0);
+    EXPECT_EQ(bit_interleaving_3d(0xFFFFFF,0xFFFFFF,0xFFFFFF),0x7FFFFFFFFFFFFFFF);
 }
