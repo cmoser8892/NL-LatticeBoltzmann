@@ -28,5 +28,6 @@ void orderingNodes::order(std::vector<nodePoint_t*> &nodes) {
    handle_t valid_handle = 1;
    for(auto node : nodes) {
        node->handle = valid_handle++;
+       std::cout <<"[" << node->position.x() << ", " << node->position.y() << "], ";
    }
 }
