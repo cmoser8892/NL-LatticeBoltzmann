@@ -223,7 +223,7 @@ void nodeGenerator::board_creation(unsigned int size) {
 }
 
 void nodeGenerator::check_nodes(handle_t* current) {
-    straight_generator straight(points);
+    straightGenerator straight(points);
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {

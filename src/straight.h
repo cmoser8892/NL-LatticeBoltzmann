@@ -17,7 +17,7 @@ typedef struct straight {
 // for easier nomenclatur
 using surface_t = straight_t;
 
-class straight_generator {
+class straightGenerator {
   private:
     boundaryPointConstructor* points;
     point_t mass_center;
@@ -27,7 +27,7 @@ class straight_generator {
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<surface_t *> surfaces;
-    explicit straight_generator(boundaryPointConstructor* p);
+    explicit straightGenerator(boundaryPointConstructor* p);
     void init();
     bool node_inside(nodePoint_t *point);
     bool node_intersections(nodePoint_t *point);

@@ -13,5 +13,25 @@ now to actual neighbourhood stuff:
  --> hard question which algorithm has the best query time to the neighbors
  */
 
+#include "types.h"
+/**
+ * first we put nodes into a cell
+ * this may seem unnecessary for computation of an uniform grid
+ * but may safe the day later if the node coordinates are not perfectly on int positions
+ * for subdividing
+ */
+typedef struct orderedCell {
+    unsigned x;
+    unsigned y;
+    std::vector<handle_t> inhabitants;
+}orderedCell_t;
+
+// order nodes into the cells
+class orderingNodes {
+  private:
+    std::vector<orderedCell_t*> cells;
+  public:
+};
+
 
 #endif // NL_LATTICEBOLTZMANN_NEIGHBORHOOD_H

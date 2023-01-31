@@ -6,7 +6,7 @@
 #include <iostream>
 
 /// private
-void straight_generator::calculate_mass_center() {
+void straightGenerator::calculate_mass_center() {
     // add all the points up, divide by the number of points
     mass_center.setZero();
     for(auto point : points->boundary_points) {
@@ -15,7 +15,7 @@ void straight_generator::calculate_mass_center() {
     mass_center /= double(points->boundary_points.size());
 }
 
-void straight_generator::calculate_all_straights() {
+void straightGenerator::calculate_all_straights() {
     auto iter = points->boundary_points.begin();
     while(iter != points->boundary_points.end()) {
         // special cases for end, we set the next iter to iter + 1
@@ -37,16 +37,16 @@ void straight_generator::calculate_all_straights() {
 
 
 /// public
-straight_generator::straight_generator(boundaryPointConstructor *p) {
+straightGenerator::straightGenerator(boundaryPointConstructor *p) {
     points = p;
 }
 
-void straight_generator::init() {
+void straightGenerator::init() {
     calculate_mass_center();
     calculate_all_straights();
 }
 
-int straight_generator::calculate_intersections(nodePoint_t* node_point) {
+int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     /// surface based algorithm to calcualte intersections
     /**
      * 3 passes have to be made to calculate to calcuate a valid intersection
@@ -100,14 +100,14 @@ int straight_generator::calculate_intersections(nodePoint_t* node_point) {
     return number_of_intersections;
 }
 
-bool straight_generator::node_inside(nodePoint_t *point) {
+bool straightGenerator::node_inside(nodePoint_t *point) {
     // even out; odd in
     /// uses a surface representation to calculate weather nodes are inside or outside
     int value = calculate_intersections(point);
     return ((value%2) == 0);
 }
 
-bool straight_generator::node_intersections(nodePoint_t *node_point) {
+bool straightGenerator::node_intersections(nodePoint_t *node_point) {
     // doesnt work?!?!?!
     /// written after
     // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection

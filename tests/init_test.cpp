@@ -232,7 +232,7 @@ TEST(InitTests, sufaces) {
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader({0,1});
-    straight_generator st(&boundaries);
+    straightGenerator st(&boundaries);
     st.init();
     // test size
     EXPECT_EQ(boundaries.boundary_points.size(),4*(sub_size-1));
