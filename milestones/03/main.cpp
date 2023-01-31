@@ -33,8 +33,6 @@ int main(int argc, char *argv[]) {
     sim.get_data(true,c);
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-    // To get the value of duration use the count()
-    // member function on the duration object
     std::cout << "Took " <<duration.count()<< "s" << std::endl;
     return 0;
 }

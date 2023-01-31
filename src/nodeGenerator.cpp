@@ -278,6 +278,8 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
         linear_generation();
+        orderingNodes o;
+        o.order(node_infos);
         determine_neighbors();
         write_data_to_file(save);
     }
@@ -294,8 +296,8 @@ void nodeGenerator::init(unsigned int size) {
         check_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         // todo sort
-        //orderingNodes o;
-        //o.order(node_infos);
+        orderingNodes o;
+        o.order(node_infos);
         determine_neighbors();
         write_data_to_file(save);
     }

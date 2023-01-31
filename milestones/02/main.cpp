@@ -8,10 +8,12 @@
  * add doxygen docu, recheck old projects on a common standard
  */
 #include "simulation.h"
-#include <ctime>
+#include <chrono>
 #include <iostream>
 
+// standard sliding lid
 int main(int argc, char *argv[]) {
+    auto start = std::chrono::high_resolution_clock::now();
     int size = 102;
     int steps = 10000;
     point_t p = {size,size};
@@ -35,5 +37,8 @@ int main(int argc, char *argv[]) {
         }
     }
     sim.get_data(true,p);
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+    std::cout << "Took " <<duration.count()<< "s" << std::endl;
     return 0;
 }
