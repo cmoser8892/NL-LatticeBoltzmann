@@ -20,4 +20,5 @@ std::vector<std::string> split_string (std::string s, std::string delimiter);
 uint64_t bit_interleaving(uint32_t x, uint32_t y);
     uint64_t bit_interleaving_2d(uint32_t, uint32_t);
 uint64_t bit_interleaving_3d(uint32_t, uint32_t, uint32_t);
+bool compare_handles(nodePoint_t * a, nodePoint_t *b);
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

@@ -126,3 +126,7 @@ uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z) {
                  | _pdep_u64(z,0x4924924924924924);
     return c;
 }
+
+bool compare_handles(nodePoint_t *a, nodePoint_t *b) {
+    return a->handle < b->handle;
+}

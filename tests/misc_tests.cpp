@@ -806,7 +806,7 @@ TEST(Orderingtests, basics) {
     // run the node generator will have the methods later in it tooo!!!
     nodeGenerator nodes(&boundaries);
     nodes.init();
-    //
+    // btw dont try to do a sim after this will break
     orderingNodes ons;
     ons.order(nodes.node_infos);
 }
