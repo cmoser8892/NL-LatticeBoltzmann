@@ -3,6 +3,7 @@
 #include "node.h"
 #include "functions.h"
 #include "helper_functions.h"
+#include "neighborhood.h"
 #include <gtest/gtest.h>
 
 TEST(MiscTest, TestingWhatever) {
@@ -795,4 +796,22 @@ TEST(FunctionalTest, read_write) {
             EXPECT_EQ(n1->links.at(j)->channel,n2->links.at(j)->channel);
         }
     }
+}
+
+TEST(Orderingtests, basics) {
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_quader();
+    // run the node generator will have the methods later in it tooo!!!
+    nodeGenerator nodes(&boundaries);
+    nodes.init();
+    //
+    orderingNodes ons;
+    ons.order(nodes.node_infos);
+}
+
+
+TEST(Orderingtests, bitInterleaving) {
+    EXPECT_EQ(bit_interleaving_2d(2,3),7);
 }

@@ -1,6 +1,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <x86intrin.h>
 #include "helper_functions.h"
 
 // compares two arrays point by point
@@ -89,4 +90,9 @@ std::vector<std::string> split_string (std::string s, std::string delimiter) {
 
     res.push_back (s.substr (pos_start));
     return res;
+}
+
+// there are 2 very low level functions to make bits interleave on x86
+uint64_t bit_interleaving_2d(uint32_t x, uint32_t y) {
+    //return _pdep_u64(x,0x5555555555555555) | _pdep_u64(y,0xaaaaaaaaaaaaaaaa);
 }

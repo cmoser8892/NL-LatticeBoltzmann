@@ -14,6 +14,7 @@ now to actual neighbourhood stuff:
  */
 
 #include "types.h"
+#include "node.h"
 /**
  * first we put nodes into a cell
  * this may seem unnecessary for computation of an uniform grid
@@ -31,6 +32,7 @@ class orderingNodes {
   private:
     std::vector<orderedCell_t*> cells;
   public:
+    void order(std::vector<nodePoint_t*> nodes);
 };
 
 

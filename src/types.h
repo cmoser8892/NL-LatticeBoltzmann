@@ -19,6 +19,12 @@ using point_t = Eigen::Vector2d;
 using vector_t = Eigen::Vector2d;
 
 using handle_t = size_t; // not 0 and max_size
+
+typedef struct coordinate {
+    unsigned x;
+    unsigned y;
+}coordinate_t;
+
 typedef enum nodeIdentifier {
     UNKNOWN = 0,
     DRY,
@@ -34,12 +40,13 @@ typedef enum boundaryType {
 
 /**
  * Note on the toLinks_t:
- * In the final implemntation it should be handle + channel to directlly
+ * In the final implementation it should be handle + channel to directly
+ * would need extra processing to get the combo thou
  * access the correct node and channel.
  * To get the channel: handle % Number_of_channels
  * To get the correct node: handle / Number_of_channels
- * maybe some shninanigans with 0 and max size_t
- * currentlly handles are only valid if > 0 and smaller < Max size
+ * maybe some shenanigans with 0 and max size_t
+ * currently handles are only valid if > 0 and smaller < Max size
  * may have to be changed, also we get like 9e18 valid nodes
  */
 typedef struct toLinks {

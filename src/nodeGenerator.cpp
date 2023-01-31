@@ -50,6 +50,7 @@ bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_p
 }
 
 void nodeGenerator::determine_neighbors() {
+    /// todo remake me O(9n²)
     // go in all directions and search for a match then put channel and and respective handle down
     for(auto n : node_infos) {
         // go though relevant channels
@@ -271,6 +272,7 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
 /**
  * @fn void nodeGenerator::init()
  * @brief initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that
+ * old legacy method
  */
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
@@ -280,12 +282,17 @@ void nodeGenerator::init() {
     }
 }
 
+/**
+ * @fn void nodeGenerator::init(unsigned int size)
+ * @param size
+ */
 void nodeGenerator::init(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
         handle_t handle_counter = 1;
         check_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
+        // todo sort
         determine_neighbors();
         write_data_to_file(save);
     }
