@@ -4,14 +4,14 @@
 
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int steps = 30000;
-    unsigned int size = 132;
-    unsigned int sub_size = 102;
+    int steps = 1000;
+    unsigned int size = 32;
+    unsigned int sub_size = 22;
     point_t c = {size,size};
-    point_t p = {sub_size,sub_size+20};
+    point_t p = {sub_size,sub_size+2};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({12,6},{39,27},{27,45});
+    boundaries.init_sliding_lid_inner({3,2},{10,10},{10,13});
     nodeGenerator gen(&boundaries);
     gen.init(size);
     simulation sim(&boundaries,&gen);
