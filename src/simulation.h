@@ -27,6 +27,7 @@ class simulation {
   public:
     std::vector<node*> nodes;
     explicit simulation(boundaryPointConstructor* c);
+    ~simulation();
     simulation(boundaryPointConstructor* c,nodeGenerator* g);
     void set_simulation_parameters(simulation_parameters_t t);
     void streaming_step_1();

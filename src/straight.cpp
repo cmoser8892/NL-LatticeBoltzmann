@@ -41,6 +41,12 @@ straightGenerator::straightGenerator(boundaryPointConstructor *p) {
     points = p;
 }
 
+straightGenerator::~straightGenerator() {
+    for (auto s: surfaces) {
+        delete s;
+    }
+}
+
 void straightGenerator::init() {
     calculate_mass_center();
     calculate_all_straights();

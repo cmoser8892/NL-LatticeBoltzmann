@@ -10,6 +10,12 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
 }
 
+nodeGenerator::~nodeGenerator() {
+    for(auto n : node_infos) {
+        delete n;
+    }
+}
+
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
@@ -74,9 +80,9 @@ void nodeGenerator::determine_neighbors() {
                     }
                     // if one of the above conditions holds add
                     if(add_me) {
-                        auto link = new toLinks_t;
-                        link->handle = search->handle;
-                        link->channel = i;
+                        toLinks_t link;
+                        link.handle = search->handle;
+                        link.channel = i;
                         n->links.push_back(link);
                     }
                 }
@@ -152,9 +158,9 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
         std::vector<std::string> split = split_string(s,delimiter);
         for(auto part : split) {
             std::vector<std::string> sub_split = split_string(part,komma);
-            auto link = new toLinks_t;
-            link->channel = std::stoi(sub_split.at(0));
-            link->handle = std::stoull(sub_split.at(1));
+            toLinks_t link;
+            link.channel = std::stoi(sub_split.at(0));
+            link.handle = std::stoull(sub_split.at(1));
             n->links.push_back(link);
         }
         // set the next state
@@ -194,8 +200,8 @@ void nodeGenerator::write_data_to_file(bool write) {
         auto it = i->links.begin();
         // unlike std containers no trailing end is added
         while (it != i->links.end()) {
-            out << it.operator*()->channel << ", "
-                << it.operator*()->handle;
+            out << it.operator*().channel << ", "
+                << it.operator*().handle;
             if(it < i->links.end()-1) {
                 out << " ; ";
             }
@@ -236,6 +242,10 @@ void nodeGenerator::check_nodes(handle_t* current) {
             n->type = WET;
             reformed_nodes.push_back(n);
             (*current)++;
+        }
+        else {
+            // also delete element if not inside
+            delete n;
         }
     }
     node_infos = reformed_nodes;

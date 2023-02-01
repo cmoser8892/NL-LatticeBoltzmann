@@ -218,9 +218,9 @@ TEST(InitTests, simulation_link_positions) {
     for(auto node : sim.nodes) {
         for(auto link : node->neighbors) {
             point_t position = node->position;
-            vector_t vector = velocity_set.col(link->channel);
+            vector_t vector = velocity_set.col(link.channel);
             point_t expected_position = position + vector;
-            unsigned long partner_array_position = link->handle -1;
+            unsigned long partner_array_position = link.handle -1;
             point_t partner_position = sim.nodes.at(partner_array_position)->position;
             EXPECT_EQ(partner_position,expected_position);
         }

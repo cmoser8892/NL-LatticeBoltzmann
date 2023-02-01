@@ -45,6 +45,7 @@ class nodeGenerator {
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);
+    ~nodeGenerator();
     void set_discovery_vector(vector_t set);
     void set_redo_save(bool r, bool s);
     void set_no_ordering();
