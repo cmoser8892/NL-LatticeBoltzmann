@@ -31,6 +31,7 @@ typedef struct orderedCell {
 class orderingNodes {
   private:
   public:
+    // orders the particles according to spacial Morten curve (Z curve)
     void order(std::vector<nodePoint_t*> &nodes);
 };
 
