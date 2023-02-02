@@ -6,6 +6,13 @@ boundaryPointConstructor::boundaryPointConstructor(point_t s) {
     limits << s.x()-1,s.y()-1;
 }
 
+boundaryPointConstructor::~boundaryPointConstructor() {
+    for(auto element : boundary_points) {
+        // deletes the element or the pointer
+        delete element;
+    }
+}
+
 void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *start, boundaryType_t  b) {
     // goes up and down a line and inizlizes it
     for(int i = 0; i < limit; i++) {
@@ -15,6 +22,7 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
 }
 
 void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
+
     auto boundary_point = new boundaryPoint_t;
     boundary_point->point = *p;
     boundary_point->type = b;

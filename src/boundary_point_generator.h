@@ -25,6 +25,7 @@ class boundaryPointConstructor {
     point_t limits;
     //
     explicit boundaryPointConstructor(point_t s);
+    ~boundaryPointConstructor();
     // initizlies a quader
     void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
     void set_point(point_t* p, boundaryType_t b);

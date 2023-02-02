@@ -10,8 +10,8 @@ void simulation::streaming_step_1() {
         if(node->node_type == WET) {
             // very important so that we later not rewrite the value back to equilibrium
             for(auto link : node->neighbors) {
-                handle_t partner_handle = link->handle;
-                int channel = link->channel;
+                handle_t partner_handle = link.handle;
+                int channel = link.channel;
                 long array_position = long(partner_handle) - 1;
                 // correct positioning prob
                 nodes.at(array_position)->copy(channel)  = node->data(channel);
@@ -38,8 +38,8 @@ void simulation::bounce_back() {
         if(node->node_type == DRY) {
             for(auto link : node->neighbors) {
                 // just for read ability will be optimized by the compiler
-                handle_t partner_handle = link->handle;
-                int link_channel = link->channel;
+                handle_t partner_handle = link.handle;
+                int link_channel = link.channel;
                 int from_channel = switch_link_dimensions(link_channel);
                 long array_position = long(partner_handle) - 1;
                 // correct positioning
@@ -67,6 +67,11 @@ simulation::simulation(boundaryPointConstructor *c, nodeGenerator *g) {
     node_generator = g;
 }
 
+simulation::~simulation() {
+    for (auto n : nodes) {
+        delete n;
+    }
+}
 void simulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
 }

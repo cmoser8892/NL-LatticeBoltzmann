@@ -30,7 +30,6 @@ typedef struct orderedCell {
 // order nodes into the cells
 class orderingNodes {
   private:
-    std::vector<orderedCell_t*> cells;
   public:
     void order(std::vector<nodePoint_t*> &nodes);
 };

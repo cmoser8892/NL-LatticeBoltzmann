@@ -800,8 +800,8 @@ TEST(FunctionalTest, read_write) {
             EXPECT_EQ(n1->position(j), n2->position(j));
         }
         for(int j = 0; j < n1->links.size(); ++j) {
-            EXPECT_EQ(n1->links.at(j)->handle, n2->links.at(j)->handle);
-            EXPECT_EQ(n1->links.at(j)->channel,n2->links.at(j)->channel);
+            EXPECT_EQ(n1->links.at(j).handle, n2->links.at(j).handle);
+            EXPECT_EQ(n1->links.at(j).channel,n2->links.at(j).channel);
         }
     }
 }

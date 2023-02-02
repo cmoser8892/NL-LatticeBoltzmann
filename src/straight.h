@@ -28,6 +28,7 @@ class straightGenerator {
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<surface_t *> surfaces;
     explicit straightGenerator(boundaryPointConstructor* p);
+    ~straightGenerator();
     void init();
     bool node_inside(nodePoint_t *point);
     bool node_intersections(nodePoint_t *point);
