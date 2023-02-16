@@ -4,6 +4,7 @@
 #include "functions.h"
 #include "helper_functions.h"
 #include "neighborhood.h"
+#include "lookup_table.h"
 #include <gtest/gtest.h>
 
 TEST(MiscTest, TestingWhatever) {
@@ -831,5 +832,10 @@ TEST(Orderingtests,bit_in_out) {
     o = bit_interleaving_2d(x,y);
     EXPECT_EQ(x, bit_extraleaving_2d_x(o));
     EXPECT_EQ(y, bit_extraleaving_2d_y(o));
+}
+
+TEST(LookupTabletests, general) {
+    Lookup(8,0.0,1.0,false);
+
 }
 

@@ -11,12 +11,17 @@ class Lookup {
   private:
     // how many bits are used for the representation of ux and uy
     uint32_t u_bit_representation = 0;
+    uint32_t u_bit_number;
     double u_floor;
     double u_ceiling;
+    double u_step;
     bool interpolation;
+    bool error_flag = false;
     std::unordered_map<unsigned, double> lookup_table;
     // convert a double to the representation
-    uint32_t u_adc_converter(double u);
+    double u_adc_number(double u);
+    uint32_t u_adc_converter_lower(double u);
+    uint32_t u_adc_converter_higher(double u);
     void fill_table();
     double calculate_function(double cx, double cy, double ux, double uy);
     uint64_t key_generation(uint32_t c_x, uint32_t c_y, uint32_t ux, uint32_t uy);
