@@ -4,7 +4,7 @@ set(MY_HEADERS
 
 # List of implementation files
 set(MY_CPP
-        simulation.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.h node.cpp nodeGenerator.cpp straight.cpp neighborhood.cpp)
+        simulation.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.h node.cpp nodeGenerator.cpp straight.cpp neighborhood.cpp lookup_table.cpp lookup_table.h)
 
 # Create a static library
 add_library(my_lib STATIC ${MY_CPP} ${MY_HEADERS})

@@ -1,6 +1,3 @@
-//
-// Created by christoph on 24.01.23.
-//
 
 #include "neighborhood.h"
 #include "helper_functions.h"
