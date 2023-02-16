@@ -295,3 +295,7 @@ TEST(InitTests, outer_inner_quader) {
     // EXPECT_EQ(gen.node_infos.size(),outer_size*outer_size - inner_size*inner_size);
 }
 
+TEST(NeighbourhoodTests, hash_keys) {
+    std::unordered_multimap<handle_t,char> map = {{1,'a'},{1,'b'},{1,'d'},{2,'b'}};
+    EXPECT_EQ(map.size(),4);
+}

@@ -806,41 +806,6 @@ TEST(FunctionalTest, read_write) {
     }
 }
 
-TEST(Orderingtests, basics) {
-    unsigned int size = 50;
-    point_t p = {size,size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_sliding_lid();
-    nodeGenerator gen(&boundaries);
-    gen.init();
-    ASSERT_EQ(gen.node_infos.size(),size*size);
-    handle_t i = 1;
-    EXPECT_EQ(gen.node_infos.at(0)->position.x(),0);
-    EXPECT_EQ(gen.node_infos.at(0)->position.y(),0);
-    for(auto n : gen.node_infos) {
-        EXPECT_EQ(i++,n->handle);
-    }
-}
-
-TEST(Orderingtests, cut_out) {
-    unsigned int size = 70;
-    unsigned int sub_size = 48;
-    point_t c = {size,size};
-    point_t p = {sub_size,sub_size+20};
-    boundaryPointConstructor boundaries(p);
-    // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({6,3},{20,15},{15,22});
-    nodeGenerator gen(&boundaries);
-    gen.init(size);
-    simulation sim(&boundaries,&gen);
-    sim.init();
-    handle_t i = 1;
-    for(auto n : gen.node_infos) {
-        EXPECT_EQ(i++,n->handle);
-    }
-}
-
-
 TEST(Orderingtests, bitInterleaving) {
     EXPECT_EQ(bit_interleaving(2,3), 0xE);
     EXPECT_EQ(bit_interleaving_2d(2,3),0xE);
@@ -867,3 +832,4 @@ TEST(Orderingtests,bit_in_out) {
     EXPECT_EQ(x, bit_extraleaving_2d_x(o));
     EXPECT_EQ(y, bit_extraleaving_2d_y(o));
 }
+

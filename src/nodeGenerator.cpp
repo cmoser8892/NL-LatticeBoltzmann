@@ -57,38 +57,8 @@ bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_p
 }
 
 void nodeGenerator::determine_neighbors() {
-    /// todo remake me O(9n²)
-    // go in all directions and search for a match then put channel and and respective handle down
-    for(auto n : node_infos) {
-        // go though relevant channels
-        for(int i = 1; i < CHANNELS; ++i) {
-            point_t current = n->position + velocity_set.col(i);
-            for(auto search : node_infos) {
-                auto temp = point_t(search->position);
-                // compare with all the other nodes
-                if(compare_two_points(&current, &temp)) {
-                    // always include all neighbours if we are a wet node
-                    bool add_me = false;
-                    if(n->type == WET) {
-                        add_me = true;
-                    }
-                    // if we are a dry node only include nodes that are wet
-                    else if(n->type == DRY) {
-                        if(search->type == WET) {
-                            add_me = true;
-                        }
-                    }
-                    // if one of the above conditions holds add
-                    if(add_me) {
-                        toLinks_t link;
-                        link.handle = search->handle;
-                        link.channel = i;
-                        n->links.push_back(link);
-                    }
-                }
-            }
-        }
-    }
+    neighbourhood neighbourhood;
+    neighbourhood.determine_neighbors(node_infos);
 }
 
 

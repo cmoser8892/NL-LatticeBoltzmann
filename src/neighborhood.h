@@ -21,18 +21,13 @@ now to actual neighbourhood stuff:
  * but may safe the day later if the node coordinates are not perfectly on int positions
  * for subdividing
  */
-typedef struct orderedCell {
-    unsigned x;
-    unsigned y;
-    std::vector<handle_t> inhabitants;
-}orderedCell_t;
-
 // order nodes into the cells
-class orderingNodes {
+class neighbourhood {
   private:
+    std::unordered_multimap<handle_t,handle_t> keys;
+    void fill_keys(std::vector<nodePoint_t*> &nodes);
   public:
-    // orders the particles according to spacial Morten curve (Z curve)
-    void order(std::vector<nodePoint_t*> &nodes);
+    void determine_neighbors(std::vector<nodePoint_t*> &nodes);
 };
 
 
