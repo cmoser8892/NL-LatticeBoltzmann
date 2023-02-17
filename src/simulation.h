@@ -10,9 +10,7 @@
 #include "node.h"
 #include "nodeGenerator.h"
 #include "types.h"
-
-// for completeness
-extern matrix_t velocity_set;
+#include "lookup_table.h"
 
 typedef struct simulation_parameters {
     double relaxation = 0.5;
@@ -24,6 +22,7 @@ class simulation {
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
+    lookup* table = nullptr;
   public:
     std::vector<node*> nodes;
     explicit simulation(boundaryPointConstructor* c);
@@ -33,6 +32,7 @@ class simulation {
     void streaming_step_1();
     void bounce_back();
     void streaming_step_2();
+    void collisions();
     void init();
     void run();
     void get_data(bool write_to_file, point_t org);

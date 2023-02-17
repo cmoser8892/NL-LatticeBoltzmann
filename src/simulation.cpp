@@ -56,6 +56,12 @@ void simulation::bounce_back() {
     }
 }
 
+void simulation::collisions() {
+    double relax = parameters.relaxation;
+    for(auto node: nodes) {
+        node->data -= relax * (node->data - table->equilibrium(node));
+    }
+}
 
 // public
 simulation::simulation(boundaryPointConstructor *c) {
@@ -99,6 +105,9 @@ void simulation::init() {
         n->copy = n->data;
         nodes.push_back(n);
     }
+    // setup lookup
+    table = new lookup(6,-0.5,0.5,false);
+    // table->set_bypass(true);
 }
 
 void simulation::run() {
@@ -110,9 +119,12 @@ void simulation::run() {
     for(auto n : nodes) {
         macro(n);
     }
+    /*
     for(auto n : nodes) {
         collision(n,parameters.relaxation);
     }
+    */
+    collisions();
 }
 /**
  * @fn void simulation::get_data(bool write_to_file)
@@ -123,6 +135,9 @@ void simulation::get_data(bool write_to_file, point_t original_size) {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
+    std::cout << "Recalcs " <<table->recalc << std::endl;
+    std::cout << "Table-hits " << table->table_hits << std::endl;
+    std::cout << "Non-hits " << table->non_hits << std::endl;
     long size_x = long(round(original_size.x()));
     long size_y = long(round(original_size.y()));
     ux.resize(size_x,size_y);

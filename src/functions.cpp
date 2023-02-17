@@ -6,6 +6,8 @@
 matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
                          {0,0,1,0 ,-1,1, 1,-1,-1}};
 
+matrix_t weights = {{4.0/9,1.0/9,1.0/9,1.0/9,1.0/9,1.0/36,1.0/36,1.0/36,1.0/36}};
+
 /// implementation is for d2q9
 array_t equilibrium(node* node) {
     array_t return_array;

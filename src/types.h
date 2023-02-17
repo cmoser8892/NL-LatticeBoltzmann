@@ -11,6 +11,7 @@
 
 #define CHANNELS 9
 
+// redefinitions
 using array_t = Eigen::ArrayXd;
 using matrix_t = Eigen::ArrayXXd;
 using flowfield_t = Eigen::ArrayXXd;
@@ -20,6 +21,11 @@ using vector_t = Eigen::Vector2d;
 
 using handle_t = uint64_t; // counter to denote a node
 
+// globals (defined in functions)
+extern matrix_t velocity_set;
+extern matrix_t weights;
+
+// structs
 typedef struct coordinate {
     unsigned x;
     unsigned y;

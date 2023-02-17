@@ -92,7 +92,7 @@ std::vector<std::string> split_string (std::string s, std::string delimiter) {
     return res;
 }
 
-// there are 2 very low level functions to make bits interleave on x86 _pdep and _pext
+// there are 2 assembler functions to make bits interleave on x86 _pdep and _pext
 uint64_t bit_interleaving(uint32_t x, uint32_t y) {
     uint64_t z = 0;
     for(int i = 0; i < CHAR_BIT*sizeof(x); ++i)

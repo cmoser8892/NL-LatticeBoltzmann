@@ -834,8 +834,61 @@ TEST(Orderingtests,bit_in_out) {
     EXPECT_EQ(y, bit_extraleaving_2d_y(o));
 }
 
-TEST(LookupTabletests, general) {
-    Lookup(8,0.0,1.0,false);
-
+TEST(LookupTabletests, functiononal_correctness) {
+    lookup lookup(8,0.0,1.0,false);
+    lookup.set_bypass(true); // bypass
+    /// testing the equilbirum function
+    // todo maybe introduce some fuzzing ?!
+    double ux = 1;
+    double uy = 1;
+    double rho = 2;
+    /// expections
+    EXPECT_EQ(rho*4.0/9*lookup.look_at_table(0,0,ux,uy),
+              rho*2.0/9*(2 - 3* (ux*ux +uy*uy)));
+    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(1,0,ux,uy),
+              rho*1.0/18*(2 + 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(0,1,ux,uy),
+              rho*1.0/18*(2 + 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(-1,0,ux,uy),
+              rho*1.0/18*(2 - 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(0,-1,ux,uy),
+              rho*1.0/18*(2 - 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(1,1,ux,uy),
+              rho*1.0/36*(1 + 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(1,-1,ux,uy),
+              rho*1.0/36*(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(-1,-1,ux,uy),
+              rho*1.0/36*(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(-1,1,ux,uy),
+              rho*1.0/36*(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
 }
 
+TEST(LookupTabletests, equilibrum_correctness) {
+    /// testing the equilbirum function
+    // todo maybe introduce some fuzzing ?!
+    lookup lookup(8,0.0,1.0,false);
+    lookup.set_bypass(true); // bypass
+    handle_t h = 1;
+    double rho = 4;
+    double ux = 6;
+    double uy = 3;
+    int dimension = 2;
+    int channels = 9;
+    array_t pos;
+    pos.resize(3);
+    pos << 1,2,4;
+    auto n = new node(h,dimension,channels,pos,NO_BOUNDARY);
+    n->rho = rho;
+    n->u << ux,uy;
+    n->data = lookup.equilibrium(n);
+    /// expections
+    EXPECT_EQ(n->data(0), rho * 2/9 *(2 - 3* (ux*ux +uy*uy)));
+    EXPECT_EQ(n->data(1),rho * 1/18 * (2 + 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(2),rho * 1/18 * (2 + 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(3),rho * 1/18 * (2 - 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(4),rho * 1/18 * (2 - 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(5),rho * 1/36 *(1 + 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(6),rho * 1/36 *(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(7),rho * 1/36 *(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
+    EXPECT_EQ(n->data(8),rho * 1/36 *(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+}

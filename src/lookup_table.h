@@ -6,8 +6,9 @@
 #define NL_LATTICEBOLTZMANN_LOOKUP_TABLE_H
 
 #include "types.h"
+#include "node.h"
 
-class Lookup {
+class lookup {
   private:
     // how many bits are used for the representation of ux and uy
     uint32_t u_bit_representation = 0;
@@ -28,9 +29,12 @@ class Lookup {
     uint64_t key_generation(uint32_t c_x, uint32_t c_y, uint32_t ux, uint32_t uy);
   public:
     uint64_t non_hits = 0;
-    Lookup(unsigned how_many_u_bits, double u_floor, double u_ceiling, bool interpolation);
+    uint64_t table_hits = 0;
+    uint64_t recalc = 0;
+    lookup(unsigned how_many_u_bits, double u_floor, double u_ceiling, bool interpolation);
     void set_bypass(bool);
-    double look_at_table(bool cx, bool cy, double ux, double uy);
+    double look_at_table(int cx, int cy, double ux, double uy);
+    array_t equilibrium(node* n);
 };
 
 #endif // NL_LATTICEBOLTZMANN_LOOKUP_TABLE_H
