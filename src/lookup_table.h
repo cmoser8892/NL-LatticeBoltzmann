@@ -17,6 +17,7 @@ class Lookup {
     double u_step;
     bool interpolation;
     bool error_flag = false;
+    bool bypass = false;
     std::unordered_map<unsigned, double> lookup_table;
     // convert a double to the representation
     double u_adc_number(double u);
@@ -28,6 +29,7 @@ class Lookup {
   public:
     uint64_t non_hits = 0;
     Lookup(unsigned how_many_u_bits, double u_floor, double u_ceiling, bool interpolation);
+    void set_bypass(bool);
     double look_at_table(bool cx, bool cy, double ux, double uy);
 };
 

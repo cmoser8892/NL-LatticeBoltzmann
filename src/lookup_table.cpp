@@ -50,7 +50,7 @@ void Lookup::fill_table() {
 }
 
 double Lookup::calculate_function(double cx, double cy, double ux, double uy) {
-    return 0;
+    return 2 + 6*cx*ux + 6*cy*uy + 9*cx*cx*ux*ux + 18*cx*ux*cy*uy + 9*cy*cy*uy*uy - 3*ux*ux -3*uy*uy;
 }
 
 uint64_t Lookup::key_generation(uint32_t cx, uint32_t cy, uint32_t ux, uint32_t uy) {
@@ -75,8 +75,15 @@ u_bit_representation(how_many_u_bits),u_floor(floor),u_ceiling(ceiling),interpol
     fill_table();
 }
 
+void Lookup::set_bypass(bool b) {
+    bypass = b;
+}
+
 double Lookup::look_at_table(bool cx, bool cy, double ux, double uy) {
     double return_value = 0;
+    if(bypass) {
+        return calculate_function(cx,cy,ux,uy);
+    }
     uint32_t ux_bits = u_adc_converter_lower(ux);
     uint32_t uy_bits = u_adc_converter_lower(uy);
     // check for errors in the conversion to pure bits key generation otherwise wont work
