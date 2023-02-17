@@ -12,7 +12,7 @@ void lookup::check_u_value_outside(double u) {
 }
 
 double lookup::u_adc_number(double u) {
-    double ret = (u-u_floor)*u_bit_number;
+    double ret = (u-u_floor)/u_step;
     return ret;
 }
 
