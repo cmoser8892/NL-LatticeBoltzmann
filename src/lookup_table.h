@@ -21,6 +21,7 @@ class lookup {
     bool bypass = false;
     std::unordered_map<unsigned, double> lookup_table;
     // convert a double to the representation
+    void check_u_value_outside(double u);
     double u_adc_number(double u);
     uint32_t u_adc_converter_lower(double u);
     uint32_t u_adc_converter_higher(double u);

@@ -147,6 +147,10 @@ uint32_t bit_extraleaving_3d_z(uint64_t v) {
     return _pext_u64(v,0x4924924924924924);
 }
 
+uint32_t reduce_32_2(uint32_t b) {
+    return _pext_u32(b,0x80000001);
+}
+
 bool compare_handles(nodePoint_t *a, nodePoint_t *b) {
     return a->handle < b->handle;
 }

@@ -106,7 +106,7 @@ void simulation::init() {
         nodes.push_back(n);
     }
     // setup lookup
-    table = new lookup(6,-0.5,0.5,false);
+    table = new lookup(4,-1,1,false);
     // table->set_bypass(true);
 }
 
@@ -122,8 +122,7 @@ void simulation::run() {
     /*
     for(auto n : nodes) {
         collision(n,parameters.relaxation);
-    }
-    */
+    } */
     collisions();
 }
 /**

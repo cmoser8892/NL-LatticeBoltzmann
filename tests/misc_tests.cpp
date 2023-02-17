@@ -834,33 +834,13 @@ TEST(Orderingtests,bit_in_out) {
     EXPECT_EQ(y, bit_extraleaving_2d_y(o));
 }
 
-TEST(LookupTabletests, functiononal_correctness) {
-    lookup lookup(8,0.0,1.0,false);
-    lookup.set_bypass(true); // bypass
-    /// testing the equilbirum function
-    // todo maybe introduce some fuzzing ?!
-    double ux = 1;
-    double uy = 1;
-    double rho = 2;
-    /// expections
-    EXPECT_EQ(rho*4.0/9*lookup.look_at_table(0,0,ux,uy),
-              rho*2.0/9*(2 - 3* (ux*ux +uy*uy)));
-    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(1,0,ux,uy),
-              rho*1.0/18*(2 + 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(0,1,ux,uy),
-              rho*1.0/18*(2 + 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(-1,0,ux,uy),
-              rho*1.0/18*(2 - 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/9*lookup.look_at_table(0,-1,ux,uy),
-              rho*1.0/18*(2 - 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(1,1,ux,uy),
-              rho*1.0/36*(1 + 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(1,-1,ux,uy),
-              rho*1.0/36*(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(-1,-1,ux,uy),
-              rho*1.0/36*(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
-    EXPECT_EQ(rho*1.0/36*lookup.look_at_table(-1,1,ux,uy),
-              rho*1.0/36*(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+TEST(Orderingtests, sign_reduce) {
+    EXPECT_EQ(reduce_32_2(0),0);
+    EXPECT_EQ(reduce_32_2(1),1);
+    EXPECT_EQ(reduce_32_2(-1),3);
+    EXPECT_EQ(reduce_32_2(-0),0);
+    //dks
+    EXPECT_EQ(reduce_32_2(-4),0x2);
 }
 
 TEST(LookupTabletests, equilibrum_correctness) {

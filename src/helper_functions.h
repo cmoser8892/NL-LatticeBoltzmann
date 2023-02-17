@@ -27,6 +27,8 @@ uint32_t bit_extraleaving_2d_y(uint64_t);
 uint32_t bit_extraleaving_3d_x(uint64_t);
 uint32_t bit_extraleaving_3d_y(uint64_t);
 uint32_t bit_extraleaving_3d_z(uint64_t);
+// reduce 32 bit numbers to 2 bit numbers
+uint32_t reduce_32_2(uint32_t);
 // handle compare for sorting
 bool compare_handles(nodePoint_t * a, nodePoint_t *b);
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H
