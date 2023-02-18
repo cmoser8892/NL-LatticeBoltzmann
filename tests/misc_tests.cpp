@@ -872,3 +872,37 @@ TEST(LookupTabletests, equilibrum_correctness) {
     EXPECT_EQ(n->data(7),rho * 1/36 *(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->data(8),rho * 1/36 *(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
 }
+
+TEST(LookupTabletests,table_size) {
+    // key error fill table gets run though 36 times but just 32 values exist
+    int bits = 1;
+    // 2 61 6 61
+    lookup lookup(bits,0.0,1.0,false);
+    int k = 1 <<(bits);
+    EXPECT_EQ(lookup.lookup_table.size(),k*k*3*3);
+}
+
+TEST(LookupTabletest, functional_table_lookup) {
+    // lookup setup
+    int bits = 1;
+    lookup lookup(bits,0.0,1.0,false);
+    int k = 1 <<(bits);
+    EXPECT_EQ(lookup.lookup_table.size(),k*k*3*3);
+    // node setup
+    handle_t h = 1;
+    double rho = 4;
+    double ux = 0.0;
+    double uy = 0.0;
+    int dimension = 2;
+    int channels = 9;
+    array_t pos;
+    pos.resize(3);
+    pos << 1,2,4;
+    auto n = new node(h,dimension,channels,pos,NO_BOUNDARY);
+    n->rho = rho;
+    n->u << ux,uy;
+    // test the lookup call
+    n->data = lookup.equilibrium(n);
+    EXPECT_EQ(lookup.table_hits,9);
+    EXPECT_EQ(lookup.non_hits,0);
+}

@@ -33,17 +33,16 @@ void lookup::fill_table() {
         for(int j = -1; j < 2; j++) {
             auto cy_bit = reduce_32_2(j);
             for(int k = 0; k < u_bit_number; ++k) {
+                ux = k*u_step;
                 uint32_t ux_bit = u_adc_converter_lower(ux);
                 for(int l = 0; l < u_bit_number; ++l) {
+                    uy = l* u_step;
                     uint32_t uy_bit = u_adc_converter_lower(uy);
                     // calculate and put key + number together
                     uint64_t key = key_generation(cx_bit,cy_bit,ux_bit,uy_bit);
                     double value = calculate_function(i,j,ux,uy);
                     lookup_table.emplace(key, value);
-                    // functional ribcage
-                    uy += u_step;
                 }
-                ux += u_step;
             }
         }
     }
@@ -57,8 +56,9 @@ uint64_t lookup::key_generation(uint32_t cx, uint32_t cy, uint32_t ux, uint32_t 
     // bit interleaving of 1 bit, 1 bit, u_bit_rep, u_bit_rep
     // key looks ux_bit interleaved with uy_bit cy_bit cx_bit
     // masking cx and cy (should be 0x1 or 0x0 anyways)
-    uint64_t return_value = cx | (cy << 2);
-    return_value |= (bit_interleaving_2d(ux,uy) << 4);
+    uint64_t return_value = bit_interleaving_2d(ux,uy);
+    // todo possible to reduce the bit code by one got the truthtables how do i reduce them again
+    return_value |= (((cx << 2)| cy) << u_bit_representation) << u_bit_representation;
     return return_value;
 }
 

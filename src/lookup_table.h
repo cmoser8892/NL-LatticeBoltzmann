@@ -1,6 +1,3 @@
-//
-// Created by christoph on 16.02.23.
-//
 
 #ifndef NL_LATTICEBOLTZMANN_LOOKUP_TABLE_H
 #define NL_LATTICEBOLTZMANN_LOOKUP_TABLE_H
@@ -19,7 +16,6 @@ class lookup {
     bool interpolation;
     bool error_flag = false;
     bool bypass = false;
-    std::unordered_map<unsigned, double> lookup_table;
     // convert a double to the representation
     void check_u_value_outside(double u);
     double u_adc_number(double u);
@@ -29,12 +25,14 @@ class lookup {
     double calculate_function(double cx, double cy, double ux, double uy);
     uint64_t key_generation(uint32_t c_x, uint32_t c_y, uint32_t ux, uint32_t uy);
   public:
+    std::unordered_map<unsigned, double> lookup_table;
     uint64_t non_hits = 0;
     uint64_t table_hits = 0;
     uint64_t recalc = 0;
     lookup(unsigned how_many_u_bits, double u_floor, double u_ceiling, bool interpolation);
     void set_bypass(bool);
     double look_at_table(int cx, int cy, double ux, double uy);
+    double look_at_table(uint32_t cx_bit, uint32_t cy_bit, uint32_t ux_bit, uint32_t uy_bit);
     array_t equilibrium(node* n);
 };
 

@@ -106,8 +106,8 @@ void simulation::init() {
         nodes.push_back(n);
     }
     // setup lookup
-    table = new lookup(4,-1,1,false);
-    // table->set_bypass(true);
+    table = new lookup(2,0.0,1.0,false);
+    //table->set_bypass(true);
 }
 
 void simulation::run() {
