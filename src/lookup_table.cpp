@@ -111,17 +111,58 @@ double lookup::look_at_table(int cx, int cy, double ux, double uy) {
     return return_value;
 }
 
+double lookup::look_at_table(uint32_t cx_bit, uint32_t cy_bit, uint32_t ux_bit, uint32_t uy_bit) {
+    double return_value = 0;
+    uint64_t search_key = key_generation(cx_bit, cy_bit, ux_bit, uy_bit);
+    // look in table
+    if (auto found_iter = lookup_table.find(search_key); found_iter != lookup_table.end()) {
+        ++table_hits;
+        return_value = found_iter->second;
+    }
+    // not in table recalculate
+    else {
+        ++non_hits;
+
+    }
+    return return_value;
+}
+
 array_t lookup::equilibrium(node* n) {
     array_t return_array;
     return_array.setZero(CHANNELS);
     double ux = n->u(0);
     double uy = n->u(1);
     double rho = n->rho;
-    for(int i = 0; i < CHANNELS; ++i) {
-        int cx = int(velocity_set.col(i).x());
-        int cy = int(velocity_set.col(i).y());
-        double w = weights.col(i).x();
-        return_array(i) = w*rho*look_at_table(cx,cy,ux,uy);
+    bool recalculate = false;
+    if(!bypass){
+        check_u_value_outside(ux);
+        check_u_value_outside(uy);
+        // calculate weather or not inside
+        if (!error_flag) {
+            uint32_t ux_bit = u_adc_converter_lower(ux);
+            uint32_t uy_bit = u_adc_converter_lower(uy);
+            for (int i = 0; i < CHANNELS; ++i) {
+                uint32_t cx_bit = reduce_32_2(velocity_set.col(i).x());
+                uint32_t cy_bit = reduce_32_2(velocity_set.col(i).y());
+                double w = weights.col(i).x();
+                return_array(i) = w * rho * look_at_table(cx_bit, cy_bit, ux_bit, uy_bit);
+            }
+        }
+        else {
+            recalculate = true;
+        }
+    }
+    else {
+        recalculate = true;
+    }
+    if(recalculate) {
+        error_flag = false;
+        for (int i = 0; i < CHANNELS; ++i) {
+            double cx = velocity_set.col(i).x();
+            double cy = velocity_set.col(i).y();
+            double w = weights.col(i).x();
+            return_array(i) = w * rho * calculate_function(cx, cy, ux, uy);
+        }
     }
     return return_array;
 }

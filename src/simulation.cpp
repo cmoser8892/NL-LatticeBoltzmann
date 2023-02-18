@@ -59,7 +59,7 @@ void simulation::bounce_back() {
 void simulation::collisions() {
     double relax = parameters.relaxation;
     for(auto node: nodes) {
-        node->data -= relax * (node->data - table->equilibrium(node));
+        node->data -= relax * (node->data - equilibrium(node));
     }
 }
 
@@ -78,7 +78,7 @@ simulation::~simulation() {
         delete n;
     }
 }
-void simulation::set_simulation_parameters(simulation_parameters_t t) {
+void simulation::set_simulation_parameters(const simulation_parameters_t t) {
     parameters = t;
 }
 
@@ -93,6 +93,11 @@ void simulation::init() {
         node_generator = new nodeGenerator(boundary_points);
         node_generator->init();
     }
+    if(table == nullptr) {
+        // setup lookup
+        table = new lookup(1,0.0,1.0,false);
+        table->set_bypass(parameters.bypass_lookup);
+    }
     // then rewrite the structure into the actual nodes
     for(auto node_info : node_generator->node_infos) {
         auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position,node_info->boundary);
@@ -101,13 +106,10 @@ void simulation::init() {
         n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->rho = 1;
         n->u.setZero();
-        n->data = equilibrium(n);
+        n->data = table->equilibrium(n);
         n->copy = n->data;
         nodes.push_back(n);
     }
-    // setup lookup
-    table = new lookup(2,0.0,1.0,false);
-    //table->set_bypass(true);
 }
 
 void simulation::run() {
