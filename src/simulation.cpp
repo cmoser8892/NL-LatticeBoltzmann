@@ -59,7 +59,7 @@ void simulation::bounce_back() {
 void simulation::collisions() {
     double relax = parameters.relaxation;
     for(auto node: nodes) {
-        node->data -= relax * (node->data - equilibrium(node));
+        node->data -= relax * (node->data - table->equilibrium(node));
     }
 }
 
