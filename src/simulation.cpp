@@ -130,7 +130,9 @@ void simulation::run() {
     } */
     collisions();
     for(auto n : nodes) {
-        //debug_node(n, true);
+        if(n->node_type == WET) {
+            // debug
+        }
     }
 }
 /**

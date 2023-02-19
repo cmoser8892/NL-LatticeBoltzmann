@@ -14,8 +14,8 @@
 // standard sliding lid
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int size = 42;
-    int steps = 250;
+    int size = 4;
+    int steps = 50000;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
