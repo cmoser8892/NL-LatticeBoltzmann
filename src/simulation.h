@@ -16,6 +16,9 @@ typedef struct simulation_parameters {
     double relaxation = 0.5;
     double u_wall = 0;
     bool bypass_lookup = true;
+    double lookup_floor = -1.0;
+    double lookup_ceiling = 1.0;
+    uint32_t lookup_bits = 1;
 }simulation_parameters_t;
 
 class simulation {

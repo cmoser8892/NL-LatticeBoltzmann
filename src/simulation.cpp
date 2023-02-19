@@ -95,7 +95,10 @@ void simulation::init() {
     }
     if(table == nullptr) {
         // setup lookup
-        table = new lookup(1,0.0,1.0,false);
+        table = new lookup(parameters.lookup_bits,
+                           parameters.lookup_floor,
+                           parameters.lookup_ceiling,
+                           false);
         table->set_bypass(parameters.bypass_lookup);
     }
     // then rewrite the structure into the actual nodes
@@ -126,6 +129,9 @@ void simulation::run() {
         collision(n,parameters.relaxation);
     } */
     collisions();
+    for(auto n : nodes) {
+        //debug_node(n, true);
+    }
 }
 /**
  * @fn void simulation::get_data(bool write_to_file)

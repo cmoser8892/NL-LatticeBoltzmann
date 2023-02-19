@@ -14,8 +14,8 @@
 // standard sliding lid
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int size = 152;
-    int steps = 10000;
+    int size = 42;
+    int steps = 250;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
@@ -24,15 +24,15 @@ int main(int argc, char *argv[]) {
     //gen.set_no_ordering();
     gen.init();
     // gen.set_no_ordering();
-    simulation sim(&boundaries,&gen);
-    sim.init();
     // init sim parameters
     double re = 1000;
     double base_length = size - 2;
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
+    simulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
+    sim.init();
     // run sim
     for(int i = 0; i < steps; ++i) {
         sim.run();
