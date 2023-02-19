@@ -33,10 +33,10 @@ void lookup::fill_table() {
         for(int j = -1; j < 2; j++) {
             auto cy_bit = reduce_32_2(j);
             for(int k = 0; k < u_bit_number; ++k) {
-                ux = k*u_step;
+                ux = u_floor +k*u_step;
                 uint32_t ux_bit = u_adc_converter_lower(ux);
                 for(int l = 0; l < u_bit_number; ++l) {
-                    uy = l* u_step;
+                    uy = u_floor + l* u_step;
                     uint32_t uy_bit = u_adc_converter_lower(uy);
                     // calculate and put key + number together
                     uint64_t key = key_generation(cx_bit,cy_bit,ux_bit,uy_bit);
@@ -158,6 +158,7 @@ array_t lookup::equilibrium(node* n) {
     if(recalculate) {
         error_flag = false;
         for (int i = 0; i < CHANNELS; ++i) {
+            ++recalc;
             double cx = velocity_set.col(i).x();
             double cy = velocity_set.col(i).y();
             double w = weights.col(i).x();
