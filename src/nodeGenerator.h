@@ -41,7 +41,6 @@ class nodeGenerator {
     void board_creation(unsigned int size);
     void check_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
-
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);

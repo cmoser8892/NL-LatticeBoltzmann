@@ -132,6 +132,7 @@ void simulation::run() {
     for(auto n : nodes) {
         if(n->node_type == WET) {
             // debug
+            debug_node(n,true);
         }
     }
 }

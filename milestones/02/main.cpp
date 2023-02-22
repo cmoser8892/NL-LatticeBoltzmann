@@ -14,8 +14,8 @@
 // standard sliding lid
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int size = 4;
-    int steps = 80;
+    int size = 302;
+    int steps = 100000;
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
@@ -39,6 +39,10 @@ int main(int argc, char *argv[]) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
+    }
+    for(int i = 0; i < 10; ++i) {
+        sim.run();
+        sim.get_data(false,p);
     }
     sim.get_data(true,p);
     auto stop = std::chrono::high_resolution_clock::now();
