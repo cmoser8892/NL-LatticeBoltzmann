@@ -11,6 +11,7 @@
 #include "nodeGenerator.h"
 #include "types.h"
 #include "lookup_table.h"
+#include "functions.h"
 
 typedef struct simulation_parameters {
     double relaxation = 0.5;
