@@ -141,7 +141,7 @@ bool rhoWatchdog::check(node *n,int step) {
                   << std::endl;
         std::cerr << "Rho previous: " << rho_old << std::endl;
         std::cerr << "Rho now: " << n->rho << std::endl;
-        std::cerr << std::enld;
+        std::cerr << std::endl;
         return_value = true;
     }
     rho(int(n->position(0)),int(n->position(1))) = n->rho;
