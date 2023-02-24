@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int steps = 100;
+    int steps = 1000;
     unsigned int size = 52;
     unsigned int sub_size = 42;
     point_t c = {size,size};
