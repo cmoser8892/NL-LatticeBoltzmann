@@ -176,7 +176,7 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
 }
 /**
  * @fn void nodeGenerator::write_data_to_file(bool write)
- * @brief
+ * @brief does what it says check if params are set correctlly
  * @param write
  */
 void nodeGenerator::write_data_to_file(bool write) {
@@ -219,6 +219,10 @@ void nodeGenerator::write_data_to_file(bool write) {
     out.close();
 }
 
+/**
+ * @fn void nodeGenerator::board_creation(unsigned int size)
+ * @brief create a board based on sizes given
+ */
 void nodeGenerator::board_creation(unsigned int size) {
     // todo revise
     /*
@@ -240,6 +244,11 @@ void nodeGenerator::board_creation(unsigned int size) {
      */
 }
 
+/**
+ * @fn void nodeGenerator::check_nodes(handle_t* current)
+ * @brief check if the node is inside the canvas defined by the straights and deletes the rest
+ * @param current
+ */
 void nodeGenerator::check_nodes(handle_t* current) {
     straightGenerator straight(points);
     straight.init();
@@ -261,6 +270,11 @@ void nodeGenerator::check_nodes(handle_t* current) {
     node_infos = reformed_nodes;
 }
 
+/**
+ * @fn void nodeGenerator::add_boundary_nodes(handle_t* current)
+ * @brief does what it says after sorting out everything we still have to add the boundary nodes
+ * @param current
+ */
 void nodeGenerator::add_boundary_nodes(handle_t* current) {
     // lastlly add the boundary points
     for(auto p : points->boundary_points) {
@@ -276,7 +290,8 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
         node_infos.push_back(n);
     }
 }
-// public
+
+/// public
 /**
  * @fn void nodeGenerator::set_discovery_vector(vector_t set)
  * @brief set the 2D discovery vector, the function linear generation will use that vector during node discovery

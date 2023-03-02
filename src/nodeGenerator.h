@@ -20,6 +20,7 @@ typedef enum readBack {
     LINKS,
     ERROR = 255
 }readBack_t;
+
 /**
  * In the CG class we discussed memory arrangements for NL data,
  * a sort of Z shape seems most appropriate at least try to order them close in memory
@@ -47,7 +48,6 @@ class nodeGenerator {
     ~nodeGenerator();
     void set_discovery_vector(vector_t set);
     void set_redo_save(bool r, bool s);
-    void set_no_ordering();
     void init();
     void init(unsigned int size);
     void delete_node_infos();
