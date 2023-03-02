@@ -37,6 +37,7 @@ class boundaryPointConstructor {
     void init_quader_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_inner(point_t start, point_t cntiues, vector_t inner_size);
+    void delete_elements();
 };
 
 #endif // NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H
