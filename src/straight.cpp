@@ -1,11 +1,11 @@
-//
-// Created by christoph on 14.01.23.
-//
-
 #include "straight.h"
 #include <iostream>
 
 /// private
+/**
+ * @fn void straightGenerator::calculate_mass_center()
+ * @brief calculates the mass center of all the boundary points
+ */
 void straightGenerator::calculate_mass_center() {
     // add all the points up, divide by the number of points
     mass_center.setZero();
@@ -15,6 +15,10 @@ void straightGenerator::calculate_mass_center() {
     mass_center /= double(points->boundary_points.size());
 }
 
+/**
+ * @fn void straightGenerator::calculate_all_straights()
+ * @brief calculates the straights between all the boundary points, doesnt reduce them though
+ */
 void straightGenerator::calculate_all_straights() {
     auto iter = points->boundary_points.begin();
     while(iter != points->boundary_points.end()) {
@@ -35,23 +39,39 @@ void straightGenerator::calculate_all_straights() {
     }
 }
 
-
 /// public
+/**
+ * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
+ * @brief constructor seed the boundary points pointer
+ * @param p
+ */
 straightGenerator::straightGenerator(boundaryPointConstructor *p) {
     points = p;
 }
 
+/**
+ * @fn straightGenerator::~straightGenerator()
+ * @brief deletes the straights vector
+ */
 straightGenerator::~straightGenerator() {
-    for (auto s: surfaces) {
-        delete s;
-    }
+    delete_vector();
 }
 
+/**
+ * @fn void straightGenerator::init()
+ * @brief calculates the mass center and all the straights
+ */
 void straightGenerator::init() {
     calculate_mass_center();
     calculate_all_straights();
 }
 
+/**
+ * @fn int straightGenerator::calculate_intersections(nodePoint_t* node_point)
+ * @brief calculates how many intersections there are between the node point and the mass center
+ * @param node_point
+ * @return number of intersections
+ */
 int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     /// surface based algorithm to calcualte intersections
     /**
@@ -106,6 +126,12 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     return number_of_intersections;
 }
 
+/**
+ * @fn bool straightGenerator::node_inside(nodePoint_t *point)
+ * @brief number of intersections modulo 2, if it can be divided by two and noting remains the node is inside
+ * @param point
+ * @return false if inside true if outside
+ */
 bool straightGenerator::node_inside(nodePoint_t *point) {
     // even out; odd in
     /// uses a surface representation to calculate weather nodes are inside or outside
@@ -113,48 +139,12 @@ bool straightGenerator::node_inside(nodePoint_t *point) {
     return ((value%2) == 0);
 }
 
-bool straightGenerator::node_intersections(nodePoint_t *node_point) {
-    // doesnt work?!?!?!
-    /// written after
-    // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
-    int number_of_intersections = 0;
-    double x1 = node_point->position.x();
-    double y1 = node_point->position.y();
-    double x2 = mass_center.x();
-    double y2 = mass_center.y();
-    std::vector<point_t> already_found;
-    for(auto surf : surfaces) {
-        double x3 = surf->point.x();
-        double y3 = surf->point.y();
-        double x4 = surf->point.x() + surf->direction.x();
-        double y4 = surf->point.y() + surf->direction.y();
-        // calculate t and u
-        double denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-        double numerator = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4);
-        //
-        double t = numerator / denominator;
-        double u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
-        if ((1.0 >= t >= 0.0) && (u >= 0)) {
-            double x = x1 + t * (x2 - x1);
-            double y = y1 + t * (y2 - y1);
-            point_t point = {x,y};
-            bool add = true;
-            for (auto ps : already_found) {
-                if(ps == point) {
-                    add = false;
-                }
-            }
-            already_found.push_back(point);
-            if(add) {
-                number_of_intersections++;
-            }
-        }
-
+/**
+ * @fn void straightGenerator::delete_vector()
+ * @brief deletes the vector infos
+ */
+void straightGenerator::delete_vector() {
+    for (auto s: surfaces) {
+        delete s;
     }
-    if(1) {
-        std::cout << "Result" << std::endl;
-        std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
-        std::cout << number_of_intersections << std::endl;
-    }
-    return ((number_of_intersections%2) == 0);
 }

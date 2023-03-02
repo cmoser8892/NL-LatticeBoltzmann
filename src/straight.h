@@ -31,6 +31,6 @@ class straightGenerator {
     ~straightGenerator();
     void init();
     bool node_inside(nodePoint_t *point);
-    bool node_intersections(nodePoint_t *point);
+    void delete_vector();
 };
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H
