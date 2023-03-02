@@ -1,4 +1,3 @@
-
 #include <fstream>
 #include <iostream>
 #include <x86intrin.h>

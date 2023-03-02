@@ -1,7 +1,3 @@
-//
-// Created by simulation on 21.11.22.
-//
-
 #ifndef NL_LATTICEBOLTZMANN_FUNCTIONS_H
 #define NL_LATTICEBOLTZMANN_FUNCTIONS_H
 

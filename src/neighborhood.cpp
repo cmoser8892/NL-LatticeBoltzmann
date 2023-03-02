@@ -1,4 +1,3 @@
-
 #include "neighborhood.h"
 #include "helper_functions.h"
 #include "simulation.h"

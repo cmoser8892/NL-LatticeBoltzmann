@@ -1,9 +1,3 @@
-/**
- * Thoughts:
- * got more or less two possiblities to implement moving bbs
- * do it addhoc style
- * or create a full boundary representation of a sliding lid and then use that
- */
 #ifndef MY_GENERAL_CODE_TYPES_H
 #define MY_GENERAL_CODE_TYPES_H
 

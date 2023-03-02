@@ -1,4 +1,3 @@
-
 #include "simulation.h"
 #include "helper_functions.h"
 #include "functions.h"

@@ -1,7 +1,3 @@
-//
-// Created by christoph on 14.01.23.
-//
-
 #ifndef NL_LATTICEBOLTZMANN_STRAIGHT_H
 #define NL_LATTICEBOLTZMANN_STRAIGHT_H
 

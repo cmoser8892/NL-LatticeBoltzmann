@@ -1,4 +1,3 @@
-
 #include "lookup_table.h"
 #include "helper_functions.h"
 /// private
