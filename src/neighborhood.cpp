@@ -1,8 +1,11 @@
 #include "neighborhood.h"
 #include "helper_functions.h"
-#include "simulation.h"
 
-// order nodes base on the z spacial curve
+/**
+ * @fn void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes)
+ * @brief fills the keys map based on the z-order of the position making a hash map
+ * @param nodes
+ */
 void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
    // compute grid cell coordinates and store keys
    for(auto node  : nodes) {
@@ -19,6 +22,11 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
    }
 }
 
+/**
+ * @fn void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes)
+ * @brief calculates the z-order of the position of the neighbours and looks for them in the hash table
+ * @param nodes
+ */
 void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
    // fill the keys
    fill_keys(nodes);
