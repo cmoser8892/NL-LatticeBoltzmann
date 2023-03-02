@@ -99,7 +99,6 @@ TEST(FunctionalTest,correct_macro) {
 
 TEST(FunctionalTest, equilibrium123) {
     /// testing the equilbirum function
-    // todo maybe introduce some fuzzing ?!
     handle_t h = 1;
     double rho = 4;
     double ux = 6;
@@ -839,7 +838,6 @@ TEST(Orderingtests, sign_reduce) {
 
 TEST(LookupTabletests, equilibrum_correctness) {
     /// testing the equilbirum function
-    // todo maybe introduce some fuzzing ?!
     lookup lookup(8,0.0,1.0,false);
     lookup.set_bypass(true); // bypass
     handle_t h = 1;
