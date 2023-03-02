@@ -5,7 +5,14 @@
 
 /// simulation run class
 // private
+
+/// todo make the copy field non sticky aka delete stuff inbetween?!
+/**
+ * @fn void simulation::streaming_step_1()
+ * @brief streaming is done via two steps first we put info in the copy field in the node
+ */
 void simulation::streaming_step_1() {
+    // streaming is only for wet nodes!!!!
     for(auto node : nodes) {
         if(node->node_type == WET) {
             // very important so that we later not rewrite the value back to equilibrium
@@ -20,8 +27,13 @@ void simulation::streaming_step_1() {
     }
 }
 
+/**
+ * @fn void simulation::streaming_step_2()
+ * @brief we copy the data from copy over to the data field
+ */
 void simulation::streaming_step_2() {
     // basically just copy over data, importantly not channel 0!
+    // streaming is only for wet nodes!!!!
     for(auto node : nodes) {
         if(node->node_type == WET) {
             for(int i = 1; i < node->data.size(); ++i) {
@@ -31,6 +43,10 @@ void simulation::streaming_step_2() {
     }
 }
 
+/**
+ * @fn void simulation::bounce_back()
+ * @brief does the bounce back for all the dry nodes
+ */
 void simulation::bounce_back() {
     // aka a streaming step on boundary nodes only
     // when doing a bounce back it is crucical that all (wet) data is already in data and not in copy!!!
@@ -56,6 +72,10 @@ void simulation::bounce_back() {
     }
 }
 
+/**
+ * @fn void simulation::collisions()
+ * @brief collision step
+ */
 void simulation::collisions() {
     double relax = parameters.relaxation;
     for(auto node: nodes) {
@@ -64,25 +84,41 @@ void simulation::collisions() {
 }
 
 // public
+/**
+ * @fn simulation::simulation(boundaryPointConstructor *c)
+ * @brief constructor
+ * @param c
+ */
 simulation::simulation(boundaryPointConstructor *c) {
     boundary_points = c;
 }
 
+/**
+ * @fn simulation::simulation(boundaryPointConstructor *c, nodeGenerator *g)
+ * @brief constructor
+ * @param c
+ * @param g
+ */
 simulation::simulation(boundaryPointConstructor *c, nodeGenerator *g) {
     boundary_points = c;
     node_generator = g;
 }
 
+/**
+ * @fn simulation::~simulation()
+ * @brief deconstructor, deletes all the nodes to prevent memory leaks
+ */
 simulation::~simulation() {
-    for (auto n : nodes) {
-        delete n;
-    }
+    delete_nodes();
 }
 void simulation::set_simulation_parameters(const simulation_parameters_t t) {
     parameters = t;
 }
 
-
+/**
+ * @fn void simulation::init()
+ * @brief initialize the nodes, without the calling this function once sim wont work
+ */
 void simulation::init() {
     // first initialize the node generator with the boundary points
     if(boundary_points == nullptr) {
@@ -115,6 +151,10 @@ void simulation::init() {
     }
 }
 
+/**
+ * @fn void simulation::run()
+ * @brief on sim run
+ */
 void simulation::run() {
     // run all substeps
     // moving wall missing i guess
@@ -130,6 +170,7 @@ void simulation::run() {
     } */
     collisions();
 }
+
 /**
  * @fn void simulation::get_data(bool write_to_file)
  * @brief puts the ux, uy and rho of individual nodes into a flow-field for visualization
@@ -159,4 +200,12 @@ void simulation::get_data(bool write_to_file, point_t original_size) {
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 
-
+/**
+ * @fn void simulation::delete_nodes()
+ * @brief deletes the nodes as it says
+ */
+void simulation::delete_nodes() {
+    for (auto n : nodes) {
+        delete n;
+    }
+}

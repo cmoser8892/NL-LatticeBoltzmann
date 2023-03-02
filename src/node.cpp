@@ -1,5 +1,14 @@
 #include "node.h"
 
+/**
+ * @fn node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type )
+ * @brief constructor sets all the variables
+ * @param h
+ * @param dimensions
+ * @param channels
+ * @param pos
+ * @param type
+ */
 node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type ) {
     handle = h;
     boundary_type = type;
@@ -11,7 +20,7 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
     }
     rho = 1;
     data.setZero(channels);
-    // todo make this variable ?!
+    // todo is copy necessary ?!
     copy.setZero(channels);
     u.setZero(dimensions);
     position = pos;

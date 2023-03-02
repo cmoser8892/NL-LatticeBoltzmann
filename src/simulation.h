@@ -37,6 +37,7 @@ class simulation {
     void init();
     void run();
     void get_data(bool write_to_file, point_t org);
+    void delete_nodes();
 };
 
 #endif // MY_LATTICE_BOLTZMANN_H
