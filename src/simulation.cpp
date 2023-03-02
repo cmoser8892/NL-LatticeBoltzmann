@@ -77,6 +77,8 @@ void simulation::bounce_back() {
  * @brief collision step
  */
 void simulation::collisions() {
+    // todo investigate singling out the equilibrium calculation
+    // todo big part in the callgrinds shows up as data transfer of the arrays
     double relax = parameters.relaxation;
     for(auto node: nodes) {
         node->data -= relax * (node->data - table->equilibrium(node));
@@ -156,6 +158,7 @@ void simulation::init() {
  * @brief on sim run
  */
 void simulation::run() {
+    // todo reduce full runs through the nodes
     // run all substeps
     // moving wall missing i guess
     streaming_step_1();

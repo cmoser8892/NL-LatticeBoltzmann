@@ -1,9 +1,15 @@
 #include <fstream>
 #include <iostream>
-#include <x86intrin.h>
+#include <x86intrin.h> // x86 instructions
 #include "helper_functions.h"
 
-// compares two arrays point by point
+/**
+ * @fn bool node_position_comparison(node* n, array_t* position)
+ * @brief compares the nodes postion with an postion in an array
+ * @param n
+ * @param position
+ * @return
+ */
 bool node_position_comparison(node* n, array_t* position) {
     array_t* node_position = &n->position;
     // check same size
@@ -20,7 +26,13 @@ bool node_position_comparison(node* n, array_t* position) {
     return true;
 }
 
-// writes the data to
+/**
+ * @fn void write_flowfield_data(flowfield_t * field, std::string filename, bool write_to_file)
+ * @brief writes the data form a flow-field into a file
+ * @param field
+ * @param filename
+ * @param write_to_file
+ */
 void write_flowfield_data(flowfield_t * field, std::string filename, bool write_to_file) {
     std::ofstream out;
     out.open(filename);
@@ -37,6 +49,14 @@ void write_flowfield_data(flowfield_t * field, std::string filename, bool write_
     out.close();
 }
 
+/**
+ * @fn bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* limit_upper)
+ * @brief checks weather or not a point is inside the limit defined py two points
+ * @param p
+ * @param limit_lower
+ * @param limit_upper
+ * @return
+ */
 bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* limit_upper) {
     bool return_value = true;
     if(p->x() < limit_lower->x() || p->x() > limit_upper->x()) {
@@ -47,7 +67,13 @@ bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* 
     }
     return return_value;
 }
-
+ /**
+  * @fn bool compare_two_points(point_t* p1, point_t* p2 )
+  * @brief compares tow points
+  * @param p1
+  * @param p2
+  * @return
+  */
 bool compare_two_points(point_t* p1, point_t* p2 ) {
     // double comparison is actually == standard
     bool return_value = true;
@@ -59,23 +85,13 @@ bool compare_two_points(point_t* p1, point_t* p2 ) {
     }
     return return_value;
 }
-
-bool same_index(node* n) {
-    // array wise comparison
-    array_t pos = n->position;
-    for(auto n: pos) {
-        for(auto comp : pos) {
-            // == didnt know is a buildin c++ comparator
-            if(n == comp) {
-            }
-            else {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
+/**
+ * @fn std::vector<std::string> split_string (std::string s, std::string delimiter)
+ * @brief splits a string
+ * @param s
+ * @param delimiter
+ * @return string parts in a vector
+ */
 std::vector<std::string> split_string (std::string s, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     std::string token;
@@ -91,7 +107,13 @@ std::vector<std::string> split_string (std::string s, std::string delimiter) {
     return res;
 }
 
-// there are 2 assembler functions to make bits interleave on x86 _pdep and _pext
+/**
+ * @fn uint64_t bit_interleaving(uint32_t x, uint32_t y)
+ * @brief classical bit interleaving without x86
+ * @param x
+ * @param y
+ * @return interleaved
+ */
 uint64_t bit_interleaving(uint32_t x, uint32_t y) {
     uint64_t z = 0;
     for(int i = 0; i < CHAR_BIT*sizeof(x); ++i)
@@ -99,57 +121,93 @@ uint64_t bit_interleaving(uint32_t x, uint32_t y) {
     return z;
 }
 
+/**
+ * @fn uint64_t bit_interleaving_2d(uint32_t x, uint32_t y)
+ * @brief _pdep bit interleaving, specific to x86 thou
+ * @param x
+ * @param y
+ * @return interleaved bits
+ */
 uint64_t bit_interleaving_2d(uint32_t x, uint32_t y) {
     return _pdep_u64(x,0x5555555555555555) | _pdep_u64(y,0xaaaaaaaaaaaaaaaa);
 }
 
+/**
+ * @fn uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z)
+ * @brief interleaves 32 bits using the x86 instruction directly
+ * @param x only least significant 21 bits are interleaved
+ * @param y only least significant 21 bits are interleaved
+ * @param z only least significant 21 bits are interleaved
+ * @return interleaved result
+ */
 uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z) {
     // mask out the first part
     uint32_t mask = 0x0001FFFFF;
     x &= mask;
     y &= mask;
     z &= mask;
-    /*
-    // mask generator
-    for(int i = 63; i >= 0; --i) {
-        if(i%3== 2) {
-            std::cout << "1";
-        }
-        else {
-            std::cout << "0";
-        }
-    }
-     */
     uint64_t c =   _pdep_u64(x,0x9249249249249249)
                  | _pdep_u64(y,0x2492492492492492)
                  | _pdep_u64(z,0x4924924924924924);
     return c;
 }
 
+/**
+ * @fn uint32_t bit_extraleaving_2d_x(uint64_t v)
+ * @brief extraleaving function with a specific mask
+ * @param v
+ * @return
+ */
 uint32_t bit_extraleaving_2d_x(uint64_t v) {
     return _pext_u64(v,0x5555555555555555);
 }
 
+/**
+ * @fn uint32_t bit_extraleaving_2d_y(uint64_t v)
+ * @brief extraleaving function with a specific mask
+ * @param v
+ * @return
+ */
 uint32_t bit_extraleaving_2d_y(uint64_t v) {
     return _pext_u64(v,0xaaaaaaaaaaaaaaaa);
 }
 
+/**
+ * @fn uint32_t bit_extraleaving_3d_x(uint64_t v)
+ * @brief extraleaving function with a specific mask
+ * @param v
+ * @return
+ */
 uint32_t bit_extraleaving_3d_x(uint64_t v) {
     return _pext_u64(v,0x9249249249249249);
 }
 
+/**
+ * @fn uint32_t bit_extraleaving_3d_y(uint64_t v)
+ * @brief extraleaving function with a specific mask
+ * @param v
+ * @return
+ */
 uint32_t bit_extraleaving_3d_y(uint64_t v) {
     return _pext_u64(v,0x2492492492492492);
 }
 
+/**
+ * @fn uint32_t bit_extraleaving_3d_z(uint64_t v)
+ * @brief extraleaving function with a specific mask
+ * @param v
+ * @return
+ */
 uint32_t bit_extraleaving_3d_z(uint64_t v) {
     return _pext_u64(v,0x4924924924924924);
 }
 
+/**
+ * @fn uint32_t reduce_32_2(uint32_t b)
+ * @brief takes the most significant and least significant bits and reduces them  to 2 bits
+ * @param b
+ * @return 2 bit number
+ */
 uint32_t reduce_32_2(uint32_t b) {
     return _pext_u32(b,0x80000001);
-}
-
-bool compare_handles(nodePoint_t *a, nodePoint_t *b) {
-    return a->handle < b->handle;
 }

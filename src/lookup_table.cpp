@@ -1,5 +1,7 @@
 #include "lookup_table.h"
 #include "helper_functions.h"
+
+// only stuff used got a doxygen
 /// private
 void lookup::check_u_value_outside(double u) {
     if(u < u_floor) {
@@ -47,6 +49,15 @@ void lookup::fill_table() {
     }
 }
 
+/**
+ * @fn double lookup::calculate_function(double cx, double cy, double ux, double uy)
+ * @brief calculates the later part of the equilbirum function
+ * @param cx
+ * @param cy
+ * @param ux
+ * @param uy
+ * @return
+ */
 double lookup::calculate_function(double cx, double cy, double ux, double uy) {
     return (1 + 3*cx*ux + 3*cy*uy + 4.5*cx*cx*ux*ux + 9*cx*ux*cy*uy + 4.5*cy*cy*uy*uy - 1.5*ux*ux - 1.5*uy*uy);
 }
@@ -126,6 +137,12 @@ double lookup::look_at_table(uint32_t cx_bit, uint32_t cy_bit, uint32_t ux_bit, 
     return return_value;
 }
 
+/**
+ * @fn array_t lookup::equilibrium(node* n)
+ * @brief calculates the equilibrium function
+ * @param n
+ * @return
+ */
 array_t lookup::equilibrium(node* n) {
     array_t return_array;
     return_array.setZero(CHANNELS);

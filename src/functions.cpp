@@ -9,6 +9,12 @@ matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
 matrix_t weights = {{4.0/9,1.0/9,1.0/9,1.0/9,1.0/9,1.0/36,1.0/36,1.0/36,1.0/36}};
 
 /// implementation is for d2q9
+/**
+ * @fn array_t equilibrium(node* node)
+ * @brief implementation of the equilibrium function
+ * @param node
+ * @return
+ */
 array_t equilibrium(node* node) {
     array_t return_array;
     return_array.setZero(node->data.size());
@@ -33,36 +39,70 @@ array_t equilibrium(node* node) {
     return return_array;
 }
 
+/**
+ * @fn void collision(node* node, double relaxation)
+ * @brief implementation of the collision function
+ * @param node
+ * @param relaxation
+ */
 void collision(node* node, double relaxation) {
     node->data -= relaxation * (node->data - equilibrium(node));
 }
 
+/**
+ * @fn void macro( node* node)
+ * @brief calculates the macroscopic values for the equilibrium function
+ * @param node
+ */
 void macro( node* node) {
     node->rho = node->data.sum(); // problem if 0!!
     node->u(0) = ((node->data(1)+node->data(5)+node->data(8))-
                   (node->data(3)+node->data(6) +node->data(7)));
     node->u(1) = ((node->data(2)+node->data(5)+node->data(6))-
                   (node->data(4)+node->data(7) +node->data(8)));
-    node->u /= node->rho;
+    node->u /= node->rho; // will produce nonsense if div through 0
 }
 
-// write the ux component of the flowfield
+/**
+ * @fn void write_ux(node* node, flowfield_t* ux)
+ * @brief write the ux component of the flowfield
+ * @param node
+ * @param ux
+ */
 void write_ux(node* node, flowfield_t* ux) {
     // dont ask this looks ugly
     ux->operator()(int(node->position(0)),int(node->position(1))) = node->u(0);
 }
 
-// writes the uy_component of a flowfield
+
+/**
+ * @fn void write_uy(node* node, flowfield_t * uy)
+ * @brief writes the uy_component of a flowfield
+ * @param node
+ * @param uy
+ */
 void write_uy(node* node, flowfield_t * uy) {
     // dont ask this looks ugly
     uy->operator()(int(node->position(0)),int(node->position(1))) = node->u(1);
 }
 
+/**
+ * @fn void write_rho(node* node, flowfield_t * rho)
+ * @brief writes the rho component of a flow field
+ * @param node
+ * @param rho
+ */
 void write_rho(node* node, flowfield_t * rho) {
     // dont ask this looks ugly
     rho->operator()(int(node->position(0)),int(node->position(1))) = node->rho;
 }
 
+/**
+ * @fn void debug_node(node* node, bool printing)
+ * @brief print out stuff dont forget to set printing to true
+ * @param node
+ * @param printing
+ */
 void debug_node(node* node, bool printing) {
     // print out the data values and calculate the density
     if(printing) {
@@ -75,6 +115,13 @@ void debug_node(node* node, bool printing) {
     }
 }
 
+/**
+ * @fn double bb_switch_channel(int from_channel, double uw)
+ * @brief applies the moving part of the boundary to a channel
+ * @param from_channel
+ * @param uw
+ * @return
+ */
 double bb_switch_channel(int from_channel, double uw) {
     // incomplete all around implementation only for top side aka channels 7 and 8
     double return_value = 0;
@@ -92,6 +139,12 @@ double bb_switch_channel(int from_channel, double uw) {
     return return_value;
 }
 
+/**
+ * @fn int switch_link_dimensions(int link_channel)
+ * @brief changes around the channel in a bounce back call
+ * @param link_channel
+ * @return return the right link channel
+ */
 int switch_link_dimensions(int link_channel) {
     // aka hiding an ugly switch case
     int return_channel = -1;
@@ -127,10 +180,23 @@ int switch_link_dimensions(int link_channel) {
     return return_channel;
 }
 
+/**
+ * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
+ * @brief constructor for the rho_watchdog
+ * @param s
+ * @param size
+ */
 rhoWatchdog::rhoWatchdog(double s,point_t size) :sensitivity(s) {
-    rho.setOnes(size.x(),size.y());
+    rho.setOnes(long(size.x()),long(size.y()));
 }
 
+/**
+ * @fn bool rhoWatchdog::check(node *n,int step)
+ * @brief performs a watchdog check of the history of the rho value, aka compares it to the previous one
+ * @param n
+ * @param step
+ * @return
+ */
 bool rhoWatchdog::check(node *n,int step) {
     double rho_old = rho(int(n->position(0)),int(n->position(1)));
     bool return_value = false;
