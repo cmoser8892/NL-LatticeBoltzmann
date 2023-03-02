@@ -6,21 +6,33 @@
 #include <fstream>
 #include <filesystem>
 
+/**
+ * @fn nodeGenerator::nodeGenerator(boundaryPointConstructor *p)
+ * @brief constructor, sets points
+ * @param p
+ */
 nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
 }
 
+/**
+ * @fn nodeGenerator::~nodeGenerator()
+ * @brief deletes all the info about the nodes
+ */
 nodeGenerator::~nodeGenerator() {
-    for(auto n : node_infos) {
-        delete n;
-    }
+    delete_node_infos();
 }
-
+/**
+ * @fn void nodeGenerator::linear_generation()
+ * @brief generates nodes until it hits a boundary useful to make simple 1d tests
+ */
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
     for(auto p : points->boundary_points) {
         point_t current = p->point + discovery_vector;
+        // until a boundary points is hit create more points
+        // also check weather or not inside boundaries
         while(!check_other_boundary_hit(p,current)) {
             auto n = new nodePoint_t;
             n->handle = handle_counter;
@@ -33,10 +45,17 @@ void nodeGenerator::linear_generation() {
             current += discovery_vector;
         }
     }
+    // finally add boundary nodes
     add_boundary_nodes(&handle_counter);
 }
-
-bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point){
+/**
+ * @fn bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point)
+ * @brief checks if the next point would be a boundary or outside
+ * @param p
+ * @param check_point
+ * @return true or false based if boundary/not also checks if still inside bounds
+ */
+bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point) {
     // returns true if hit or outside false if not
     bool return_value = false;
     point_t check = check_point.base();
@@ -56,13 +75,21 @@ bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_p
     return return_value;
 }
 
+
+/**
+ * @fn void nodeGenerator::determine_neighbors()
+ * @brief hull for the neighbourhood class with its determine_neighbors call
+ */
 void nodeGenerator::determine_neighbors() {
     neighbourhood neighbourhood;
     neighbourhood.determine_neighbors(node_infos);
 }
 
-
-
+/**
+ * @fn void nodeGenerator::determine_neighbors()
+ * @brief does what it says, no real checking and correcting thou !!
+ * @return returns false if a file does not exist
+ */
 bool nodeGenerator::read_data_from_file() {
     // redo the struct
     if(redo) {return false;}
@@ -94,7 +121,13 @@ bool nodeGenerator::read_data_from_file() {
     }
     return return_value;
 }
-
+/**
+ * @fn void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t* chop)
+ * @brief function to translate data on files to data for the class
+ * @param n
+ * @param s
+ * @param chop
+ */
 void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t* chop) {
     switch(*chop) {
     case HANDLE:
@@ -141,7 +174,11 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
         throw std::invalid_argument("Error while parsing");
     }
 }
-
+/**
+ * @fn void nodeGenerator::write_data_to_file(bool write)
+ * @brief
+ * @param write
+ */
 void nodeGenerator::write_data_to_file(bool write) {
     /// only write when given the task
     if(!write) {
@@ -183,6 +220,8 @@ void nodeGenerator::write_data_to_file(bool write) {
 }
 
 void nodeGenerator::board_creation(unsigned int size) {
+    // todo revise
+    /*
     // create a drawing board of nodes with side lengths size
     handle_t handle_counter = 1;
     for(int i = 0; i < size; ++i) {
@@ -198,6 +237,7 @@ void nodeGenerator::board_creation(unsigned int size) {
             node_infos.push_back(n);
         }
     }
+     */
 }
 
 void nodeGenerator::check_nodes(handle_t* current) {
@@ -245,17 +285,17 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
 void nodeGenerator::set_discovery_vector(vector_t set) {
     discovery_vector = set;
 }
-
+/**
+ * @fn void nodeGenerator::set_redo_save(bool r, bool s)
+ * @brief
+ * @param r redo
+ * @param s safe
+ */
 void nodeGenerator::set_redo_save(bool r, bool s) {
     redo = r;
     save = s;
 }
 
-void nodeGenerator::set_no_ordering() {
-    // some tests requiere nodes to be at expected postions
-    // makes thous not break
-    no_ordering = true;
-}
 /**
  * @fn void nodeGenerator::init()
  * @brief initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that
@@ -281,5 +321,16 @@ void nodeGenerator::init(unsigned int size) {
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
         write_data_to_file(save);
+    }
+}
+
+/**
+ * @fn void nodeGenerator::delete_node_infos()
+ * @brief deletes the content of the node_infos vector
+ */
+void nodeGenerator::delete_node_infos() {
+    // delete node info
+    for(auto n : node_infos) {
+        delete n;
     }
 }

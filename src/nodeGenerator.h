@@ -50,6 +50,7 @@ class nodeGenerator {
     void set_no_ordering();
     void init();
     void init(unsigned int size);
+    void delete_node_infos();
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODEGENERATOR_H
