@@ -1,5 +1,6 @@
 #include <iostream>
 #include "boundary_point_generator.h"
+
 /**
  * @fn boundaryPointConstructor::boundaryPointConstructor(point_t s)
  * @brief constructor of the boundary points
