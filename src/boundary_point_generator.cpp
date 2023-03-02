@@ -98,7 +98,7 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
  * @param p
  */
 void boundaryPointConstructor::init_quader(point_t p) {
-    init_quader(p,size);
+    init_quader(p,limits);
 }
 
 /**
