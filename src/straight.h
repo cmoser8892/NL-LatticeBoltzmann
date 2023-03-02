@@ -14,7 +14,7 @@ typedef struct straight {
     vector_t direction;
 }straight_t;
 
-// for easier nomenclatur
+// for easier nomenclature
 using surface_t = straight_t;
 
 class straightGenerator {
