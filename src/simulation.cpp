@@ -81,7 +81,16 @@ void simulation::collisions() {
     // todo big part in the callgrinds shows up as data transfer of the arrays
     double relax = parameters.relaxation;
     for(auto node: nodes) {
-        node->data -= relax * (node->data - table->equilibrium(node));
+        double ux = node->u(0);
+        double uy = node->u(1);
+        double rho = node->rho;
+        for(int i = 0; i < CHANNELS; ++i) {
+            double cx = velocity_set.col(i).x();
+            double cy = velocity_set.col(i).y();
+            double w = weights.col(i).x();
+            node->data(i) -= relax * (node->data(i) - w*rho*(1 + 3*cx*ux + 3*cy*uy + 4.5*cx*cx*ux*ux + 9*cx*ux*cy*uy + 4.5*cy*cy*uy*uy - 1.5*ux*ux - 1.5*uy*uy));
+        }
+        //node->data -= relax * (node->data - table->equilibrium(node));
     }
 }
 

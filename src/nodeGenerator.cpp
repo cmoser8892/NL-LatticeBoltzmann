@@ -225,7 +225,6 @@ void nodeGenerator::write_data_to_file(bool write) {
  */
 void nodeGenerator::board_creation(unsigned int size) {
     // todo revise
-    /*
     // create a drawing board of nodes with side lengths size
     handle_t handle_counter = 1;
     for(int i = 0; i < size; ++i) {
@@ -241,7 +240,6 @@ void nodeGenerator::board_creation(unsigned int size) {
             node_infos.push_back(n);
         }
     }
-     */
 }
 
 /**
