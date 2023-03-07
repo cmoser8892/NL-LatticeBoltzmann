@@ -120,7 +120,7 @@ void debug_node(node* node, bool printing) {
  * @brief applies the moving part of the boundary to a channel
  * @param from_channel
  * @param uw
- * @return
+ * @return how much needs to be subtracted for moving boundaries
  */
 double bb_switch_channel(int from_channel, double uw) {
     // incomplete all around implementation only for top side aka channels 7 and 8
