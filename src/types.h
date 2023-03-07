@@ -48,6 +48,7 @@ typedef enum boundaryType {
  * maybe some shenanigans with 0 and max size_t
  * currently handles are only valid if > 0 and smaller < Max size
  * may have to be changed, also we get like 9e18 valid nodes
+ * todo: can be positional/already is...
  */
 typedef struct toLinks {
     int channel;

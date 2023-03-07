@@ -78,10 +78,15 @@ void simulation::bounce_back() {
  */
 void simulation::collisions() {
     // todo investigate singling out the equilibrium calculation
-    // todo big part in the callgrinds shows up as data transfer of the arrays
     double relax = parameters.relaxation;
     for(auto node: nodes) {
+        /*
+        // prob causes the cpu to stall...
+        if(node->node_type == DRY)
+            continue;
+        */
         // calculate the macro values first
+        // todo unroll macro?!
         macro(node);
         // convenience programming
         double ux = node->u(0);
@@ -93,10 +98,10 @@ void simulation::collisions() {
         node->data(2) -= relax * (node->data(2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
         node->data(3) -= relax * (node->data(3) - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
         node->data(4) -= relax * (node->data(4) - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
-        node->data(5) -= relax * (node->data(5) - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy +9*ux*uy+ 3*(ux*ux +uy*uy)));
-        node->data(6) -= relax * (node->data(6) - weights.col(6).x()*rho*(1- 3*ux+ 3*uy -9*ux*uy+ 3*(ux*ux +uy*uy)));
-        node->data(7) -= relax * (node->data(7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy +9*ux*uy+ 3*(ux*ux +uy*uy)));
-        node->data(8) -= relax * (node->data(8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy -9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(5) -= relax * (node->data(5) - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(6) -= relax * (node->data(6) - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(7) -= relax * (node->data(7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(8) -= relax * (node->data(8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
         /*
         // channel version
         for(int i = 0; i < CHANNELS; ++i) {
@@ -189,13 +194,15 @@ void simulation::run() {
     streaming_step_1();
     streaming_step_2();
     bounce_back();
+    /*
     for(auto n: nodes) {
         macro(n);
     }
     for(auto n : nodes) {
         collision(n,parameters.relaxation);
     }
-    // collisions(); // also does macro
+     */
+    collisions(); // also does macro
 }
 
 /**
@@ -215,6 +222,7 @@ void simulation::get_data(bool write_to_file, point_t original_size) {
     ux.resize(size_x,size_y);
     uy.resize(size_x,size_y);
     rho.resize(size_x,size_y);
+    // make sure to get the correct
     for(auto node: nodes) {
         // 2 methods that could be made into on, but for some indices
         write_ux(node,&ux);
