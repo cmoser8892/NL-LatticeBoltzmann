@@ -7,6 +7,7 @@
 // private
 
 /// todo make the copy field non sticky aka delete stuff inbetween?!
+/// todo no indirect access
 /**
  * @fn void simulation::streaming_step_1()
  * @brief streaming is done via two steps first we put info in the copy field in the node
@@ -91,7 +92,7 @@ void simulation::collisions() {
         double ux = node->u(0);
         double uy = node->u(1);
         double rho = node->rho;
-        // unroll the collision function
+        // unroll the collision function also messy for a reason
         node->data(0) -= relax * (node->data(0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
         node->data(1) -= relax * (node->data(1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
         node->data(2) -= relax * (node->data(2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
@@ -176,7 +177,7 @@ void simulation::init() {
         n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->rho = 1;
         n->u.setZero();
-        n->data = table->equilibrium(n);
+        n->data = equilibrium(n);
         n->copy = n->data;
         nodes.push_back(n);
     }

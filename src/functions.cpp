@@ -16,8 +16,11 @@ matrix_t weights = {{4.0/9,1.0/9,1.0/9,1.0/9,1.0/9,1.0/36,1.0/36,1.0/36,1.0/36}}
  * @return
  */
 array_t equilibrium(node* node) {
+    // this optimizes badly
     array_t return_array;
     return_array.setZero(node->data.size());
+    /*
+    // this optimizes badly in combination with the
     array_t pow = node->u.pow(2);
     double uu = 3*(pow.sum());
     double six_ux = 6 * node->u(0);
@@ -36,6 +39,20 @@ array_t equilibrium(node* node) {
     return_array(6) = 1.0/36 * node->rho * (1 - three_ux_uy_m - nine_uxuy + uu);
     return_array(7) = 1.0/36 * node->rho * (1 - three_ux_uy_p + nine_uxuy + uu);
     return_array(8) = 1.0/36 * node->rho * (1 + three_ux_uy_m - nine_uxuy + uu);
+    */
+    double ux = node->u(0);
+    double uy = node->u(1);
+    double rho = node->rho;
+    // unroll the collision function
+    return_array(0) = weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy));
+    return_array(1) = weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
+    return_array(2) =weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(3) = weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
+    return_array(4) = weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(5) = weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(6) = weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(7) = weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(8) = weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy));
     return return_array;
 }
 
