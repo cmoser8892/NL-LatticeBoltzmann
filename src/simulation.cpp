@@ -86,7 +86,6 @@ void simulation::collisions() {
             continue;
         */
         // calculate the macro values first
-        // todo unroll macro?!
         macro(node);
         // convenience programming
         double ux = node->u(0);
