@@ -14,8 +14,8 @@
 // standard sliding lid
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int size = 16;
-    int steps = 300;
+    int size = 302;
+    int steps = 10000;
     point_t p = {size,size};
     auto dog = new rhoWatchdog(0.1,p);
     boundaryPointConstructor boundaries(p);
@@ -38,10 +38,12 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < steps; ++i) {
         bool once = false;
         sim.run();
-        if(i % 10 == 0) {
-            std::cout << "Step: " << i << std::endl;
+        if(i % 100 == 0) {
+            // std::cout << "Step: " << i << std::endl;
             // sim.get_data(false,p);
         }
+        /*
+        // watchdog part
         for(auto n : sim.nodes) {
             if(dog->check(n,i)) {
                 once = true;
@@ -50,6 +52,7 @@ int main(int argc, char *argv[]) {
         if(once) {
             sim.get_data(false,p);
         }
+         */
     }
     sim.get_data(true,p);
     auto stop = std::chrono::high_resolution_clock::now();

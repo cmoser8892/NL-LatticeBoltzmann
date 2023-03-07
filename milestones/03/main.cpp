@@ -2,6 +2,10 @@
 #include <iostream>
 #include <chrono>
 
+/*
+ * vallgrind call
+valgrind --tool=callgrind --dump-instr=yes (p)
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;

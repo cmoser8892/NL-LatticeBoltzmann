@@ -81,15 +81,31 @@ void simulation::collisions() {
     // todo big part in the callgrinds shows up as data transfer of the arrays
     double relax = parameters.relaxation;
     for(auto node: nodes) {
+        // calculate the macro values first
+        macro(node);
+        // convenience programming
         double ux = node->u(0);
         double uy = node->u(1);
         double rho = node->rho;
+        // unroll the collision function
+        node->data(0) -= relax * (node->data(0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
+        node->data(1) -= relax * (node->data(1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+        node->data(2) -= relax * (node->data(2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+        node->data(3) -= relax * (node->data(3) - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+        node->data(4) -= relax * (node->data(4) - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+        node->data(5) -= relax * (node->data(5) - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy +9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(6) -= relax * (node->data(6) - weights.col(6).x()*rho*(1- 3*ux+ 3*uy -9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(7) -= relax * (node->data(7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy +9*ux*uy+ 3*(ux*ux +uy*uy)));
+        node->data(8) -= relax * (node->data(8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy -9*ux*uy+ 3*(ux*ux +uy*uy)));
+        /*
+        // channel version
         for(int i = 0; i < CHANNELS; ++i) {
             double cx = velocity_set.col(i).x();
             double cy = velocity_set.col(i).y();
             double w = weights.col(i).x();
             node->data(i) -= relax * (node->data(i) - w*rho*(1 + 3*cx*ux + 3*cy*uy + 4.5*cx*cx*ux*ux + 9*cx*ux*cy*uy + 4.5*cy*cy*uy*uy - 1.5*ux*ux - 1.5*uy*uy));
         }
+         */
         //node->data -= relax * (node->data - table->equilibrium(node));
     }
 }
@@ -173,14 +189,13 @@ void simulation::run() {
     streaming_step_1();
     streaming_step_2();
     bounce_back();
-    for(auto n : nodes) {
+    for(auto n: nodes) {
         macro(n);
     }
-    /*
     for(auto n : nodes) {
         collision(n,parameters.relaxation);
-    } */
-    collisions();
+    }
+    // collisions(); // also does macro
 }
 
 /**
