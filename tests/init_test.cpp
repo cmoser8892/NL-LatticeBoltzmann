@@ -300,6 +300,7 @@ TEST(NeighbourhoodTests, hash_keys) {
 }
 
 TEST(InitTests, board_creation) {
+    // tests the boards creation in terms of the correct size
     unsigned int size = 10;
     nodeGenerator n(nullptr);
     n.board_creation(size);
