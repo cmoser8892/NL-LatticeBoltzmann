@@ -347,3 +347,24 @@ TEST(InitTests, fused_init) {
         EXPECT_EQ(own, 5);
     }
 }
+
+TEST(InitTests, inner_outer_neighbour_test) {
+    unsigned int size = 302;
+    unsigned int sub_size = 202;
+    point_t c = {size,size};
+    point_t p = {sub_size,sub_size+20};
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    for(auto n : gen.node_infos) {
+        if(n->type == WET) {
+            if(n->links.size() != 8) {
+                std::cout << n->position << std::endl;
+            }
+            EXPECT_EQ(n->links.size(),8);
+        }
+
+    }
+}

@@ -128,6 +128,8 @@ void simulation::fused_streaming(node *node) {
         handle_t partner_handle = link.handle;
         int channel = link.channel;
         long array_position = long(partner_handle) - 1;
+        if(array_position >99)
+            std::cout << "hi";
         // correct positioning prob
         nodes.at(array_position)->next_population->operator()(channel) = node->current_population->operator()(i);
     }

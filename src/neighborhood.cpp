@@ -70,5 +70,11 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
                }
            }
        }
+       // checks wet link size should be Channels-1 so 8 for D2Q9
+       if(node->type == WET) {
+           if(node->links.size() != CHANNELS-1) {
+               throw std::invalid_argument("Invalid Channels");
+           }
+       }
    }
 }
