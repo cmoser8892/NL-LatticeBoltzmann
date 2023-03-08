@@ -31,14 +31,14 @@ class nodeGenerator {
     bool redo = true;
     bool save = false;
     bool no_ordering = false;
-    vector_t discovery_vector = {1, 0};
+    vector_t discovery_vector = {1, 0}; // only relevant for linear creation
+    //
     void write_data_to_file(bool write);
     bool read_data_from_file();
     void read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t *chop);
     void determine_neighbors();
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
-    void board_creation(unsigned int size);
     void check_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
   public:
@@ -49,6 +49,7 @@ class nodeGenerator {
     void set_redo_save(bool r, bool s);
     void init();
     void init(unsigned int size);
+    void board_creation(unsigned int size);
     void delete_node_infos();
 };
 

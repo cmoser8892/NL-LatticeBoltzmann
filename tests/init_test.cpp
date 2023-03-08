@@ -298,3 +298,10 @@ TEST(NeighbourhoodTests, hash_keys) {
     std::unordered_multimap<handle_t,char> map = {{1,'a'},{1,'b'},{1,'d'},{2,'b'}};
     EXPECT_EQ(map.size(),4);
 }
+
+TEST(InitTests, board_creation) {
+    unsigned int size = 10;
+    nodeGenerator n(nullptr);
+    n.board_creation(size);
+    EXPECT_EQ(size*size, n.node_infos.size());
+}

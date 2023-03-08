@@ -224,8 +224,32 @@ void nodeGenerator::write_data_to_file(bool write) {
  * @brief create a board based on sizes given
  */
 void nodeGenerator::board_creation(unsigned int size) {
-    // todo revise
+    // make the interleaved positions
+    std::vector<uint64_t> interleaved_positions;
+    for(uint32_t i = 0; i < size; ++i) {
+        for(uint32_t j=0; j < size; ++j) {
+            uint64_t interleaved_position = bit_interleaving_2d(i,j);
+            interleaved_positions.push_back(interleaved_position);
+        }
+    }
+    // sort
+    std::sort(interleaved_positions.begin(),interleaved_positions.end());
     // create a drawing board of nodes with side lengths size
+    handle_t handle_counter = 1;
+    for(auto p: interleaved_positions) {
+        uint32_t x = bit_extraleaving_2d_x(p);
+        uint32_t y = bit_extraleaving_2d_y(p);
+        point_t point = {x,y};
+        auto n = new nodePoint_t;
+        n->handle = handle_counter;
+        n->position = point;
+        n->type = UNKNOWN;
+        n->boundary = NO_BOUNDARY;
+        // dont forget to increase the handle counter each time
+        handle_counter++;
+        node_infos.push_back(n);
+    }
+    /*
     handle_t handle_counter = 1;
     for(int i = 0; i < size; ++i) {
         for(int j = 0; j < size; ++j) {
@@ -240,6 +264,7 @@ void nodeGenerator::board_creation(unsigned int size) {
             node_infos.push_back(n);
         }
     }
+     */
 }
 
 /**
