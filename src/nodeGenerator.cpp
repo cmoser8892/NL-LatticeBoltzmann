@@ -277,7 +277,6 @@ void nodeGenerator::check_nodes(handle_t* current) {
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
-        //
         if(!straight.node_inside(n)) {
             n->handle = *current;
             n->boundary = NO_BOUNDARY;
@@ -314,6 +313,33 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
     }
 }
 
+/**
+ * @fn
+ * @brief
+ */
+void nodeGenerator::reduce_boundary_neighborhood() {
+    int boundary_start = 0;
+    for(auto n : node_infos) {
+        if(n->type == DRY) {
+            for(auto link : n->links) {
+                handle_t partner_handle = link.handle;
+                int link_channel = link.channel; // channel where the info is
+                int from_channel = switch_link_dimensions(link_channel); // channel where it has to go
+                long array_position = long(partner_handle) - 1;
+                int channel_position = link_channel-1;
+                // switchero
+                node_infos.at(array_position)->links.at(channel_position).channel = from_channel;
+                node_infos.at(array_position)->links.at(channel_position).handle = partner_handle;
+            }
+        }
+        else {
+            assert(n->links.size() == 8);
+            boundary_start++;
+        }
+    }
+    // delete because now unnecessary
+    node_infos.erase(node_infos.begin() + boundary_start, node_infos.end());
+}
 /// public
 /**
  * @fn void nodeGenerator::set_discovery_vector(vector_t set)
@@ -358,6 +384,18 @@ void nodeGenerator::init(unsigned int size) {
         check_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
+        write_data_to_file(save);
+    }
+}
+
+void nodeGenerator::init_fused(unsigned int size) {
+    if(!read_data_from_file()) {
+        board_creation(size);
+        handle_t handle_counter = 1;
+        check_nodes(&handle_counter);
+        add_boundary_nodes(&handle_counter);
+        determine_neighbors();
+        reduce_boundary_neighborhood();
         write_data_to_file(save);
     }
 }

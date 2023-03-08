@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init_fused(size);
     // init sim parameters
     double re = 1000;
     double base_length = size - 2;

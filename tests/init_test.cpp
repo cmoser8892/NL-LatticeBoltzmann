@@ -306,3 +306,44 @@ TEST(InitTests, board_creation) {
     n.board_creation(size);
     EXPECT_EQ(size*size, n.node_infos.size());
 }
+
+TEST(InitTests, init_odd_middle) {
+    // when initializing with uneven sizes the middle gets lost
+    int size = 5;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    nodeGenerator nodeGenerator(&boundaries);
+    nodeGenerator.init(size);
+    EXPECT_EQ(size*size,nodeGenerator.node_infos.size());
+    for(auto n : nodeGenerator.node_infos) {
+        if(n->type == WET) {
+            std::cout << n->position << std::endl;
+        }
+    }
+}
+
+TEST(InitTests, fused_init) {
+    int size = 4;
+    point_t p = {size,size};
+    boundaryPointConstructor boundaries(p);
+    boundaries.init_sliding_lid();
+    nodeGenerator nodeGenerator(&boundaries);
+    nodeGenerator.init_fused(size);
+    EXPECT_EQ((size-2)*(size-2),nodeGenerator.node_infos.size());
+    // check correct links
+    // size first
+    for(auto n : nodeGenerator.node_infos) {
+        EXPECT_EQ(n->links.size(),8);
+    }
+    // individual links
+    for(auto n : nodeGenerator.node_infos) {
+        int own = 0;
+        for(auto l : n->links) {
+            if(l.handle == n->handle) {
+                own++;
+            }
+        }
+        EXPECT_EQ(own, 5);
+    }
+}

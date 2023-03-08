@@ -122,35 +122,14 @@ void simulation::collisions() {
  * @param node
  */
 void simulation::fused_streaming(node *node) {
-    for(auto link : node->neighbors) {
+    // loop through
+    for(int i = 1; i < CHANNELS; ++i) {
+        auto link = node->neighbors.at(i-1);
         handle_t partner_handle = link.handle;
         int channel = link.channel;
         long array_position = long(partner_handle) - 1;
         // correct positioning prob
-        nodes.at(array_position)->next_population->operator()(channel) = node->current_population->operator()(channel);
-    }
-}
-/**
- * @fn
- * @brief
- * @param node
- */
-void simulation::fused_bounce_back(node *node) {
-    for(auto link : node->neighbors) {
-        // just for read ability will be optimized by the compiler
-        handle_t partner_handle = link.handle;
-        int link_channel = link.channel;
-        int from_channel = switch_link_dimensions(link_channel);
-        long array_position = long(partner_handle) - 1;
-        // correct positioning
-        double data = node->next_population->operator()(from_channel);
-        if(node->boundary_type == BOUNCE_BACK_MOVING) {
-            // apply the correct function to the channels
-            // no correction for different dry densities (rho_wall)
-            data += bb_switch_channel(from_channel,parameters.u_wall);
-        }
-        // directly write into the data
-        nodes.at(array_position)->current_population->operator()(link_channel)  = data;
+        nodes.at(array_position)->next_population->operator()(channel) = node->current_population->operator()(i);
     }
 }
 
@@ -214,6 +193,29 @@ void simulation::init() {
 }
 
 /**
+ *  @fn void simulation::fused_init()
+ *  @brief fused init
+ */
+void simulation::fused_init() {
+    // first initialize the node generator with the boundary points
+    if(boundary_points == nullptr) {
+        throw std::invalid_argument("no Boundary Points given");
+    }
+    if(node_generator == nullptr) {
+        throw std::invalid_argument("no Node-generator given");
+    }
+    // then rewrite the structure into the actual nodes
+    for(auto node_info : node_generator->node_infos) {
+        auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position,node_info->boundary);
+        n->neighbors = node_info->links; // should copy everything not quite sure thou
+        n->rho = 1;
+        n->u.setZero();
+        n->population_even = equilibrium(n);
+        n->population_odd = n->population_even;
+        nodes.push_back(n);
+    }
+}
+/**
  * @fn void simulation::run()
  * @brief on sim run
  */
@@ -242,17 +244,10 @@ void simulation::run() {
 void simulation::fused_run() {
     for(auto node : nodes) {
         // streaming and bb
-        if(node->node_type == WET) {
-            // streaming
-            fused_streaming(node);
-            // macro and collision
-            fused_macro(node);
-            fused_collision(node,parameters.relaxation);
-        }
-        else {
-            // bounce back
-            fused_bounce_back(node);
-        }
+        fused_streaming(node);
+        // macro and collision
+        fused_macro(node);
+        fused_collision(node,parameters.relaxation);
         // switchero
         array_t * temp = node->current_population;
         node->current_population = node->next_population;

@@ -41,6 +41,7 @@ class nodeGenerator {
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
     void check_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
+    void reduce_boundary_neighborhood();
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);
@@ -49,6 +50,7 @@ class nodeGenerator {
     void set_redo_save(bool r, bool s);
     void init();
     void init(unsigned int size);
+    void init_fused(unsigned int size);
     void board_creation(unsigned int size);
     void delete_node_infos();
 };

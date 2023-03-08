@@ -33,8 +33,8 @@ class simulation {
     void streaming_step_2();
     void collisions();
     void fused_streaming(node* n);
-    void fused_bounce_back(node* n);
     void init();
+    void fused_init();
     void run();
     void fused_run();
     void get_data(bool write_to_file, point_t org);

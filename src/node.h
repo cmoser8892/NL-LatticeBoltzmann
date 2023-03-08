@@ -31,20 +31,4 @@ class node {
     node(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
 };
 
-class fusedNode {
-    // handler info
-    handle_t handle;
-    boundaryType_t boundary_type;
-    // data
-    array_t* current_population;
-    array_t* next_population;
-    array_t population_even;
-    array_t population_odd;
-    // macro values
-    double rho;
-    array_t u;
-    array_t position;
-    fusedNode(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
-};
-
 #endif // NL_LATTICEBOLTZMANN_NODE_H
