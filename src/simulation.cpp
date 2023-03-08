@@ -163,14 +163,6 @@ void simulation::init() {
         node_generator = new nodeGenerator(boundary_points);
         node_generator->init();
     }
-    if(table == nullptr) {
-        // setup lookup
-        table = new lookup(parameters.lookup_bits,
-                           parameters.lookup_floor,
-                           parameters.lookup_ceiling,
-                           false);
-        table->set_bypass(parameters.bypass_lookup);
-    }
     // then rewrite the structure into the actual nodes
     for(auto node_info : node_generator->node_infos) {
         auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position,node_info->boundary);
@@ -216,9 +208,6 @@ void simulation::get_data(bool write_to_file, point_t original_size) {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
-    std::cout << "Recalcs " <<table->recalc << std::endl;
-    std::cout << "Table-hits " << table->table_hits << std::endl;
-    std::cout << "Non-hits " << table->non_hits << std::endl;
     long size_x = long(round(original_size.x()));
     long size_y = long(round(original_size.y()));
     ux.resize(size_x,size_y);

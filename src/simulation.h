@@ -6,7 +6,6 @@
 #include "node.h"
 #include "nodeGenerator.h"
 #include "types.h"
-#include "lookup_table.h"
 #include "functions.h"
 
 typedef struct simulation_parameters {
@@ -23,7 +22,6 @@ class simulation {
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
-    lookup* table = nullptr;
   public:
     std::vector<node*> nodes;
     explicit simulation(boundaryPointConstructor* c);
@@ -36,6 +34,7 @@ class simulation {
     void collisions();
     void init();
     void run();
+    void fused_run();
     void get_data(bool write_to_file, point_t org);
     void delete_nodes();
 };
