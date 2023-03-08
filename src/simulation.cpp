@@ -82,8 +82,9 @@ void simulation::collisions() {
     double relax = parameters.relaxation;
     for(auto node: nodes) {
         /*
-        // prob causes the cpu to stall...
-        if(node->node_type == DRY)
+        // prob causes the cpu to stall/branch miss-prediction is more costly than not calculating
+        // sometimes also doesnt do anything lol
+         if(node->node_type == DRY)
             continue;
         */
         // calculate the macro values first
@@ -92,7 +93,7 @@ void simulation::collisions() {
         double ux = node->u(0);
         double uy = node->u(1);
         double rho = node->rho;
-        // unroll the collision function also messy for a reason
+        // unroll the collision function also messy for a reason optimizes better
         node->data(0) -= relax * (node->data(0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
         node->data(1) -= relax * (node->data(1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
         node->data(2) -= relax * (node->data(2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
@@ -111,7 +112,8 @@ void simulation::collisions() {
             node->data(i) -= relax * (node->data(i) - w*rho*(1 + 3*cx*ux + 3*cy*uy + 4.5*cx*cx*ux*ux + 9*cx*ux*cy*uy + 4.5*cy*cy*uy*uy - 1.5*ux*ux - 1.5*uy*uy));
         }
          */
-        //node->data -= relax * (node->data - table->equilibrium(node));
+        // og
+        //node->data -= relax * (node->data - equilibrium(node));
     }
 }
 
