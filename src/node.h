@@ -16,8 +16,9 @@ class node {
     handle_t handle;
     nodeIdentifier_t node_type;
     boundaryType_t boundary_type;
-    array_t data;
-    array_t copy;
+    // data entries
+    array_t population_even;
+    array_t population_odd;
     std::vector<toLinks_t> neighbors;
     // macro values are local
     double rho;

@@ -18,7 +18,7 @@ matrix_t weights = {{4.0/9,1.0/9,1.0/9,1.0/9,1.0/9,1.0/36,1.0/36,1.0/36,1.0/36}}
 array_t equilibrium(node* node) {
     // this optimizes badly
     array_t return_array;
-    return_array.setZero(node->data.size());
+    return_array.setZero(CHANNELS);
     /*
     // this optimizes badly in combination with the
     array_t pow = node->u.pow(2);
@@ -63,7 +63,7 @@ array_t equilibrium(node* node) {
  * @param relaxation
  */
 void collision(node* node, double relaxation) {
-    node->data -= relaxation * (node->data - equilibrium(node));
+    node->population_even -= relaxation * (node->population_even - equilibrium(node));
 }
 
 /**
@@ -72,11 +72,11 @@ void collision(node* node, double relaxation) {
  * @param node
  */
 void macro( node* node) {
-    node->rho = node->data.sum(); // problem if 0!!
-    node->u(0) = ((node->data(1)+node->data(5)+node->data(8))-
-                  (node->data(3)+node->data(6) +node->data(7)));
-    node->u(1) = ((node->data(2)+node->data(5)+node->data(6))-
-                  (node->data(4)+node->data(7) +node->data(8)));
+    node->rho = node->population_even.sum(); // problem if 0!!
+    node->u(0) = ((node->population_even(1)+node->population_even(5)+node->population_even(8))-
+                  (node->population_even(3)+node->population_even(6) +node->population_even(7)));
+    node->u(1) = ((node->population_even(2)+node->population_even(5)+node->population_even(6))-
+                  (node->population_even(4)+node->population_even(7) +node->population_even(8)));
     node->u /= node->rho; // will produce nonsense if div through 0
 }
 
@@ -121,12 +121,12 @@ void write_rho(node* node, flowfield_t * rho) {
  * @param printing
  */
 void debug_node(node* node, bool printing) {
-    // print out the data values and calculate the density
+    // print out the population_even values and calculate the density
     if(printing) {
         std::cout << "Position" << std::endl;
         std::cout << node->position << std::endl;
-        std::cout << "Data" << std::endl;
-        std::cout << node->data << std::endl;
+        std::cout << "population_even" << std::endl;
+        std::cout << node->population_even << std::endl;
         std::cout << "rho" << std::endl;
         std::cout << node->rho << std::endl<< std::endl;
     }
