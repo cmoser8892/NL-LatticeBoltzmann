@@ -116,8 +116,44 @@ void simulation::collisions() {
         //node->data -= relax * (node->data - equilibrium(node));
     }
 }
+/**
+ * @fn
+ * @brief
+ * @param node
+ */
+void simulation::fused_streaming(node *node) {
+    for(auto link : node->neighbors) {
+        handle_t partner_handle = link.handle;
+        int channel = link.channel;
+        long array_position = long(partner_handle) - 1;
+        // correct positioning prob
+        nodes.at(array_position)->next_population->operator()(channel) = node->current_population->operator()(channel);
+    }
+}
+/**
+ * @fn
+ * @brief
+ * @param node
+ */
+void simulation::fused_bounce_back(node *node) {
+    for(auto link : node->neighbors) {
+        // just for read ability will be optimized by the compiler
+        handle_t partner_handle = link.handle;
+        int link_channel = link.channel;
+        int from_channel = switch_link_dimensions(link_channel);
+        long array_position = long(partner_handle) - 1;
+        // correct positioning
+        double data = node->next_population->operator()(from_channel);
+        if(node->boundary_type == BOUNCE_BACK_MOVING) {
+            // apply the correct function to the channels
+            // no correction for different dry densities (rho_wall)
+            data += bb_switch_channel(from_channel,parameters.u_wall);
+        }
+        // directly write into the data
+        nodes.at(array_position)->current_population->operator()(link_channel)  = data;
+    }
+}
 
-// public
 /**
  * @fn simulation::simulation(boundaryPointConstructor *c)
  * @brief constructor
@@ -197,6 +233,31 @@ void simulation::run() {
     }
      */
     collisions(); // also does macro
+}
+
+/**
+ * @fn void simulation::fused_run()
+ * @brief this is a one step implementation of lb using the already described nodes
+ */
+void simulation::fused_run() {
+    for(auto node : nodes) {
+        // streaming and bb
+        if(node->node_type == WET) {
+            // streaming
+            fused_streaming(node);
+            // macro and collision
+            fused_macro(node);
+            fused_collision(node,parameters.relaxation);
+        }
+        else {
+            // bounce back
+            fused_bounce_back(node);
+        }
+        // switchero
+        array_t * temp = node->current_population;
+        node->current_population = node->next_population;
+        node->next_population = temp;
+    }
 }
 
 /**

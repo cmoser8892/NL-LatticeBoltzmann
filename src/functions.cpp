@@ -81,6 +81,52 @@ void macro( node* node) {
 }
 
 /**
+ * @fn void fused_macro( node* node)
+ * @brief calculates the macroscopic values for the equilibrium function for the fused runs
+ * @param node
+ */
+void fused_macro(node * node) {
+    node->rho = node->current_population->sum();
+    node->u(0) = ((node->current_population->operator()(1) +
+                   node->current_population->operator()(5) +
+                   node->current_population->operator()(8))-
+                  (node->current_population->operator()(3) +
+                   node->current_population->operator()(6) +
+                   node->current_population->operator()(7)));
+
+    node->u(1) = ((node->current_population->operator()(2) +
+                   node->current_population->operator()(5) +
+                   node->current_population->operator()(6))-
+                  (node->current_population->operator()(4) +
+                   node->current_population->operator()(7) +
+                   node->current_population->operator()(8)));
+
+    node->u /= node->rho;
+}
+
+/**
+ * @fn void fused_collision(node* node, double relax)
+ * @brief variant of the optimized collision
+ * @param node
+ * @param relax
+ */
+void fused_collision(node* node, double relax) {
+    // convenience programming
+    double ux = node->u(0);
+    double uy = node->u(1);
+    double rho = node->rho;
+    // unroll the collision function also messy for a reason optimizes better
+    node->current_population->operator()(0) -= relax * (node->current_population->operator()(0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
+    node->current_population->operator()(1) -= relax * (node->current_population->operator()(1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    node->current_population->operator()(2) -= relax * (node->current_population->operator()(2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    node->current_population->operator()(3) -= relax * (node->current_population->operator()(3) - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    node->current_population->operator()(4) -= relax * (node->current_population->operator()(4) - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    node->current_population->operator()(5) -= relax * (node->current_population->operator()(5) - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->current_population->operator()(6) -= relax * (node->current_population->operator()(6) - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->current_population->operator()(7) -= relax * (node->current_population->operator()(7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->current_population->operator()(8) -= relax * (node->current_population->operator()(8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+}
+/**
  * @fn void write_ux(node* node, flowfield_t* ux)
  * @brief write the ux component of the flowfield
  * @param node

@@ -17,6 +17,8 @@ class node {
     nodeIdentifier_t node_type;
     boundaryType_t boundary_type;
     // data entries
+    array_t* current_population;
+    array_t*next_population;
     array_t population_even;
     array_t population_odd;
     std::vector<toLinks_t> neighbors;

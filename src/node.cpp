@@ -22,6 +22,9 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
     // 2 array approach
     population_even.setZero(channels);
     population_odd.setZero(channels);
+    // set the pointers
+    current_population = &population_even;
+    next_population = &population_odd;
     u.setZero(dimensions);
     position = pos;
 }

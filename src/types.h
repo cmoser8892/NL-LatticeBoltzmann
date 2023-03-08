@@ -51,7 +51,7 @@ typedef enum boundaryType {
  * todo: can be positional/already is...
  */
 typedef struct toLinks {
-    int channel;
+    int channel; // todo remove me
     handle_t handle; // form 1 to n -1 for valid handles
 }toLinks_t;
 
