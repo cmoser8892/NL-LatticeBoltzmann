@@ -375,6 +375,7 @@ TEST(InitTests, inner_outer_neighbour_test) {
             stalkers++;
         }
     }
+
     // there are 4 nodes on the loose
     EXPECT_EQ(broken_nodes,0);
     EXPECT_EQ(stalkers,0);
