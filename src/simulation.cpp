@@ -78,7 +78,6 @@ void simulation::bounce_back() {
  * @brief collision step
  */
 void simulation::collisions() {
-    // todo investigate singling out the equilibrium calculation
     double relax = parameters.relaxation;
     for(auto node: nodes) {
         /*
@@ -137,8 +136,8 @@ void simulation::fused_bounce_back(node *n) {
     // applies the extra for channels 7 and 8
     // locally so can be done independent of streaming
     if(n->boundary_type== BOUNCE_BACK_MOVING) {
-        n->next_population->operator()(5) += -1.0/6 * parameters.u_wall;
-        n->next_population->operator()(6) += 1.0/6 * parameters.u_wall;
+        n->next_population->operator()(7) += -1.0/6 * parameters.u_wall;
+        n->next_population->operator()(8) += 1.0/6 * parameters.u_wall;
     }
 }
 
@@ -252,12 +251,12 @@ void simulation::run() {
  */
 void simulation::fused_run() {
     for(auto node : nodes) {
-        // streaming and bb
-        fused_streaming(node);
-        fused_bounce_back(node);
         // macro and collision
         fused_macro(node);
         fused_collision(node,parameters.relaxation);
+        // streaming and bb
+        fused_streaming(node);
+        fused_bounce_back(node);
         // switchero
         array_t * temp = node->current_population;
         node->current_population = node->next_population;

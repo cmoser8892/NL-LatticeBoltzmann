@@ -365,6 +365,39 @@ TEST(InitTests, inner_outer_neighbour_test) {
             }
             EXPECT_EQ(n->links.size(),8);
         }
-
     }
 }
+
+TEST(InitTests, fused_init_correct_boundary_lables) {
+    unsigned int size = 6;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_sliding_lid();
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    // check correct
+    EXPECT_EQ(gen.node_infos.size(), (size-2)*(size-2));
+    int no_boundary = 0;
+    int bounce_back = 0;
+    int bounce_back_moving = 0;
+    for(auto n : gen.node_infos) {
+        if(n->boundary == NO_BOUNDARY) {
+            no_boundary++;
+        }
+        else if(n->boundary == BOUNCE_BACK) {
+            bounce_back++;
+        }
+        else if(n->boundary == BOUNCE_BACK_MOVING) {
+            bounce_back_moving++;
+        }
+        else {
+            // error
+            EXPECT_TRUE(false);
+        }
+    }
+    EXPECT_EQ(no_boundary,4);
+    EXPECT_EQ(bounce_back,8);
+    EXPECT_EQ(bounce_back_moving,4);
+}
+
+TEST(InitTests, fused_inti_right_boundary_sets)

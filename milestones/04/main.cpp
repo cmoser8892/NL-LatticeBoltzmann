@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;
-    unsigned int size = 102;
+    unsigned int size = 302;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
     // run sim
     for(int i = 0; i < steps; ++i) {
         sim.fused_run();
+        // sim.get_data(false,c);
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
