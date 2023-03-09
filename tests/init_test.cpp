@@ -352,17 +352,37 @@ TEST(InitTests, inner_outer_neighbour_test) {
     nodeGenerator gen(&boundaries);
     gen.init(size);
     EXPECT_EQ(p.x()*p.y() - k.x()*k.y(),gen.node_infos.size());
+    int expected_total_node_number = p.x()*p.y() - k.x()*k.y();
     int number_nodes = 0;
+    int number_wet_nodes = 0;
+    int number_dry_nodes = 0;
+    int broken_nodes = 0;
+    int stalkers = 0;
     for(auto n : gen.node_infos) {
         number_nodes++;
         if(n->type == WET) {
+            number_wet_nodes++;
             if(n->links.size() != 8) {
-                std::cout << n->position << std::endl;
+                // std::cout << n->position << std::endl;
+                broken_nodes++;
             }
-            EXPECT_EQ(n->links.size(),8);
+            //EXPECT_EQ(n->links.size(),8);
+        }
+        else if(n->type == DRY) {
+            number_dry_nodes++;
+        }
+        else {
+            stalkers++;
         }
     }
-    EXPECT_EQ(p.x()*p.y() - k.x()*k.y(),number_nodes);
+    // there are 4 nodes on the loose
+    EXPECT_EQ(broken_nodes,0);
+    EXPECT_EQ(stalkers,0);
+    EXPECT_EQ(expected_total_node_number,number_nodes);
+    EXPECT_EQ(number_dry_nodes,boundaries.boundary_points.size());
+    EXPECT_EQ(number_wet_nodes, expected_total_node_number - boundaries.boundary_points.size());
+    // sanity check
+    EXPECT_EQ(number_nodes, number_dry_nodes + number_wet_nodes);
 }
 
 TEST(InitTests, fused_init_correct_boundary_lables) {
