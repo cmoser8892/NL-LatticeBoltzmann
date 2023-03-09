@@ -359,6 +359,7 @@ TEST(InitTests, inner_outer_neighbour_test) {
     boundaries.init_sliding_lid_inner({3,5},{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init(size);
+    EXPECT_EQ(p.x()*p.y() - k.x()*k.y(),gen.node_infos.size());
     int number_nodes = 0;
     for(auto n : gen.node_infos) {
         number_nodes++;
