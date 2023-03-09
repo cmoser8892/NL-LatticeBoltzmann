@@ -16,6 +16,7 @@ class neighbourhood {
     void fill_keys(std::vector<nodePoint_t*> &nodes);
   public:
     void determine_neighbors(std::vector<nodePoint_t*> &nodes);
+    void check_wet_nodes(std::vector<nodePoint_t*> &nodes);
 };
 
 
