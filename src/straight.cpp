@@ -86,6 +86,14 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point->position; // => r
+    // check if mass center
+    if(straight.point == mass_center) {
+        // we do a little shift out of the mass-center
+        // any direction should work
+        std::cerr << "Point is the mass-center, algorithm potentially broken" << std::endl;
+        straight.point.x() += 0.1;
+        straight.point.y() += 0.1;
+    }
     straight.direction =  mass_center - straight.point;
     vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look

@@ -289,9 +289,6 @@ TEST(InitTests, outer_inner_quader) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},{3,3},{inner_size,inner_size});
     EXPECT_EQ(boundaries.boundary_points.size(), ((outer_size-1) + (inner_size-1))*4);
-    //nodeGenerator gen(&boundaries);
-    //gen.init(size);
-    // EXPECT_EQ(gen.node_infos.size(),outer_size*outer_size - inner_size*inner_size);
 }
 
 TEST(NeighbourhoodTests, hash_keys) {
@@ -316,11 +313,6 @@ TEST(InitTests, init_odd_middle) {
     nodeGenerator nodeGenerator(&boundaries);
     nodeGenerator.init(size);
     EXPECT_EQ(size*size,nodeGenerator.node_infos.size());
-    for(auto n : nodeGenerator.node_infos) {
-        if(n->type == WET) {
-            std::cout << n->position << std::endl;
-        }
-    }
 }
 
 TEST(InitTests, fused_init) {
