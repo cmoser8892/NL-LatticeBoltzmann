@@ -326,10 +326,11 @@ void nodeGenerator::reduce_boundary_neighborhood() {
                 int link_channel = link.channel; // channel where the info is
                 int from_channel = switch_link_dimensions(link_channel); // channel where it has to go
                 long array_position = long(partner_handle) - 1;
-                int channel_position = link_channel-1;
+                int channel_position = from_channel-1;
                 // switchero
-                node_infos.at(array_position)->links.at(channel_position).channel = from_channel;
+                node_infos.at(array_position)->links.at(channel_position).channel = link_channel;
                 node_infos.at(array_position)->links.at(channel_position).handle = partner_handle;
+                check_and_set_reduced_neighborhood(array_position,n->boundary);
             }
         }
         else {
@@ -340,6 +341,20 @@ void nodeGenerator::reduce_boundary_neighborhood() {
     // delete because now unnecessary
     node_infos.erase(node_infos.begin() + boundary_start, node_infos.end());
 }
+
+void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b) {
+    // bumps up the boundary condition
+    auto n = node_infos.at(array_position);
+    // if either bb or moving bb bump up
+    if((n->boundary == NO_BOUNDARY) && ((b == BOUNCE_BACK) || (b == BOUNCE_BACK_MOVING))) {
+        n->boundary = b;
+    }
+    // if already bb only bump up to bb moving
+    if((n->boundary == BOUNCE_BACK) && (b == BOUNCE_BACK_MOVING)) {
+        n->boundary = b;
+    }
+}
+
 /// public
 /**
  * @fn void nodeGenerator::set_discovery_vector(vector_t set)

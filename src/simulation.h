@@ -29,6 +29,7 @@ class simulation {
     void streaming_step_2();
     void collisions();
     void fused_streaming(node* n);
+    void fused_bounce_back(node* n);
     void init();
     void fused_init();
     void run();

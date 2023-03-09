@@ -42,6 +42,7 @@ class nodeGenerator {
     void check_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
     void reduce_boundary_neighborhood();
+    void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
   public:
     std::vector<nodePoint_t*> node_infos;
     explicit nodeGenerator(boundaryPointConstructor* p);

@@ -75,7 +75,7 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
 
 void neighbourhood::check_wet_nodes(std::vector<nodePoint_t *> &nodes) {
     // checks wet link size should be Channels-1 so 8 for D2Q9
-    // todo no everyone has 8 channels
+    // todo no everyone has 8 channels special cases in the tests
     for(auto node: nodes) {
         if(node->type == WET) {
             if(node->links.size() != CHANNELS-1) {

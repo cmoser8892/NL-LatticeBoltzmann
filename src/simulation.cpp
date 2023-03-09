@@ -128,10 +128,17 @@ void simulation::fused_streaming(node *node) {
         handle_t partner_handle = link.handle;
         int channel = link.channel;
         long array_position = long(partner_handle) - 1;
-        if(array_position >99)
-            std::cout << "hi";
         // correct positioning prob
         nodes.at(array_position)->next_population->operator()(channel) = node->current_population->operator()(i);
+    }
+}
+
+void simulation::fused_bounce_back(node *n) {
+    // applies the extra for channels 7 and 8
+    // locally so can be done independent of streaming
+    if(n->boundary_type== BOUNCE_BACK_MOVING) {
+        n->next_population->operator()(5) += -1.0/6 * parameters.u_wall;
+        n->next_population->operator()(6) += 1.0/6 * parameters.u_wall;
     }
 }
 
@@ -247,6 +254,7 @@ void simulation::fused_run() {
     for(auto node : nodes) {
         // streaming and bb
         fused_streaming(node);
+        fused_bounce_back(node);
         // macro and collision
         fused_macro(node);
         fused_collision(node,parameters.relaxation);

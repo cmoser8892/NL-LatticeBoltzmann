@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < steps; ++i) {
         bool once = false;
         sim.run();
-        if(i % 100 == 0) {
-            // std::cout << "Step: " << i << std::endl;
+        if(i % 1000 == 0) {
+            std::cout << "Step: " << i << std::endl;
             // sim.get_data(false,p);
         }
         /*
