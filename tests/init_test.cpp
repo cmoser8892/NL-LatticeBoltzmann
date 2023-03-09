@@ -349,16 +349,19 @@ TEST(InitTests, fused_init) {
 }
 
 TEST(InitTests, inner_outer_neighbour_test) {
-    unsigned int size = 302;
-    unsigned int sub_size = 202;
+    unsigned int size = 30;
+    unsigned int sub_size = 20;
     point_t c = {size,size};
-    point_t p = {sub_size,sub_size+20};
+    point_t p = {sub_size,sub_size+2};
+    point_t k = {5,6};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
+    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init(size);
+    int number_nodes = 0;
     for(auto n : gen.node_infos) {
+        number_nodes++;
         if(n->type == WET) {
             if(n->links.size() != 8) {
                 std::cout << n->position << std::endl;
@@ -366,6 +369,7 @@ TEST(InitTests, inner_outer_neighbour_test) {
             EXPECT_EQ(n->links.size(),8);
         }
     }
+    EXPECT_EQ(p.x()*p.y() - k.x()*k.y(),number_nodes);
 }
 
 TEST(InitTests, fused_init_correct_boundary_lables) {
@@ -399,5 +403,3 @@ TEST(InitTests, fused_init_correct_boundary_lables) {
     EXPECT_EQ(bounce_back,8);
     EXPECT_EQ(bounce_back_moving,4);
 }
-
-TEST(InitTests, fused_inti_right_boundary_sets)
