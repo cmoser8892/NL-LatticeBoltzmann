@@ -439,6 +439,7 @@ TEST(InitTests, inner_outer_master_test) {
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},{3,3},k);
+    boundaries.visualize_2D_boundary(size);
     EXPECT_EQ(boundaries.boundary_points.size(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
     // check boundaries right at least
@@ -458,6 +459,7 @@ TEST(InitTests, inner_outer_master_test) {
     point_t w = {white_list,white_list};
     boundaryPointConstructor white_list_nodes(c);
     white_list_nodes.init_quader({2,2},w);
+    white_list_nodes.visualize_2D_boundary(size);
     EXPECT_EQ((white_list-1)*4, white_list_nodes.boundary_points.size());
     for(auto node : gen.node_infos) {
         if(node->type == WET) {
@@ -471,8 +473,9 @@ TEST(InitTests, inner_outer_master_test) {
                     break;
                 }
             }
-            if(!good_node)
-                std::cout << node->position.x() << " " << node->position.y() << std::endl << std::endl;
+            if(!good_node) {
+                //std::cout << node->position.x() << " " << node->position.y() << std::endl << std::endl;
+            }
         }
     }
     EXPECT_EQ((white_list-1)*4, good_wet_nodes);

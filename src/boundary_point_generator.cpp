@@ -239,9 +239,23 @@ void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t con
     }
 }
 
+/**
+ * @fn void boundaryPointConstructor::delete_elements()
+ * @brief deletes the elements in the boundary structure
+ */
 void boundaryPointConstructor::delete_elements() {
     for(auto element : boundary_points) {
         // deletes the element or the pointer
         delete element;
     }
+}
+
+void boundaryPointConstructor::visualize_2D_boundary(int size) {
+    flowfield_t output;
+    output.setZero(size,size);
+    for(auto b : boundary_points) {
+        output(int(b->point.x()),int(b->point.y())) = 1;
+    }
+    std::cout << "Boundary-structure" << std::endl;
+    std::cout << output << std::endl << std::endl;
 }
