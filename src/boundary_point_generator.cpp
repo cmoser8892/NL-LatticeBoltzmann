@@ -248,6 +248,11 @@ void boundaryPointConstructor::delete_elements() {
     }
 }
 
+/**
+ * @fn void boundaryPointConstructor::visualize_2D_boundary(int size)
+ * @brief simple visualizer for boundaries
+ * @param size
+ */
 void boundaryPointConstructor::visualize_2D_boundary(int size) {
     flowfield_t output;
     output.setZero(size,size);

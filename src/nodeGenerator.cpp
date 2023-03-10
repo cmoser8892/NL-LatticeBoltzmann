@@ -433,6 +433,17 @@ void nodeGenerator::delete_node_infos() {
     }
 }
 
+/**
+ * @fn void nodeGenerator::visualize_2D_nodes(int size)
+ * @brief simple visualizer node points
+ * @param size
+ */
 void nodeGenerator::visualize_2D_nodes(int size) {
-
+    flowfield_t output;
+    output.setZero(size,size);
+    for(auto b : node_infos) {
+        output(int(b->position.x()),int(b->position.y()))++;
+    }
+    std::cout << "Boundary-structure" << std::endl;
+    std::cout << output << std::endl << std::endl;
 }
