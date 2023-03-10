@@ -345,11 +345,12 @@ TEST(InitTests, inner_outer_neighbour_test) {
     unsigned int size = 30;
     unsigned int sub_size = 20;
     point_t c = {size,size};
-    point_t p = {sub_size,sub_size+2};
-    point_t k = {5,6};
+    point_t p = {sub_size +5,sub_size};
+    point_t k = {5,10};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    boundaries.visualize_2D_boundary(30);
     nodeGenerator gen(&boundaries);
     gen.init(size);
     int expected_total_node_number = p.x()*p.y() - k.x()*k.y();
