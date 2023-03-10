@@ -431,7 +431,7 @@ TEST(InitTests, init_out_inner_rho_writeout) {
 TEST(InitTests, inner_outer_master_test) {
     unsigned int size = 10;
     unsigned int sub_size = 8;
-    unsigned int white_list = 6;
+    unsigned int white_list = 5;
     unsigned int inner_size = 4;
     point_t c = {size,size}; // size or the canvas
     point_t p = {sub_size,sub_size}; // size of the  quader
