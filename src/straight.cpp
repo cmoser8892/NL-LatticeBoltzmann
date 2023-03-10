@@ -81,6 +81,13 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
      *  3 have we already hit an edgepoint
      */
     int number_of_intersections = 0;
+    // check if actually the boundary point
+    for(auto surf : surfaces) {
+        // check if we are a surface point described (aka a boundary point and do a hard break
+        if(surf->point == point_t(node_point->position)) {
+            return 0;
+        }
+    }
     // corner case mass center lays on point
     point_t p = node_point->position;
     // determine straight to the mass center
@@ -90,7 +97,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     if(straight.point == mass_center) {
         // we do a little shift out of the mass-center
         // any direction should work
-        std::cerr << "Point is the mass-center, algorithm potentially broken" << std::endl;
+        std::cerr << "Node-point is the mass-center, algorithm potentially broken" << std::endl;
         straight.point.x() += 0.1;
         straight.point.y() += 0.1;
     }
@@ -99,10 +106,12 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     // go through the surface and take a look
     std::vector<point_t> already_found;
     already_found.clear();
+    // actual test
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
         // surf->point => o
         // surf->direction => d
+        // std::cout << straight.point << std::endl;
         double t = ((straight.point - surf->point).dot(normal))/
                    (normal.dot(surf->direction));
         if((t >= 0.0) && (t <= 1.0)) {
