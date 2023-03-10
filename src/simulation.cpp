@@ -135,6 +135,7 @@ void simulation::fused_streaming(node *node) {
 void simulation::fused_bounce_back(node *n) {
     // applies the extra for channels 7 and 8
     // locally so can be done independent of streaming
+    // todo sort the nodes to put bounce back moving last or first in the overall arrays analyse first thou
     if(n->boundary_type== BOUNCE_BACK_MOVING) {
         n->next_population->operator()(7) += -1.0/6 * parameters.u_wall;
         n->next_population->operator()(8) += 1.0/6 * parameters.u_wall;
@@ -255,8 +256,9 @@ void simulation::fused_run() {
         fused_macro(node);
         fused_collision(node,parameters.relaxation);
         // streaming and bb
-        fused_streaming(node);
-        fused_bounce_back(node);
+        fused_streaming(node); // todo fused streaming has some inlined stuff for bb
+        // todo sort array bounce back last should make faster
+        // fused_bounce_back(node);
         // switchero
         array_t * temp = node->current_population;
         node->current_population = node->next_population;

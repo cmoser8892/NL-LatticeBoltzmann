@@ -341,6 +341,7 @@ TEST(InitTests, fused_init) {
 }
 
 TEST(InitTests, inner_outer_neighbour_test) {
+    // still kinda spooked will try out the write out of the rho field
     unsigned int size = 30;
     unsigned int sub_size = 20;
     point_t c = {size,size};
@@ -351,8 +352,8 @@ TEST(InitTests, inner_outer_neighbour_test) {
     boundaries.init_sliding_lid_inner({3,5},{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    EXPECT_EQ(p.x()*p.y() - k.x()*k.y(),gen.node_infos.size());
     int expected_total_node_number = p.x()*p.y() - k.x()*k.y();
+    EXPECT_EQ(expected_total_node_number,gen.node_infos.size());
     int number_nodes = 0;
     int number_wet_nodes = 0;
     int number_dry_nodes = 0;
@@ -363,7 +364,7 @@ TEST(InitTests, inner_outer_neighbour_test) {
         if(n->type == WET) {
             number_wet_nodes++;
             if(n->links.size() != 8) {
-                // std::cout << n->position << std::endl;
+                std::cout << n->position << std::endl;
                 broken_nodes++;
             }
             //EXPECT_EQ(n->links.size(),8);
@@ -385,6 +386,99 @@ TEST(InitTests, inner_outer_neighbour_test) {
     // sanity check
     EXPECT_EQ(number_nodes, number_dry_nodes + number_wet_nodes);
 }
+
+TEST(InitTests, init_out_inner_rho_writeout) {
+    // checks number of rho zeros
+    unsigned int size = 30;
+    unsigned int sub_size = 20;
+    point_t c = {size,size};
+    point_t p = {sub_size,sub_size+2};
+    point_t k = {5,6};
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    simulation sim(&boundaries,&gen);
+    sim.init();
+    flowfield_t rho;
+    rho.resize(size,size);
+    for(auto n : sim.nodes) {
+        write_rho(n,&rho);
+    }
+    // go through the flow-field
+    int expected_total_node_number = p.x()*p.y() - k.x()*k.y();
+    int zeros = 0;
+    int ones = 0;
+    int errors = 0;
+    for(int i = 0; i < size;++i) {
+        for(int j = 0; j < size; ++j) {
+            if(rho(i,j) == 0) {
+                zeros++;
+            }
+            else if(rho(i,j) == 1) {
+                ones++;
+            }
+            else {
+                errors++;
+            }
+        }
+    }
+    EXPECT_EQ(expected_total_node_number,ones);
+    EXPECT_EQ(errors,0);
+}
+
+TEST(InitTests, inner_outer_master_test) {
+    unsigned int size = 10;
+    unsigned int sub_size = 8;
+    unsigned int white_list = 6;
+    unsigned int inner_size = 4;
+    point_t c = {size,size}; // size or the canvas
+    point_t p = {sub_size,sub_size}; // size of the  quader
+    point_t k = {inner_size,inner_size}; // size of the inner one
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({1,1},{3,3},k);
+    EXPECT_EQ(boundaries.boundary_points.size(),(sub_size-1)*4 + (inner_size -1)*4);
+    nodeGenerator gen(&boundaries);
+    // check boundaries right at least
+    gen.init(size);
+    // boundary point sanity check
+    int dry_nodes_number = 0;
+    for(auto node : gen.node_infos) {
+        if(node->type == DRY) {
+            dry_nodes_number++;
+        }
+    }
+    EXPECT_EQ(boundaries.boundary_points.size(),dry_nodes_number);
+    // wet node check
+    int wet_nodes_number = 0;
+    int good_wet_nodes = 0;
+    // miss using boundary nodes to whitelist the correct nodes in the mass to narrow down the error mass
+    point_t w = {white_list,white_list};
+    boundaryPointConstructor white_list_nodes(c);
+    white_list_nodes.init_quader({2,2},w);
+    EXPECT_EQ((white_list-1)*4, white_list_nodes.boundary_points.size());
+    for(auto node : gen.node_infos) {
+        if(node->type == WET) {
+            wet_nodes_number++;
+            // check the whitelist for correct nodes
+            bool good_node = false;
+            for(auto white : white_list_nodes.boundary_points) {
+                if(point_t(node->position) == white->point) {
+                    good_wet_nodes++;
+                    good_node  = true;
+                    break;
+                }
+            }
+            if(!good_node)
+                std::cout << node->position.x() << " " << node->position.y() << std::endl << std::endl;
+        }
+    }
+    EXPECT_EQ((white_list-1)*4, good_wet_nodes);
+    EXPECT_EQ((white_list-1)*4,wet_nodes_number);
+}
+
 
 TEST(InitTests, fused_init_correct_boundary_lables) {
     unsigned int size = 6;
@@ -416,4 +510,8 @@ TEST(InitTests, fused_init_correct_boundary_lables) {
     EXPECT_EQ(no_boundary,4);
     EXPECT_EQ(bounce_back,8);
     EXPECT_EQ(bounce_back_moving,4);
+}
+
+TEST(InitTests, fused_inner_outer_init) {
+    // todo implement me
 }
