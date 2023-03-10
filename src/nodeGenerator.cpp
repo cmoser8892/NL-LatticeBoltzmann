@@ -432,3 +432,7 @@ void nodeGenerator::delete_node_infos() {
         delete n;
     }
 }
+
+void nodeGenerator::visualize_2D_nodes(int size) {
+
+}
