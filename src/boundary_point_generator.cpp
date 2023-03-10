@@ -99,7 +99,7 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
  * @param p
  */
 void boundaryPointConstructor::init_quader(point_t p) {
-    init_quader(p,limits);
+    init_quader(p,size);
 }
 
 /**
@@ -113,8 +113,8 @@ void boundaryPointConstructor::init_quader(point_t p,vector_t size) {
     point_t current = p;
     // go from 0 till the in x directions
     vector_t direction;
-    int size_x = int(size.x());
-    int size_y = int(size.y());
+    int size_x = int(size.x()-1);
+    int size_y = int(size.y()-1);
     // go through x
     direction = {1,0};
     one_direction(size_x,direction,&current, type);
@@ -227,10 +227,8 @@ void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int 
  * @param inner_size
  */
 void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t continues, vector_t inner_size) {
-    init_quader(start,limits);
-    vector_t inner_limits;
-    inner_limits << inner_size.x()-1,inner_size.y()-1;
-    init_quader(continues,inner_limits);
+    init_quader(start,size);
+    init_quader(continues,inner_size);
     double limit_y = limits.y() + start.y();
     for(auto b : boundary_points) {
         if(b->point.y() == limit_y) {
