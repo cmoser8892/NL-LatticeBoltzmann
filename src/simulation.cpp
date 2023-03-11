@@ -257,7 +257,7 @@ void simulation::fused_run() {
         fused_collision(node,parameters.relaxation);
         // streaming and bb
         fused_streaming(node); // todo fused streaming has some inlined stuff for bb
-        // todo eigen checks the sizes of pointers to the array which is good behaviour but kinda dumb if i know sizes
+        // todo eigen checks the sizes of pointers to arrays which is good behaviour but kinda dumb if i know sizes
         // todo sort array bounce back last should make faster
         fused_bounce_back(node);
         // switchero
