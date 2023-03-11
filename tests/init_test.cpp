@@ -518,6 +518,42 @@ TEST(InitTests, fused_init_correct_boundary_lables) {
     EXPECT_EQ(bounce_back_moving,4);
 }
 
-TEST(InitTests, fused_inner_outer_init) {
-    // todo implement me
+TEST(InitTests, fused_inner_outer_init_simple) {
+    unsigned int size = 10;
+    unsigned int sub_size = 8;
+    unsigned int white_list = 6;
+    unsigned int inner_size = 4;
+    point_t c = {size,size}; // size or the canvas
+    point_t p = {sub_size,sub_size}; // size of the  quader
+    point_t k = {inner_size,inner_size}; // size of the inner one
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({1,1},{3,3},k);
+    // boundaries.visualize_2D_boundary(size);
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
+    nodeGenerator gen(&boundaries);
+    // check boundaries right at least
+    gen.init_fused(size);
+    // gen.visualize_2D_nodes(size);
+    int expected_total_node_number = (p.x()-2)*(p.y()-2) - (k.x()*k.y());
+    EXPECT_EQ(gen.node_infos.size(),expected_total_node_number);
+}
+
+TEST(InitTests, fused_inner_outer_init_shifted) {
+    // checks number of rho zeros
+    unsigned int size = 30;
+    unsigned int sub_size = 20;
+    point_t c = {size,size};
+    point_t p = {sub_size,sub_size+2};
+    point_t k = {5,6};
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    simulation sim(&boundaries,&gen);
+    sim.fused_init();
+    // check
+    int expected_total_node_number = (p.x()-2)*(p.y()-2) - (k.x()*k.y());
+    EXPECT_EQ(sim.nodes.size(),expected_total_node_number);
 }
