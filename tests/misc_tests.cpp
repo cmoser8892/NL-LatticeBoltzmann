@@ -145,6 +145,7 @@ TEST(StreamTests, one_D_streaming_channel_one) {
     point_t end = {size,0};
     point_t sim_area = {size,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     simulation sm(&boundaries);
@@ -177,6 +178,7 @@ TEST(StreamTests, one_D_streaming_channel_three) {
     point_t end = {size,0};
     point_t sim_area = {size,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     simulation sm(&boundaries);
@@ -216,6 +218,7 @@ TEST(StreamTests, one_D_streaming_channel_two) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {0,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
@@ -258,6 +261,7 @@ TEST(StreamTests, one_D_streaming_channel_four) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {0,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
@@ -300,6 +304,7 @@ TEST(StreamTests, one_D_streaming_channel_five) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {1,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
@@ -342,6 +347,7 @@ TEST(StreamTests, one_D_streaming_channel_seven) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {1,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
@@ -384,6 +390,7 @@ TEST(StreamTests, one_D_streaming_channel_six) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {-1,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
@@ -426,6 +433,7 @@ TEST(StreamTests, one_D_streaming_channel_eight) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {-1,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
     nodeGenerator gen(&boundaries);
@@ -536,6 +544,7 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     point_t end = {size,0};
     point_t sim_area = {size,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
@@ -576,6 +585,7 @@ TEST(BounceBackTesting, Horizontals_two_four) {
     point_t sim_area = {size,size};
     vector_t node_generation = {0,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
@@ -618,6 +628,7 @@ TEST(BounceBackTesting, Oblique_five_seven) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {1,1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
@@ -660,6 +671,7 @@ TEST(BounceBackTesting, Oblique_six_eight) {
     // need to be able to prime the boundary point construtor
     vector_t node_generation = {1,-1};
     boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
     boundaries.set_point(&start,BOUNCE_BACK);
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);

@@ -29,20 +29,22 @@ nodeGenerator::~nodeGenerator() {
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
-    for(auto p : points->boundary_points) {
-        point_t current = p->point + discovery_vector;
-        // until a boundary points is hit create more points
-        // also check weather or not inside boundaries
-        while(!check_other_boundary_hit(p,current)) {
-            auto n = new nodePoint_t;
-            n->handle = handle_counter;
-            n->position = current;
-            n->type = WET;
-            n->boundary = NO_BOUNDARY;
-            // dont forget to increase the handle counter each time
-            handle_counter++;
-            node_infos.push_back(n);
-            current += discovery_vector;
+    for(auto bs : points->boundary_structures) {
+        for(auto p : bs->boundary_points) {
+            point_t current = p->point + discovery_vector;
+            // until a boundary points is hit create more points
+            // also check weather or not inside boundaries
+            while(!check_other_boundary_hit(p,current)) {
+                auto n = new nodePoint_t;
+                n->handle = handle_counter;
+                n->position = current;
+                n->type = WET;
+                n->boundary = NO_BOUNDARY;
+                // dont forget to increase the handle counter each time
+                handle_counter++;
+                node_infos.push_back(n);
+                current += discovery_vector;
+            }
         }
     }
     // finally add boundary nodes
@@ -60,10 +62,12 @@ bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_p
     bool return_value = false;
     point_t check = check_point.base();
     // right now just does a linear search to check if point hit or not
-    for(auto point : points->boundary_points) {
-        if(compare_two_points(&check,&point->point)) {
-            return_value = true;
-            break;
+    for(auto bs : points->boundary_structures) {
+        for(auto point : bs->boundary_points) {
+            if(compare_two_points(&check,&point->point)) {
+                return_value = true;
+                break;
+            }
         }
     }
     // then check if still inside sim space
@@ -306,17 +310,19 @@ void nodeGenerator::check_nodes(handle_t* current) {
  */
 void nodeGenerator::add_boundary_nodes(handle_t* current) {
     // lastlly add the boundary points
-    for(auto p : points->boundary_points) {
-        // std::cout << p << std::endl;
-        // set all the variables except the links
-        auto n = new nodePoint_t;
-        n->handle = *current;
-        n->position = p->point;
-        n->type = DRY;
-        n->boundary = p->type;
-        // dont forget to increase the handle counter each time
-        (*current)++;
-        node_infos.push_back(n);
+    for(auto bs : points->boundary_structures) {
+        for(auto p : bs->boundary_points) {
+            // std::cout << p << std::endl;
+            // set all the variables except the links
+            auto n = new nodePoint_t;
+            n->handle = *current;
+            n->position = p->point;
+            n->type = DRY;
+            n->boundary = p->type;
+            // dont forget to increase the handle counter each time
+            (*current)++;
+            node_infos.push_back(n);
+        }
     }
 }
 

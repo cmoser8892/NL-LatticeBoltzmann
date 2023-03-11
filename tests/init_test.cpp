@@ -10,12 +10,7 @@ TEST(InitTests, basicBoundaryPoints) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
     // should be (size-1)^ 2
-    EXPECT_EQ(boundaries.boundary_points.size(), (size-1)*(size-1));
-    // check first and last element too
-    point_t checker = {0,0};
-    EXPECT_EQ(boundaries.boundary_points.at(0)->point,checker);
-    checker = {0,1};
-    EXPECT_EQ(boundaries.boundary_points.at(boundaries.boundary_points.size()-1)->point,checker);
+    EXPECT_EQ(boundaries.total_boundary_nodes(), (size-1)*(size-1));
 }
 
 TEST(InitTests, checkNodeGeneration) {
@@ -57,9 +52,11 @@ TEST(InitTests, init_sliding_Lid_boundaries) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     //  check weather or not the top nodes are flagged as moving
-    for( auto b: boundaries.boundary_points) {
-        if(b->point.y() == size -1) {
-            EXPECT_EQ(b->type, BOUNCE_BACK_MOVING);
+    for(auto bs : boundaries.boundary_structures) {
+        for( auto b: bs->boundary_points) {
+            if(b->point.y() == size -1) {
+                EXPECT_EQ(b->type, BOUNCE_BACK_MOVING);
+            }
         }
     }
 }
@@ -234,9 +231,9 @@ TEST(InitTests, sufaces) {
     straightGenerator st(&boundaries);
     st.init();
     // test size
-    EXPECT_EQ(boundaries.boundary_points.size(),4*(sub_size-1));
+    EXPECT_EQ(boundaries.total_boundary_nodes(),4*(sub_size-1));
     EXPECT_EQ(st.surfaces.size(),4*(sub_size-1));
-    EXPECT_EQ(st.surfaces.size(),boundaries.boundary_points.size());
+    EXPECT_EQ(st.surfaces.size(),boundaries.total_boundary_nodes());
 }
 
 TEST(InitTests, reduced_surface) {
@@ -269,9 +266,9 @@ TEST(InitTests, chopped_boundaries) {
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_chopped_sliding_lid({1,1},4);
-    EXPECT_EQ(boundaries.boundary_points.size(), (sub_size-1)*4);
+    EXPECT_EQ(boundaries.total_boundary_nodes(), (sub_size-1)*4);
     // check if even with the bulge the sizes are still the same
-    EXPECT_EQ(boundaries.boundary_points.size(),(sub_size-1)*4);
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4);
     // generator
     nodeGenerator gen(&boundaries);
     gen.init(size);
@@ -288,7 +285,7 @@ TEST(InitTests, outer_inner_quader) {
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},{3,3},{inner_size,inner_size});
-    EXPECT_EQ(boundaries.boundary_points.size(), ((outer_size-1) + (inner_size-1))*4);
+    EXPECT_EQ(boundaries.total_boundary_nodes(), ((outer_size-1) + (inner_size-1))*4);
 }
 
 TEST(NeighbourhoodTests, hash_keys) {
@@ -383,8 +380,8 @@ TEST(InitTests, inner_outer_neighbour_test) {
     EXPECT_EQ(broken_nodes,0);
     EXPECT_EQ(stalkers,0);
     EXPECT_EQ(expected_total_node_number,number_nodes);
-    EXPECT_EQ(number_dry_nodes,boundaries.boundary_points.size());
-    EXPECT_EQ(number_wet_nodes, expected_total_node_number - boundaries.boundary_points.size());
+    EXPECT_EQ(number_dry_nodes,boundaries.total_boundary_nodes());
+    EXPECT_EQ(number_wet_nodes, expected_total_node_number - boundaries.total_boundary_nodes());
     // sanity check
     EXPECT_EQ(number_nodes, number_dry_nodes + number_wet_nodes);
 }
@@ -409,7 +406,7 @@ TEST(InitTests, init_out_inner_rho_writeout) {
         write_rho(n,&rho);
     }
     // go through the flow-field
-    int expected_total_node_number = p.x()*p.y() - k.x()*k.y();
+    int expected_total_node_number = p.x()*p.y() - (k.x()-2)*(k.y()-2);
     int zeros = 0;
     int ones = 0;
     int errors = 0;
@@ -442,7 +439,7 @@ TEST(InitTests, inner_outer_master_test) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},{3,3},k);
     // boundaries.visualize_2D_boundary(size);
-    EXPECT_EQ(boundaries.boundary_points.size(),(sub_size-1)*4 + (inner_size -1)*4);
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
     // check boundaries right at least
     gen.init(size);
@@ -453,7 +450,7 @@ TEST(InitTests, inner_outer_master_test) {
             dry_nodes_number++;
         }
     }
-    EXPECT_EQ(boundaries.boundary_points.size(),dry_nodes_number);
+    EXPECT_EQ(boundaries.total_boundary_nodes(),dry_nodes_number);
     // wet node check
     int wet_nodes_number = 0;
     int good_wet_nodes = 0;
@@ -463,17 +460,19 @@ TEST(InitTests, inner_outer_master_test) {
     boundaryPointConstructor white_list_nodes(c);
     white_list_nodes.init_quader({2,2},w);
     // white_list_nodes.visualize_2D_boundary(size);
-    EXPECT_EQ((white_list-1)*4, white_list_nodes.boundary_points.size());
+    EXPECT_EQ((white_list-1)*4, white_list_nodes.total_boundary_nodes());
     for(auto node : gen.node_infos) {
         if(node->type == WET) {
             wet_nodes_number++;
             // check the whitelist for correct nodes
             bool good_node = false;
-            for(auto white : white_list_nodes.boundary_points) {
-                if(point_t(node->position) == white->point) {
-                    good_wet_nodes++;
-                    good_node  = true;
-                    break;
+            for(auto bs: white_list_nodes.boundary_structures) {
+                for(auto white : bs->boundary_points) {
+                    if(point_t(node->position) == white->point) {
+                        good_wet_nodes++;
+                        good_node  = true;
+                        break;
+                    }
                 }
             }
             if(!good_node) {

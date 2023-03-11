@@ -1,6 +1,12 @@
 #include <iostream>
 #include "boundary_point_generator.h"
 
+boundaryStructure::~boundaryStructure() {
+    for(auto d : boundary_points) {
+        delete d;
+    }
+}
+
 /**
  * @fn boundaryPointConstructor::boundaryPointConstructor(point_t s)
  * @brief constructor of the boundary points
@@ -9,6 +15,7 @@
 boundaryPointConstructor::boundaryPointConstructor(point_t s) {
     size = s;
     limits << s.x()-1,s.y()-1;
+
 }
 
 /**
@@ -16,7 +23,13 @@ boundaryPointConstructor::boundaryPointConstructor(point_t s) {
  * @brief deconstructor, deletes the elements
  */
 boundaryPointConstructor::~boundaryPointConstructor() {
-    delete_elements();
+    delete_structures();
+}
+
+void boundaryPointConstructor::init_structure() {
+    auto bs = new boundaryStructure;
+    boundary_structures.push_back(bs);
+    current_structure++;
 }
 
 /**
@@ -42,10 +55,14 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
  * @param b
  */
 void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
+    if(current_structure<0) {
+        std::cerr << "No structure" << std::endl;
+        return;
+    }
     auto boundary_point = new boundaryPoint_t;
     boundary_point->point = *p;
     boundary_point->type = b;
-    boundary_points.push_back(boundary_point);
+    boundary_structures.at(current_structure)->boundary_points.push_back(boundary_point);
 }
 /**
  * @fn void boundaryPointConstructor::init_quader()
@@ -70,6 +87,7 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
     if(devider < 2) {
         throw std::runtime_error("unrealitic devider");
     }
+    init_structure();
     boundaryType_t type = BOUNCE_BACK;
     point_t current = point;
     // go from 0 till the in x directions
@@ -111,6 +129,7 @@ void boundaryPointConstructor::init_quader(point_t p) {
 void boundaryPointConstructor::init_quader(point_t p,vector_t size) {
     boundaryType_t type = BOUNCE_BACK;
     point_t current = p;
+    init_structure();
     // go from 0 till the in x directions
     vector_t direction;
     int size_x = int(size.x()-1);
@@ -140,7 +159,7 @@ void boundaryPointConstructor::init_sliding_lid() {
     // init a quader
     double limit_y = limits.y();
     init_quader();
-    for(auto b : boundary_points) {
+    for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;
         }
@@ -156,7 +175,7 @@ void boundaryPointConstructor::init_sliding_lid() {
 void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopfactor) {
     double limit_y = limits.y() + start.y();
     init_chopped_quader(start,chopfactor);
-    for(auto b : boundary_points) {
+    for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;
         }
@@ -213,7 +232,7 @@ void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chops
 void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int chopsize) {
     double limit_y = limits.y() + start.y();
     init_quader_side_chopped(start,chopsize);
-    for(auto b : boundary_points) {
+    for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;
         }
@@ -230,21 +249,16 @@ void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t con
     init_quader(start,size);
     init_quader(continues,inner_size);
     double limit_y = limits.y() + start.y();
-    for(auto b : boundary_points) {
+    for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;
         }
     }
 }
 
-/**
- * @fn void boundaryPointConstructor::delete_elements()
- * @brief deletes the elements in the boundary structure
- */
-void boundaryPointConstructor::delete_elements() {
-    for(auto element : boundary_points) {
-        // deletes the element or the pointer
-        delete element;
+void boundaryPointConstructor::delete_structures() {
+    for(auto bs: boundary_structures) {
+        delete bs;
     }
 }
 
@@ -256,9 +270,19 @@ void boundaryPointConstructor::delete_elements() {
 void boundaryPointConstructor::visualize_2D_boundary(int size) {
     flowfield_t output;
     output.setZero(size,size);
-    for(auto b : boundary_points) {
-        output(int(b->point.x()),int(b->point.y())) = 1;
+    for(auto bs : boundary_structures) {
+        for(auto b : bs->boundary_points) {
+            output(int(b->point.x()),int(b->point.y())) = 1;
+        }
     }
     std::cout << "Boundary-structure" << std::endl;
     std::cout << output << std::endl << std::endl;
+}
+
+long boundaryPointConstructor::total_boundary_nodes() {
+    long size = 0;
+    for(auto const bs : boundary_structures) {
+        size += long(bs->boundary_points.size());
+    }
+    return size;
 }

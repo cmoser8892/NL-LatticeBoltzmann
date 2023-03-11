@@ -27,7 +27,8 @@ class boundaryPointConstructor {
     // nada
   public:
     // holds all the boundary points
-    std::vector<boundaryPoint_t *> boundary_points;
+    long current_structure = -1;
+    std::vector<boundaryStructure*> boundary_structures;
     // sizes and limits of the construction field
     point_t size;
     point_t limits;
@@ -35,6 +36,7 @@ class boundaryPointConstructor {
     explicit boundaryPointConstructor(point_t s);
     ~boundaryPointConstructor();
     // initizlies a quader
+    void init_structure();
     void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
     void set_point(point_t* p, boundaryType_t b);
     void init_quader();
@@ -46,11 +48,11 @@ class boundaryPointConstructor {
     void init_quader_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_inner(point_t start, point_t cntiues, vector_t inner_size);
-    void delete_elements();
+    void delete_structures();
     // visualize
     void visualize_2D_boundary(int size);
     // total nodes
-    void total_boundary_nodes();
+    long total_boundary_nodes();
 };
 
 #endif // NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H

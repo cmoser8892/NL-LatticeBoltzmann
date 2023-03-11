@@ -9,17 +9,41 @@
 void straightGenerator::calculate_mass_center() {
     // add all the points up, divide by the number of points
     mass_center.setZero();
-    for(auto point : points->boundary_points) {
-        mass_center += point->point;
+    for(auto bs : points->boundary_structures) {
+        for(auto b : bs->boundary_points) {
+            mass_center += b->point;
+        }
     }
-    mass_center /= double(points->boundary_points.size());
+    mass_center /= double(points->total_boundary_nodes());
 }
 
 /**
  * @fn void straightGenerator::calculate_all_straights()
  * @brief calculates the straights between all the boundary points, doesnt reduce them though
+ * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
+    // iter through the boundary structures
+    for(auto bs : points->boundary_structures) {
+        auto iter = bs->boundary_points.begin();
+        while(iter != bs->boundary_points.end()) {
+            auto next_iter = bs->boundary_points.begin();
+            if(!((iter+1) == bs->boundary_points.end())) {
+                next_iter = iter +1;
+            }
+            // fill in the values
+            auto s  = new surface_t;
+            s->point = iter.operator*()->point;
+            // rotate the vector by 90 degrees forward (doesnt really matter which direction)
+            vector_t next = (next_iter.operator*()->point - iter.operator*()->point);
+            s->direction = next;
+            // put the point in the middle
+            surfaces.push_back(s);
+            // increment
+            iter++;
+        }
+    }
+    /*
     auto iter = points->boundary_points.begin();
     while(iter != points->boundary_points.end()) {
         // special cases for end, we set the next iter to iter + 1
@@ -38,6 +62,7 @@ void straightGenerator::calculate_all_straights() {
         surfaces.push_back(s);
         iter++;
     }
+     */
 }
 
 /// public
