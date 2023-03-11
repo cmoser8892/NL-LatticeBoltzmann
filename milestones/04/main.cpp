@@ -2,6 +2,7 @@
 #include <iostream>
 #include <chrono>
 
+/// fused variant of m2
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;
