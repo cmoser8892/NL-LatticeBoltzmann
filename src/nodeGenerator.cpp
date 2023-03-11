@@ -277,14 +277,14 @@ void nodeGenerator::check_nodes(handle_t* current) {
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
-        /*
-        if(n->position.x() == 3) {
-            if(n->position.y() == 3) {
+
+        if(n->position.x() == 4) {
+            if(n->position.y() == 6) {
                 std::cout << "hi" << std::endl;
             }
         }
-         */
-        if(!straight.node_inside(n)) {
+        bool c = straight.node_inside(n);
+        if(!c) {
             n->handle = *current;
             n->boundary = NO_BOUNDARY;
             n->type = WET;
@@ -444,6 +444,6 @@ void nodeGenerator::visualize_2D_nodes(int size) {
     for(auto b : node_infos) {
         output(int(b->position.x()),int(b->position.y()))++;
     }
-    std::cout << "Boundary-structure" << std::endl;
+    std::cout << "Nodes allocated" << std::endl;
     std::cout << output << std::endl << std::endl;
 }

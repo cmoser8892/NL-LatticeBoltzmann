@@ -8,10 +8,19 @@
  * first ingredient to the init
  */
 
+// definition of a general boundary point
 typedef struct boundaryPoint {
     point_t point;
     boundaryType_t type;
 }boundaryPoint_t;
+
+// Description of one closed surface/structure
+class boundaryStructure {
+  public:
+    ~boundaryStructure();
+    std::vector<boundaryPoint_t *> boundary_points;
+
+};
 
 class boundaryPointConstructor {
   private:
@@ -40,6 +49,8 @@ class boundaryPointConstructor {
     void delete_elements();
     // visualize
     void visualize_2D_boundary(int size);
+    // total nodes
+    void total_boundary_nodes();
 };
 
 #endif // NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H
