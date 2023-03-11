@@ -124,6 +124,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
         // we do a little shift out of the mass-center
         // any direction should work
         std::cerr << "Node-point is the mass-center, algorithm potentially broken" << std::endl;
+        std::cerr << "Check correct node-size or amount of wet node neighbours" << std::endl;
         straight.point.x() += 0.1;
         straight.point.y() += 0.1;
     }

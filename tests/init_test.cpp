@@ -347,10 +347,10 @@ TEST(InitTests, inner_outer_neighbour_test) {
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({3,5},{9,7},k);
-    boundaries.visualize_2D_boundary(30);
+    // boundaries.visualize_2D_boundary(30);
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    gen.visualize_2D_nodes(30);
+    // gen.visualize_2D_nodes(30);
     int expected_total_node_number = p.x()*p.y() - (k.x()-2)*(k.y()-2);
     EXPECT_EQ(expected_total_node_number,gen.node_infos.size());
     int number_nodes = 0;
