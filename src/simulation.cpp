@@ -219,6 +219,7 @@ void simulation::fused_init() {
         n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->rho = 1;
         n->u.setZero();
+        // todo change to fused nodes to reduce data overhead
         n->population_even = equilibrium(n);
         n->population_odd = n->population_even;
         nodes.push_back(n);
