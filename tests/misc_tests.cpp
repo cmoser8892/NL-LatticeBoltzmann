@@ -846,3 +846,40 @@ TEST(Orderingtests, sign_reduce) {
     //dks
     EXPECT_EQ(reduce_32_2(-4),0x2);
 }
+
+TEST(FunctionalTest, fused_collision) {
+    // test against original
+    double relaxation_time = 0.5;
+    point_t pos = {0,0};
+    node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    collision(&node_original,relaxation_time);
+    node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    fused_collision(&node_fused, relaxation_time);
+    // check against each other
+    for(int i = 0; i < velocity_set.cols(); ++i) {
+        EXPECT_EQ(node_original.population_even(i),node_fused.population_even(i));
+    }
+}
+
+TEST(FunctionalTest, fused_macro) {
+    // test against original
+    double relaxation_time = 0.5;
+    point_t pos = {0,0};
+    node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    // set good values
+    node_original.population_even.setOnes();
+    node_fused.population_even.setOnes();
+    // run functions
+    macro(&node_original);
+    fused_macro(&node_fused);
+    // check
+    EXPECT_EQ(node_original.rho,node_fused.rho);
+    EXPECT_EQ(node_original.u(0),node_fused.u(0));
+    EXPECT_EQ(node_original.u(1),node_fused.u(1));
+}
+
+TEST(FunctionalTest, fused_streaming) {
+    // figure out
+    EXPECT_TRUE(false);
+}

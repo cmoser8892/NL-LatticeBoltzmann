@@ -227,6 +227,7 @@ void simulation::fused_init() {
         n->rho = 1;
         n->u.setZero();
         // todo change to fused nodes to reduce data overhead
+        // todo actually not sure
         n->population_even = equilibrium(n);
         n->population_odd = n->population_even;
         nodes.push_back(n);

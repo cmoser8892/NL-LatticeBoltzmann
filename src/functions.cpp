@@ -19,34 +19,14 @@ array_t equilibrium(node* node) {
     // this optimizes badly
     array_t return_array;
     return_array.setZero(CHANNELS);
-    /*
-    // this optimizes badly in combination with the
-    array_t pow = node->u.pow(2);
-    double uu = 3*(pow.sum());
-    double six_ux = 6 * node->u(0);
-    double six_uy = 6 * node->u(1);
-    double nine_uxx = 9 * pow(0);
-    double nine_uyy = 9 * pow(1);
-    double three_ux_uy_p = 3 * ( node->u(0) + node->u(1));
-    double three_ux_uy_m = 3 * ( node->u(0) - node->u(1));
-    double nine_uxuy = 9 * ( node->u(0) * node->u(1));
-    return_array(0) = 2.0/9 * node->rho * (2- uu);
-    return_array(1) = 1.0/18 * node->rho * (2 + six_ux + nine_uxx - uu);
-    return_array(2) = 1.0/18 * node->rho * (2 + six_uy + nine_uyy - uu);
-    return_array(3) = 1.0/18 * node->rho * (2 - six_ux + nine_uxx - uu);
-    return_array(4) = 1.0/18 * node->rho * (2 - six_uy + nine_uyy - uu);
-    return_array(5) = 1.0/36 * node->rho * (1 + three_ux_uy_p + nine_uxuy + uu);
-    return_array(6) = 1.0/36 * node->rho * (1 - three_ux_uy_m - nine_uxuy + uu);
-    return_array(7) = 1.0/36 * node->rho * (1 - three_ux_uy_p + nine_uxuy + uu);
-    return_array(8) = 1.0/36 * node->rho * (1 + three_ux_uy_m - nine_uxuy + uu);
-    */
+    // convenience programming
     double ux = node->u(0);
     double uy = node->u(1);
     double rho = node->rho;
     // unroll the collision function
     return_array(0) = weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy));
     return_array(1) = weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
-    return_array(2) =weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(2) = weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
     return_array(3) = weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
     return_array(4) = weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
     return_array(5) = weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
