@@ -880,6 +880,7 @@ TEST(FunctionalTest, fused_macro) {
 }
 
 TEST(FunctionalTest, fused_streaming) {
-    // figure out
+    // figure it out
+    // combine wtih bb btw so a bit harder...
     EXPECT_TRUE(false);
 }
