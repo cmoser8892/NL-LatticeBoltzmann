@@ -43,26 +43,6 @@ void straightGenerator::calculate_all_straights() {
             iter++;
         }
     }
-    /*
-    auto iter = points->boundary_points.begin();
-    while(iter != points->boundary_points.end()) {
-        // special cases for end, we set the next iter to iter + 1
-        auto next_iter = points->boundary_points.begin();
-        // check if not the last one
-        if(!((iter+1) == points->boundary_points.end())) {
-            next_iter = iter + 1;
-        }
-        // fill the values
-        auto s  = new surface_t;
-        s->point = iter.operator*()->point;
-        // rotate the vector by 90 degrees forward (doesnt really matter which direction)
-        vector_t next = (next_iter.operator*()->point - iter.operator*()->point);
-        s->direction = next;
-        // put the point in the middle
-        surfaces.push_back(s);
-        iter++;
-    }
-     */
 }
 
 /// public

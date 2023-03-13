@@ -1,6 +1,10 @@
 #include <iostream>
 #include "boundary_point_generator.h"
 
+/**
+ * @fn boundaryStructure::~boundaryStructure()
+ * @brief de-construcutur deletes all the boundary points
+ */
 boundaryStructure::~boundaryStructure() {
     for(auto d : boundary_points) {
         delete d;
@@ -25,7 +29,10 @@ boundaryPointConstructor::boundaryPointConstructor(point_t s) {
 boundaryPointConstructor::~boundaryPointConstructor() {
     delete_structures();
 }
-
+/**
+ * @fn void boundaryPointConstructor::init_structure()
+ * @brief initilizes a boundary structure to better describe disjunct boundariess
+ */
 void boundaryPointConstructor::init_structure() {
     auto bs = new boundaryStructure;
     boundary_structures.push_back(bs);
@@ -73,6 +80,7 @@ void boundaryPointConstructor::init_quader() {
     current.setZero();
     init_quader(current);
 }
+
 /**
  * @fn void boundaryPointConstructor::init_chopped_quader(point_t point, int devider)
  * @brief sets up a quader where are are part was chopped off
@@ -181,6 +189,7 @@ void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopf
         }
     }
 }
+
 /**
  * @fn void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chopsize)
  * @brief quader with part missing can be anywhere
@@ -223,6 +232,7 @@ void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chops
     direction = {0,-1};
     one_direction(int(limits.y()),direction,&current, type);
 }
+
 /**
  * @fn void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int chopsize)
  * @brief choped of sliding lid
@@ -238,6 +248,7 @@ void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int 
         }
     }
 }
+
 /**
  * @fn void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t continues, vector_t inner_size)
  * @brief sliding lid with an quadratic object in it
@@ -279,6 +290,11 @@ void boundaryPointConstructor::visualize_2D_boundary(int size) {
     std::cout << output << std::endl << std::endl;
 }
 
+/**
+ * @fn long boundaryPointConstructor::total_boundary_nodes()
+ * @brief sums up all the boundary points
+ * @return sum of all the boundary points, indipendent of the individual stuctures formed
+ */
 long boundaryPointConstructor::total_boundary_nodes() {
     long size = 0;
     for(auto const bs : boundary_structures) {

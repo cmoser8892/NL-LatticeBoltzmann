@@ -116,8 +116,8 @@ void simulation::collisions() {
     }
 }
 /**
- * @fn
- * @brief
+ * @fn void simulation::fused_streaming(node *node)
+ * @brief streaming step for one node, pushes values
  * @param node
  */
 void simulation::fused_streaming(node *node) {
@@ -132,6 +132,11 @@ void simulation::fused_streaming(node *node) {
     }
 }
 
+/**
+ * @fn void simulation::fused_bounce_back(node *n)
+ * @brief moving part of the bounce back for sliding lids
+ * @param n
+ */
 void simulation::fused_bounce_back(node *n) {
     // applies the extra for channels 7 and 8
     // locally so can be done independent of streaming
@@ -225,12 +230,12 @@ void simulation::fused_init() {
         nodes.push_back(n);
     }
 }
+
 /**
  * @fn void simulation::run()
  * @brief on sim run
  */
 void simulation::run() {
-    // todo reduce full runs through the nodes
     // run all substeps
     // moving wall missing i guess
     streaming_step_1();
@@ -257,7 +262,8 @@ void simulation::fused_run() {
         fused_macro(node);
         fused_collision(node,parameters.relaxation);
         // streaming and bb
-        fused_streaming(node); // todo fused streaming has some inlined stuff for bb
+        fused_streaming(node);
+        // todo fused streaming has some inlined stuff for bb
         // todo eigen checks the sizes of pointers to arrays which is good behaviour but kinda dumb if i know sizes
         // todo sort array bounce back last should make faster
         fused_bounce_back(node);

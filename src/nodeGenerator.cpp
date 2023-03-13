@@ -22,6 +22,7 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
 }
+
 /**
  * @fn void nodeGenerator::linear_generation()
  * @brief generates nodes until it hits a boundary useful to make simple 1d tests
@@ -50,6 +51,7 @@ void nodeGenerator::linear_generation() {
     // finally add boundary nodes
     add_boundary_nodes(&handle_counter);
 }
+
 /**
  * @fn bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point)
  * @brief checks if the next point would be a boundary or outside
@@ -125,6 +127,7 @@ bool nodeGenerator::read_data_from_file() {
     }
     return return_value;
 }
+
 /**
  * @fn void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t* chop)
  * @brief function to translate data on files to data for the class
@@ -178,6 +181,7 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
         throw std::invalid_argument("Error while parsing");
     }
 }
+
 /**
  * @fn void nodeGenerator::write_data_to_file(bool write)
  * @brief does what it says check if params are set correctlly
@@ -321,8 +325,8 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
 }
 
 /**
- * @fn
- * @brief
+ * @fn void nodeGenerator::reduce_boundary_neighborhood()
+ * @brief function to delete the boundary nodes and write it directly in the bounce-back
  */
 void nodeGenerator::reduce_boundary_neighborhood() {
     int boundary_start = 0;
@@ -349,6 +353,12 @@ void nodeGenerator::reduce_boundary_neighborhood() {
     node_infos.erase(node_infos.begin() + boundary_start, node_infos.end());
 }
 
+/**
+ * @fn void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b)
+ * @brief bumps up the the boundary condition of a wet node to represent the boundary
+ * @param array_position
+ * @param b
+ */
 void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b) {
     // bumps up the boundary condition
     auto n = node_infos.at(array_position);
@@ -410,6 +420,11 @@ void nodeGenerator::init(unsigned int size) {
     }
 }
 
+/**
+ * @fn void nodeGenerator::init_fused(unsigned int size)
+ * @brief fused init, also reduces total nodes by removing boundaries
+ * @param size canvas size
+ */
 void nodeGenerator::init_fused(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
