@@ -115,7 +115,7 @@ void fused_collision(node* node, double relax) {
     double ux = node->u(0);
     double uy = node->u(1);
     double rho = node->rho;
-    // unroll the collision function also messy for a reason optimizes better
+    // unroll the collision function also messy for a reason optimizes better :)
     node->current_population->operator()(0) -= relax * (node->current_population->operator()(0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
     node->current_population->operator()(1) -= relax * (node->current_population->operator()(1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
     node->current_population->operator()(2) -= relax * (node->current_population->operator()(2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));

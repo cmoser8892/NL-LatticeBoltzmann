@@ -128,7 +128,9 @@ void simulation::fused_streaming(node *node) {
         int channel = link.channel;
         long array_position = long(partner_handle) - 1;
         // correct positioning prob
-        nodes.at(array_position)->next_population->operator()(channel) = node->current_population->operator()(i);
+        // .at has bounds checking
+        // maybe also check data access
+        nodes[array_position]->next_population->operator()(channel) = node->current_population->operator()(i);
     }
 }
 
