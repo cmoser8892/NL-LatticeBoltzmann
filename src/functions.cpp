@@ -126,6 +126,7 @@ void fused_collision(node* node, double relax) {
     node->current_population->operator()(7) -= relax * (node->current_population->operator()(7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
     node->current_population->operator()(8) -= relax * (node->current_population->operator()(8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
+
 /**
  * @fn void write_ux(node* node, flowfield_t* ux)
  * @brief write the ux component of the flowfield
