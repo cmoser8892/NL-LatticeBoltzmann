@@ -137,7 +137,6 @@ void write_ux(node* node, flowfield_t* ux) {
     ux->operator()(int(node->position(0)),int(node->position(1))) = node->u(0);
 }
 
-
 /**
  * @fn void write_uy(node* node, flowfield_t * uy)
  * @brief writes the uy_component of a flowfield
