@@ -316,3 +316,90 @@ void simulation::delete_nodes() {
         delete n;
     }
 }
+
+// one step run class
+oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
+    boundary_points = c;
+    node_generator = g;
+}
+
+oSimu::~oSimu() {
+    delete_nodes();
+}
+
+void oSimu::set_simulation_parameters(simulation_parameters_t t) {
+    parameters = t;
+}
+
+void oSimu::streaming(oNode *node) {
+    // loop through
+    for(int i = 1; i < CHANNELS; ++i) {
+        auto link = node->neighbors.at(i-1);
+        handle_t partner_handle = link.handle;
+        int channel = link.channel;
+        long array_position = long(partner_handle) - 1;
+        // correct positioning prob
+        // .at has bounds checking
+        // maybe also check data access
+        // std::cout << node->current_population->operator()(i) << std::endl;
+        nodes[array_position]->populations(offset_sim,channel) = node->populations(node->offset,i);
+    }
+}
+
+void oSimu::bounce_back_moving(oNode *n) {
+    if(n->boundary_type== BOUNCE_BACK_MOVING) {
+        n->populations(offset_sim,7) += -1.0/6 * parameters.u_wall;
+        n->populations(offset_sim,8) += 1.0/6 * parameters.u_wall;
+    }
+}
+
+void oSimu::init() {
+    for(auto node_info : node_generator->node_infos) {
+        auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
+        n->neighbors = node_info->links; // should copy everything not quite sure thou
+        n->position = node_info->position;
+        n->populations.row(0) = equilibrium_2d(0,0,1);
+        n->populations.row(1) = equilibrium_2d(0,0,1);
+        nodes.push_back(n);
+    }
+}
+
+void oSimu::run(int current_step) {
+    offset_sim = (current_step +1) & 0x1;
+    for(auto n : nodes) {
+        n->offset = current_step & 0x1;
+        // macro and collision
+        one_step_macro_collision(n,parameters.relaxation);
+        // streaming
+        streaming(n);
+        // moving boundary
+        bounce_back_moving(n);
+    }
+}
+
+void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
+    flowfield_t ux;
+    flowfield_t uy;
+    flowfield_t rho;
+    long size_x = long(round(orgiginalo.x()));
+    long size_y = long(round(orgiginalo.y()));
+    ux.resize(size_x,size_y);
+    uy.resize(size_x,size_y);
+    rho.resize(size_x,size_y);
+    // make sure to get the correct one
+    for(auto node: nodes) {
+        ux(int(node->position(0)),int(node->position(1))) = calculate_ux(node);
+        uy(int(node->position(0)),int(node->position(1))) = calculate_uy(node);
+        rho(int(node->position(0)),int(node->position(1))) = calculate_rho(node);
+    }
+    // write to a file otherwise useless
+    write_flowfield_data(&ux, "ux_data_file",write_to_file);
+    write_flowfield_data(&uy, "uy_data_file",write_to_file);
+    write_flowfield_data(&rho, "rho_data_file",write_to_file);
+}
+
+void oSimu::delete_nodes() {
+    for (auto n : nodes) {
+        delete n;
+    }
+}

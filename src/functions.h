@@ -6,6 +6,7 @@
 
 // functional methods
 array_t equilibrium(node* node);
+array_t equilibrium_2d(double ux, double uy, double rho);
 void collision(node* node,double relaxation);
 void fused_collision(node* node, double relaxation);
 void one_step_macro_collision(oNode* node, double relaxation);
@@ -13,11 +14,13 @@ void macro(node * node);
 void fused_macro(node* node);
 double bb_switch_channel(int from_channel, double uw);
 int switch_link_dimensions(int link_channel);
-
 // writeing methods
 void write_rho(node* node, flowfield_t* rho);
 void write_ux(node* node, flowfield_t* uy); // writes velocity based on the place in the field
 void write_uy(node* node,flowfield_t* ux);
+double calculate_ux(oNode* n);
+double calculate_uy(oNode* n);
+double calculate_rho(oNode* n);
 // debug method
 void debug_node(node* node, bool printing);
 

@@ -36,6 +36,21 @@ array_t equilibrium(node* node) {
     return return_array;
 }
 
+
+array_t equilibrium_2d(double ux, double uy, double rho) {
+    array_t return_array;
+    return_array.setZero(CHANNELS);
+    return_array(0) = weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy));
+    return_array(1) = weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
+    return_array(2) = weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(3) = weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
+    return_array(4) = weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(5) = weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(6) = weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(7) = weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(8) = weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return return_array;
+}
 /**
  * @fn void collision(node* node, double relaxation)
  * @brief implementation of the collision function
@@ -167,6 +182,35 @@ void write_uy(node* node, flowfield_t * uy) {
 void write_rho(node* node, flowfield_t * rho) {
     // dont ask this looks ugly
     rho->operator()(int(node->position(0)),int(node->position(1))) = node->rho;
+}
+
+double calculate_ux(oNode* node) {
+    int o = node->offset;
+    double rho = node->populations.row(o).sum();
+    double ux = ((node->populations(o,1) +
+                  node->populations(o,5) +
+                  node->populations(o,8)) -
+                 (node->populations(o,3) +
+                  node->populations(o,6) +
+                  node->populations(o,7)));
+    return ux/rho;
+}
+
+double calculate_uy(oNode* node) {
+    int o = node->offset;
+    double rho = node->populations.row(o).sum();
+    double uy = ((node->populations(o,2) +
+                  node->populations(o,5) +
+                  node->populations(o,6)) -
+                 (node->populations(o,4) +
+                  node->populations(o,7) +
+                  node->populations(o,8)));
+    return uy/rho;
+}
+
+double calculate_rho(oNode* node) {
+    int o = node->offset;
+    return node->populations.row(o).sum();
 }
 
 /**
