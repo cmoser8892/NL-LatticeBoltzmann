@@ -879,8 +879,113 @@ TEST(FunctionalTest, fused_macro) {
     EXPECT_EQ(node_original.u(1),node_fused.u(1));
 }
 
-TEST(FunctionalTest, fused_streaming) {
-    // figure it out
-    // combine wtih bb btw so a bit harder...
-    EXPECT_TRUE(false);
+TEST(FunctionalTest, fused_streaming_13) {
+    // sizes matter
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size-1};
+    // init
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    //boundaries.visualize_2D_boundary(size);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    //gen.visualize_2D_nodes(4);
+    simulation sm(&boundaries, &gen);
+    sm.fused_init();
+    // check sim sizes
+    EXPECT_EQ(sm.nodes.size(),2);
+    // zero data
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->population_even.setZero();
+        node->population_odd.setZero();
+    }
+    // set the value of channel 1 in the middle node to 1
+    // should reappear in channel 3 and vice versa
+    // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
+    sm.nodes.at(0)->population_even(3) = 1;
+    sm.nodes.at(1)->population_even(1) = 1;
+    // do steps and check correct positions
+    for(auto n : sm.nodes) {
+        sm.fused_streaming(n);
+    }
+    for(auto n : sm.nodes) {
+        // switchero
+        array_t * temp = n->current_population;
+        n->current_population = n->next_population;
+        n->next_population = temp;
+    }
+    // channels switched (bb)
+    EXPECT_EQ(sm.nodes.at(0)->current_population->operator()(1), 1);
+    EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(3), 1);
+    // propagation test
+    for(auto n : sm.nodes) {
+        sm.fused_streaming(n);
+    }
+    for(auto n : sm.nodes) {
+        // switchero
+        array_t * temp = n->current_population;
+        n->current_population = n->next_population;
+        n->next_population = temp;
+    }
+    EXPECT_EQ(sm.nodes.at(0)->current_population->operator()(3), 1);
+    EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(1), 1);
 }
+
+TEST(FunctionalTest, fused_streaming_24) {
+    // sizes matter
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size-1,size};
+    // init
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    //boundaries.visualize_2D_boundary(size);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    //gen.visualize_2D_nodes(4);
+    simulation sm(&boundaries, &gen);
+    sm.fused_init();
+    // check sim sizes
+    EXPECT_EQ(sm.nodes.size(),2);
+    // zero data
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->population_even.setZero();
+        node->population_odd.setZero();
+    }
+    // set the value of channel 1 in the middle node to 1
+    // should reappear in channel 3 and vice versa
+    // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
+    sm.nodes.at(0)->population_even(4) = 1;
+    sm.nodes.at(1)->population_even(2) = 1;
+    // do steps and check correct positions
+    for(auto n : sm.nodes) {
+        sm.fused_streaming(n);
+    }
+    for(auto n : sm.nodes) {
+        // switchero
+        array_t * temp = n->current_population;
+        n->current_population = n->next_population;
+        n->next_population = temp;
+    }
+    // channels switched (bb)
+    EXPECT_EQ(sm.nodes.at(0)->current_population->operator()(2), 1);
+    EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(4), 1);
+    // propagation test
+    for(auto n : sm.nodes) {
+        sm.fused_streaming(n);
+    }
+    for(auto n : sm.nodes) {
+        // switchero
+        array_t * temp = n->current_population;
+        n->current_population = n->next_population;
+        n->next_population = temp;
+    }
+    EXPECT_EQ(sm.nodes.at(0)->current_population->operator()(4), 1);
+    EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(2), 1);
+}
+

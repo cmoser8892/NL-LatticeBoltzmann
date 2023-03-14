@@ -130,8 +130,10 @@ void simulation::fused_streaming(node *node) {
         // correct positioning prob
         // .at has bounds checking
         // maybe also check data access
+        // std::cout << node->current_population->operator()(i) << std::endl;
         nodes[array_position]->next_population->operator()(channel) = node->current_population->operator()(i);
     }
+    // std::cout << std::endl;
 }
 
 /**
@@ -267,9 +269,10 @@ void simulation::fused_run() {
         // streaming and bb
         fused_streaming(node);
         // todo fused streaming has some inlined stuff for bb
-        // todo eigen checks the sizes of pointers to arrays which is good behaviour but kinda dumb if i know sizes
         // todo sort array bounce back last should make faster
         fused_bounce_back(node);
+    }
+    for(auto node : nodes) {
         // switchero
         array_t * temp = node->current_population;
         node->current_population = node->next_population;
