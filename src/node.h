@@ -31,4 +31,17 @@ class node {
     node(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
 };
 
+class oNode {
+  public:
+    // handle and boundary
+    handle_t handle; // extra-leave handle for position
+    boundaryType_t boundary_type;
+    // 2xChannels
+    int offset = 0; // 0 or 1
+    flowfield_t populations;
+    std::vector<toLinks_t> neighbors;
+    // constructor
+    oNode(handle_t, int channels, boundaryType_t type);
+};
+
 #endif // NL_LATTICEBOLTZMANN_NODE_H

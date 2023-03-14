@@ -8,6 +8,7 @@
 array_t equilibrium(node* node);
 void collision(node* node,double relaxation);
 void fused_collision(node* node, double relaxation);
+void one_step_macro_collision(oNode* node, double relaxation);
 void macro(node * node);
 void fused_macro(node* node);
 double bb_switch_channel(int from_channel, double uw);

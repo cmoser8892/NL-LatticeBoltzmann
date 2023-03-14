@@ -28,3 +28,10 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
     u.setZero(dimensions);
     position = pos;
 }
+
+
+oNode::oNode(handle_t h, int channels, boundaryType_t type) {
+    handle = h;
+    boundary_type = type;
+    populations.setZero(2,channels);
+}

@@ -32,8 +32,10 @@ class simulation {
     void fused_bounce_back(node* n);
     void init();
     void fused_init();
+    void one_step_init();
     void run();
     void fused_run();
+    void one_step_run();
     void get_data(bool write_to_file, point_t org);
     void delete_nodes();
 };

@@ -852,8 +852,8 @@ TEST(FunctionalTest, fused_collision) {
     double relaxation_time = 0.5;
     point_t pos = {0,0};
     node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
-    collision(&node_original,relaxation_time);
     node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    collision(&node_original,relaxation_time);
     fused_collision(&node_fused, relaxation_time);
     // check against each other
     for(int i = 0; i < velocity_set.cols(); ++i) {
@@ -989,3 +989,27 @@ TEST(FunctionalTest, fused_streaming_24) {
     EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(2), 1);
 }
 
+TEST(FunctionalTest, one_step_macro_collison) {
+    // test against original
+    double relaxation_time = 0.5;
+    point_t pos = {0,0};
+    node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    oNode s_node(1,velocity_set.cols(),NO_BOUNDARY);
+    // set good values
+    node_original.population_even.setOnes();
+    node_fused.population_even.setOnes();
+    s_node.populations.setOnes();
+    // run functions
+    macro(&node_original);
+    fused_macro(&node_fused);
+    collision(&node_original,relaxation_time);
+    fused_collision(&node_fused, relaxation_time);
+    one_step_macro_collision(&s_node,relaxation_time);
+    // compare values
+    int o= s_node.offset;
+    for(int i = 0; i < velocity_set.cols(); ++i) {
+        EXPECT_EQ(node_original.population_even(i),node_fused.population_even(i));
+        EXPECT_EQ(s_node.populations(o,i),node_original.population_even(i));
+    }
+}
