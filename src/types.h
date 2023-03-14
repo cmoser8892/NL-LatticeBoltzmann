@@ -40,15 +40,8 @@ typedef enum boundaryType {
 
 /**
  * Note on the toLinks_t:
- * In the final implementation it should be handle + channel to directly
- * would need extra processing to get the combo thou
- * access the correct node and channel.
- * To get the channel: handle % Number_of_channels
- * To get the correct node: handle / Number_of_channels
- * maybe some shenanigans with 0 and max size_t
- * currently handles are only valid if > 0 and smaller < Max size
- * may have to be changed, also we get like 9e18 valid nodes
- * todo: can be positional/already is...
+ * used in the naive implementation and used
+ * when constructing neighbourhoods
  */
 typedef struct toLinks {
     int channel;

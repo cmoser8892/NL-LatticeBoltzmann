@@ -9,33 +9,39 @@
 void straightGenerator::calculate_mass_center() {
     // add all the points up, divide by the number of points
     mass_center.setZero();
-    for(auto point : points->boundary_points) {
-        mass_center += point->point;
+    for(auto bs : points->boundary_structures) {
+        for(auto b : bs->boundary_points) {
+            mass_center += b->point;
+        }
     }
-    mass_center /= double(points->boundary_points.size());
+    mass_center /= double(points->total_boundary_nodes());
 }
 
 /**
  * @fn void straightGenerator::calculate_all_straights()
  * @brief calculates the straights between all the boundary points, doesnt reduce them though
+ * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
-    auto iter = points->boundary_points.begin();
-    while(iter != points->boundary_points.end()) {
-        // special cases for end, we set the next iter to iter + 1
-        auto next_iter = points->boundary_points.begin();
-        // check if not the last one
-        if(!((iter+1) == points->boundary_points.end())) {
-            next_iter = iter + 1;
+    // iter through the boundary structures
+    for(auto bs : points->boundary_structures) {
+        auto iter = bs->boundary_points.begin();
+        while(iter != bs->boundary_points.end()) {
+            auto next_iter = bs->boundary_points.begin();
+            if(!((iter+1) == bs->boundary_points.end())) {
+                next_iter = iter +1;
+            }
+            // fill in the values
+            auto s  = new surface_t;
+            s->point = iter.operator*()->point;
+            // rotate the vector by 90 degrees forward (doesnt really matter which direction)
+            vector_t next = (next_iter.operator*()->point - iter.operator*()->point);
+            s->direction = next;
+            // put the point in the middle
+            surfaces.push_back(s);
+            // increment
+            iter++;
         }
-        // fill the values
-        auto s  = new surface_t;
-        s->point = iter.operator*()->point;
-        // rotate the vector by 90 degrees forward (doesnt really matter which direction)
-        s->direction = (next_iter.operator*()->point - iter.operator*()->point);
-        // put the point in the middle
-        surfaces.push_back(s);
-        iter++;
     }
 }
 
@@ -81,20 +87,38 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
      *  3 have we already hit an edgepoint
      */
     int number_of_intersections = 0;
+    // check if actually the boundary point
+    for(auto surf : surfaces) {
+        // check if we are a surface point described (aka a boundary point and do a hard break
+        if(surf->point == point_t(node_point->position)) {
+            return 0;
+        }
+    }
     // corner case mass center lays on point
     point_t p = node_point->position;
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point->position; // => r
+    // check if mass center
+    if(straight.point == mass_center) {
+        // we do a little shift out of the mass-center
+        // any direction should work
+        std::cerr << "Node-point is the mass-center, algorithm potentially broken" << std::endl;
+        std::cerr << "Check correct node-size or amount of wet node neighbours" << std::endl;
+        straight.point.x() += 0.1;
+        straight.point.y() += 0.1;
+    }
     straight.direction =  mass_center - straight.point;
     vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look
     std::vector<point_t> already_found;
     already_found.clear();
+    // actual test
     for(auto surf : surfaces) {
         // t = ((r - o)·n)/(n·d)
         // surf->point => o
         // surf->direction => d
+        // std::cout << straight.point << std::endl;
         double t = ((straight.point - surf->point).dot(normal))/
                    (normal.dot(surf->direction));
         if((t >= 0.0) && (t <= 1.0)) {

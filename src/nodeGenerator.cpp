@@ -22,6 +22,7 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
 }
+
 /**
  * @fn void nodeGenerator::linear_generation()
  * @brief generates nodes until it hits a boundary useful to make simple 1d tests
@@ -29,25 +30,28 @@ nodeGenerator::~nodeGenerator() {
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
     // go throu the boundary points starting at a b point and go throu while still discovering new ones
-    for(auto p : points->boundary_points) {
-        point_t current = p->point + discovery_vector;
-        // until a boundary points is hit create more points
-        // also check weather or not inside boundaries
-        while(!check_other_boundary_hit(p,current)) {
-            auto n = new nodePoint_t;
-            n->handle = handle_counter;
-            n->position = current;
-            n->type = WET;
-            n->boundary = NO_BOUNDARY;
-            // dont forget to increase the handle counter each time
-            handle_counter++;
-            node_infos.push_back(n);
-            current += discovery_vector;
+    for(auto bs : points->boundary_structures) {
+        for(auto p : bs->boundary_points) {
+            point_t current = p->point + discovery_vector;
+            // until a boundary points is hit create more points
+            // also check weather or not inside boundaries
+            while(!check_other_boundary_hit(p,current)) {
+                auto n = new nodePoint_t;
+                n->handle = handle_counter;
+                n->position = current;
+                n->type = WET;
+                n->boundary = NO_BOUNDARY;
+                // dont forget to increase the handle counter each time
+                handle_counter++;
+                node_infos.push_back(n);
+                current += discovery_vector;
+            }
         }
     }
     // finally add boundary nodes
     add_boundary_nodes(&handle_counter);
 }
+
 /**
  * @fn bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point)
  * @brief checks if the next point would be a boundary or outside
@@ -60,10 +64,12 @@ bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_p
     bool return_value = false;
     point_t check = check_point.base();
     // right now just does a linear search to check if point hit or not
-    for(auto point : points->boundary_points) {
-        if(compare_two_points(&check,&point->point)) {
-            return_value = true;
-            break;
+    for(auto bs : points->boundary_structures) {
+        for(auto point : bs->boundary_points) {
+            if(compare_two_points(&check,&point->point)) {
+                return_value = true;
+                break;
+            }
         }
     }
     // then check if still inside sim space
@@ -121,6 +127,7 @@ bool nodeGenerator::read_data_from_file() {
     }
     return return_value;
 }
+
 /**
  * @fn void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t* chop)
  * @brief function to translate data on files to data for the class
@@ -174,6 +181,7 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
         throw std::invalid_argument("Error while parsing");
     }
 }
+
 /**
  * @fn void nodeGenerator::write_data_to_file(bool write)
  * @brief does what it says check if params are set correctlly
@@ -277,8 +285,8 @@ void nodeGenerator::check_nodes(handle_t* current) {
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
-        //
-        if(!straight.node_inside(n)) {
+        bool c = straight.node_inside(n);
+        if(!c) {
             n->handle = *current;
             n->boundary = NO_BOUNDARY;
             n->type = WET;
@@ -300,17 +308,67 @@ void nodeGenerator::check_nodes(handle_t* current) {
  */
 void nodeGenerator::add_boundary_nodes(handle_t* current) {
     // lastlly add the boundary points
-    for(auto p : points->boundary_points) {
-        // std::cout << p << std::endl;
-        // set all the variables except the links
-        auto n = new nodePoint_t;
-        n->handle = *current;
-        n->position = p->point;
-        n->type = DRY;
-        n->boundary = p->type;
-        // dont forget to increase the handle counter each time
-        (*current)++;
-        node_infos.push_back(n);
+    for(auto bs : points->boundary_structures) {
+        for(auto p : bs->boundary_points) {
+            // std::cout << p << std::endl;
+            // set all the variables except the links
+            auto n = new nodePoint_t;
+            n->handle = *current;
+            n->position = p->point;
+            n->type = DRY;
+            n->boundary = p->type;
+            // dont forget to increase the handle counter each time
+            (*current)++;
+            node_infos.push_back(n);
+        }
+    }
+}
+
+/**
+ * @fn void nodeGenerator::reduce_boundary_neighborhood()
+ * @brief function to delete the boundary nodes and write it directly in the bounce-back
+ */
+void nodeGenerator::reduce_boundary_neighborhood() {
+    int boundary_start = 0;
+    for(auto n : node_infos) {
+        if(n->type == DRY) {
+            for(auto link : n->links) {
+                handle_t partner_handle = link.handle;
+                int link_channel = link.channel; // channel where the info is
+                int from_channel = switch_link_dimensions(link_channel); // channel where it has to go
+                long array_position = long(partner_handle) - 1;
+                int channel_position = from_channel-1;
+                // switchero
+                node_infos.at(array_position)->links.at(channel_position).channel = link_channel;
+                node_infos.at(array_position)->links.at(channel_position).handle = partner_handle;
+                check_and_set_reduced_neighborhood(array_position,n->boundary);
+            }
+        }
+        else {
+            assert(n->links.size() == 8);
+            boundary_start++;
+        }
+    }
+    // delete because now unnecessary
+    node_infos.erase(node_infos.begin() + boundary_start, node_infos.end());
+}
+
+/**
+ * @fn void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b)
+ * @brief bumps up the the boundary condition of a wet node to represent the boundary
+ * @param array_position
+ * @param b
+ */
+void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b) {
+    // bumps up the boundary condition
+    auto n = node_infos.at(array_position);
+    // if either bb or moving bb bump up
+    if((n->boundary == NO_BOUNDARY) && ((b == BOUNCE_BACK) || (b == BOUNCE_BACK_MOVING))) {
+        n->boundary = b;
+    }
+    // if already bb only bump up to bb moving
+    if((n->boundary == BOUNCE_BACK) && (b == BOUNCE_BACK_MOVING)) {
+        n->boundary = b;
     }
 }
 
@@ -363,6 +421,23 @@ void nodeGenerator::init(unsigned int size) {
 }
 
 /**
+ * @fn void nodeGenerator::init_fused(unsigned int size)
+ * @brief fused init, also reduces total nodes by removing boundaries
+ * @param size canvas size
+ */
+void nodeGenerator::init_fused(unsigned int size) {
+    if(!read_data_from_file()) {
+        board_creation(size);
+        handle_t handle_counter = 1;
+        check_nodes(&handle_counter);
+        add_boundary_nodes(&handle_counter);
+        determine_neighbors();
+        reduce_boundary_neighborhood();
+        write_data_to_file(save);
+    }
+}
+
+/**
  * @fn void nodeGenerator::delete_node_infos()
  * @brief deletes the content of the node_infos vector
  */
@@ -371,4 +446,19 @@ void nodeGenerator::delete_node_infos() {
     for(auto n : node_infos) {
         delete n;
     }
+}
+
+/**
+ * @fn void nodeGenerator::visualize_2D_nodes(int size)
+ * @brief simple visualizer node points
+ * @param size
+ */
+void nodeGenerator::visualize_2D_nodes(int size) {
+    flowfield_t output;
+    output.setZero(size,size);
+    for(auto b : node_infos) {
+        output(int(b->position.x()),int(b->position.y()))++;
+    }
+    std::cout << "Nodes allocated" << std::endl;
+    std::cout << output << std::endl << std::endl;
 }

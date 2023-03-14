@@ -16,8 +16,11 @@ class node {
     handle_t handle;
     nodeIdentifier_t node_type;
     boundaryType_t boundary_type;
-    array_t data;
-    array_t copy;
+    // data entries
+    array_t* current_population;
+    array_t*next_population;
+    array_t population_even;
+    array_t population_odd;
     std::vector<toLinks_t> neighbors;
     // macro values are local
     double rho;
@@ -27,6 +30,5 @@ class node {
     // methods
     node(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
 };
-
 
 #endif // NL_LATTICEBOLTZMANN_NODE_H

@@ -6,16 +6,11 @@
 #include "node.h"
 #include "nodeGenerator.h"
 #include "types.h"
-#include "lookup_table.h"
 #include "functions.h"
 
 typedef struct simulation_parameters {
     double relaxation = 0.5;
     double u_wall = 0;
-    bool bypass_lookup = true;
-    double lookup_floor = -1.0;
-    double lookup_ceiling = 1.0;
-    uint32_t lookup_bits = 8;
 }simulation_parameters_t;
 
 class simulation {
@@ -23,7 +18,6 @@ class simulation {
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
-    lookup* table = nullptr;
   public:
     std::vector<node*> nodes;
     explicit simulation(boundaryPointConstructor* c);
@@ -34,8 +28,12 @@ class simulation {
     void bounce_back();
     void streaming_step_2();
     void collisions();
+    void fused_streaming(node* n);
+    void fused_bounce_back(node* n);
     void init();
+    void fused_init();
     void run();
+    void fused_run();
     void get_data(bool write_to_file, point_t org);
     void delete_nodes();
 };

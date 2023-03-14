@@ -7,7 +7,9 @@
 // functional methods
 array_t equilibrium(node* node);
 void collision(node* node,double relaxation);
+void fused_collision(node* node, double relaxation);
 void macro(node * node);
+void fused_macro(node* node);
 double bb_switch_channel(int from_channel, double uw);
 int switch_link_dimensions(int link_channel);
 

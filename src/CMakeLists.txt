@@ -1,10 +1,10 @@
 # List of headers
 set(MY_HEADERS
-        simulation.h types.h functions.h helper_functions.h boundary_point_generator.h nodeGenerator.h straight.h neighborhood.h lookup_table.h node.h)
+        simulation.h types.h functions.h helper_functions.h boundary_point_generator.h nodeGenerator.h straight.h neighborhood.h node.h)
 
 # List of implementation files
 set(MY_CPP
-        simulation.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.cpp nodeGenerator.cpp straight.cpp neighborhood.cpp lookup_table.cpp)
+        simulation.cpp functions.cpp helper_functions.cpp boundary_point_generator.cpp node.cpp nodeGenerator.cpp straight.cpp neighborhood.cpp)
 
 # Create a static library
 add_library(my_lib STATIC ${MY_CPP} ${MY_HEADERS})

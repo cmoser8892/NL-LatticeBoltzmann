@@ -2,10 +2,7 @@
 #include <iostream>
 #include <chrono>
 
-/*
- * vallgrind call
-valgrind --tool=callgrind --dump-instr=yes (p)
- */
+/// fused variant of m3
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;
@@ -17,7 +14,7 @@ int main(int argc, char *argv[]) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init_fused(size);
     // init sim parameters
     double re = 1000;
     double base_length = size - 2;
@@ -26,10 +23,10 @@ int main(int argc, char *argv[]) {
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
     simulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
-    sim.init();
+    sim.fused_init();
     // run sim
     for(int i = 0; i < steps; ++i) {
-        sim.run();
+        sim.fused_run();
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }

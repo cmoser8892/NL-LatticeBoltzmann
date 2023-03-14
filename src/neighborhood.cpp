@@ -72,3 +72,19 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
        }
    }
 }
+
+/**
+ * @fn void neighbourhood::check_wet_nodes(std::vector<nodePoint_t *> &nodes)
+ * @brief checks wet nodes channels, aka are all boundaries there
+ * @param nodes
+ */
+void neighbourhood::check_wet_nodes(std::vector<nodePoint_t *> &nodes) {
+    // checks wet link size should be Channels-1 so 8 for D2Q9
+    for(auto node: nodes) {
+        if(node->type == WET) {
+            if(node->links.size() != CHANNELS-1) {
+                throw std::invalid_argument("Invalid Channels");
+            }
+        }
+    }
+}
