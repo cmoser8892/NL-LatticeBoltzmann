@@ -36,7 +36,14 @@ array_t equilibrium(node* node) {
     return return_array;
 }
 
-
+/**
+ * @fn array_t equilibrium_2d(double ux, double uy, double rho)
+ * @brief calculates the equilibrium function based on macro values
+ * @param ux
+ * @param uy
+ * @param rho
+ * @return
+ */
 array_t equilibrium_2d(double ux, double uy, double rho) {
     array_t return_array;
     return_array.setZero(CHANNELS);
@@ -122,6 +129,12 @@ void fused_collision(node* node, double relax) {
     node->current_population->operator()(8) -= relax * (node->current_population->operator()(8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
+/**
+ * @fn void one_step_macro_collision(oNode* node, double relaxation)
+ * @brief one step for all the calculations necessary
+ * @param node
+ * @param relaxation
+ */
 void one_step_macro_collision(oNode* node, double relaxation) {
     int o = node->offset;
     // macro calc
@@ -184,6 +197,12 @@ void write_rho(node* node, flowfield_t * rho) {
     rho->operator()(int(node->position(0)),int(node->position(1))) = node->rho;
 }
 
+/**
+ * @fn double calculate_ux(oNode* node)
+ * @brief calculate ux
+ * @param node
+ * @return
+ */
 double calculate_ux(oNode* node) {
     int o = node->offset;
     double rho = node->populations.row(o).sum();
@@ -196,6 +215,12 @@ double calculate_ux(oNode* node) {
     return ux/rho;
 }
 
+/**
+ * @fn double calculate_uy(oNode* node)
+ * @brief calculates uy
+ * @param node
+ * @return
+ */
 double calculate_uy(oNode* node) {
     int o = node->offset;
     double rho = node->populations.row(o).sum();
@@ -208,6 +233,12 @@ double calculate_uy(oNode* node) {
     return uy/rho;
 }
 
+/**
+ * @fn double calculate_rho(oNode* node)
+ * @brief calculates rho
+ * @param node
+ * @return
+ */
 double calculate_rho(oNode* node) {
     int o = node->offset;
     return node->populations.row(o).sum();
