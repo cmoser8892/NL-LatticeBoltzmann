@@ -29,7 +29,13 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
     position = pos;
 }
 
-
+/**
+ * @fn oNode::oNode(handle_t h, int channels, boundaryType_t type)
+ * @brief oNode improvements
+ * @param h
+ * @param channels
+ * @param type
+ */
 oNode::oNode(handle_t h, int channels, boundaryType_t type) {
     handle = h;
     boundary_type = type;
