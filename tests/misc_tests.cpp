@@ -1013,3 +1013,9 @@ TEST(FunctionalTest, one_step_macro_collison) {
         EXPECT_EQ(s_node.populations(o,i),node_original.population_even(i));
     }
 }
+
+TEST(Random, iter) {
+    array_t pops;
+    pops.setZero(2*CHANNELS);
+    auto iter = pops.begin() + 1;
+}
