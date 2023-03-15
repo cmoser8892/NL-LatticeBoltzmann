@@ -20,7 +20,8 @@ set(MY_TESTS_HEADERS
 
 set(MY_TESTS_CPP
         misc_tests.cpp
-        init_test.cpp)
+        init_test.cpp
+        extra_tests.cpp)
 
 # Creating the test executable
 add_executable(my_tests ${MY_TESTS_CPP} ${MY_TESTS_HEADERS})
