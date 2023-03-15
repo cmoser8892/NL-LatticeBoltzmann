@@ -37,6 +37,28 @@ array_t equilibrium(node* node) {
 }
 
 /**
+ * @fn array_t equilibrium_2d(double ux, double uy, double rho)
+ * @brief calculates the equilibrium function based on macro values
+ * @param ux
+ * @param uy
+ * @param rho
+ * @return
+ */
+array_t equilibrium_2d(double ux, double uy, double rho) {
+    array_t return_array;
+    return_array.setZero(CHANNELS);
+    return_array(0) = weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy));
+    return_array(1) = weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
+    return_array(2) = weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(3) = weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy));
+    return_array(4) = weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy));
+    return_array(5) = weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(6) = weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(7) = weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return_array(8) = weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy));
+    return return_array;
+}
+/**
  * @fn void collision(node* node, double relaxation)
  * @brief implementation of the collision function
  * @param node
@@ -108,6 +130,54 @@ void fused_collision(node* node, double relax) {
 }
 
 /**
+ * @fn void one_step_macro_collision(oNode* node, double relaxation)
+ * @brief one step for all the calculations necessary
+ * @param node
+ * @param relaxation
+ */
+void one_step_macro_collision(oNode* node, double relaxation) {
+    int o = node->offset;
+    // macro calc
+    auto p = node->populations.begin() + o;
+    // macro part
+    // rho
+    const double rho = (p + 0).operator*() +
+                       (p + 1).operator*() +
+                       (p + 2).operator*() +
+                       (p + 3).operator*() +
+                       (p + 4).operator*() +
+                       (p + 5).operator*() +
+                       (p + 6).operator*() +
+                       (p + 7).operator*() +
+                       (p + 8).operator*();
+    // ux + uy
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    ux /= rho;
+    uy /= rho;
+    // collision
+    (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
+    (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    (p + 2).operator*() -= relaxation * ((p + 2).operator*() - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    (p + 3).operator*() -= relaxation * ((p + 3).operator*() - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    (p + 4).operator*() -= relaxation * ((p + 4).operator*() - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    (p + 5).operator*() -= relaxation * ((p + 5).operator*() - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 6).operator*() -= relaxation * ((p + 6).operator*() - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 7).operator*() -= relaxation * ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+}
+
+/**
  * @fn void write_ux(node* node, flowfield_t* ux)
  * @brief write the ux component of the flowfield
  * @param node
@@ -138,6 +208,65 @@ void write_uy(node* node, flowfield_t * uy) {
 void write_rho(node* node, flowfield_t * rho) {
     // dont ask this looks ugly
     rho->operator()(int(node->position(0)),int(node->position(1))) = node->rho;
+}
+
+/**
+ * @fn double calculate_ux(oNode* node)
+ * @brief calculate ux
+ * @param node
+ * @return
+ */
+double calculate_ux(oNode* node) {
+    int o = node->offset;
+    auto p = node->populations.begin() + o;
+    double rho = calculate_rho(node);
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    return ux/rho;
+}
+
+/**
+ * @fn double calculate_uy(oNode* node)
+ * @brief calculates uy
+ * @param node
+ * @return
+ */
+double calculate_uy(oNode* node) {
+    int o = node->offset;
+    auto p = node->populations.begin() + o;
+    double rho = calculate_rho(node);
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    return uy/rho;
+}
+
+/**
+ * @fn double calculate_rho(oNode* node)
+ * @brief calculates rho
+ * @param node
+ * @return
+ */
+double calculate_rho(oNode* node) {
+    int o = node->offset;
+    auto p = node->populations.begin() + o;
+    double rho = (p + 0).operator*() +
+                 (p + 1).operator*() +
+                 (p + 2).operator*() +
+                 (p + 3).operator*() +
+                 (p + 4).operator*() +
+                 (p + 5).operator*() +
+                 (p + 6).operator*() +
+                 (p + 7).operator*() +
+                 (p + 8).operator*();
+    return rho;
 }
 
 /**

@@ -316,3 +316,141 @@ void simulation::delete_nodes() {
         delete n;
     }
 }
+
+/// one step run class
+/**
+ * @fn oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g)
+ * @brief constructor sets the sub-classes
+ * @param c
+ * @param g
+ */
+oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
+    boundary_points = c;
+    node_generator = g;
+}
+
+/**
+ * @fn oSimu::~oSimu()
+ * @brief deletes nodes
+ */
+oSimu::~oSimu() {
+    delete_nodes();
+}
+
+/**
+ * @fn void oSimu::set_simulation_parameters(simulation_parameters_t t)
+ * @brief sets up the simulation parameters (given as a struct)
+ * @param t
+ */
+void oSimu::set_simulation_parameters(simulation_parameters_t t) {
+    parameters = t;
+}
+
+/**
+ * @fn void oSimu::streaming(oNode *node)
+ * @brief stream nodes out and performs the streaming step
+ * @param node
+ */
+void oSimu::streaming(oNode *node) {
+    // loop through
+    for(int i = 1; i < CHANNELS; ++i) {
+        // pointer magic
+        auto origin = node->populations.begin() + node->offset + i;
+        (node->neighbors[i-1] + offset_sim).operator*() = origin.operator*();
+    }
+}
+
+/**
+ * @fn void oSimu::bounce_back_moving(oNode *n)
+ * @brief performs the bounce back step on the top layer
+ * @param n
+ */
+void oSimu::bounce_back_moving(oNode *n) {
+    if(n->boundary_type== BOUNCE_BACK_MOVING) {
+        auto pointer = n->populations.begin() + offset_sim;
+        (pointer +7).operator*() += -1.0/6 * parameters.u_wall;
+        (pointer +8).operator*() +=  1.0/6 * parameters.u_wall;
+    }
+}
+/**
+ * @fn void oSimu::init()
+ * @brief inits the sim based on info in the node generator
+ */
+void oSimu::init() {
+    // set up nodes
+    for(auto node_info : node_generator->node_infos) {
+        auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
+        // n->neighbors = node_info->links; // should copy everything not quite sure thou
+        n->position = node_info->position;
+        n->populations << equilibrium_2d(0,0,1) , equilibrium_2d(0,0,1);
+        nodes.push_back(n);
+    }
+    for(int i = 0; i < node_generator->node_infos.size(); ++i) {
+        // get them both in here
+        auto node_info = node_generator->node_infos[i];
+        auto node = nodes[i];
+        //
+        for(auto link : node_info->links) {
+            handle_t partner_handle = link.handle;
+            int channel = link.channel;
+            long array_position = long(partner_handle) - 1;
+            auto link_p = nodes[array_position]->populations.begin() + channel;
+            node->neighbors.push_back(link_p);
+        }
+    }
+}
+
+/**
+ * @fn void oSimu::run(int current_step)
+ * @brief runs all the steps in a lbm sim
+ * @param current_step
+ */
+void oSimu::run(int current_step) {
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    for(auto n : nodes) {
+        n->offset = (current_step & 0x1) * 9;
+        // macro and collision
+        one_step_macro_collision(n,parameters.relaxation);
+        // streaming
+        streaming(n);
+        // moving boundary
+        bounce_back_moving(n);
+    }
+}
+
+/**
+ * @fn void oSimu::get_data(bool write_to_file, point_t orgiginalo)
+ * @brief writes data to file or prints it out
+ * @param write_to_file
+ * @param orgiginalo
+ */
+void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
+    flowfield_t ux;
+    flowfield_t uy;
+    flowfield_t rho;
+    long size_x = long(round(orgiginalo.x()));
+    long size_y = long(round(orgiginalo.y()));
+    ux.resize(size_x,size_y);
+    uy.resize(size_x,size_y);
+    rho.resize(size_x,size_y);
+    // make sure to get the correct one
+    for(auto node: nodes) {
+        ux(int(node->position(0)),int(node->position(1))) = calculate_ux(node);
+        uy(int(node->position(0)),int(node->position(1))) = calculate_uy(node);
+        rho(int(node->position(0)),int(node->position(1))) = calculate_rho(node);
+    }
+    // write to a file otherwise useless
+    write_flowfield_data(&ux, "ux_data_file",write_to_file);
+    write_flowfield_data(&uy, "uy_data_file",write_to_file);
+    write_flowfield_data(&rho, "rho_data_file",write_to_file);
+}
+
+/**
+ * @fn void oSimu::delete_nodes()
+ * @brief frees up the memory again
+ */
+void oSimu::delete_nodes() {
+    for (auto n : nodes) {
+        delete n;
+    }
+}

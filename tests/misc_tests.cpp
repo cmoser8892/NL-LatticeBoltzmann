@@ -852,8 +852,8 @@ TEST(FunctionalTest, fused_collision) {
     double relaxation_time = 0.5;
     point_t pos = {0,0};
     node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
-    collision(&node_original,relaxation_time);
     node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    collision(&node_original,relaxation_time);
     fused_collision(&node_fused, relaxation_time);
     // check against each other
     for(int i = 0; i < velocity_set.cols(); ++i) {
@@ -989,3 +989,125 @@ TEST(FunctionalTest, fused_streaming_24) {
     EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(2), 1);
 }
 
+TEST(FunctionalTest, one_step_macro_collison) {
+    // test against original
+    double relaxation_time = 0.5;
+    point_t pos = {0,0};
+    node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
+    oNode s_node(1,velocity_set.cols(),NO_BOUNDARY);
+    // set good values
+    node_original.population_even.setOnes();
+    node_fused.population_even.setOnes();
+    s_node.populations.setOnes();
+    // run functions
+    macro(&node_original);
+    fused_macro(&node_fused);
+    collision(&node_original,relaxation_time);
+    fused_collision(&node_fused, relaxation_time);
+    one_step_macro_collision(&s_node,relaxation_time);
+    // compare values
+    int o= s_node.offset;
+    for(int i = 0; i < velocity_set.cols(); ++i) {
+        EXPECT_EQ(node_original.population_even(i),node_fused.population_even(i));
+        EXPECT_EQ(s_node.populations(o + i),node_original.population_even(i));
+    }
+}
+
+TEST(FunctionalTest, oSimu_streaming_13) {
+    // sizes matter
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size-1};
+    // init
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    //boundaries.visualize_2D_boundary(size);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    //gen.visualize_2D_nodes(4);
+    oSimu sm(&boundaries, &gen);
+    sm.init();
+    // check sim sizes
+    EXPECT_EQ(sm.nodes.size(),2);
+    // zero data
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->populations.setZero();
+    }
+    // set the value of channel 1 in the middle node to 1
+    // should reappear in channel 3 and vice versa
+    // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
+    sm.nodes.at(0)->populations(3) = 1;
+    sm.nodes.at(1)->populations(1) = 1;
+    // do steps and check correct positions
+    // channels switched (bb)
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(1 + sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(3 + sm.offset_sim), 1);
+    // propagation test
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(3 + sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(1 + sm.offset_sim), 1);
+}
+
+TEST(FunctionalTest, oSimu_streaming_24) {
+    // sizes matter
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size - 1,size};
+    // init
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    //boundaries.visualize_2D_boundary(size);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    //gen.visualize_2D_nodes(4);
+    oSimu sm(&boundaries, &gen);
+    sm.init();
+    // check sim sizes
+    EXPECT_EQ(sm.nodes.size(),2);
+    // zero data
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->populations.setZero();
+    }
+    // set the value of channel 1 in the middle node to 1
+    // should reappear in channel 3 and vice versa
+    // we use two points with handle 1 & 2 to check the behaviour of bb in channel 1 and 3
+    sm.nodes.at(0)->populations(4) = 1;
+    sm.nodes.at(1)->populations(2) = 1;
+    // do steps and check correct positions
+    // channels switched (bb)
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(2 + sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(4 + sm.offset_sim), 1);
+    // propagation test
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(4 + sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(2 + sm.offset_sim), 1);
+}

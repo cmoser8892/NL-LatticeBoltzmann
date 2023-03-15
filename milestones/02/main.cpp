@@ -37,11 +37,11 @@ int main(int argc, char *argv[]) {
     // run sim
     for(int i = 0; i < steps; ++i) {
         bool once = false;
-        sim.run();
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
             // sim.get_data(false,p);
         }
+        sim.run();
         /*
         // watchdog part
         for(auto n : sim.nodes) {
