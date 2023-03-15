@@ -1111,3 +1111,11 @@ TEST(FunctionalTest, oSimu_streaming_24) {
     EXPECT_EQ(sm.nodes.at(0)->populations(4 + sm.offset_sim), 1);
     EXPECT_EQ(sm.nodes.at(1)->populations(2 + sm.offset_sim), 1);
 }
+
+TEST(FunctionalTest, oSimu_streaming_57) {
+    EXPECT_TRUE(false);
+}
+
+TEST(FunctionalTest, oSimu_streaming_68) {
+    EXPECT_TRUE(false);
+}
