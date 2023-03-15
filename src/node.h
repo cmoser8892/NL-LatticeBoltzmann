@@ -38,8 +38,8 @@ class oNode {
     point_t position;
     boundaryType_t boundary_type;
     // 2xChannels
-    int offset = 0; // 0 or 1
-    flowfield_t populations;
+    int offset = 0; // 0 or 9
+    array_t populations;
     std::vector<toLinks_t> neighbors;
     // constructor
     oNode(handle_t, int channels, boundaryType_t type);

@@ -1010,7 +1010,7 @@ TEST(FunctionalTest, one_step_macro_collison) {
     int o= s_node.offset;
     for(int i = 0; i < velocity_set.cols(); ++i) {
         EXPECT_EQ(node_original.population_even(i),node_fused.population_even(i));
-        EXPECT_EQ(s_node.populations(o,i),node_original.population_even(i));
+        EXPECT_EQ(s_node.populations(o + i),node_original.population_even(i));
     }
 }
 

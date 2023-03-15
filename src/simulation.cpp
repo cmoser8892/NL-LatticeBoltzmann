@@ -362,7 +362,7 @@ void oSimu::streaming(oNode *node) {
         // .at has bounds checking
         // maybe also check data access
         // std::cout << node->current_population->operator()(i) << std::endl;
-        nodes[array_position]->populations(offset_sim,channel) = node->populations(node->offset,i);
+        nodes[array_position]->populations(offset_sim + channel) = node->populations(node->offset + i);
     }
 }
 
@@ -373,8 +373,8 @@ void oSimu::streaming(oNode *node) {
  */
 void oSimu::bounce_back_moving(oNode *n) {
     if(n->boundary_type== BOUNCE_BACK_MOVING) {
-        n->populations(offset_sim,7) += -1.0/6 * parameters.u_wall;
-        n->populations(offset_sim,8) += 1.0/6 * parameters.u_wall;
+        n->populations(offset_sim + 7) += -1.0/6 * parameters.u_wall;
+        n->populations(offset_sim + 8) += 1.0/6 * parameters.u_wall;
     }
 }
 /**
@@ -386,8 +386,7 @@ void oSimu::init() {
         auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
         n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->position = node_info->position;
-        n->populations.row(0) = equilibrium_2d(0,0,1);
-        n->populations.row(1) = equilibrium_2d(0,0,1);
+        n->populations << equilibrium_2d(0,0,1) , equilibrium_2d(0,0,1);
         nodes.push_back(n);
     }
 }
@@ -398,9 +397,9 @@ void oSimu::init() {
  * @param current_step
  */
 void oSimu::run(int current_step) {
-    offset_sim = (current_step +1) & 0x1;
+    offset_sim = ((current_step +1) & 0x1) * 9;
     for(auto n : nodes) {
-        n->offset = current_step & 0x1;
+        n->offset = (current_step & 0x1) * 9;
         // macro and collision
         one_step_macro_collision(n,parameters.relaxation);
         // streaming

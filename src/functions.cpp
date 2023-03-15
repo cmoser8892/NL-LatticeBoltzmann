@@ -138,31 +138,32 @@ void fused_collision(node* node, double relax) {
 void one_step_macro_collision(oNode* node, double relaxation) {
     int o = node->offset;
     // macro calc
-    double rho = node->populations.row(o).sum();
-    double ux = ((node->populations(o,1) +
-                  node->populations(o,5) +
-                  node->populations(o,8)) -
-                 (node->populations(o,3) +
-                  node->populations(o,6) +
-                  node->populations(o,7)));
-    double uy = ((node->populations(o,2) +
-                  node->populations(o,5) +
-                  node->populations(o,6)) -
-                 (node->populations(o,4) +
-                  node->populations(o,7) +
-                  node->populations(o,8)));
+    double rho = calculate_rho(node);
+    //
+    double ux = ((node->populations(o + 1) +
+                  node->populations(o + 5) +
+                  node->populations(o + 8)) -
+                 (node->populations(o + 3) +
+                  node->populations(o + 6) +
+                  node->populations(o + 7)));
+    double uy = ((node->populations(o + 2) +
+                  node->populations(o + 5) +
+                  node->populations(o + 6)) -
+                 (node->populations(o + 4) +
+                  node->populations(o + 7) +
+                  node->populations(o + 8)));
     ux /= rho;
     uy /= rho;
     // collision
-    node->populations(o,0) -= relaxation * (node->populations(o,0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
-    node->populations(o,1) -= relaxation * (node->populations(o,1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
-    node->populations(o,2) -= relaxation * (node->populations(o,2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
-    node->populations(o,3) -= relaxation * (node->populations(o,3) - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
-    node->populations(o,4) -= relaxation * (node->populations(o,4) - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
-    node->populations(o,5) -= relaxation * (node->populations(o,5) - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
-    node->populations(o,6) -= relaxation * (node->populations(o,6) - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
-    node->populations(o,7) -= relaxation * (node->populations(o,7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
-    node->populations(o,8) -= relaxation * (node->populations(o,8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->populations(o + 0) -= relaxation * (node->populations(o + 0) - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
+    node->populations(o + 1) -= relaxation * (node->populations(o + 1) - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    node->populations(o + 2) -= relaxation * (node->populations(o + 2) - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    node->populations(o + 3) -= relaxation * (node->populations(o + 3) - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    node->populations(o + 4) -= relaxation * (node->populations(o + 4) - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    node->populations(o + 5) -= relaxation * (node->populations(o + 5) - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->populations(o + 6) -= relaxation * (node->populations(o + 6) - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->populations(o + 7) -= relaxation * (node->populations(o + 7) - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    node->populations(o + 8) -= relaxation * (node->populations(o + 8) - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 /**
  * @fn void write_ux(node* node, flowfield_t* ux)
@@ -205,13 +206,13 @@ void write_rho(node* node, flowfield_t * rho) {
  */
 double calculate_ux(oNode* node) {
     int o = node->offset;
-    double rho = node->populations.row(o).sum();
-    double ux = ((node->populations(o,1) +
-                  node->populations(o,5) +
-                  node->populations(o,8)) -
-                 (node->populations(o,3) +
-                  node->populations(o,6) +
-                  node->populations(o,7)));
+    double rho = calculate_rho(node);
+    double ux = ((node->populations(o + 1) +
+                  node->populations(o + 5) +
+                  node->populations(o + 8)) -
+                 (node->populations(o + 3) +
+                  node->populations(o + 6) +
+                  node->populations(o + 7)));
     return ux/rho;
 }
 
@@ -223,13 +224,13 @@ double calculate_ux(oNode* node) {
  */
 double calculate_uy(oNode* node) {
     int o = node->offset;
-    double rho = node->populations.row(o).sum();
-    double uy = ((node->populations(o,2) +
-                  node->populations(o,5) +
-                  node->populations(o,6)) -
-                 (node->populations(o,4) +
-                  node->populations(o,7) +
-                  node->populations(o,8)));
+    double rho = calculate_rho(node);
+    double uy = ((node->populations(o + 2) +
+                  node->populations(o + 5) +
+                  node->populations(o + 6)) -
+                 (node->populations(o + 4) +
+                  node->populations(o + 7) +
+                  node->populations(o + 8)));
     return uy/rho;
 }
 
@@ -241,7 +242,16 @@ double calculate_uy(oNode* node) {
  */
 double calculate_rho(oNode* node) {
     int o = node->offset;
-    return node->populations.row(o).sum();
+    double rho = node->populations(o + 0) +
+                 node->populations(o + 1) +
+                 node->populations(o + 2) +
+                 node->populations(o + 3) +
+                 node->populations(o + 4) +
+                 node->populations(o + 5) +
+                 node->populations(o + 6) +
+                 node->populations(o + 7) +
+                 node->populations(o + 8);
+    return rho;
 }
 
 /**
