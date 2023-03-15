@@ -43,8 +43,8 @@ class oSimu {
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
-    int offset_sim = 1;
   public:
+    int offset_sim = 1;
     std::vector<oNode*> nodes;
     oSimu(boundaryPointConstructor* c,nodeGenerator* g);
     ~oSimu();
