@@ -880,7 +880,7 @@ TEST(FunctionalTest, fused_macro) {
 }
 
 TEST(FunctionalTest, fused_streaming_13) {
-    // sizes matter
+    // sizes matters
     int size = 4;
     point_t start = {0,0};
     point_t end = {size,0};
@@ -935,7 +935,7 @@ TEST(FunctionalTest, fused_streaming_13) {
 }
 
 TEST(FunctionalTest, fused_streaming_24) {
-    // sizes matter
+    // sizes matters
     int size = 4;
     point_t start = {0,0};
     point_t end = {size,0};
@@ -1015,7 +1015,7 @@ TEST(FunctionalTest, one_step_macro_collison) {
 }
 
 TEST(FunctionalTest, oSimu_streaming_13) {
-    // sizes matter
+    // sizes matters
     int step = 0;
     int size = 4;
     point_t start = {0,0};
@@ -1064,7 +1064,7 @@ TEST(FunctionalTest, oSimu_streaming_13) {
 }
 
 TEST(FunctionalTest, oSimu_streaming_24) {
-    // sizes matter
+    // sizes matters
     int step = 0;
     int size = 4;
     point_t start = {0,0};
