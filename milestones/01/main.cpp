@@ -1,15 +1,49 @@
+#include "simulation.h"
 #include <iostream>
-#include "types.h"
+#include <chrono>
 
-using namespace std;
-
-int main(){
-  cout << "hi" << endl;
-  point_t o = {3,1};
-  vector_t d = {1,0};
-  point_t r = {5,-1};
-  vector_t n = {-1,-1};
-  double t = ((r - o).dot(n)) / (d.dot(n));
-  cout << t << endl;
-  cout << o + d*t << endl;
+/*
+ * vallgrind call
+valgrind --tool=callgrind --dump-instr=yes (p)
+ */
+int main(int argc, char *argv[]) {
+    auto start = std::chrono::high_resolution_clock::now();
+    int steps = 10000;
+    unsigned int size = 302;
+    unsigned int sub_size = 202;
+    point_t c = {size,size};
+    point_t p = {sub_size,sub_size+20};
+    boundaryPointConstructor boundaries(p);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    // init sim parameters
+    double re = 1000;
+    double base_length = size - 2;
+    simulation_parameters params;
+    params.u_wall = 0.1;
+    params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
+    simulation sim(&boundaries,&gen);
+    sim.set_simulation_parameters(params);
+    sim.init();
+    // run sim
+    for(int i = 0; i < steps; ++i) {
+        if(i % 1000 == 0) {
+            std::cout << "Step: " << i << std::endl;
+        }
+        // old manual sim run
+        sim.streaming_step_1();
+        sim.streaming_step_2();
+        sim.bounce_back();
+        for(auto node : sim.nodes) {
+            macro(node);
+            collision(node,params.relaxation);
+        }
+    }
+    sim.get_data(true,c);
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+    std::cout << "Took " <<duration.count()<< "s" << std::endl;
+    return 0;
 }
