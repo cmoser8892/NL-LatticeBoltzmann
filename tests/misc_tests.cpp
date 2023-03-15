@@ -1014,8 +1014,10 @@ TEST(FunctionalTest, one_step_macro_collison) {
     }
 }
 
-TEST(Random, iter) {
-    array_t pops;
-    pops.setZero(2*CHANNELS);
-    auto iter = pops.begin() + 1;
+TEST(FunctionalTest, oSimu_streaming_13) {
+    EXPECT_TRUE(false);
+}
+
+TEST(FunctionalTest, oSimu_streaming_24) {
+    EXPECT_TRUE(false);
 }

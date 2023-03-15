@@ -139,8 +139,18 @@ void one_step_macro_collision(oNode* node, double relaxation) {
     int o = node->offset;
     // macro calc
     auto p = node->populations.begin() + o;
-    double rho = calculate_rho(node);
-    //
+    // macro part
+    // rho
+    const double rho = (p + 0).operator*() +
+                       (p + 1).operator*() +
+                       (p + 2).operator*() +
+                       (p + 3).operator*() +
+                       (p + 4).operator*() +
+                       (p + 5).operator*() +
+                       (p + 6).operator*() +
+                       (p + 7).operator*() +
+                       (p + 8).operator*();
+    // ux + uy
     double ux = (((p + 1).operator*() +
                   (p + 5).operator*() +
                   (p + 8).operator*())-
@@ -166,6 +176,7 @@ void one_step_macro_collision(oNode* node, double relaxation) {
     (p + 7).operator*() -= relaxation * ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
+
 /**
  * @fn void write_ux(node* node, flowfield_t* ux)
  * @brief write the ux component of the flowfield
