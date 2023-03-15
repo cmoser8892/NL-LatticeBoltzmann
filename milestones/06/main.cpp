@@ -2,7 +2,19 @@
 #include <iostream>
 #include <chrono>
 
-/// fused variant of m3
+/*
+    // init variant
+    auto start = std::chrono::high_resolution_clock::now();
+    int steps = 10000;
+    unsigned int size = 302;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_sliding_lid();
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+ */
+
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;
