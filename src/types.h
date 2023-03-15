@@ -48,4 +48,7 @@ typedef struct toLinks {
     handle_t handle; // form 1 to n -1 for valid handles
 }toLinks_t;
 
+// eigen smart pointer
+using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>;
+
 #endif // MY_GENERAL_CODE_TYPES_H

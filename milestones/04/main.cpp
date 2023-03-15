@@ -24,11 +24,10 @@ int main(int argc, char *argv[]) {
     sim.fused_init();
     // run sim
     for(int i = 0; i < steps; ++i) {
-        sim.fused_run();
-        // sim.get_data(false,c);
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
+        sim.fused_run();
     }
     sim.get_data(true,c);
     auto stop = std::chrono::high_resolution_clock::now();

@@ -40,7 +40,7 @@ class oNode {
     // 2xChannels
     int offset = 0; // 0 or 9
     array_t populations;
-    std::vector<toLinks_t> neighbors;
+    std::vector<link_pointer> neighbors;
     // constructor
     oNode(handle_t, int channels, boundaryType_t type);
 };

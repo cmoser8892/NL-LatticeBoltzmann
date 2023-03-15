@@ -354,15 +354,9 @@ void oSimu::set_simulation_parameters(simulation_parameters_t t) {
 void oSimu::streaming(oNode *node) {
     // loop through
     for(int i = 1; i < CHANNELS; ++i) {
-        auto link = node->neighbors.at(i-1);
-        handle_t partner_handle = link.handle;
-        int channel = link.channel;
-        long array_position = long(partner_handle) - 1;
-        // correct positioning prob
-        // .at has bounds checking
-        // maybe also check data access
-        // std::cout << node->current_population->operator()(i) << std::endl;
-        nodes[array_position]->populations(offset_sim + channel) = node->populations(node->offset + i);
+        // pointer magic
+        auto origin = node->populations.begin() + node->offset + i;
+        (node->neighbors[i-1] + offset_sim).operator*() = origin.operator*();
     }
 }
 
@@ -373,8 +367,9 @@ void oSimu::streaming(oNode *node) {
  */
 void oSimu::bounce_back_moving(oNode *n) {
     if(n->boundary_type== BOUNCE_BACK_MOVING) {
-        n->populations(offset_sim + 7) += -1.0/6 * parameters.u_wall;
-        n->populations(offset_sim + 8) += 1.0/6 * parameters.u_wall;
+        auto pointer = n->populations.begin() + offset_sim;
+        (pointer +7).operator*() += -1.0/6 * parameters.u_wall;
+        (pointer +8).operator*() +=  1.0/6 * parameters.u_wall;
     }
 }
 /**
@@ -382,12 +377,26 @@ void oSimu::bounce_back_moving(oNode *n) {
  * @brief inits the sim based on info in the node generator
  */
 void oSimu::init() {
+    // set up nodes
     for(auto node_info : node_generator->node_infos) {
         auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
-        n->neighbors = node_info->links; // should copy everything not quite sure thou
+        // n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->position = node_info->position;
         n->populations << equilibrium_2d(0,0,1) , equilibrium_2d(0,0,1);
         nodes.push_back(n);
+    }
+    for(int i = 0; i < node_generator->node_infos.size(); ++i) {
+        // get them both in here
+        auto node_info = node_generator->node_infos[i];
+        auto node = nodes[i];
+        //
+        for(auto link : node_info->links) {
+            handle_t partner_handle = link.handle;
+            int channel = link.channel;
+            long array_position = long(partner_handle) - 1;
+            auto link_p = nodes[array_position]->populations.begin() + channel;
+            node->neighbors.push_back(link_p);
+        }
     }
 }
 

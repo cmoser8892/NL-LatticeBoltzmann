@@ -26,10 +26,10 @@ int main(int argc, char *argv[]) {
     sim.init();
     // run sim
     for(int i = 0; i < steps; ++i) {
-        sim.run(i);
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
+        sim.run(i);
     }
     sim.get_data(true,c);
     auto stop = std::chrono::high_resolution_clock::now();
