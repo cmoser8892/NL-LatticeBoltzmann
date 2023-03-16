@@ -1187,6 +1187,7 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     boundaries.set_point(&extra_2,BOUNCE_BACK);
     boundaries.delete_existing_point(&minus_1);
     boundaries.delete_existing_point(&minus_2);
+    // need to reorder nodes!!!!!!!! so that the surface is closed!!
     boundaries.visualize_2D_boundary(size);
     // node init
     // first found points seems to be bugged 2.5,2.5
