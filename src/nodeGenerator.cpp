@@ -285,6 +285,7 @@ void nodeGenerator::check_nodes(handle_t* current) {
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
+        std::cout << n->position << std::endl;
         bool c = straight.node_inside(n);
         if(!c) {
             n->handle = *current;
@@ -344,11 +345,14 @@ void nodeGenerator::reduce_boundary_neighborhood() {
                 check_and_set_reduced_neighborhood(array_position,n->boundary);
             }
         }
-        else {
+        else if(n->type == WET){
             //std::cerr << n->links.size() << std::endl;
             //std::cerr << n->position << std::endl;
             assert(n->links.size() == 8);
             boundary_start++;
+        }
+        else {
+            std::cerr << "node-generator: unknown node type" << std::endl;
         }
     }
     // delete because now unnecessary

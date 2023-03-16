@@ -19,6 +19,7 @@ boundaryStructure::~boundaryStructure() {
 boundaryPointConstructor::boundaryPointConstructor(point_t s) {
     size = s;
     limits << s.x()-1,s.y()-1;
+    current_structure = -1;
 
 }
 
@@ -280,6 +281,10 @@ void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t con
     }
 }
 
+/**
+ * @fn void boundaryPointConstructor::delete_structures()
+ * @brief deletes the structures
+ */
 void boundaryPointConstructor::delete_structures() {
     for(auto bs: boundary_structures) {
         delete bs;

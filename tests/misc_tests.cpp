@@ -1189,8 +1189,39 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     boundaries.delete_existing_point(&minus_2);
     boundaries.visualize_2D_boundary(size);
     // node init
+    // first found points seems to be bugged 2.5,2.5
     nodeGenerator gen(&boundaries);
-    // gen.init_fused(size);
-    // gen.visualize_2D_nodes(size);
+    gen.init_fused(size);
+    gen.visualize_2D_nodes(size);
+    oSimu sm(&boundaries, &gen);
+    sm.init();
+    // check sim sizes
+    EXPECT_EQ(sm.nodes.size(),2);
+    // zero data
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->populations.setZero();
+    }
+    sm.nodes.at(0)->populations(8) = 1;
+    sm.nodes.at(1)->populations(6) = 1;
+    // do steps and check correct positions
+    // channels switched (bb)
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(6+ sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(8 + sm.offset_sim), 1);
+    // propagation test
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(8 + sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(6 + sm.offset_sim), 1);
 }
 
