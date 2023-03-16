@@ -37,6 +37,40 @@ array_t equilibrium(node* node) {
 }
 
 /**
+ * @fn array_t equilibrium_general(node* node)
+ * @brief original version of the equiliburm function as implemented in lookup
+ * @param node
+ * @return
+ */
+array_t equilibrium_general(node* node) {
+    array_t return_array;
+    return_array.setZero(CHANNELS);
+    double ux = node->u(0);
+    double uy = node->u(1);
+    double rho = node->rho;
+    for (int i = 0; i < CHANNELS; ++i) {
+        double cx = velocity_set.col(i).x();
+        double cy = velocity_set.col(i).y();
+        double w = weights.col(i).x();
+        return_array(i) = w * rho * calculate_later_equilibrium(cx, cy, ux, uy);
+    }
+    return return_array;
+}
+
+/**
+ * @fn double calculate_later_equilibrium(double cx, double cy, double ux, double uy)
+ * @brief calculates the later part of the equilbirum function
+ * @param cx
+ * @param cy
+ * @param ux
+ * @param uy
+ * @return
+ */
+double calculate_later_equilibrium(double cx, double cy, double ux, double uy) {
+    return (1 + 3*cx*ux + 3*cy*uy + 4.5*cx*cx*ux*ux + 9*cx*ux*cy*uy + 4.5*cy*cy*uy*uy - 1.5*ux*ux - 1.5*uy*uy);
+}
+
+/**
  * @fn array_t equilibrium_2d(double ux, double uy, double rho)
  * @brief calculates the equilibrium function based on macro values
  * @param ux
@@ -65,7 +99,7 @@ array_t equilibrium_2d(double ux, double uy, double rho) {
  * @param relaxation
  */
 void collision(node* node, double relaxation) {
-    node->population_even -= relaxation * (node->population_even - equilibrium(node));
+    node->population_even -= relaxation * (node->population_even - equilibrium_general(node));
 }
 
 /**

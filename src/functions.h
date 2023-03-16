@@ -6,6 +6,8 @@
 
 // functional methods
 array_t equilibrium(node* node);
+array_t equilibrium_general(node* node);
+double calculate_later_equilibrium(double cx, double cy, double ux, double uy);
 array_t equilibrium_2d(double ux, double uy, double rho);
 void collision(node* node,double relaxation);
 void fused_collision(node* node, double relaxation);

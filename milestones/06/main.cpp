@@ -2,10 +2,11 @@
 #include <iostream>
 #include <chrono>
 
-/*
-    // init variant
+
+int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int steps = 10000;
+    // init variant
+    int steps = 100000;
     unsigned int size = 302;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
@@ -13,10 +14,7 @@
     boundaries.init_sliding_lid();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
- */
-
-int main(int argc, char *argv[]) {
-    auto start = std::chrono::high_resolution_clock::now();
+    /*
     int steps = 10000;
     unsigned int size = 302;
     unsigned int sub_size = 202;
@@ -27,6 +25,7 @@ int main(int argc, char *argv[]) {
     boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
+     */
     // init sim parameters
     double re = 1000;
     double base_length = size - 2;
