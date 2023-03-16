@@ -345,6 +345,8 @@ void nodeGenerator::reduce_boundary_neighborhood() {
             }
         }
         else {
+            //std::cerr << n->links.size() << std::endl;
+            //std::cerr << n->position << std::endl;
             assert(n->links.size() == 8);
             boundary_start++;
         }

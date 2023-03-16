@@ -1113,9 +1113,84 @@ TEST(FunctionalTest, oSimu_streaming_24) {
 }
 
 TEST(FunctionalTest, oSimu_streaming_57) {
-    EXPECT_TRUE(false);
+    // sizes matters
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size};
+    point_t extra_1 = {2,1};
+    point_t extra_2 = {1,2};
+    point_t minus_1 = {3,0};
+    point_t minus_2 = {0,3};
+    // init boundaries
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    boundaries.set_point(&extra_1,BOUNCE_BACK);
+    boundaries.set_point(&extra_2,BOUNCE_BACK);
+    boundaries.delete_existing_point(&minus_1);
+    boundaries.delete_existing_point(&minus_2);
+    // boundaries.visualize_2D_boundary(size);
+    // node init
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    // gen.visualize_2D_nodes(size);
+    // tests
+    oSimu sm(&boundaries, &gen);
+    sm.init();
+    // check sim sizes
+    EXPECT_EQ(sm.nodes.size(),2);
+    // zero data
+    // zero the data
+    for(auto node : sm.nodes) {
+        node->populations.setZero();
+    }
+    sm.nodes.at(0)->populations(7) = 1;
+    sm.nodes.at(1)->populations(5) = 1;
+    // do steps and check correct positions
+    // channels switched (bb)
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(5+ sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(7 + sm.offset_sim), 1);
+    // propagation test
+    sm.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sm.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sm.streaming(n);
+    }
+    step++;
+    EXPECT_EQ(sm.nodes.at(0)->populations(7 + sm.offset_sim), 1);
+    EXPECT_EQ(sm.nodes.at(1)->populations(5 + sm.offset_sim), 1);
+
 }
 
 TEST(FunctionalTest, oSimu_streaming_68) {
-    EXPECT_TRUE(false);
+    // sizes matters
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size};
+    point_t extra_1 = {1,1};
+    point_t extra_2 = {2,2};
+    point_t minus_1 = {0,0};
+    point_t minus_2 = {3,3};
+    // init boundaries
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    boundaries.set_point(&extra_1,BOUNCE_BACK);
+    boundaries.set_point(&extra_2,BOUNCE_BACK);
+    boundaries.delete_existing_point(&minus_1);
+    boundaries.delete_existing_point(&minus_2);
+    boundaries.visualize_2D_boundary(size);
+    // node init
+    nodeGenerator gen(&boundaries);
+    // gen.init_fused(size);
+    // gen.visualize_2D_nodes(size);
 }
+
