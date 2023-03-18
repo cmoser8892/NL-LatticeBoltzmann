@@ -573,3 +573,20 @@ TEST(InitTests, p_flow) {
     }
     EXPECT_EQ(pb, 20+20);
 }
+
+/*
+// python stuff
+def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
+    # get all the values
+    rho, ux, uy = caluculate_real_values(grid)
+    equilibrium = equilibrium_on_array(rho, ux, uy)
+    ##########
+    equilibrium_in = equilibrium_on_array(rho_in, ux[-2,:], uy[-2, :])
+    # inlet 1,5,8
+    grid[:, 0, :] = equilibrium_in + (grid[:, -2, :] - equilibrium[:, -2, :])
+
+    # outlet 3,6,7
+    equilibrium_out = equilibrium_on_array(rho_out, ux[1, :], uy[1, :])
+    # check for correct sizes
+    grid[:, -1, :] = equilibrium_out + (grid[:, 1, :] - equilibrium[:, 1, :])
+*/
