@@ -1176,10 +1176,6 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     point_t start = {0,0};
     point_t end = {size,0};
     point_t sim_area = {size,size};
-    point_t extra_1 = {1,1};
-    point_t extra_2 = {2,2};
-    point_t minus_1 = {0,0};
-    point_t minus_2 = {3,3};
     // init boundaries
     boundaryPointConstructor boundaries(sim_area);
     // manual setup
@@ -1209,12 +1205,12 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     point = {1,1};
     boundaries.set_point(&point,BOUNCE_BACK);
     // need to reorder nodes!!!!!!!! so that the surface is closed!!
-    boundaries.visualize_2D_boundary(size);
+    // boundaries.visualize_2D_boundary(size);
     // node init
     // first found points seems to be bugged 2.5,2.5
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    gen.visualize_2D_nodes(size);
+    // gen.visualize_2D_nodes(size);
     oSimu sm(&boundaries, &gen);
     sm.init();
     // check sim sizes
@@ -1246,4 +1242,3 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     EXPECT_EQ(sm.nodes.at(0)->populations(8 + sm.offset_sim), 1);
     EXPECT_EQ(sm.nodes.at(1)->populations(6 + sm.offset_sim), 1);
 }
-
