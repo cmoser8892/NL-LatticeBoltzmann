@@ -1242,3 +1242,4 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     EXPECT_EQ(sm.nodes.at(0)->populations(8 + sm.offset_sim), 1);
     EXPECT_EQ(sm.nodes.at(1)->populations(6 + sm.offset_sim), 1);
 }
+

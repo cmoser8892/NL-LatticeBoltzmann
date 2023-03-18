@@ -320,3 +320,26 @@ long boundaryPointConstructor::total_boundary_nodes() {
     }
     return size;
 }
+
+/**
+ * @fn void boundaryPointConstructor::init_poiseuille_flow()
+ * @brief standard p flow constructor
+ */
+void boundaryPointConstructor::init_poiseuille_flow() {
+    // init a quader and relable the sides
+    init_quader();
+    // 0 side
+    double limit_x = 0;
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.x() == limit_x) {
+            b->type = PRESSURE_PERIODIC;
+        }
+    }
+    // maxsize side
+    limit_x = limits.x();
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.x() == limit_x) {
+            b->type = PRESSURE_PERIODIC;
+        }
+    }
+}

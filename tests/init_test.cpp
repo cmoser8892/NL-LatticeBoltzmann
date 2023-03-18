@@ -557,3 +557,19 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     int expected_total_node_number = (p.x()-2)*(p.y()-2) - (k.x()*k.y());
     EXPECT_EQ(sim.nodes.size(),expected_total_node_number);
 }
+
+TEST(InitTests, p_flow) {
+    unsigned int size = 30;
+    point_t s = {size,size-10};
+    boundaryPointConstructor boundaries(s);
+    boundaries.init_poiseuille_flow();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),30+30+18+18);
+    // check if we got 20+20 p flow nodes
+    int pb = 0;
+    for(auto node : boundaries.boundary_structures[0]->boundary_points) {
+        if(node->type== PRESSURE_PERIODIC) {
+            ++pb;
+        }
+    }
+    EXPECT_EQ(pb, 20+20);
+}
