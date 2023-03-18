@@ -356,6 +356,12 @@ void nodeGenerator::reduce_boundary_neighborhood() {
         }
     }
     // delete because now unnecessary
+    auto iter = node_infos.begin() + boundary_start;
+    while(iter != node_infos.end()) {
+        delete iter.operator*();
+        ++iter;
+    }
+    // erase dangeling pointers
     node_infos.erase(node_infos.begin() + boundary_start, node_infos.end());
 }
 

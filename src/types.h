@@ -35,6 +35,7 @@ typedef enum boundaryType {
     NO_BOUNDARY = 0, // doesnt do anything equal to an error
     BOUNCE_BACK,
     BOUNCE_BACK_MOVING,
+    PERIODIC,
     PRESSURE_PERIODIC
 }boundaryType_t;
 

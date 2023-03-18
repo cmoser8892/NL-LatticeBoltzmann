@@ -49,6 +49,7 @@ class boundaryPointConstructor {
     void init_quader_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_inner(point_t start, point_t cntiues, vector_t inner_size);
+    void init_poiseuille_flow();
     void delete_structures();
     // visualize
     void visualize_2D_boundary(int size);
