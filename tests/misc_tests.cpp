@@ -1182,11 +1182,32 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     point_t minus_2 = {3,3};
     // init boundaries
     boundaryPointConstructor boundaries(sim_area);
-    boundaries.init_quader();
-    boundaries.set_point(&extra_1,BOUNCE_BACK);
-    boundaries.set_point(&extra_2,BOUNCE_BACK);
-    boundaries.delete_existing_point(&minus_1);
-    boundaries.delete_existing_point(&minus_2);
+    // manual setup
+    boundaries.init_structure();
+    point_t point = {1,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
     // need to reorder nodes!!!!!!!! so that the surface is closed!!
     boundaries.visualize_2D_boundary(size);
     // node init

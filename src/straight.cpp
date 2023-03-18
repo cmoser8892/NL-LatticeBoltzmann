@@ -142,7 +142,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
             }
         }
     }
-    if(1) {
+    if(0) {
         std::cout << "Result" << std::endl;
         std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
         std::cout << number_of_intersections << std::endl;
