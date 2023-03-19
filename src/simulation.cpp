@@ -315,6 +315,7 @@ void simulation::delete_nodes() {
     for (auto n : nodes) {
         delete n;
     }
+    nodes.clear();
 }
 
 /// one step run class
@@ -453,4 +454,5 @@ void oSimu::delete_nodes() {
     for (auto n : nodes) {
         delete n;
     }
+    nodes.clear();
 }

@@ -37,7 +37,10 @@ class boundaryPointConstructor {
     ~boundaryPointConstructor();
     // initizlies a quader
     void init_structure();
+
     void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
+    void steps_direction(int steps, vector_t dir, point_t* start, boundaryType_t b);
+    void corner_creation(vector_t dir, point_t* start, boundaryType_t b);
     void set_point(point_t* p, boundaryType_t b);
     void delete_existing_point(point_t* p);
     void init_quader();

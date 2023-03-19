@@ -42,7 +42,7 @@ void boundaryPointConstructor::init_structure() {
 
 /**
  * @fn void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *start, boundaryType_t  b)
- * @brief constructs a number of boundary points into on direction
+ * @brief constructs a number of boundary points into on direction only really good for cardinal directions
  * @param limit
  * @param dir
  * @param start
@@ -56,6 +56,25 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
     }
 }
 
+void boundaryPointConstructor::steps_direction(int steps, vector_t dir, point_t *start, boundaryType_t b) {
+    // creation of x corners
+    for(int i = 0; i < steps; ++i) {
+        corner_creation(dir,start,b);
+    }
+}
+
+void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, boundaryType_t b) {
+    // creation of a corner
+    vector_t normal = {dir.y(), -dir.x()};
+    set_point(start,b);
+    vector_t addup = 0.5 *(normal+dir);
+    *start += addup;
+    set_point(start,b);
+    addup = 0.5 *(-normal + dir);
+    *start += addup;
+    set_point(start,b);
+
+}
 /**
  * @fn void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b)
  * @brief sets up an individual boundary point
@@ -289,6 +308,8 @@ void boundaryPointConstructor::delete_structures() {
     for(auto bs: boundary_structures) {
         delete bs;
     }
+    boundary_structures.clear();
+    current_structure = -1;
 }
 
 /**

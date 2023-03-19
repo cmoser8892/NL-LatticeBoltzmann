@@ -574,6 +574,41 @@ TEST(InitTests, p_flow) {
     EXPECT_EQ(pb, 20+20);
 }
 
+TEST(InitTests, corners) {
+    // test all corners if works
+    int size = 3;
+    point_t s = {size,size};
+    boundaryPointConstructor b(s);
+    vector_t dir = {1,1};
+    point_t start = {1,1};
+    b.init_structure();
+    b.corner_creation(dir,&start,BOUNCE_BACK);
+    b.visualize_2D_boundary(3);
+    b.delete_structures();
+    EXPECT_EQ(b.total_boundary_nodes(),0);
+    dir = {-1,1};
+    start = {1,1};
+    b.init_structure();
+    b.corner_creation(dir,&start,BOUNCE_BACK);
+    b.visualize_2D_boundary(3);
+    b.delete_structures();
+    EXPECT_EQ(b.total_boundary_nodes(),0);
+    dir = {-1,-1};
+    start = {1,1};
+    b.init_structure();
+    b.corner_creation(dir,&start,BOUNCE_BACK);
+    b.visualize_2D_boundary(3);
+    b.delete_structures();
+    EXPECT_EQ(b.total_boundary_nodes(),0);
+    dir = {1,-1};
+    start = {1,1};
+    b.init_structure();
+    b.corner_creation(dir,&start,BOUNCE_BACK);
+    b.visualize_2D_boundary(3);
+    b.delete_structures();
+    EXPECT_EQ(b.total_boundary_nodes(),0);
+}
+
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):

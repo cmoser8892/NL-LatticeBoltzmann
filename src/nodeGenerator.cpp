@@ -458,6 +458,8 @@ void nodeGenerator::delete_node_infos() {
     for(auto n : node_infos) {
         delete n;
     }
+    // get rid of dangeling pointers
+    node_infos.clear();
 }
 
 /**

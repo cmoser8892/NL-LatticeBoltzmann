@@ -13,6 +13,8 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
        coordinate_t coordinate;
        coordinate.x = std::floor(node->position.x());
        coordinate.y = std::floor(node->position.y());
+       snoop_min_coordinate(coordinate);
+       snoop_max_coordinate(coordinate);
        // we will mask out some bits so better make sure that is not bigger than max
        assert(coordinate.x <= pow(2,22));
        assert(coordinate.y <= pow(2,22));
@@ -26,6 +28,56 @@ void neighbourhood::connect_periodics(std::vector<nodePoint_t *> &nodes) {
     // go through the nodes
     for(auto node : nodes) {
         // only dry nodes with type periodic or pressure periodic
+        // basically get the full treatement
+        if((node->boundary == PERIODIC) || (node->boundary == PRESSURE_PERIODIC)) {
+            // go over all the channels and redo i guess ?!
+            for(int i = 1; i < CHANNELS; ++i) {
+                point_t current = node->position + velocity_set.col(i);
+                coordinate_t coordinate;
+                coordinate.x = std::floor(current.x());
+                coordinate.y = std::floor(current.y());
+                // extra coordinate handling
+                periodic_coordinate_reshuffle(coordinate);
+                handle_t search_key = bit_interleaving_2d(coordinate.x,coordinate.y);
+            }
+        }
+    }
+}
+
+void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
+    // set the min coordinate to be reshuffled to
+    if(coordinate.x < min_coordinate.x) {
+        min_coordinate.x = coordinate.x;
+    }
+    if(coordinate.y < min_coordinate.y ) {
+        min_coordinate.y = coordinate.y;
+    }
+}
+
+void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
+    // set the max coordinate to be reshuffled to
+    if(coordinate.x > min_coordinate.x) {
+        min_coordinate.x = coordinate.x;
+    }
+    if(coordinate.y > min_coordinate.y ) {
+        min_coordinate.y = coordinate.y;
+    }
+}
+
+void neighbourhood::periodic_coordinate_reshuffle(coordinate_t coordinate) {
+    // min set
+    if(coordinate.x < min_coordinate.x) {
+
+    }
+    if(coordinate.y < min_coordinate.y) {
+
+    }
+    // max set
+    if(coordinate.x > max_coordinate.x) {
+
+    }
+    if(coordinate.y > max_coordinate.y) {
+
     }
 }
 /**
@@ -47,6 +99,8 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
            // interleave bits to get the correct key for that nodes handle
            handle_t search_key = bit_interleaving_2d(coordinate.x,coordinate.y);
            // try to find the key
+           // todo a bit unsafe, if more than one node share the same key, but should not happen
+           // if sub sized thou different story
            if(auto found_iter = keys.find(search_key); found_iter != keys.end()) {
                // set handle and array position remember handles start at 1!
                handle_t found_handle = found_iter->second;
@@ -59,9 +113,14 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
                    bool add_me = false;
                    if (node->type == WET) {
                        add_me = true;
+                       // special treatment of wet boundary nodes
+                       if((node->boundary == PRESSURE_PERIODIC) || (node->boundary == PERIODIC)) {
+                           add_me = false;
+                       }
                    }
                    // if we are a dry node only include nodes that are wet
                    else if (node->type == DRY) {
+                       // add if a wet node
                        if (nodes.at(array_position)->type == WET) {
                            add_me = true;
                        }
