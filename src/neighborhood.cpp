@@ -22,6 +22,12 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
    }
 }
 
+void neighbourhood::connect_periodics(std::vector<nodePoint_t *> &nodes) {
+    // go through the nodes
+    for(auto node : nodes) {
+        // only dry nodes with type periodic or pressure periodic
+    }
+}
 /**
  * @fn void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes)
  * @brief calculates the z-order of the position of the neighbours and looks for them in the hash table

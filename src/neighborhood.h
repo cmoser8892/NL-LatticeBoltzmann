@@ -14,6 +14,7 @@ class neighbourhood {
   private:
     std::unordered_multimap<handle_t,handle_t> keys;
     void fill_keys(std::vector<nodePoint_t*> &nodes);
+    void connect_periodics(std::vector<nodePoint_t*> &nodes);
   public:
     void determine_neighbors(std::vector<nodePoint_t*> &nodes);
     void check_wet_nodes(std::vector<nodePoint_t*> &nodes);
