@@ -317,9 +317,6 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
             n->handle = *current;
             n->position = p->point;
             n->type = DRY;
-            if((n->boundary == PERIODIC) ||(n->boundary == PRESSURE_PERIODIC)) {
-                n->type = WET;
-            }
             n->boundary = p->type;
             // dont forget to increase the handle counter each time
             (*current)++;
