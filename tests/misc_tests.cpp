@@ -888,9 +888,12 @@ TEST(FunctionalTest, fused_streaming_13) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
+    boundaries.visualize_2D_boundary(size);
     //boundaries.visualize_2D_boundary(size);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
+    gen.visualize_2D_nodes(4);
+    EXPECT_EQ(gen.node_infos.size(),2);
     //gen.visualize_2D_nodes(4);
     simulation sm(&boundaries, &gen);
     sm.fused_init();
