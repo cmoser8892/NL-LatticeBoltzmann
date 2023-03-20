@@ -571,7 +571,7 @@ TEST(InitTests, p_flow) {
             ++pb;
         }
     }
-    EXPECT_EQ(pb, 20+20);
+    EXPECT_EQ(pb, 18+18);
 }
 
 TEST(InitTests, corners) {

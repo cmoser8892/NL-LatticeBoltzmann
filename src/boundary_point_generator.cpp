@@ -363,4 +363,17 @@ void boundaryPointConstructor::init_poiseuille_flow() {
             b->type = PRESSURE_PERIODIC;
         }
     }
+    // relabel the top and bottom layer
+    double limit_y = 0;
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->type = BOUNCE_BACK;
+        }
+    }
+    limit_y = limits.y();
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->type = BOUNCE_BACK;
+        }
+    }
 }
