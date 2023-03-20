@@ -613,6 +613,16 @@ TEST(InitTests, corners) {
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
 
+TEST(InitTests, oposites) {
+    unsigned int size = 4;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_poiseuille_flow();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
+    // j n
+}
+
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):

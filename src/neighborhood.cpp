@@ -37,7 +37,7 @@ void neighbourhood::connect_periodics(std::vector<nodePoint_t *> &nodes) {
                 coordinate.x = std::floor(current.x());
                 coordinate.y = std::floor(current.y());
                 // extra coordinate handling
-                periodic_coordinate_reshuffle(coordinate);
+                periodic_coordinate_reshuffle(&coordinate);
                 handle_t search_key = bit_interleaving_2d(coordinate.x,coordinate.y);
             }
         }
@@ -64,20 +64,24 @@ void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
     }
 }
 
-void neighbourhood::periodic_coordinate_reshuffle(coordinate_t coordinate) {
+void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
     // min set
-    if(coordinate.x < min_coordinate.x) {
-
+    if(coordinate->x < min_coordinate.x) {
+        // set to max
+        coordinate->x = max_coordinate.x;
     }
-    if(coordinate.y < min_coordinate.y) {
-
+    if(coordinate->y < min_coordinate.y) {
+        // set to max
+        coordinate->y = max_coordinate.y;
     }
     // max set
-    if(coordinate.x > max_coordinate.x) {
-
+    if(coordinate->x > max_coordinate.x) {
+        // set to min
+        coordinate->x = min_coordinate.x;
     }
-    if(coordinate.y > max_coordinate.y) {
-
+    if(coordinate->y > max_coordinate.y) {
+        // set to min
+        coordinate->y = min_coordinate.y;
     }
 }
 /**
