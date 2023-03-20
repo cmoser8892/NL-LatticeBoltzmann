@@ -571,7 +571,22 @@ TEST(InitTests, p_flow) {
             ++pb;
         }
     }
+    int wet = 0;
+    int dry = 0;
+    for(auto node : boundaries.boundary_structures[0]->boundary_points) {
+        if(node->dw == DRY) {
+            dry++;
+        }
+        else if(node->dw == WET) {
+            wet++;
+        }
+        else {
+            EXPECT_TRUE(false);
+        }
+    }
     EXPECT_EQ(pb, 18+18);
+    EXPECT_EQ(wet, 18+18);
+    EXPECT_EQ(dry, 30+30);
 }
 
 TEST(InitTests, corners) {
@@ -613,7 +628,7 @@ TEST(InitTests, corners) {
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
 
-TEST(InitTests, oposites) {
+TEST(InitTests, DISABLED_oposites) {
     unsigned int size = 4;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);

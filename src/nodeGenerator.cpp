@@ -316,7 +316,7 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
             auto n = new nodePoint_t;
             n->handle = *current;
             n->position = p->point;
-            n->type = DRY;
+            n->type = p->dw;
             n->boundary = p->type;
             // dont forget to increase the handle counter each time
             (*current)++;

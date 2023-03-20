@@ -11,6 +11,7 @@
 // definition of a general boundary point
 typedef struct boundaryPoint {
     point_t point;
+    nodeIdentifier_t dw;
     boundaryType_t type;
 }boundaryPoint_t;
 

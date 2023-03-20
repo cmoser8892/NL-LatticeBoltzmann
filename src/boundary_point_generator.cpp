@@ -88,6 +88,7 @@ void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
     }
     auto boundary_point = new boundaryPoint_t;
     boundary_point->point = *p;
+    boundary_point->dw = DRY;
     boundary_point->type = b;
     boundary_structures.at(current_structure)->boundary_points.push_back(boundary_point);
 }
@@ -353,6 +354,7 @@ void boundaryPointConstructor::init_poiseuille_flow() {
     double limit_x = 0;
     for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.x() == limit_x) {
+            b->dw = WET;
             b->type = PRESSURE_PERIODIC;
         }
     }
@@ -360,6 +362,7 @@ void boundaryPointConstructor::init_poiseuille_flow() {
     limit_x = limits.x();
     for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.x() == limit_x) {
+            b->dw = WET;
             b->type = PRESSURE_PERIODIC;
         }
     }
@@ -367,12 +370,14 @@ void boundaryPointConstructor::init_poiseuille_flow() {
     double limit_y = 0;
     for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
+            b->dw = DRY;
             b->type = BOUNCE_BACK;
         }
     }
     limit_y = limits.y();
     for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
+            b->dw = DRY;
             b->type = BOUNCE_BACK;
         }
     }
