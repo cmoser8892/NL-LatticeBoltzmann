@@ -628,7 +628,7 @@ TEST(InitTests, corners) {
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
 
-TEST(InitTests, DISABLED_oposites) {
+TEST(InitTests, DISABLED_opposites) {
     unsigned int size = 4;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
