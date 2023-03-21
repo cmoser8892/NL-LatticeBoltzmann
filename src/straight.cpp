@@ -23,6 +23,7 @@ void straightGenerator::calculate_mass_center() {
  * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
+    // todo just a linear loop through no bueno
     // iter through the boundary structures
     for(auto bs : points->boundary_structures) {
         auto iter = bs->boundary_points.begin();
@@ -172,3 +173,4 @@ void straightGenerator::delete_vector() {
         delete s;
     }
 }
+

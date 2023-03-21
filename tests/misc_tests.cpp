@@ -1244,3 +1244,19 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     EXPECT_EQ(sm.nodes.at(1)->populations(6 + sm.offset_sim), 1);
 }
 
+TEST(FunctionalTest, key_search_functionality) {
+    point_t k = {8,8};
+    point_t l = {2,3};
+    point_t m = {9,2};
+    point_t n = {0,0};
+    // emplace into the hash map
+    pointKeyHash pkh;
+    pkh.fill_key(1,k);
+    pkh.fill_key(2,l);
+    pkh.fill_key(3,m);
+    // now find the keys and 0
+    EXPECT_EQ(pkh.key_translation(k),1);
+    EXPECT_EQ(pkh.key_translation(l),2);
+    EXPECT_EQ(pkh.key_translation(m),3);
+    EXPECT_EQ(pkh.key_translation(n),0);
+}

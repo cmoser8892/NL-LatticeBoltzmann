@@ -24,4 +24,22 @@ uint32_t bit_extraleaving_3d_y(uint64_t);
 uint32_t bit_extraleaving_3d_z(uint64_t);
 // reduce 32 bit numbers to 2 bit numbers
 uint32_t reduce_32_2(uint32_t);
+/// helper classes/sub-classes
+// watchdog for rho
+class rhoWatchdog {
+    /// just prints out std error msgs
+  private:
+    flowfield_t rho;
+    double sensitivity = 0.1; // displacement to the previous value
+  public:
+    rhoWatchdog(double s,point_t size);
+    bool check(node* n,int step);
+};
+
+class pointKeyHash {
+  public:
+    std::unordered_multimap<handle_t,handle_t> keys;
+    void fill_key(handle_t positions_handle, point_t pos);
+    handle_t key_translation(point_t pos);
+};
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

@@ -16,6 +16,7 @@ using surface_t = straight_t;
 class straightGenerator {
   private:
     boundaryPointConstructor* points;
+    std::unordered_multimap<handle_t,handle_t> keys;
     point_t mass_center;
     void calculate_mass_center();
     void calculate_all_straights();

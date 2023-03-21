@@ -385,37 +385,3 @@ int switch_link_dimensions(int link_channel) {
     }
     return return_channel;
 }
-
-/**
- * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
- * @brief constructor for the rho_watchdog
- * @param s
- * @param size
- */
-rhoWatchdog::rhoWatchdog(double s,point_t size) :sensitivity(s) {
-    rho.setOnes(long(size.x()),long(size.y()));
-}
-
-/**
- * @fn bool rhoWatchdog::check(node *n,int step)
- * @brief performs a watchdog check of the history of the rho value, aka compares it to the previous one
- * @param n
- * @param step
- * @return
- */
-bool rhoWatchdog::check(node *n,int step) {
-    double rho_old = rho(int(n->position(0)),int(n->position(1)));
-    bool return_value = false;
-    if((abs(rho_old-n->rho)) >= (abs(rho_old*sensitivity))) {
-        std::cerr << "Rho-diviation at " << step << std::endl;
-        std::cerr << "Position: " << n->position.x()
-                  << " ," << n->position.y()
-                  << std::endl;
-        std::cerr << "Rho previous: " << rho_old << std::endl;
-        std::cerr << "Rho now: " << n->rho << std::endl;
-        std::cerr << std::endl;
-        return_value = true;
-    }
-    rho(int(n->position(0)),int(n->position(1))) = n->rho;
-    return return_value;
-}

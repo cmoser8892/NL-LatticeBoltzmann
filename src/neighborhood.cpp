@@ -1,6 +1,7 @@
 #include "neighborhood.h"
 #include "helper_functions.h"
 
+
 /**
  * @fn void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes)
  * @brief fills the keys map based on the z-order of the position making a hash map
@@ -13,14 +14,11 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
        coordinate_t coordinate;
        coordinate.x = std::floor(node->position.x());
        coordinate.y = std::floor(node->position.y());
+       // snoop the lower positions
        snoop_min_coordinate(coordinate);
        snoop_max_coordinate(coordinate);
-       // we will mask out some bits so better make sure that is not bigger than max
-       assert(coordinate.x <= pow(2,22));
-       assert(coordinate.y <= pow(2,22));
-       // interleave the bits and write it into the table
-       handle_t key = bit_interleaving_2d(coordinate.x,coordinate.y);
-       keys.emplace(key,node->handle);
+       // fill the pkh
+       pkh.fill_key(node->handle,node->position);
    }
 }
 
@@ -97,17 +95,8 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
        for(int i = 1; i < CHANNELS; ++i) {
            // set the position the the corressponding coordinate
            point_t current = node->position + velocity_set.col(i);
-           coordinate_t coordinate;
-           coordinate.x = std::floor(current.x());
-           coordinate.y = std::floor(current.y());
-           // interleave bits to get the correct key for that nodes handle
-           handle_t search_key = bit_interleaving_2d(coordinate.x,coordinate.y);
-           // try to find the key
-           // todo a bit unsafe, if more than one node share the same key, but should not happen
-           // if sub sized thou different story
-           if(auto found_iter = keys.find(search_key); found_iter != keys.end()) {
-               // set handle and array position remember handles start at 1!
-               handle_t found_handle = found_iter->second;
+           handle_t found_handle = pkh.key_translation(current);
+           if(found_handle > 0) {
                handle_t array_position = found_handle -1;
                // setup temp test point
                auto temp = point_t(nodes.at(array_position)->position);

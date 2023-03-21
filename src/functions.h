@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "node.h"
-
+// functions is specific for nodes
 // functional methods
 array_t equilibrium(node* node);
 array_t equilibrium_general(node* node);
@@ -25,15 +25,4 @@ double calculate_uy(oNode* n);
 double calculate_rho(oNode* n);
 // debug method
 void debug_node(node* node, bool printing);
-
-// watchdog for rho
-class rhoWatchdog {
-    /// just prints out std error msgs
-  private:
-    flowfield_t rho;
-    double sensitivity = 0.1; // displacement to the previous value
-  public:
-    rhoWatchdog(double s,point_t size);
-    bool check(node* n,int step);
-};
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H

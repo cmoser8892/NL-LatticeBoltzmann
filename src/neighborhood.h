@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "node.h"
+#include "helper_functions.h"
 /**
  * first we put nodes into a cell
  * this may seem unnecessary for computation of an uniform grid
@@ -12,7 +13,7 @@
 // order nodes into the cells
 class neighbourhood {
   private:
-    std::unordered_multimap<handle_t,handle_t> keys;
+    pointKeyHash pkh;
     coordinate_t min_coordinate;
     coordinate_t max_coordinate;
     void fill_keys(std::vector<nodePoint_t*> &nodes);

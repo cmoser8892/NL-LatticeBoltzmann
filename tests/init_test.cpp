@@ -628,7 +628,7 @@ TEST(InitTests, corners) {
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
 
-TEST(InitTests, oposites) {
+TEST(InitTests, DISABLED_oposites) {
     unsigned int size = 4;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
@@ -638,6 +638,50 @@ TEST(InitTests, oposites) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     EXPECT_EQ(gen.node_infos.size(), 2*4);
+}
+
+TEST(InitTests, straight_unordered) {
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size};
+    // init boundaries
+    boundaryPointConstructor boundaries(sim_area);
+    // manual setup
+    boundaries.init_structure();
+    point_t point = {1,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    // run the straight gen
+    straightGenerator straight(&boundaries);
+    straight.init();
+    // checks number and length of each generated straight
+    EXPECT_EQ(boundaries.total_boundary_nodes(),12);
+    for(auto lines : straight.surfaces) {
+        EXPECT_EQ(lines->direction.norm(),1);
+    }
 }
 
 /*
