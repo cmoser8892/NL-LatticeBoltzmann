@@ -628,18 +628,6 @@ TEST(InitTests, corners) {
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
 
-TEST(InitTests, DISABLED_opposites) {
-    unsigned int size = 4;
-    point_t c = {size,size};
-    boundaryPointConstructor boundaries(c);
-    // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_poiseuille_flow();
-    EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
-    nodeGenerator gen(&boundaries);
-    gen.init_fused(size);
-    EXPECT_EQ(gen.node_infos.size(), 2*4);
-}
-
 TEST(InitTests, straight_unordered) {
     int step = 0;
     int size = 4;
@@ -687,6 +675,39 @@ TEST(InitTests, straight_unordered) {
         EXPECT_EQ(expected_handle, bp->h);
         expected_handle++;
     }
+}
+
+TEST(InitTests, ordering_boundaries) {
+    unsigned int size = 4;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_poiseuille_flow();
+    bool wet_dry_change_around = false;
+    for(auto bp : boundaries.boundary_structures[0]->boundary_points) {
+        if(bp->dw == DRY) {
+            wet_dry_change_around = true;
+        }
+        if(wet_dry_change_around) {
+            EXPECT_EQ(bp->dw,DRY);
+        }
+        else {
+            EXPECT_EQ(bp->dw, WET);
+        }
+    }
+}
+
+TEST(InitTests, special_case_wet_boundary) {
+    // when labeling some boundary nodes as wet we get an error in reduce boundary neighborhood
+    unsigned int size = 4;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_poiseuille_flow();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    EXPECT_EQ(gen.node_infos.size(), 2*4);
 }
 
 /*

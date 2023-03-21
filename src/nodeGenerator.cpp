@@ -314,6 +314,9 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
  * @brief function to delete the boundary nodes and write it directly in the bounce-back
  */
 void nodeGenerator::reduce_boundary_neighborhood() {
+    // todo need to sort the boundary points weather or not they are wet add the wet ones first
+    // todo no links for wet boundary nodes
+    // otherwise it just crashes
     int boundary_start = 0;
     for(auto n : node_infos) {
         if(n->type == DRY) {
@@ -323,7 +326,10 @@ void nodeGenerator::reduce_boundary_neighborhood() {
                 int from_channel = switch_link_dimensions(link_channel); // channel where it has to go
                 long array_position = long(partner_handle) - 1;
                 int channel_position = from_channel-1;
-                // switchero
+                // fall back assert
+                assert(node_infos.size()>= array_position);
+                assert(node_infos.at(array_position)->links.size() == (CHANNELS-1));
+                // switch
                 node_infos.at(array_position)->links.at(channel_position).channel = link_channel;
                 node_infos.at(array_position)->links.at(channel_position).handle = partner_handle;
                 check_and_set_reduced_neighborhood(array_position,n->boundary);
