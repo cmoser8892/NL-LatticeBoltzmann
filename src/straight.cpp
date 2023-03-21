@@ -20,8 +20,10 @@ void straightGenerator::calculate_mass_center() {
 
 void straightGenerator::calculate_keys() {
     for(auto bs: points->boundary_structures) {
+        auto pkh = new pointKeyHash;
+        pkhv.push_back(pkh);
         for(auto bp : bs->boundary_points) {
-            pkh.fill_key(bp->h,bp->point);
+            pkh->fill_key(bp->h,bp->point);
         }
     }
 }
@@ -34,10 +36,12 @@ void straightGenerator::calculate_all_straights() {
     // go through all the structs -> assumption closed surface
     matrix_t cardinal_directions = {{0,1,0,-1},
                                     {1,0,-1,0}};
-    for(auto bs : points->boundary_structures) {
+    for(int i = 0; i< points->boundary_structures.size(); ++i) {
+        auto bs = points->boundary_structures[i];
+        auto pkh = pkhv[i];
+        std::vector<handle_t> blacklist;
         // first point
         handle_t array_position = 0;
-        handle_t previous_handle = 0;
         for(int i = 0; i < bs->boundary_points.size(); ++i) {
             // search in the cardinal directions NESW
             point_t current = bs->boundary_points[array_position]->point;
@@ -45,16 +49,26 @@ void straightGenerator::calculate_all_straights() {
             handle_t candidate_handle;
             for(int i = 0; i < 4; ++i) {
                 candidate = current + point_t(cardinal_directions.col(i));
-                std::cout << candidate << std::endl;
+                // std::cout << candidate << std::endl;
                 // linear search over all keys lol
-                candidate_handle = pkh.key_translation(candidate);
+                candidate_handle = pkh->key_translation(candidate);
                 // if not 0 this is valid handle
                 if(candidate_handle > 0) {
-                    if(candidate_handle != previous_handle) {
-                        previous_handle = candidate_handle;
+                    // search form the back (more likely the last two elements)
+                    bool already_visited = false;
+                    auto iter = blacklist.rbegin();
+                    while(iter != blacklist.rend()) {
+                        if(iter.operator*() == candidate_handle) {
+                            // bad egg found
+                            already_visited = true;
+                            break;
+                        }
+                        iter++;
+                    }
+                    // break general search in cardinal directions viable candidate found
+                    if(!already_visited) {
                         break;
                     }
-
                 }
             }
             // add the surface
@@ -65,6 +79,8 @@ void straightGenerator::calculate_all_straights() {
             s->direction = next;
             // put the point in the middle
             surfaces.push_back(s);
+            // add to blacklist
+            blacklist.push_back(candidate_handle);
             array_position = candidate_handle-1;
         }
     }

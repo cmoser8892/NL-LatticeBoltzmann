@@ -16,7 +16,7 @@ using surface_t = straight_t;
 
 class straightGenerator {
   private:
-    pointKeyHash pkh;
+    std::vector<pointKeyHash*> pkhv;
     boundaryPointConstructor* points;
     std::unordered_multimap<handle_t,handle_t> keys;
     point_t mass_center;

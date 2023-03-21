@@ -888,11 +888,11 @@ TEST(FunctionalTest, fused_streaming_13) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
-    //boundaries.visualize_2D_boundary(size);
+    boundaries.visualize_2D_boundary(size);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     EXPECT_EQ(gen.node_infos.size(),2);
-    //gen.visualize_2D_nodes(4);
+    gen.visualize_2D_nodes(4);
     simulation sm(&boundaries, &gen);
     sm.fused_init();
     // check sim sizes
@@ -1120,17 +1120,33 @@ TEST(FunctionalTest, oSimu_streaming_57) {
     point_t start = {0,0};
     point_t end = {size,0};
     point_t sim_area = {size,size};
-    point_t extra_1 = {2,1};
-    point_t extra_2 = {1,2};
-    point_t minus_1 = {3,0};
-    point_t minus_2 = {0,3};
     // init boundaries
     boundaryPointConstructor boundaries(sim_area);
-    boundaries.init_quader();
-    boundaries.set_point(&extra_1,BOUNCE_BACK);
-    boundaries.set_point(&extra_2,BOUNCE_BACK);
-    boundaries.delete_existing_point(&minus_1);
-    boundaries.delete_existing_point(&minus_2);
+    boundaries.init_structure();
+    point_t point = {1,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
     // boundaries.visualize_2D_boundary(size);
     // node init
     nodeGenerator gen(&boundaries);
@@ -1167,7 +1183,6 @@ TEST(FunctionalTest, oSimu_streaming_57) {
     step++;
     EXPECT_EQ(sm.nodes.at(0)->populations(7 + sm.offset_sim), 1);
     EXPECT_EQ(sm.nodes.at(1)->populations(5 + sm.offset_sim), 1);
-
 }
 
 TEST(FunctionalTest, oSimu_streaming_68) {

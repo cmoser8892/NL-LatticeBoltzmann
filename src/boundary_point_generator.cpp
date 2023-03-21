@@ -36,6 +36,7 @@ boundaryPointConstructor::~boundaryPointConstructor() {
  */
 void boundaryPointConstructor::init_structure() {
     auto bs = new boundaryStructure;
+    added_handle = 0;
     boundary_structures.push_back(bs);
     current_structure++;
 }

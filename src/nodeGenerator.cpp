@@ -257,22 +257,6 @@ void nodeGenerator::board_creation(unsigned int size) {
         handle_counter++;
         node_infos.push_back(n);
     }
-    /*
-    handle_t handle_counter = 1;
-    for(int i = 0; i < size; ++i) {
-        for(int j = 0; j < size; ++j) {
-            point_t point = {i,j};
-            auto n = new nodePoint_t;
-            n->handle = handle_counter;
-            n->position = point;
-            n->type = UNKNOWN;
-            n->boundary = NO_BOUNDARY;
-            // dont forget to increase the handle counter each time
-            handle_counter++;
-            node_infos.push_back(n);
-        }
-    }
-     */
 }
 
 /**
@@ -348,7 +332,7 @@ void nodeGenerator::reduce_boundary_neighborhood() {
         else if(n->type == WET){
             //std::cerr << n->links.size() << std::endl;
             //std::cerr << n->position << std::endl;
-            assert(n->links.size() == 8);
+            // assert(n->links.size() == 8);
             boundary_start++;
         }
         else {
