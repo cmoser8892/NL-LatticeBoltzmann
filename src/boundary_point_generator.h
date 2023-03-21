@@ -10,6 +10,7 @@
 
 // definition of a general boundary point
 typedef struct boundaryPoint {
+    handle_t h; // the handle is forgotten when moved to node_infos..., it gets a new on
     point_t point;
     nodeIdentifier_t dw;
     boundaryType_t type;
@@ -26,6 +27,7 @@ class boundaryStructure {
 class boundaryPointConstructor {
   private:
     // nada
+    handle_t added_handle = 0;
   public:
     // holds all the boundary points
     long current_structure = -1;

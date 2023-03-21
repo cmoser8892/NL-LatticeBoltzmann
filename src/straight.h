@@ -4,6 +4,7 @@
 #include "types.h"
 #include "node.h"
 #include "boundary_point_generator.h"
+#include "helper_functions.h"
 
 typedef struct straight {
     point_t point;
@@ -15,6 +16,7 @@ using surface_t = straight_t;
 
 class straightGenerator {
   private:
+    pointKeyHash pkh;
     boundaryPointConstructor* points;
     std::unordered_multimap<handle_t,handle_t> keys;
     point_t mass_center;

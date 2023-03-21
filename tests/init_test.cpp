@@ -682,6 +682,11 @@ TEST(InitTests, straight_unordered) {
     for(auto lines : straight.surfaces) {
         EXPECT_EQ(lines->direction.norm(),1);
     }
+    handle_t expected_handle = 1;
+    for(auto bp : boundaries.boundary_structures[0]->boundary_points) {
+        EXPECT_EQ(expected_handle, bp->h);
+        expected_handle++;
+    }
 }
 
 /*

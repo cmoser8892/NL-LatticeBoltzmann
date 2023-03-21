@@ -86,7 +86,9 @@ void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
         std::cerr << "No structure" << std::endl;
         return;
     }
+    // gerenate the boundary node
     auto boundary_point = new boundaryPoint_t;
+    boundary_point->h = ++added_handle;
     boundary_point->point = *p;
     boundary_point->dw = DRY;
     boundary_point->type = b;
