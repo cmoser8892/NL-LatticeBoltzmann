@@ -17,12 +17,58 @@ void straightGenerator::calculate_mass_center() {
     mass_center /= double(points->total_boundary_nodes());
 }
 
+
+void straightGenerator::calculate_keys() {
+    for(auto bs: points->boundary_structures) {
+        for(auto bp : bs->boundary_points) {
+            pkh.fill_key(bp->h,bp->point);
+        }
+    }
+}
 /**
  * @fn void straightGenerator::calculate_all_straights()
  * @brief calculates the straights between all the boundary points, doesnt reduce them though
  * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
+    // go through all the structs -> assumption closed surface
+    matrix_t cardinal_directions = {{0,1,0,-1},
+                                    {1,0,-1,0}};
+    for(auto bs : points->boundary_structures) {
+        // first point
+        handle_t array_position = 0;
+        handle_t previous_handle = 0;
+        for(int i = 0; i < bs->boundary_points.size(); ++i) {
+            // search in the cardinal directions NESW
+            point_t current = bs->boundary_points[array_position]->point;
+            point_t candidate;
+            handle_t candidate_handle;
+            for(int i = 0; i < 4; ++i) {
+                candidate = current + point_t(cardinal_directions.col(i));
+                std::cout << candidate << std::endl;
+                // linear search over all keys lol
+                candidate_handle = pkh.key_translation(candidate);
+                // if not 0 this is valid handle
+                if(candidate_handle > 0) {
+                    if(candidate_handle != previous_handle) {
+                        previous_handle = candidate_handle;
+                        break;
+                    }
+
+                }
+            }
+            // add the surface
+            auto s  = new surface_t;
+            s->point = current;
+            // rotate the vector by 90 degrees forward (doesnt really matter which direction)
+            vector_t next = candidate - current;
+            s->direction = next;
+            // put the point in the middle
+            surfaces.push_back(s);
+            array_position = candidate_handle-1;
+        }
+    }
+    /*
     // todo just a linear loop through no bueno
     // iter through the boundary structures
     for(auto bs : points->boundary_structures) {
@@ -44,6 +90,7 @@ void straightGenerator::calculate_all_straights() {
             iter++;
         }
     }
+     */
 }
 
 /// public
@@ -70,6 +117,7 @@ straightGenerator::~straightGenerator() {
  */
 void straightGenerator::init() {
     calculate_mass_center();
+    calculate_keys();
     calculate_all_straights();
 }
 

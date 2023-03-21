@@ -21,6 +21,7 @@ class straightGenerator {
     std::unordered_multimap<handle_t,handle_t> keys;
     point_t mass_center;
     void calculate_mass_center();
+    void calculate_keys();
     void calculate_all_straights();
     int calculate_intersections(nodePoint_t* point);
   public:
