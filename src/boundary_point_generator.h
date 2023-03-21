@@ -20,6 +20,7 @@ typedef struct boundaryPoint {
 class boundaryStructure {
   public:
     ~boundaryStructure();
+    //
     std::vector<boundaryPoint_t *> boundary_points;
 
 };
@@ -45,7 +46,6 @@ class boundaryPointConstructor {
     void steps_direction(int steps, vector_t dir, point_t* start, boundaryType_t b);
     void corner_creation(vector_t dir, point_t* start, boundaryType_t b);
     void set_point(point_t* p, boundaryType_t b);
-    void delete_existing_point(point_t* p);
     void init_quader();
     void init_chopped_quader(point_t start, int devider);
     void init_quader(point_t start);

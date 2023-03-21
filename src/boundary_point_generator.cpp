@@ -96,18 +96,6 @@ void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
     boundary_structures.at(current_structure)->boundary_points.push_back(boundary_point);
 }
 
-void boundaryPointConstructor::delete_existing_point(point_t *p) {
-    for(auto bs : boundary_structures){
-        auto iter = bs->boundary_points.begin();
-        while(iter != bs->boundary_points.end()) {
-            if(iter.operator*()->point == *p) {
-                delete iter.operator*();
-                bs->boundary_points.erase(iter);
-            }
-            iter++;
-        }
-    }
-}
 /**
  * @fn void boundaryPointConstructor::init_quader()
  * @brief sets up a quader of boundary points

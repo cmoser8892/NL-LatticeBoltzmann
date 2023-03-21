@@ -888,11 +888,11 @@ TEST(FunctionalTest, fused_streaming_13) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
-    boundaries.visualize_2D_boundary(size);
+    // boundaries.visualize_2D_boundary(size);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     EXPECT_EQ(gen.node_infos.size(),2);
-    gen.visualize_2D_nodes(4);
+    // gen.visualize_2D_nodes(4);
     simulation sm(&boundaries, &gen);
     sm.fused_init();
     // check sim sizes
@@ -1123,29 +1123,29 @@ TEST(FunctionalTest, oSimu_streaming_57) {
     // init boundaries
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_structure();
-    point_t point = {1,0};
+    point_t point = {0,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,0};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {2,0};
     boundaries.set_point(&point,BOUNCE_BACK);
-    point = {3,0};
+    point = {2,1};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {3,1};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {3,2};
     boundaries.set_point(&point,BOUNCE_BACK);
-    point = {2,2};
+    point = {3,3};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {2,3};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {1,3};
     boundaries.set_point(&point,BOUNCE_BACK);
-    point = {0,3};
+    point = {1,2};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {0,2};
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {0,1};
-    boundaries.set_point(&point,BOUNCE_BACK);
-    point = {1,1};
     boundaries.set_point(&point,BOUNCE_BACK);
     // boundaries.visualize_2D_boundary(size);
     // node init
