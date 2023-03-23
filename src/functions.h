@@ -14,6 +14,8 @@ void fused_collision(node* node, double relaxation);
 void one_step_macro_collision(oNode* node, double relaxation);
 void macro(node * node);
 void fused_macro(node* node);
+void pressure_periodic_in(node* node, double rho);
+void pressure_periodic_out(node* node, double rho);
 double bb_switch_channel(int from_channel, double uw);
 int switch_link_dimensions(int link_channel);
 // writeing methods

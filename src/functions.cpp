@@ -385,3 +385,44 @@ int switch_link_dimensions(int link_channel) {
     }
     return return_channel;
 }
+
+void pressure_periodic_in(oNode* node, double rho_in) {
+    double ux = calculate_ux(node);
+    double uy = calculate_uy(node);
+    double rho = calculate_rho(node);
+    int o = node->offset;
+    // macro calc
+    auto p = node->populations.begin() + o;
+}
+
+
+void pressure_periodic_out(oNode* node , double rho_out) {
+    double ux = calculate_ux(node);
+    double uy = calculate_uy(node);
+    double rho = calculate_rho(node);
+    int o = node->offset;
+    // macro calc
+    auto p = node->populations.begin() + o;
+    array_t eq = equilibrium_2d(ux,uy,rho);
+    array_t eq_out = equilibrium_2d(ux,uy,rho_out);
+    // pressure is not local :/
+    for(int i = 0; i < CHANNELS; ++i) {
+        (p+i).operator*() = 0;
+    }
+}
+/*
+// python stuff
+def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
+    # get all the values
+    rho, ux, uy = caluculate_real_values(grid)
+    equilibrium = equilibrium_on_array(rho, ux, uy)
+    ##########
+    equilibrium_in = equilibrium_on_array(rho_in, ux[-2,:], uy[-2, :])
+    # inlet 1,5,8
+    grid[:, 0, :] = equilibrium_in + (grid[:, -2, :] - equilibrium[:, -2, :])
+
+# outlet 3,6,7
+equilibrium_out = equilibrium_on_array(rho_out, ux[1, :], uy[1, :])
+# check for correct sizes
+    grid[:, -1, :] = equilibrium_out + (grid[:, 1, :] - equilibrium[:, 1, :])
+                                           */
