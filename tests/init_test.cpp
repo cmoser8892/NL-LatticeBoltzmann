@@ -707,10 +707,9 @@ TEST(InitTests, special_case_wet_boundary) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_poiseuille_flow();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
-    EXPECT_TRUE(false);
-    // nodeGenerator gen(&boundaries);
-    // gen.init_fused(size);
-    // EXPECT_EQ(gen.node_infos.size(), 2*4);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    EXPECT_EQ(gen.node_infos.size(), 2*4);
 }
 
 /*

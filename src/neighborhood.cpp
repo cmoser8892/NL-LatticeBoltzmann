@@ -2,6 +2,14 @@
 #include "helper_functions.h"
 
 
+neighbourhood::neighbourhood() {
+    /// set the min to max and max to min
+    min_coordinate.x = INT32_MAX;
+    min_coordinate.y = INT32_MAX;
+    max_coordinate.x = 0;
+    max_coordinate.y = 0;
+}
+
 /**
  * @fn void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes)
  * @brief fills the keys map based on the z-order of the position making a hash map
@@ -20,26 +28,6 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
        // fill the pkh
        pkh.fill_key(node->handle,node->position);
    }
-}
-
-void neighbourhood::connect_periodics(std::vector<nodePoint_t *> &nodes) {
-    // go through the nodes
-    for(auto node : nodes) {
-        // only dry nodes with type periodic or pressure periodic
-        // basically get the full treatement
-        if((node->boundary == PERIODIC) || (node->boundary == PRESSURE_PERIODIC)) {
-            // go over all the channels and redo i guess ?!
-            for(int i = 1; i < CHANNELS; ++i) {
-                point_t current = node->position + velocity_set.col(i);
-                coordinate_t coordinate;
-                coordinate.x = std::floor(current.x());
-                coordinate.y = std::floor(current.y());
-                // extra coordinate handling
-                periodic_coordinate_reshuffle(&coordinate);
-                handle_t search_key = bit_interleaving_2d(coordinate.x,coordinate.y);
-            }
-        }
-    }
 }
 
 void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
@@ -82,6 +70,7 @@ void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
         coordinate->y = min_coordinate.y;
     }
 }
+
 /**
  * @fn void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes)
  * @brief calculates the z-order of the position of the neighbours and looks for them in the hash table
@@ -95,7 +84,15 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
        for(int i = 1; i < CHANNELS; ++i) {
            // set the position the the corressponding coordinate
            point_t current = node->position + velocity_set.col(i);
-           handle_t found_handle = pkh.key_translation(current);
+           coordinate_t coordinate;
+           coordinate.x = std::floor(current.x());
+           coordinate.y = std::floor(current.y());
+           // extra coordinate handling
+           if((node->boundary == PERIODIC) || (node->boundary == PRESSURE_PERIODIC)) {
+                periodic_coordinate_reshuffle(&coordinate);
+                current = {coordinate.x,coordinate.y};
+           }
+           handle_t found_handle = pkh.key_translation(coordinate);
            if(found_handle > 0) {
                handle_t array_position = found_handle -1;
                // setup temp test point
@@ -106,10 +103,6 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
                    bool add_me = false;
                    if (node->type == WET) {
                        add_me = true;
-                       // special treatment of wet boundary nodes
-                       if((node->boundary == PRESSURE_PERIODIC) || (node->boundary == PERIODIC)) {
-                           add_me = false;
-                       }
                    }
                    // if we are a dry node only include nodes that are wet
                    else if (node->type == DRY) {

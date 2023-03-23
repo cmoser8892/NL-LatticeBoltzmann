@@ -17,11 +17,11 @@ class neighbourhood {
     coordinate_t min_coordinate;
     coordinate_t max_coordinate;
     void fill_keys(std::vector<nodePoint_t*> &nodes);
-    void connect_periodics(std::vector<nodePoint_t*> &nodes);
     void snoop_min_coordinate(coordinate_t coordinate);
     void snoop_max_coordinate(coordinate_t coordinate);
     void periodic_coordinate_reshuffle(coordinate_t* coordinate);
   public:
+    neighbourhood();
     void determine_neighbors(std::vector<nodePoint_t*> &nodes);
     void check_wet_nodes(std::vector<nodePoint_t*> &nodes);
 };

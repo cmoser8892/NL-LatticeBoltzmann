@@ -279,8 +279,12 @@ handle_t pointKeyHash::key_translation(point_t pos) {
     coordinate_t coordinate;
     coordinate.x = std::floor(pos.x());
     coordinate.y = std::floor(pos.y());
-    // interleave bits to get the correct key for that nodes handle
-    handle_t search_key = bit_interleaving_2d(coordinate.x,coordinate.y);
+    return key_translation(coordinate);
+}
+
+handle_t pointKeyHash::key_translation(coordinate_t coord) {
+    handle_t return_key = 0;
+    handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
     if(auto found_iter = keys.find(search_key); found_iter != keys.end()) {
         // does not do the translation into an array position
         return_key = found_iter->second;
