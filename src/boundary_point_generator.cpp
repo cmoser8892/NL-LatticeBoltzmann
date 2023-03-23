@@ -372,4 +372,18 @@ void boundaryPointConstructor::init_poiseuille_flow() {
             b->type = BOUNCE_BACK;
         }
     }
+    // nessessary to sort him
+    std::sort(boundary_structures[0]->boundary_points.begin(), boundary_structures[0]->boundary_points.end(),  sorter_wet_dry_boundaries);
+}
+
+/**
+ * @fn
+ * @brief
+ * @param p1
+ * @param p2
+ * @return
+ */
+bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2) {
+    // Wet = 2, Dry = 1
+    return (p1->dw > p2->dw);
 }

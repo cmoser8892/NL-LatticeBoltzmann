@@ -684,7 +684,9 @@ TEST(InitTests, ordering_boundaries) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_poiseuille_flow();
     bool wet_dry_change_around = false;
-    for(auto bp : boundaries.boundary_structures[0]->boundary_points) {
+    // this actually copies the content in the vector over to bs ?!
+    auto bs = boundaries.boundary_structures[0]->boundary_points;
+    for(auto bp : bs) {
         if(bp->dw == DRY) {
             wet_dry_change_around = true;
         }
@@ -705,9 +707,10 @@ TEST(InitTests, special_case_wet_boundary) {
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_poiseuille_flow();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
-    nodeGenerator gen(&boundaries);
-    gen.init_fused(size);
-    EXPECT_EQ(gen.node_infos.size(), 2*4);
+    EXPECT_TRUE(false);
+    // nodeGenerator gen(&boundaries);
+    // gen.init_fused(size);
+    // EXPECT_EQ(gen.node_infos.size(), 2*4);
 }
 
 /*

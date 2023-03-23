@@ -42,4 +42,5 @@ class pointKeyHash {
     void fill_key(handle_t positions_handle, point_t pos);
     handle_t key_translation(point_t pos);
 };
+
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

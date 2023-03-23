@@ -63,4 +63,5 @@ class boundaryPointConstructor {
     long total_boundary_nodes();
 };
 
+bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2);
 #endif // NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H
