@@ -1,7 +1,10 @@
 #include "neighborhood.h"
 #include "helper_functions.h"
 
-
+/**
+ * @fn neighbourhood::neighbourhood()
+ * @brief constructor, sets up min and max coordinate
+ */
 neighbourhood::neighbourhood() {
     /// set the min to max and max to min
     min_coordinate.x = INT32_MAX;
@@ -30,6 +33,11 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
    }
 }
 
+/**
+ * @fn void neighbourhood::snoop_min_coordinate(coordinate_t coordinate)
+ * @brief snoops the min coorodinates and sets that accoridnglly
+ * @param coordinate
+ */
 void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
     // set the min coordinate to be reshuffled to
     if(coordinate.x < min_coordinate.x) {
@@ -40,6 +48,11 @@ void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
     }
 }
 
+/**
+ * @fn void neighbourhood::snoop_max_coordinate(coordinate_t coordinate)
+ * @brief snoops the max coordiante and sets that
+ * @param coordinate
+ */
 void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
     // set the max coordinate to be reshuffled to
     if(coordinate.x > min_coordinate.x) {
@@ -50,7 +63,13 @@ void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
     }
 }
 
+/**
+ * @fn void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate)
+ * @brief used to setup links for periodic wet boundaries
+ * @param coordinate
+ */
 void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
+    // todo write a test to check the reshuffle
     // min set
     if(coordinate->x < min_coordinate.x) {
         // set to max

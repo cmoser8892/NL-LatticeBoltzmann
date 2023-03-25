@@ -57,13 +57,26 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
     }
 }
 
+/**
+ * @fn void boundaryPointConstructor::steps_direction(int steps, vector_t dir, point_t *start, boundaryType_t b)
+ * @brief creates step in one direction (similar to one direction
+ * @param steps
+ * @param dir
+ * @param start
+ * @param b
+ */
 void boundaryPointConstructor::steps_direction(int steps, vector_t dir, point_t *start, boundaryType_t b) {
     // creation of x corners
+    // todo modifiy for true steps direction
     for(int i = 0; i < steps; ++i) {
         corner_creation(dir,start,b);
     }
 }
 
+/**
+ * @fn void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, boundaryType_t b)
+ * @brief creates a corner
+ */
 void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, boundaryType_t b) {
     // creation of a corner
     vector_t normal = {dir.y(), -dir.x()};
@@ -377,11 +390,11 @@ void boundaryPointConstructor::init_poiseuille_flow() {
 }
 
 /**
- * @fn
- * @brief
+ * @fn bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2)
+ * @brief function that compares the wet and dry state of a node, wet -> 2, dry -> 1
  * @param p1
  * @param p2
- * @return
+ * @return true/false
  */
 bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2) {
     // Wet = 2, Dry = 1

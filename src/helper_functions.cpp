@@ -270,7 +270,7 @@ void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
 /**
  * @fn handle_t pointKeyHash::key_translation(point_t pos)
  * @brief finds the key or does not in this case returns 0
- * @param pos
+ * @param pos a point
  * @return
  */
 handle_t pointKeyHash::key_translation(point_t pos) {
@@ -282,6 +282,12 @@ handle_t pointKeyHash::key_translation(point_t pos) {
     return key_translation(coordinate);
 }
 
+/**
+ * @fn handle_t pointKeyHash::key_translation(coordinate_t coord)
+ * @brief coordinate based key translation
+ * @param coord
+ * @return
+ */
 handle_t pointKeyHash::key_translation(coordinate_t coord) {
     handle_t return_key = 0;
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);

@@ -17,7 +17,10 @@ void straightGenerator::calculate_mass_center() {
     mass_center /= double(points->total_boundary_nodes());
 }
 
-
+/**
+ * @fn void straightGenerator::calculate_keys()
+ * @brief generates keys holdings for all the individual boundary-structures a boundary has
+ */
 void straightGenerator::calculate_keys() {
     for(auto bs: points->boundary_structures) {
         auto pkh = new pointKeyHash;
@@ -27,6 +30,7 @@ void straightGenerator::calculate_keys() {
         }
     }
 }
+
 /**
  * @fn void straightGenerator::calculate_all_straights()
  * @brief calculates the straights between all the boundary points, doesnt reduce them though
@@ -84,29 +88,6 @@ void straightGenerator::calculate_all_straights() {
             array_position = candidate_handle-1;
         }
     }
-    /*
-    // todo just a linear loop through no bueno
-    // iter through the boundary structures
-    for(auto bs : points->boundary_structures) {
-        auto iter = bs->boundary_points.begin();
-        while(iter != bs->boundary_points.end()) {
-            auto next_iter = bs->boundary_points.begin();
-            if(!((iter+1) == bs->boundary_points.end())) {
-                next_iter = iter +1;
-            }
-            // fill in the values
-            auto s  = new surface_t;
-            s->point = iter.operator*()->point;
-            // rotate the vector by 90 degrees forward (doesnt really matter which direction)
-            vector_t next = (next_iter.operator*()->point - iter.operator*()->point);
-            s->direction = next;
-            // put the point in the middle
-            surfaces.push_back(s);
-            // increment
-            iter++;
-        }
-    }
-     */
 }
 
 /// public

@@ -6,8 +6,6 @@
 /// simulation run class
 // private
 
-/// todo make the copy field non sticky aka delete stuff inbetween?!
-/// todo no indirect access
 /**
  * @fn void simulation::streaming_step_1()
  * @brief streaming is done via two steps first we put info in the copy field in the node
@@ -200,7 +198,6 @@ void simulation::init() {
     for(auto node_info : node_generator->node_infos) {
         auto n = new node(node_info->handle,velocity_set.rows(),velocity_set.cols(),node_info->position,node_info->boundary);
         n->population_even.resize(CHANNELS);
-        // todo make sure there are the right sizes and so on
         n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->rho = 1;
         n->u.setZero();
@@ -228,8 +225,6 @@ void simulation::fused_init() {
         n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->rho = 1;
         n->u.setZero();
-        // todo change to fused nodes to reduce data overhead
-        // todo actually not sure
         n->population_even = equilibrium(n);
         n->population_odd = n->population_even;
         nodes.push_back(n);
@@ -268,8 +263,6 @@ void simulation::fused_run() {
         fused_collision(node,parameters.relaxation);
         // streaming and bb
         fused_streaming(node);
-        // todo fused streaming has some inlined stuff for bb
-        // todo sort array bounce back last should make faster
         fused_bounce_back(node);
     }
     for(auto node : nodes) {
@@ -369,8 +362,8 @@ void oSimu::streaming(oNode *node) {
 void oSimu::bounce_back_moving(oNode *n) {
     if(n->boundary_type== BOUNCE_BACK_MOVING) {
         auto pointer = n->populations.begin() + offset_sim;
-        (pointer +7).operator*() += -1.0/6 * parameters.u_wall;
-        (pointer +8).operator*() +=  1.0/6 * parameters.u_wall;
+        (pointer + 7).operator*() += -1.0/6 * parameters.u_wall;
+        (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
     }
 }
 /**
