@@ -26,8 +26,10 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
        coordinate.x = std::floor(node->position.x());
        coordinate.y = std::floor(node->position.y());
        // snoop the lower positions
-       snoop_min_coordinate(coordinate);
-       snoop_max_coordinate(coordinate);
+       if(node->type == WET) {
+           snoop_min_coordinate(coordinate);
+           snoop_max_coordinate(coordinate);
+       }
        // fill the pkh
        pkh.fill_key(node->handle,node->position);
    }
