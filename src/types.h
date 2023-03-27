@@ -36,7 +36,9 @@ typedef enum boundaryType {
     BOUNCE_BACK,
     BOUNCE_BACK_MOVING,
     PERIODIC,
-    PRESSURE_PERIODIC
+    PRESSURE_PERIODIC,
+    OPEN_INLET,
+    OPEN_OUTLET
 }boundaryType_t;
 
 /**
