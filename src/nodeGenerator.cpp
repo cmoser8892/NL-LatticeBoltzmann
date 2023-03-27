@@ -314,8 +314,6 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
  * @brief function to delete the boundary nodes and write it directly in the bounce-back
  */
 void nodeGenerator::reduce_boundary_neighborhood() {
-    // todo need to sort the boundary points weather or not they are wet add the wet ones first
-    // todo no links for wet boundary nodes
     // otherwise it just crashes
     int boundary_start = 0;
     for(auto n : node_infos) {
