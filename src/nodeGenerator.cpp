@@ -460,7 +460,7 @@ void nodeGenerator::visualize_2D_nodes(int size) {
     flowfield_t output;
     output.setZero(size,size);
     for(auto b : node_infos) {
-        output(int(b->position.x()),int(b->position.y()))++;
+        ++output(int(b->position.x()),int(b->position.y()));
     }
     std::cout << "Nodes allocated" << std::endl;
     std::cout << output << std::endl << std::endl;

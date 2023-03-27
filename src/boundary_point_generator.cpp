@@ -86,7 +86,7 @@ void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, bou
     set_point(start,b);
     addup = 0.5 *(-normal + dir);
     *start += addup;
-    set_point(start,b);
+    // set_point(start,b);
 
 }
 /**
@@ -327,7 +327,7 @@ void boundaryPointConstructor::visualize_2D_boundary(int size) {
     output.setZero(size,size);
     for(auto bs : boundary_structures) {
         for(auto b : bs->boundary_points) {
-            output(int(b->point.x()),int(b->point.y())) = 1;
+            ++output(int(b->point.x()),int(b->point.y()));
         }
     }
     std::cout << "Boundary-structure" << std::endl;

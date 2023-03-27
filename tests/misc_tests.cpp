@@ -1275,3 +1275,7 @@ TEST(FunctionalTest, key_search_functionality) {
     EXPECT_EQ(pkh.key_translation(m),3);
     EXPECT_EQ(pkh.key_translation(n),0);
 }
+
+TEST(FunctionalTest, periodics) {
+    // todo implement me !!
+}

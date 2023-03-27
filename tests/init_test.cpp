@@ -599,7 +599,7 @@ TEST(InitTests, corners) {
     b.init_structure();
     b.corner_creation(dir,&start,BOUNCE_BACK);
     // b.visualize_2D_boundary(3);
-    EXPECT_EQ(b.total_boundary_nodes(),3);
+    EXPECT_EQ(b.total_boundary_nodes(),2);
     b.delete_structures();
     EXPECT_EQ(b.total_boundary_nodes(),0);
     dir = {-1,1};
@@ -607,7 +607,7 @@ TEST(InitTests, corners) {
     b.init_structure();
     b.corner_creation(dir,&start,BOUNCE_BACK);
     // b.visualize_2D_boundary(3);
-    EXPECT_EQ(b.total_boundary_nodes(),3);
+    EXPECT_EQ(b.total_boundary_nodes(),2);
     b.delete_structures();
     EXPECT_EQ(b.total_boundary_nodes(),0);
     dir = {-1,-1};
@@ -615,7 +615,7 @@ TEST(InitTests, corners) {
     b.init_structure();
     b.corner_creation(dir,&start,BOUNCE_BACK);
     // b.visualize_2D_boundary(3);
-    EXPECT_EQ(b.total_boundary_nodes(),3);
+    EXPECT_EQ(b.total_boundary_nodes(),2);
     b.delete_structures();
     EXPECT_EQ(b.total_boundary_nodes(),0);
     dir = {1,-1};
@@ -623,7 +623,7 @@ TEST(InitTests, corners) {
     b.init_structure();
     b.corner_creation(dir,&start,BOUNCE_BACK);
     // b.visualize_2D_boundary(3);
-    EXPECT_EQ(b.total_boundary_nodes(),3);
+    EXPECT_EQ(b.total_boundary_nodes(),2);
     b.delete_structures();
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
@@ -714,6 +714,18 @@ TEST(InitTests, special_case_wet_boundary) {
     sim.run(0);
 }
 
+TEST(InitTests, staircase_11) {
+    unsigned int size = 8;
+    point_t c = {size,size};
+    point_t z = {0,0};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_structure();
+    boundaries.steps_direction(7,{1,1},&z,NO_BOUNDARY);
+    // boundaries.visualize_2D_boundary(8);
+    // in the creation logic the last point is not set so -1
+    EXPECT_EQ(boundaries.boundary_structures[0]->boundary_points.size(), 8 +7 -1);
+}
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
