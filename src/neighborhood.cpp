@@ -55,11 +55,11 @@ void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
  */
 void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
     // set the max coordinate to be reshuffled to
-    if(coordinate.x > min_coordinate.x) {
-        min_coordinate.x = coordinate.x;
+    if(coordinate.x > max_coordinate.x) {
+        max_coordinate.x = coordinate.x;
     }
-    if(coordinate.y > min_coordinate.y ) {
-        min_coordinate.y = coordinate.y;
+    if(coordinate.y > max_coordinate.y ) {
+        max_coordinate.y = coordinate.y;
     }
 }
 

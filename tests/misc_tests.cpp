@@ -1296,12 +1296,12 @@ TEST(FunctionalTest, right_links) {
             EXPECT_GE(max_handle,l.handle);
             if(max_handle<l.handle) {
                 std::cout << ni->handle << std::endl;
+                std::cout << ni->position << std::endl;
                 std::cout << l.channel << std::endl;
             }
         }
     }
 }
-
 
 TEST(FunctionalTest, DISABLED_periodics_full) {
     // todo implement me
