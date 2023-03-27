@@ -379,6 +379,7 @@ void oSimu::init() {
         n->populations << equilibrium_2d(0,0,1) , equilibrium_2d(0,0,1);
         nodes.push_back(n);
     }
+    // setup links
     for(int i = 0; i < node_generator->node_infos.size(); ++i) {
         // get them both in here
         auto node_info = node_generator->node_infos[i];

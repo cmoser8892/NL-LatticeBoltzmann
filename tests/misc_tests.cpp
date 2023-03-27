@@ -1276,6 +1276,79 @@ TEST(FunctionalTest, key_search_functionality) {
     EXPECT_EQ(pkh.key_translation(n),0);
 }
 
-TEST(FunctionalTest, periodics) {
-    // todo implement me !!
+TEST(FunctionalTest, right_links) {
+    int step = 0;
+    unsigned int size = 4;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_poiseuille_flow();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    gen.visualize_2D_nodes(4);
+    EXPECT_EQ(gen.node_infos.size(), 2*4);
+    // check weather or not the links make sense
+    int max_handle = 2*4;
+    for(auto ni : gen.node_infos) {
+        EXPECT_EQ(ni->links.size(),8);
+        for(auto l : ni->links) {
+            EXPECT_GE(max_handle,l.handle);
+            if(max_handle<l.handle) {
+                std::cout << ni->handle << std::endl;
+                std::cout << l.channel << std::endl;
+            }
+        }
+    }
+}
+
+
+TEST(FunctionalTest, DISABLED_periodics_full) {
+    // todo implement me
+    // todo pressure periodic = periodic
+    int step = 0;
+    unsigned int size = 4;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_poiseuille_flow();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    EXPECT_EQ(gen.node_infos.size(), 2*4);
+    oSimu sim(&boundaries, &gen);
+    sim.init();
+    // zero all the data and set some in the last two rows and observe where it goes
+    for(auto node : sim.nodes) {
+        node->populations.setZero();
+        // set continous to 4 if periodics work they just ceep being 4
+        node->populations(1) = 4;
+        node->populations(3) = 3;
+    }
+    // manual streaming step begin
+    sim.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sim.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sim.streaming(n);
+    }
+    step++;
+    // manual streaming step end
+    // test
+    for (auto n : sim.nodes) {
+        EXPECT_EQ(n->populations(1 + sim.offset_sim), 4);
+        EXPECT_EQ(n->populations(3 + sim.offset_sim), 4);
+    }
+    // manual streaming step begin
+    sim.offset_sim = ((step +1) & 0x1) * 9;
+    for(auto n : sim.nodes) {
+        n->offset = (step & 0x1) * 9;
+        sim.streaming(n);
+    }
+    step++;
+    // manual streaming step end
+    // test
+    for (auto n : sim.nodes) {
+        EXPECT_EQ(n->populations(1 + sim.offset_sim), 4);
+        EXPECT_EQ(n->populations(3 + sim.offset_sim), 4);
+    }
 }
