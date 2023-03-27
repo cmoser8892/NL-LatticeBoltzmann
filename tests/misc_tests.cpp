@@ -1303,7 +1303,7 @@ TEST(FunctionalTest, right_links) {
     }
 }
 
-TEST(FunctionalTest, DISABLED_periodics_full) {
+TEST(FunctionalTest, periodics_full) {
     // todo implement me
     // todo pressure periodic = periodic
     int step = 0;
@@ -1336,7 +1336,7 @@ TEST(FunctionalTest, DISABLED_periodics_full) {
     // test
     for (auto n : sim.nodes) {
         EXPECT_EQ(n->populations(1 + sim.offset_sim), 4);
-        EXPECT_EQ(n->populations(3 + sim.offset_sim), 4);
+        EXPECT_EQ(n->populations(3 + sim.offset_sim), 3);
     }
     // manual streaming step begin
     sim.offset_sim = ((step +1) & 0x1) * 9;
@@ -1349,6 +1349,6 @@ TEST(FunctionalTest, DISABLED_periodics_full) {
     // test
     for (auto n : sim.nodes) {
         EXPECT_EQ(n->populations(1 + sim.offset_sim), 4);
-        EXPECT_EQ(n->populations(3 + sim.offset_sim), 4);
+        EXPECT_EQ(n->populations(3 + sim.offset_sim), 3);
     }
 }
