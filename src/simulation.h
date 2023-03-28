@@ -45,12 +45,14 @@ class oSimu {
     nodeGenerator* node_generator = nullptr;
   public:
     int offset_sim = 1;
+    double rho_in = 3;
     std::vector<oNode*> nodes;
     oSimu(boundaryPointConstructor* c,nodeGenerator* g);
     ~oSimu();
     void set_simulation_parameters(simulation_parameters_t t);
     void streaming(oNode* n);
     void bounce_back_moving(oNode* n);
+    void open_inlet(oNode* n);
     void init();
     void run(int current_step);
     void get_data(bool write_to_file, point_t org);

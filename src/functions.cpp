@@ -411,6 +411,10 @@ void pressure_periodic_out(oNode* node , double rho_out) {
         (p+i).operator*() = 0;
     }
 }
+
+void open_inlet(oNode* n, double rho_in) {
+    n->populations << equilibrium_2d(0,0,rho_in) , equilibrium_2d(0,0,rho_in);
+}
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):

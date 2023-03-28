@@ -366,6 +366,12 @@ void oSimu::bounce_back_moving(oNode *n) {
         (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
     }
 }
+
+void oSimu::open_inlet(oNode* n ) {
+    if(n->boundary_type == OPEN_INLET) {
+        n->populations << equilibrium_2d(0,0,rho_in) , equilibrium_2d(0,0,rho_in);
+    }
+}
 /**
  * @fn void oSimu::init()
  * @brief inits the sim based on info in the node generator
@@ -410,6 +416,8 @@ void oSimu::run(int current_step) {
         streaming(n);
         // moving boundary
         bounce_back_moving(n);
+        // open inlet
+        open_inlet(n);
     }
 }
 
