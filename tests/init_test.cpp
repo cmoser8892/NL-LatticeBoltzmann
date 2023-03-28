@@ -726,6 +726,7 @@ TEST(InitTests, staircase_11) {
     // in the creation logic the last point is not set so -1
     EXPECT_EQ(boundaries.boundary_structures[0]->boundary_points.size(), 8 +7 -1);
 }
+
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
