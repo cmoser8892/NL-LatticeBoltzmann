@@ -21,8 +21,8 @@ extern matrix_t weights;
 
 // structs
 typedef struct coordinate {
-    unsigned x;
-    unsigned y;
+    long x;
+    long y;
 }coordinate_t;
 
 typedef enum nodeIdentifier {

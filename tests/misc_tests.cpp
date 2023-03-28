@@ -1276,7 +1276,7 @@ TEST(FunctionalTest, key_search_functionality) {
     EXPECT_EQ(pkh.key_translation(n),0);
 }
 
-TEST(FunctionalTest, right_links) {
+TEST(FunctionalTest, right_link_number) {
     int step = 0;
     unsigned int size = 4;
     point_t c = {size,size};
@@ -1286,7 +1286,6 @@ TEST(FunctionalTest, right_links) {
     EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    gen.visualize_2D_nodes(4);
     EXPECT_EQ(gen.node_infos.size(), 2*4);
     // check weather or not the links make sense
     int max_handle = 2*4;
@@ -1335,20 +1334,14 @@ TEST(FunctionalTest, periodics_full) {
     // manual streaming step end
     // test
     for (auto n : sim.nodes) {
+        EXPECT_EQ(n->populations(0 + sim.offset_sim), 0);
         EXPECT_EQ(n->populations(1 + sim.offset_sim), 4);
+        EXPECT_EQ(n->populations(2 + sim.offset_sim), 0);
         EXPECT_EQ(n->populations(3 + sim.offset_sim), 3);
-    }
-    // manual streaming step begin
-    sim.offset_sim = ((step +1) & 0x1) * 9;
-    for(auto n : sim.nodes) {
-        n->offset = (step & 0x1) * 9;
-        sim.streaming(n);
-    }
-    step++;
-    // manual streaming step end
-    // test
-    for (auto n : sim.nodes) {
-        EXPECT_EQ(n->populations(1 + sim.offset_sim), 4);
-        EXPECT_EQ(n->populations(3 + sim.offset_sim), 3);
+        EXPECT_EQ(n->populations(4 + sim.offset_sim), 0);
+        EXPECT_EQ(n->populations(5 + sim.offset_sim), 0);
+        EXPECT_EQ(n->populations(6 + sim.offset_sim), 0);
+        EXPECT_EQ(n->populations(7 + sim.offset_sim), 0);
+        EXPECT_EQ(n->populations(8 + sim.offset_sim), 0);
     }
 }
