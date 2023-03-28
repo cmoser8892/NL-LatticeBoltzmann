@@ -362,13 +362,49 @@ void nodeGenerator::reduce_boundary_neighborhood() {
 void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b) {
     // bumps up the boundary condition
     auto n = node_infos.at(array_position);
+    auto boundary = n->boundary;
+    /// might disagree but the fall throughs of switch cases make this a bit more readable
     // if either bb or moving bb bump up
-    if((n->boundary == NO_BOUNDARY) && ((b == BOUNCE_BACK) || (b == BOUNCE_BACK_MOVING))) {
-        n->boundary = b;
+    // the others get their special treatment too
+    switch(b) {
+    case BOUNCE_BACK: {
+        // fall through BB
+        switch(boundary) {
+        case NO_BOUNDARY:
+            n->boundary = b;
+            break;
+        default :
+            break;
+        }
+        break;
     }
-    // if already bb only bump up to bb moving
-    if((n->boundary == BOUNCE_BACK) && (b == BOUNCE_BACK_MOVING)) {
-        n->boundary = b;
+    case BOUNCE_BACK_MOVING: {
+        // fall through BB Moving
+        switch(boundary) {
+        case NO_BOUNDARY:
+        case BOUNCE_BACK:
+            n->boundary = b;
+            break;
+        default:
+            break;
+        }
+        break;
+    }
+    case OPEN_INLET: {
+        // fall through open inlet
+        switch(boundary) {
+        case NO_BOUNDARY:
+        case BOUNCE_BACK:
+        case BOUNCE_BACK_MOVING:
+            n->boundary = b;
+            break;
+        default:
+            break;
+        }
+        break;
+    }
+    default:
+        break;
     }
 }
 

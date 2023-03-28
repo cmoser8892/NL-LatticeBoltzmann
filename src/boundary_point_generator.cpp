@@ -389,6 +389,44 @@ void boundaryPointConstructor::init_poiseuille_flow() {
     std::sort(boundary_structures[0]->boundary_points.begin(), boundary_structures[0]->boundary_points.end(),  sorter_wet_dry_boundaries);
 }
 
+void boundaryPointConstructor::pressure_inlet() {
+    // init a quader and relable the sides
+    init_quader();
+    // 0 side
+    double limit_x = 0;
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.x() == limit_x) {
+            b->dw = DRY;
+            b->type = OPEN_INLET;
+        }
+    }
+    // maxsize side
+    limit_x = limits.x();
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.x() == limit_x) {
+            b->dw = DRY;
+            b->type = BOUNCE_BACK;
+        }
+    }
+    // relabel the top and bottom layer
+    double limit_y = 0;
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->dw = DRY;
+            b->type = BOUNCE_BACK;
+        }
+    }
+    limit_y = limits.y();
+    for(auto b : boundary_structures.at(0)->boundary_points) {
+        if(b->point.y() == limit_y) {
+            b->dw = DRY;
+            b->type = BOUNCE_BACK;
+        }
+    }
+    // nessessary to sort him
+    std::sort(boundary_structures[0]->boundary_points.begin(), boundary_structures[0]->boundary_points.end(),  sorter_wet_dry_boundaries);
+}
+
 /**
  * @fn bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2)
  * @brief function that compares the wet and dry state of a node, wet -> 2, dry -> 1
