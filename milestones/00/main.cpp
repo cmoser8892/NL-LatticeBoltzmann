@@ -1,3 +1,8 @@
+/**
+ * 00 is general testing ground, quick and dirty
+ */
+
+
 #include <cstdint>
 
 typedef struct __attribute__((packed))
