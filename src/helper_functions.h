@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <filesystem>
 
 bool node_position_comparison(node* n, array_t* pos);
 void write_flowfield_data(flowfield_t* field,std::string filename,bool write_to_file);
@@ -24,6 +25,9 @@ uint32_t bit_extraleaving_3d_y(uint64_t);
 uint32_t bit_extraleaving_3d_z(uint64_t);
 // reduce 32 bit numbers to 2 bit numbers
 uint32_t reduce_32_2(uint32_t);
+// base path
+std::filesystem::path get_base_path();
+
 /// helper classes/sub-classes
 // watchdog for rho
 class rhoWatchdog {

@@ -4,6 +4,7 @@
 #include "functions.h"
 #include "helper_functions.h"
 #include "neighborhood.h"
+#include "image_converter.h"
 #include <gtest/gtest.h>
 
 TEST(MiscTest, TestingWhatever) {
@@ -1344,4 +1345,18 @@ TEST(FunctionalTest, periodics_full) {
         EXPECT_EQ(n->populations(7 + sim.offset_sim), 0);
         EXPECT_EQ(n->populations(8 + sim.offset_sim), 0);
     }
+}
+
+TEST(FunctionalTest, path_magic) {
+    auto b = get_base_path();
+    EXPECT_GT(sizeof(b),0);
+}
+
+
+TEST(FunctionalTest, bmp_read) {
+    auto bmp_32_test_image = get_base_path();
+    bmp_32_test_image.append("tests");
+    bmp_32_test_image.append("test_32_bit.bmp");
+    imageConverter ic(bmp_32_test_image);
+    ic.init();
 }

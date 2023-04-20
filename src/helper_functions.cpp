@@ -212,6 +212,24 @@ uint32_t reduce_32_2(uint32_t b) {
     return _pext_u32(b,0x80000001);
 }
 
+/**
+ * @fn std::filesystem::path get_base_path()
+ * @brief gets the path to the NL-directory
+ * @return the path to the NL-directory
+ */
+std::filesystem::path get_base_path() {
+    auto executable_path = std::filesystem::current_path();
+    std::filesystem::path return_path;
+    auto search_string = "NL-LatticeBoltzmann";
+    for(auto s : executable_path) {
+        return_path.append(s.string());
+        if(s == search_string) {
+            break;
+        }
+    }
+    return return_path;
+}
+
 /// helper and sub-classes
 /**
  * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
