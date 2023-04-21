@@ -1359,4 +1359,6 @@ TEST(FunctionalTest, bmp_read) {
     bmp_32_test_image.append("test_32_bit.bmp");
     imageConverter ic(bmp_32_test_image);
     ic.init();
+    // check the correct bmp image size should be 800x600x32
+
 }

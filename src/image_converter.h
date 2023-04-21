@@ -57,12 +57,12 @@ class imageConverter {
   private:
     std::filesystem::path path; // path to the the bmp file
     boundaryPointConstructor* boundaries;
-    std::unordered_map<colour_t, boundaryType_t> mapping;
-    BMP_t bmp;
     // functions
     void read();
     uint32_t make_stride_aligned(uint32_t align_stride,uint32_t row_stride);
   public:
+    BMP_t bmp;
+    std::unordered_map<colour_t, boundaryType_t> mapping;
     imageConverter(std::filesystem::path p);
     void init();
     void map_colours_to_boundaries();
