@@ -1352,7 +1352,6 @@ TEST(FunctionalTest, path_magic) {
     EXPECT_GT(sizeof(b),0);
 }
 
-
 TEST(FunctionalTest, bmp_read) {
     auto bmp_32_test_image = get_base_path();
     bmp_32_test_image.append("tests");
@@ -1360,5 +1359,6 @@ TEST(FunctionalTest, bmp_read) {
     imageConverter ic(bmp_32_test_image);
     ic.init();
     // check the correct bmp image size should be 800x600x32
-
+    // set 32 bit generics vs 8bit struct
+    EXPECT_EQ(ic.bmp.data.size(),800*600*32/8);
 }
