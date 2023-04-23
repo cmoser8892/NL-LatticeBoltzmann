@@ -1383,5 +1383,9 @@ TEST(FunctionalTest, bmp_read_24b) {
  */
 
 /**
-* algorithm structure for reduction
+ * algorithm structure for reduction:
+ * register all the data points
+ * perform a reduction based on neighbors and extra handling at the borders
+ * perform closed path searches based on neighbors
+ * fully initialise the structures in the boundary generator
 */

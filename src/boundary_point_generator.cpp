@@ -32,7 +32,16 @@ void rawBoundaryPoints::read_in_bounce_back(point_t p) {
 }
 
 void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
-
+    auto new_bp = new boundaryPoint_t;
+    new_bp->h = current_handle++;
+    // aka should have done it the other way around
+    new_bp->point.x() = (double) coordinate.x;
+    new_bp->point.y() = (double) coordinate.y;
+    // setup identification variables
+    new_bp->dw = DRY;
+    new_bp->type = BOUNCE_BACK;
+    // push into structure
+    raw_boundary_points.push_back(new_bp)
 }
 
 void rawBoundaryPoints::reduce() {
