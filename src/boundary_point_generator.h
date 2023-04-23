@@ -2,7 +2,7 @@
 #define NL_LATTICEBOLTZMANN_BOUNDARY_POINT_GENERATOR_H
 
 #include "types.h"
-
+#include "helper_functions.h"
 /**
  * class to generate/hold boundary points from other structures
  * first ingredient to the init
@@ -18,14 +18,26 @@ typedef struct boundaryPoint {
 
 // raw unordered point clouds
 class rawBoundaryPoints {
+    // enum return codes for boarder-checker
+    // only visible in the class functions no need otherwise
+    typedef enum border_return_code {
+        INSIDE = 0,
+        BOARDER,
+        CORNER
+    }border_return_code_t;
   private:
     handle_t current_handle = 0;
+    point_t size;
+    pointKeyHash pkh;
     void delete_raw_boundary_points();
     void delete_reformed_boundary_points();
+    void fill_keys();
+    border_return_code_t check_boarder(boundaryPoint_t &b);
+    int set_max_neighbors(border_return_code_t b);
   public:
     std::vector<boundaryPoint_t*> raw_boundary_points;
     std::vector<boundaryPoint_t*> reformed_boundary_points;
-    rawBoundaryPoints();
+    rawBoundaryPoints(point_t size);
     ~rawBoundaryPoints();
     void read_in_bounce_back(point_t p);
     void read_in_bounce_back(coordinate_t p);

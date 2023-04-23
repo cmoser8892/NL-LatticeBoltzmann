@@ -1,8 +1,8 @@
 #include <iostream>
 #include "boundary_point_generator.h"
 
-rawBoundaryPoints::rawBoundaryPoints() {
-
+rawBoundaryPoints::rawBoundaryPoints(point_t s) {
+    size = s;
 }
 
 rawBoundaryPoints::~rawBoundaryPoints() {
@@ -24,6 +24,63 @@ void rawBoundaryPoints::delete_reformed_boundary_points() {
     reformed_boundary_points.clear();
 }
 
+void rawBoundaryPoints::fill_keys() {
+    for(auto rbp : raw_boundary_points) {
+        pkh.fill_key(rbp->h,rbp->point);
+    }
+}
+
+rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundaryPoint_t &b) {
+    border_return_code_t return_code = INSIDE;
+    point_t short_hand = b.point;
+    int counter = 0;
+    //
+    if(short_hand.x() == 0) {
+        counter++;
+    }
+    if(short_hand.y() == 0) {
+        counter++;
+    }
+    if(short_hand.x() == size.x()) {
+        counter++;
+    }
+    if(short_hand.y() == size.y()) {
+        counter++;
+    }
+    // assigning return codes
+    if(counter > 2) {
+        throw std::runtime_error("Undefined point, not possible in 2D");
+    }
+    else if(counter == 2) {
+        return_code = CORNER;
+    }
+    else if(counter == 1) {
+        return_code = BOARDER;
+    }
+    else {
+        // nop
+    }
+    return return_code;
+}
+
+int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t b) {
+    int return_code = -1;
+    switch (b) {
+    case CORNER:
+        return_code = 3;
+        break;
+    case BOARDER:
+        return_code = 5;
+        break;
+    case INSIDE:
+        return_code = 8;
+        break;
+    default:
+        throw std::runtime_error("Default in switch case");
+    }
+    return return_code;
+}
+
 void rawBoundaryPoints::read_in_bounce_back(point_t p) {
     coordinate_t coordinate;
     coordinate.x = std::floor(p.x());
@@ -41,11 +98,24 @@ void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
     new_bp->dw = DRY;
     new_bp->type = BOUNCE_BACK;
     // push into structure
-    raw_boundary_points.push_back(new_bp)
+    raw_boundary_points.push_back(new_bp);
 }
 
 void rawBoundaryPoints::reduce() {
+    /// todo exceptionally similar to determine neighbors in Neighborhood
+    /// todo still quite a number of linear searches
     // gets rid of all the unnecessary boundary points
+    // build hash search space
+    fill_keys();
+    // loop over the raw nodes
+    for(auto rbp : raw_boundary_points) {
+        // determine boarder code
+        border_return_code_t cases = check_boarder(*rbp);
+        // set the number on set case where we discard a point
+        int out_number = set_max_neighbors(cases);
+        // go in all directions to look for a neighbor
+
+    }
 }
 
 
@@ -89,6 +159,7 @@ void boundaryPointConstructor::init_structure() {
     added_handle = 0;
     boundary_structures.push_back(bs);
     current_structure++;
+
 }
 
 /**
@@ -136,8 +207,6 @@ void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, bou
     set_point(start,b);
     addup = 0.5 *(-normal + dir);
     *start += addup;
-    // set_point(start,b);
-
 }
 /**
  * @fn void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b)

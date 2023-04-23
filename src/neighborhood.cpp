@@ -100,6 +100,7 @@ void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
 void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
    // fill the keys
    fill_keys(nodes);
+   // search and establish links
    for(auto node: nodes) {
        // loop through the channels
        for(int i = 1; i < CHANNELS; ++i) {
