@@ -340,11 +340,11 @@ void boundaryPointConstructor::visualize_2D_boundary(int size) {
  * @return sum of all the boundary points, indipendent of the individual stuctures formed
  */
 long boundaryPointConstructor::total_boundary_nodes() {
-    long size = 0;
+    long number_of_nodes = 0;
     for(auto const bs : boundary_structures) {
-        size += long(bs->boundary_points.size());
+        number_of_nodes += long(bs->boundary_points.size());
     }
-    return size;
+    return number_of_nodes;
 }
 
 /**

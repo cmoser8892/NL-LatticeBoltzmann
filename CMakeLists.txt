@@ -16,9 +16,10 @@ project(
 # So that tests can work
 enable_testing()
 
-# We work with C++17 (-std=c++17)
-set(CMAKE_CXX_STANDARD 17)
+# We work with C++20 (-std=c++20)
+set(CMAKE_CXX_STANDARD 20)
 # trying out intrinic fkts
+# march native enables everything already i guess lol
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1 -msse4.2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")

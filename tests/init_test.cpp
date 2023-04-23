@@ -402,6 +402,7 @@ TEST(InitTests, init_out_inner_rho_writeout) {
     sim.init();
     flowfield_t rho;
     rho.resize(size,size);
+    rho.setZero();
     for(auto n : sim.nodes) {
         write_rho(n,&rho);
     }

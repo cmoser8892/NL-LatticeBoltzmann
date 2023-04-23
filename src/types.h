@@ -15,7 +15,7 @@ using vector_t = Eigen::Vector2d;
 
 using handle_t = uint64_t; // counter to denote a node
 
-using colour_t = uint64_t; // placeholder for colour, whatever the right dataformat may be
+using colour_t = uint32_t; // placeholder for colour, whatever the right dataformat may be
 
 // globals (defined in functions)
 extern matrix_t velocity_set;

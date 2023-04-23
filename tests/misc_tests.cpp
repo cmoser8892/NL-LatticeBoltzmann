@@ -1353,12 +1353,31 @@ TEST(FunctionalTest, path_magic) {
 }
 
 TEST(FunctionalTest, bmp_read) {
+    // tests general functionality of the bmp image reading compability of the image converter
     auto bmp_32_test_image = get_base_path();
     bmp_32_test_image.append("tests");
     bmp_32_test_image.append("test_32_bit.bmp");
     imageConverter ic(bmp_32_test_image);
-    ic.init();
+    ic.run();
     // check the correct bmp image size should be 800x600x32
     // set 32 bit generics vs 8bit struct
     EXPECT_EQ(ic.bmp.data.size(),800*600*32/8);
+    EXPECT_EQ(ic.return_number_of_colors(),413);
 }
+
+TEST(FunctionalTest, color_read) {
+    auto bmp_32_test_image = get_base_path();
+    bmp_32_test_image.append("tests");
+    bmp_32_test_image.append("test.bmp");
+    imageConverter ic(bmp_32_test_image);
+    ic.run();
+    EXPECT_EQ(ic.bmp.data.size(),800*400*24/8);
+    EXPECT_EQ(ic.return_number_of_colors(),2);
+}
+
+/**
+ * general considerations for converter
+ * need to know all the colors used to make a mapping
+ * put all colors in a hashtable and check each new point?!
+ * create a canvas prob best done with raw data also way easier to pgram prob
+ */

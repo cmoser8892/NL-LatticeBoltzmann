@@ -56,17 +56,23 @@ typedef struct BMP {
 class imageConverter {
   private:
     std::filesystem::path path; // path to the the bmp file
-    boundaryPointConstructor* boundaries;
+    std::unordered_map<colour_t ,colour_t> colors_used;
     // functions
     void read();
+    void detect_colors();
+    void compare_save_color_table(uint32_t full_color);
+    void create();
     uint32_t make_stride_aligned(uint32_t align_stride,uint32_t row_stride);
   public:
+    // public vars
     BMP_t bmp;
+    boundaryPointConstructor* boundaries;
     std::unordered_map<colour_t, boundaryType_t> mapping;
-    imageConverter(std::filesystem::path p);
-    void init();
-    void map_colours_to_boundaries();
-    void communicate_colour_decision();
+    // functions
+    explicit imageConverter(std::filesystem::path p);
+    void run();
+    // helpers
+    int return_number_of_colors();
 };
 
 #endif // NL_LATTICEBOLTZMANN_IMAGE_CONVERTER_H

@@ -1,5 +1,9 @@
 #include "image_converter.h"
 /// private
+/**
+ * @fn void imageConverter::read()
+ * @brief reads the bmp image into the internal bmp struct
+ */
 void imageConverter::read() {
     std::filesystem::path file{path};
     if(std::filesystem::exists(file)) {
@@ -79,6 +83,44 @@ void imageConverter::read() {
     }
 }
 
+void imageConverter::detect_colors() {
+    // how many datums do we have to combine to get a full input
+    int data_format = bmp.info_header.bit_count/8;
+    uint32_t full_data = 0;
+    int current_shift = 0;
+    for(auto part : bmp.data) {
+        // add up the data
+        full_data |= part << (current_shift * 8);
+        // loop controles + saving and comparing
+        current_shift++;
+        if(current_shift > data_format) {
+            // save data
+            compare_save_color_table(full_data);
+            // reset
+            current_shift = 0;
+            full_data = 0;
+        }
+    }
+}
+
+void imageConverter::compare_save_color_table(uint32_t full_color) {
+    // easier logic thanks to c++20 :)
+    if(!colors_used.contains(full_color)) {
+        colors_used.emplace(full_color,full_color);
+    }
+}
+
+
+void imageConverter::create() {
+    // order the bmp image into a more accessible 2d structure
+    // or directly create a 2d struct from the raw bmp data not sure yet
+    // create a boundary with the basic sizes can be used in the node generator
+    point_t size = {bmp.info_header.height,bmp.info_header.width};
+    boundaries = new boundaryPointConstructor(size);
+    //
+
+}
+
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
     uint32_t new_stride = row_stride;
     while (new_stride % align_stride != 0) {
@@ -92,14 +134,12 @@ imageConverter::imageConverter(std::filesystem::path p) {
     path = p;
 }
 
-void imageConverter::map_colours_to_boundaries() {
-
-}
-
-void imageConverter::communicate_colour_decision() {
-
-}
-
-void imageConverter::init() {
+void imageConverter::run() {
     read();
+    detect_colors();
+    create();
+}
+
+int imageConverter::return_number_of_colors() {
+    return colors_used.size();
 }
