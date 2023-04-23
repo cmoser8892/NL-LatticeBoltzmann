@@ -16,13 +16,28 @@ typedef struct boundaryPoint {
     boundaryType_t type;
 }boundaryPoint_t;
 
+// raw unordered point clouds
+class rawBoundaryPoints {
+  private:
+    handle_t current_handle = 0;
+    void delete_raw_boundary_points();
+    void delete_reformed_boundary_points();
+  public:
+    std::vector<boundaryPoint_t*> raw_boundary_points;
+    std::vector<boundaryPoint_t*> reformed_boundary_points;
+    rawBoundaryPoints();
+    ~rawBoundaryPoints();
+    void read_in_bounce_back(point_t p);
+    void read_in_bounce_back(coordinate_t p);
+    void reduce();
+};
+
 // Description of one closed surface/structure
 class boundaryStructure {
   public:
     ~boundaryStructure();
     //
-    std::vector<boundaryPoint_t *> boundary_points;
-
+    std::vector<boundaryPoint_t*> boundary_points;
 };
 
 class boundaryPointConstructor {
@@ -39,9 +54,9 @@ class boundaryPointConstructor {
     //
     explicit boundaryPointConstructor(point_t s);
     ~boundaryPointConstructor();
-    // initizlies a quader
+    // initializes a general structure
     void init_structure();
-
+    // different functions to set up different simple structures (heavily used in testing)
     void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
     void steps_direction(int steps, vector_t dir, point_t* start, boundaryType_t b);
     void corner_creation(vector_t dir, point_t* start, boundaryType_t b);
@@ -58,7 +73,7 @@ class boundaryPointConstructor {
     void init_poiseuille_flow();
     void pressure_inlet();
     void delete_structures();
-    // visualize
+    // visualize the resulting structure
     void visualize_2D_boundary(int size);
     // total nodes
     long total_boundary_nodes();

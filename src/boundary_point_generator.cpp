@@ -1,6 +1,45 @@
 #include <iostream>
 #include "boundary_point_generator.h"
 
+rawBoundaryPoints::rawBoundaryPoints() {
+
+}
+
+rawBoundaryPoints::~rawBoundaryPoints() {
+    delete_raw_boundary_points();
+    delete_reformed_boundary_points();
+}
+
+void rawBoundaryPoints::delete_raw_boundary_points() {
+    for(auto d : raw_boundary_points) {
+        delete d;
+    }
+    raw_boundary_points.clear();
+}
+
+void rawBoundaryPoints::delete_reformed_boundary_points() {
+    for(auto d : reformed_boundary_points) {
+        delete d;
+    }
+    reformed_boundary_points.clear();
+}
+
+void rawBoundaryPoints::read_in_bounce_back(point_t p) {
+    coordinate_t coordinate;
+    coordinate.x = std::floor(p.x());
+    coordinate.y = std::floor(p.y());
+    read_in_bounce_back(coordinate);
+}
+
+void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
+
+}
+
+void rawBoundaryPoints::reduce() {
+    // gets rid of all the unnecessary boundary points
+}
+
+
 /**
  * @fn boundaryStructure::~boundaryStructure()
  * @brief de-construcutur deletes all the boundary points
@@ -9,6 +48,8 @@ boundaryStructure::~boundaryStructure() {
     for(auto d : boundary_points) {
         delete d;
     }
+    // not really necessary here but good practise
+    boundary_points.clear();
 }
 
 /**

@@ -1352,7 +1352,7 @@ TEST(FunctionalTest, path_magic) {
     EXPECT_GT(sizeof(b),0);
 }
 
-TEST(FunctionalTest, bmp_read) {
+TEST(FunctionalTest, bmp_read_32b) {
     // tests general functionality of the bmp image reading compability of the image converter
     auto bmp_32_test_image = get_base_path();
     bmp_32_test_image.append("tests");
@@ -1365,7 +1365,7 @@ TEST(FunctionalTest, bmp_read) {
     EXPECT_EQ(ic.return_number_of_colors(),205);
 }
 
-TEST(FunctionalTest, color_read) {
+TEST(FunctionalTest, bmp_read_24b) {
     auto bmp_32_test_image = get_base_path();
     bmp_32_test_image.append("tests");
     bmp_32_test_image.append("test_24_bit.bmp");
@@ -1381,3 +1381,7 @@ TEST(FunctionalTest, color_read) {
  * put all colors in a hashtable and check each new point?!
  * create a canvas prob best done with raw data also way easier to pgram prob
  */
+
+/**
+* algorithm structure for reduction
+*/
