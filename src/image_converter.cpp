@@ -93,7 +93,7 @@ void imageConverter::detect_colors() {
         full_data |= part << (current_shift * 8);
         // loop controles + saving and comparing
         current_shift++;
-        if(current_shift > data_format) {
+        if(current_shift >= data_format) {
             // save data
             compare_save_color_table(full_data);
             // reset
