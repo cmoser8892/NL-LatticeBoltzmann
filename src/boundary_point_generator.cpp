@@ -44,6 +44,13 @@ void rawBoundaryPoints::fill_keys() {
     }
 }
 
+void rawBoundaryPoints::rewrite_reformed_boundary_handles() {
+    handle_t start = 0;
+    for(auto reformed_bp : reformed_boundary_points) {
+        reformed_bp->h = ++start;
+    }
+}
+
 rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundaryPoint_t &b) {
     border_return_code_t return_code = INSIDE;
     point_t short_hand = b.point;
@@ -121,6 +128,7 @@ void rawBoundaryPoints::reduce() {
     // gets rid of all the unnecessary boundary points
     // build hash search space
     fill_keys();
+    handle_t start = 0;
     // loop over the raw nodes
     for(auto rbp : raw_boundary_points) {
         // determine boarder code
@@ -148,7 +156,7 @@ void rawBoundaryPoints::reduce() {
             // add to the reformed nodes
             auto copy  = new boundaryPoint_t;
             // copy over
-            copy->h = rbp->h;
+            copy->h = ++start;
             copy->point = rbp->point;
             copy->dw = rbp->dw;
             copy->type = rbp->type;
@@ -156,6 +164,8 @@ void rawBoundaryPoints::reduce() {
             reformed_boundary_points.push_back(copy);
         }
     }
+    // clear the hash table for later use
+    pkh.clear();
 }
 
 
@@ -254,19 +264,32 @@ void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, bou
  * @param b
  */
 void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
+    set_point(++added_handle,p,b);
+}
+
+
+void boundaryPointConstructor::set_point(handle_t h, point_t *p, boundaryType_t b) {
     if(current_structure<0) {
         std::cerr << "No structure" << std::endl;
         return;
     }
     // gerenate the boundary node
     auto boundary_point = new boundaryPoint_t;
-    boundary_point->h = ++added_handle;
+    boundary_point->h = h;
     boundary_point->point = *p;
     boundary_point->dw = DRY;
     boundary_point->type = b;
     boundary_structures.at(current_structure)->boundary_points.push_back(boundary_point);
 }
 
+void boundaryPointConstructor::rewrite_handles() {
+    for(auto bs : boundary_structures) {
+        handle_t start = 0;
+        for (auto bp : bs->boundary_points) {
+            bp->h = ++start;
+        }
+    }
+}
 /**
  * @fn void boundaryPointConstructor::init_quader()
  * @brief sets up a quader of boundary points

@@ -1386,7 +1386,11 @@ TEST(FunctionalTest, boarder_create_image_raw) {
     // number should be constant between runs
     EXPECT_EQ(ic.raw->raw_boundary_points.size(), 28908);
     EXPECT_EQ(ic.raw->reformed_boundary_points.size(), 2330);
-
+    // test correct handle placement for the reformed boundary points
+    handle_t start = 0;
+    for(auto reformed_bp : ic.raw->reformed_boundary_points) {
+        EXPECT_EQ(reformed_bp->h, ++start);
+    }
 }
 
 /**

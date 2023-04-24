@@ -107,7 +107,7 @@ void imageConverter::check_for_white() {
     uint32_t white = WHITE_COLOR_CODE_24_BIT;
     if(!colors_used.contains(white)) {
         std::cerr << "No baseline white for wet nodes detected!" << std::endl;
-        /// todo not sure if i should terminate the program here
+        /// todo not sure if i should terminate the program here prob not
     }
 }
 
@@ -151,6 +151,21 @@ void imageConverter::create_raw() {
     }
 }
 
+void imageConverter::translate_reformed_into_structures() {
+    point_t size = {bmp.info_header.width,bmp.info_header.height};
+    boundaries = new boundaryPointConstructor(size);
+
+    // create a new structure
+    boundaries->init_structure();
+    // loop over start with first point; x cause we dont need the value
+    auto start = raw->reformed_boundary_points.at(0);
+    for(int x = 0; x < raw->reformed_boundary_points.size(); ++x ) {
+
+    }
+
+
+}
+
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
     uint32_t new_stride = row_stride;
     while (new_stride % align_stride != 0) {
@@ -181,7 +196,6 @@ imageConverter::imageConverter(std::filesystem::path p) {
 void imageConverter::init() {
     read();
     detect_colors();
-    check_for_white();
 }
 
 void imageConverter::run() {
@@ -191,6 +205,7 @@ void imageConverter::run() {
 
 void imageConverter::raw_run() {
     // read in the raw data and reduce the set of boundaries considered
+    check_for_white();
     create_raw();
     raw->reduce();
 }
@@ -198,7 +213,8 @@ void imageConverter::raw_run() {
 void imageConverter::raw_cleanup() {
     // delete the temporary raw points work with the reformed points
     raw->delete_raw_boundary_points();
-    // start with the reform
+    // start with the reform into boundary structure
+    translate_reformed_into_structures();
 }
 
 int imageConverter::return_number_of_colors() {

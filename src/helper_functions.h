@@ -44,6 +44,7 @@ class pointKeyHash {
   public:
     std::unordered_multimap<handle_t,handle_t> keys;
     void fill_key(handle_t positions_handle, point_t pos);
+    void clear();
     handle_t key_translation(point_t pos);
     handle_t key_translation(coordinate_t cord);
 };

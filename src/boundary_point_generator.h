@@ -40,6 +40,7 @@ class rawBoundaryPoints {
     ~rawBoundaryPoints();
     void delete_raw_boundary_points();
     void delete_reformed_boundary_points();
+    void rewrite_reformed_boundary_handles();
     void read_in_bounce_back(point_t p);
     void read_in_bounce_back(coordinate_t p);
     void reduce();
@@ -57,10 +58,11 @@ class boundaryPointConstructor {
   private:
     // reminder valid handles start at 1
     handle_t added_handle = 0;
+
   public:
     // holds all the boundary points
     long current_structure = -1;
-    std::vector<boundaryStructure*> boundary_structures;
+    std::vector<boundaryStructure *> boundary_structures;
     // sizes and limits of the construction field
     point_t size;
     point_t limits;
@@ -69,15 +71,23 @@ class boundaryPointConstructor {
     ~boundaryPointConstructor();
     // initializes a general structure
     void init_structure();
+    // init points and rewrite handles
+    void set_point(point_t *p, boundaryType_t b);
+    void set_point(handle_t h, point_t *p, boundaryType_t b);
+    void rewrite_handles();
+    void delete_structures();
+    // visualize the resulting structure
+    void visualize_2D_boundary(int size);
+    // total nodes
+    long total_boundary_nodes();
     // different functions to set up different simple structures (heavily used in testing)
-    void one_direction(int limit,vector_t dir,point_t* start, boundaryType_t b);
-    void steps_direction(int steps, vector_t dir, point_t* start, boundaryType_t b);
-    void corner_creation(vector_t dir, point_t* start, boundaryType_t b);
-    void set_point(point_t* p, boundaryType_t b);
+    void one_direction(int limit, vector_t dir, point_t *start, boundaryType_t b);
+    void steps_direction(int steps, vector_t dir, point_t *start, boundaryType_t b);
+    void corner_creation(vector_t dir, point_t *start, boundaryType_t b);
     void init_quader();
     void init_chopped_quader(point_t start, int devider);
     void init_quader(point_t start);
-    void init_quader(point_t start,vector_t size);
+    void init_quader(point_t start, vector_t size);
     void init_sliding_lid();
     void init_chopped_sliding_lid(point_t start, int devider);
     void init_quader_side_chopped(point_t start, int chopsize);
@@ -85,11 +95,6 @@ class boundaryPointConstructor {
     void init_sliding_lid_inner(point_t start, point_t cntiues, vector_t inner_size);
     void init_poiseuille_flow();
     void pressure_inlet();
-    void delete_structures();
-    // visualize the resulting structure
-    void visualize_2D_boundary(int size);
-    // total nodes
-    long total_boundary_nodes();
 };
 
 bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2);

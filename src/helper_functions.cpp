@@ -315,3 +315,7 @@ handle_t pointKeyHash::key_translation(coordinate_t coord) {
     }
     return return_key;
 }
+
+void pointKeyHash::clear() {
+    keys.clear();
+}
