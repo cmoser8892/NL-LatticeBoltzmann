@@ -1393,6 +1393,8 @@ TEST(FunctionalTest, boarder_create_image_raw) {
     }
 }
 
+// todo more tests for individual functions raw has NO tests
+
 /**
  * general considerations for converter
  * need to know all the colors used to make a mapping

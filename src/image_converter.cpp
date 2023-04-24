@@ -154,9 +154,9 @@ void imageConverter::create_raw() {
 void imageConverter::translate_reformed_into_structures() {
     point_t size = {bmp.info_header.width,bmp.info_header.height};
     boundaries = new boundaryPointConstructor(size);
-
     // create a new structure
     boundaries->init_structure();
+    // generate a pkh association for the reformed nodes
     // loop over start with first point; x cause we dont need the value
     auto start = raw->reformed_boundary_points.at(0);
     for(int x = 0; x < raw->reformed_boundary_points.size(); ++x ) {
