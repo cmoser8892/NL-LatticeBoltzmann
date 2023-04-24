@@ -10,6 +10,11 @@ rawBoundaryPoints::~rawBoundaryPoints() {
     delete_reformed_boundary_points();
 }
 
+/**
+ * @fn void rawBoundaryPoints::delete_raw_boundary_points()
+ * @brief deletes the boundary point structs saved in the raw boundary vector
+ * @attention clearing the vector prevents double deletion of dangeling pointers
+ */
 void rawBoundaryPoints::delete_raw_boundary_points() {
     for(auto d : raw_boundary_points) {
         delete d;
@@ -17,6 +22,11 @@ void rawBoundaryPoints::delete_raw_boundary_points() {
     raw_boundary_points.clear();
 }
 
+/**
+ * @fn void rawBoundaryPoints::delete_reformed_boundary_points()
+ * @brief deletes the boundary point structs saved in the reformed boundary vector
+ * @attention clearing the vector prevents double deletion of dangeling pointers
+ */
 void rawBoundaryPoints::delete_reformed_boundary_points() {
     for(auto d : reformed_boundary_points) {
         delete d;
@@ -24,6 +34,10 @@ void rawBoundaryPoints::delete_reformed_boundary_points() {
     reformed_boundary_points.clear();
 }
 
+/**
+ * @fn void rawBoundaryPoints::fill_keys()
+ * @brief for loop over rbps to fill the pointkeyhash class
+ */
 void rawBoundaryPoints::fill_keys() {
     for(auto rbp : raw_boundary_points) {
         pkh.fill_key(rbp->h,rbp->point);
@@ -114,7 +128,7 @@ void rawBoundaryPoints::reduce() {
         // set the number on set case where we discard a point
         int out_number = set_max_neighbors(cases);
         // go in all directions to look for a neighbor
-
+        777
     }
 }
 
