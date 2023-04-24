@@ -49,7 +49,7 @@ class rawBoundaryPoints {
 class boundaryStructure {
   public:
     ~boundaryStructure();
-    //
+    // data
     std::vector<boundaryPoint_t*> boundary_points;
 };
 
