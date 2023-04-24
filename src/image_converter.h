@@ -60,15 +60,18 @@ class imageConverter {
   private:
     std::filesystem::path path; // path to the the bmp file
     std::unordered_map<colour_t ,colour_t> colors_used;
+    pointKeyHash pkh;
+    int current_structure = 0;
     // functions
     void read();
     void detect_colors();
     void compare_save_color_table(uint32_t full_color);
     void create_raw();
-    void translate_reformed_into_structures();
+    void translate_reformed_into_structure();
     void check_for_white();
     uint32_t make_stride_aligned(uint32_t align_stride,uint32_t row_stride);
     point_t update_position(point_t p);
+    void fill_pkh_with_reformed_raw();
   public:
     // public vars
     BMP_t bmp;

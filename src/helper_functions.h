@@ -40,6 +40,7 @@ class rhoWatchdog {
     bool check(node* n,int step);
 };
 
+// works with bit interleaving floors points to a full point on the gird!
 class pointKeyHash {
   public:
     std::unordered_multimap<handle_t,handle_t> keys;

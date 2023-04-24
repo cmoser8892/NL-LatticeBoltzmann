@@ -151,19 +151,59 @@ void imageConverter::create_raw() {
     }
 }
 
-void imageConverter::translate_reformed_into_structures() {
-    point_t size = {bmp.info_header.width,bmp.info_header.height};
-    boundaries = new boundaryPointConstructor(size);
+void imageConverter::fill_pkh_with_reformed_raw() {
+    pkh.clear();
+    for(auto reformed_bp : raw->reformed_boundary_points) {
+        pkh.fill_key(reformed_bp->h,reformed_bp->point);
+    }
+}
+
+void imageConverter::translate_reformed_into_structure() {
     // create a new structure
+    current_structure++;
     boundaries->init_structure();
     // generate a pkh association for the reformed nodes
-    // loop over start with first point; x cause we dont need the value
+    fill_pkh_with_reformed_raw();
+    // start and current bp
     auto start = raw->reformed_boundary_points.at(0);
+    auto current = start;
+    // loop over start with first point; x cause we dont need the value
     for(int x = 0; x < raw->reformed_boundary_points.size(); ++x ) {
-
+        // search in all cardinal directions for a partner + add that one
+        array_t short_hand = current->point;
+        // we use the velocity set for easy directions
+        // we could also predict the direction based on the previous one
+        for(int i = 1; i < CHANNELS; ++i) {
+            // eigen can init a point with an array but cant add stuff up...
+            point_t p = short_hand + velocity_set.col(i);
+            // search for a viable handle + there always should be one
+            handle_t found_handle = pkh.key_translation(p);
+            // add logic and move to the next one
+            if(found_handle > 0) {
+                // we use a wrong handle for deletion of the elements in the new structure
+                // from the reformed boundary points
+                boundaries->set_point(current->h,&current->point,current->type);
+                current = raw->reformed_boundary_points.at(found_handle-1);
+                break;
+            }
+            // error
+            if(i == CHANNELS-1) {
+                throw std::runtime_error("Unclosed surface!");
+            }
+        }
+        // check weather or not the current point is the start point
+        if(current->h == start->h) {
+            // we finished
+            break;
+        }
     }
-
-
+    // delete/ erase the points in the reformed boundary points now in the structure
+    for(auto bp : boundaries->boundary_structures[current_structure]->boundary_points) {
+        auto iterator = raw->reformed_boundary_points.begin() + (long) bp->h -1;
+        raw->reformed_boundary_points.erase(iterator);
+    }
+    // rewrite the handles to be in order again
+    raw->rewrite_reformed_boundary_handles();
 }
 
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
@@ -214,7 +254,10 @@ void imageConverter::raw_cleanup() {
     // delete the temporary raw points work with the reformed points
     raw->delete_raw_boundary_points();
     // start with the reform into boundary structure
-    translate_reformed_into_structures();
+    point_t size = {bmp.info_header.width,bmp.info_header.height};
+    boundaries = new boundaryPointConstructor(size);
+    // init one structure // do while size of reformed boundary is not 0
+    translate_reformed_into_structure();
 }
 
 int imageConverter::return_number_of_colors() {
