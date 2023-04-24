@@ -70,6 +70,7 @@ class imageConverter {
     std::unordered_map<colour_t, boundaryType_t> mapping;
     // functions
     explicit imageConverter(std::filesystem::path p);
+    void init();
     void run();
     // helpers
     int return_number_of_colors();

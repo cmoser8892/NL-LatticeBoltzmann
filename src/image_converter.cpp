@@ -134,9 +134,12 @@ imageConverter::imageConverter(std::filesystem::path p) {
     path = p;
 }
 
-void imageConverter::run() {
+void imageConverter::init() {
     read();
     detect_colors();
+}
+
+void imageConverter::run() {
     create();
 }
 

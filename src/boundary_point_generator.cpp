@@ -104,7 +104,7 @@ void rawBoundaryPoints::read_in_bounce_back(point_t p) {
 
 void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
     auto new_bp = new boundaryPoint_t;
-    new_bp->h = current_handle++;
+    new_bp->h = ++current_handle;
     // aka should have done it the other way around
     new_bp->point.x() = (double) coordinate.x;
     new_bp->point.y() = (double) coordinate.y;
@@ -128,8 +128,36 @@ void rawBoundaryPoints::reduce() {
         // set the number on set case where we discard a point
         int out_number = set_max_neighbors(cases);
         // go in all directions to look for a neighbor
-        777
+        int found_neighbors = 0;
+        array_t short_hand = rbp->point;
+        // we use the velocity set for easy directions
+        for(int i = 1; i < CHANNELS; ++i) {
+            // eigen can init a point with an array but cant add stuff up...
+            point_t current = short_hand + velocity_set.col(i);
+            handle_t found_handle = pkh.key_translation(current);
+            if(found_handle > 0) {
+                found_neighbors++;
+            }
+
+        }
+        // check how many neighbors were found
+        if(found_neighbors >= out_number) {
+            // out nop
+        }
+        else {
+            // add to the reformed nodes
+            auto copy  = new boundaryPoint_t;
+            // copy over
+            copy->h = rbp->h;
+            copy->point = rbp->point;
+            copy->dw = rbp->dw;
+            copy->type = rbp->type;
+            // add to the vector
+            reformed_boundary_points.push_back(copy);
+        }
     }
+    // get rid of the raw boundary points
+    delete_raw_boundary_points();
 }
 
 

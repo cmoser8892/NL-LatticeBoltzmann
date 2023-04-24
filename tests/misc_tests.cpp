@@ -1358,7 +1358,7 @@ TEST(FunctionalTest, bmp_read_32b) {
     bmp_32_test_image.append("tests");
     bmp_32_test_image.append("test_32_bit.bmp");
     imageConverter ic(bmp_32_test_image);
-    ic.run();
+    ic.init();
     // check the correct bmp image size should be 800x600x32
     // set 32 bit generics vs 8bit struct
     EXPECT_EQ(ic.bmp.data.size(),800*600*32/8);
@@ -1370,7 +1370,7 @@ TEST(FunctionalTest, bmp_read_24b) {
     bmp_32_test_image.append("tests");
     bmp_32_test_image.append("test_24_bit.bmp");
     imageConverter ic(bmp_32_test_image);
-    ic.run();
+    ic.init();
     EXPECT_EQ(ic.bmp.data.size(),800*400*24/8);
     EXPECT_GT(ic.return_number_of_colors(),2);
 }

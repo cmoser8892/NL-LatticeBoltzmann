@@ -26,6 +26,7 @@ class rawBoundaryPoints {
         CORNER
     }border_return_code_t;
   private:
+    // reminder that valid handles start at 1
     handle_t current_handle = 0;
     point_t size;
     pointKeyHash pkh;
@@ -54,7 +55,7 @@ class boundaryStructure {
 
 class boundaryPointConstructor {
   private:
-    // nada
+    // reminder valid handles start at 1
     handle_t added_handle = 0;
   public:
     // holds all the boundary points
