@@ -30,8 +30,6 @@ class rawBoundaryPoints {
     handle_t current_handle = 0;
     point_t size;
     pointKeyHash pkh;
-    void delete_raw_boundary_points();
-    void delete_reformed_boundary_points();
     void fill_keys();
     border_return_code_t check_boarder(boundaryPoint_t &b);
     int set_max_neighbors(border_return_code_t b);
@@ -40,6 +38,8 @@ class rawBoundaryPoints {
     std::vector<boundaryPoint_t*> reformed_boundary_points;
     rawBoundaryPoints(point_t size);
     ~rawBoundaryPoints();
+    void delete_raw_boundary_points();
+    void delete_reformed_boundary_points();
     void read_in_bounce_back(point_t p);
     void read_in_bounce_back(coordinate_t p);
     void reduce();

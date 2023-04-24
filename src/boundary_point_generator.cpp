@@ -156,8 +156,6 @@ void rawBoundaryPoints::reduce() {
             reformed_boundary_points.push_back(copy);
         }
     }
-    // get rid of the raw boundary points
-    delete_raw_boundary_points();
 }
 
 
@@ -230,7 +228,6 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
  */
 void boundaryPointConstructor::steps_direction(int steps, vector_t dir, point_t *start, boundaryType_t b) {
     // creation of x corners
-    // todo modifiy for true steps direction
     for(int i = 0; i < steps; ++i) {
         corner_creation(dir,start,b);
     }

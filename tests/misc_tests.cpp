@@ -1375,6 +1375,20 @@ TEST(FunctionalTest, bmp_read_24b) {
     EXPECT_GT(ic.return_number_of_colors(),2);
 }
 
+TEST(FunctionalTest, boarder_create_image_raw) {
+    auto bmp_32_test_image = get_base_path();
+    bmp_32_test_image.append("tests");
+    bmp_32_test_image.append("test_24_bit.bmp");
+    imageConverter ic(bmp_32_test_image);
+    ic.init();
+    ic.raw_run();
+    EXPECT_NE(ic.raw->raw_boundary_points.size(),ic.raw->reformed_boundary_points.size());
+    // number should be constant between runs
+    EXPECT_EQ(ic.raw->raw_boundary_points.size(), 28908);
+    EXPECT_EQ(ic.raw->reformed_boundary_points.size(), 2330);
+
+}
+
 /**
  * general considerations for converter
  * need to know all the colors used to make a mapping
@@ -1389,3 +1403,10 @@ TEST(FunctionalTest, bmp_read_24b) {
  * perform closed path searches based on neighbors
  * fully initialise the structures in the boundary generator
 */
+
+/**
+ * algorithm to build the boundary structures:
+ * search all the reformed boundary points
+ * finish structure, use handles in the structure to find the used bps
+ * delete those or rewrite whole structure (erase)
+ */

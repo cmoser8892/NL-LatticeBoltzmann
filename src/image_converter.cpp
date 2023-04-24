@@ -103,6 +103,14 @@ void imageConverter::detect_colors() {
     }
 }
 
+void imageConverter::check_for_white() {
+    uint32_t white = WHITE_COLOR_CODE_24_BIT;
+    if(!colors_used.contains(white)) {
+        std::cerr << "No baseline white for wet nodes detected!" << std::endl;
+        /// todo not sure if i should terminate the program here
+    }
+}
+
 void imageConverter::compare_save_color_table(uint32_t full_color) {
     // easier logic thanks to c++20 :)
     if(!colors_used.contains(full_color)) {
@@ -110,15 +118,37 @@ void imageConverter::compare_save_color_table(uint32_t full_color) {
     }
 }
 
-
-void imageConverter::create() {
+void imageConverter::create_raw() {
     // order the bmp image into a more accessible 2d structure
     // or directly create a 2d struct from the raw bmp data not sure yet
     // create a boundary with the basic sizes can be used in the node generator
-    point_t size = {bmp.info_header.height,bmp.info_header.width};
-    boundaries = new boundaryPointConstructor(size);
-    //
-
+    point_t size = {bmp.info_header.width,bmp.info_header.height};
+    raw = new rawBoundaryPoints(size);
+    point_t current ={0,0};
+    // run through raw bmp data
+    uint32_t full_data = 0;
+    int current_shift = 0;
+    int data_format = bmp.info_header.bit_count/8;
+    for(auto part : bmp.data) {
+        // add up the data
+        full_data |= part << (current_shift * 8);
+        // loop controles + saving and comparing
+        current_shift++;
+        if(current_shift >= data_format) {
+            // save data and update the position
+            if(full_data == WHITE_COLOR_CODE_24_BIT) {
+                // nop
+            }
+            else {
+                // add to the raw boundaries
+                raw->read_in_bounce_back(current);
+            }
+            current = update_position(current);
+            // reset
+            current_shift = 0;
+            full_data = 0;
+        }
+    }
 }
 
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
@@ -129,6 +159,20 @@ uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row
     return new_stride;
 }
 
+point_t imageConverter::update_position(point_t p) {
+    // update the postion based on strides
+    point_t size_shorthand = {bmp.info_header.width,bmp.info_header.height};
+    p.x()++;
+    if(p.x() >= size_shorthand.x()) {
+        p.x() = 0;
+        p.y()++;
+    }
+    if(p.y() > size_shorthand.y()) {
+        throw std::runtime_error("Image size overrun");
+    }
+    return p;
+}
+
 /// public
 imageConverter::imageConverter(std::filesystem::path p) {
     path = p;
@@ -137,10 +181,24 @@ imageConverter::imageConverter(std::filesystem::path p) {
 void imageConverter::init() {
     read();
     detect_colors();
+    check_for_white();
 }
 
 void imageConverter::run() {
-    create();
+    raw_run();
+    raw_cleanup();
+}
+
+void imageConverter::raw_run() {
+    // read in the raw data and reduce the set of boundaries considered
+    create_raw();
+    raw->reduce();
+}
+
+void imageConverter::raw_cleanup() {
+    // delete the temporary raw points work with the reformed points
+    raw->delete_raw_boundary_points();
+    // start with the reform
 }
 
 int imageConverter::return_number_of_colors() {

@@ -9,6 +9,8 @@
 #include "boundary_point_generator.h"
 
 /// definition of all the different parts of a bmp file
+#define WHITE_COLOR_CODE_24_BIT 0xffffff
+
 // file header 14 byte
 typedef struct __attribute__((packed)) BMPFileHeader {
     uint16_t file_type{0x4D42};     // stands for BM in hex
@@ -61,17 +63,24 @@ class imageConverter {
     void read();
     void detect_colors();
     void compare_save_color_table(uint32_t full_color);
-    void create();
+    void create_raw();
+    void translate_reformed_into_structures();
+    void check_for_white();
     uint32_t make_stride_aligned(uint32_t align_stride,uint32_t row_stride);
+    point_t update_position(point_t p);
   public:
     // public vars
     BMP_t bmp;
+    rawBoundaryPoints* raw;
     boundaryPointConstructor* boundaries;
     std::unordered_map<colour_t, boundaryType_t> mapping;
     // functions
     explicit imageConverter(std::filesystem::path p);
     void init();
     void run();
+    // individual tests of the run functionality
+    void raw_run();
+    void raw_cleanup();
     // helpers
     int return_number_of_colors();
 };
