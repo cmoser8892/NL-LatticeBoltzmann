@@ -1391,8 +1391,18 @@ TEST(FunctionalTest, boarder_create_image_raw) {
     for(auto reformed_bp : ic.raw->reformed_boundary_points) {
         EXPECT_EQ(reformed_bp->h, ++start);
     }
-    // ic.raw_cleanup();
-    ic.raw->visualize_2D_boundary();
+    ic.raw_cleanup();
+    // there should be nothing left in the raw data
+    EXPECT_EQ(ic.raw->raw_boundary_points.size(), 0);
+    EXPECT_EQ(ic.raw->reformed_boundary_points.size(), 0);
+    // the b-struct should have size 36
+    EXPECT_EQ(ic.boundaries->boundary_structures[0]->boundary_points.size(), 36);
+    // from here it should be smooth sailing
+    nodeGenerator gen(ic.boundaries);
+    ic.boundaries->visualize_2D_boundary(10);
+    // fails in check nodes
+    // gen.init_fused(ic.return_basic_size());
+    // EXPECT_EQ(gen.node_infos.size(), 8*8);
 }
 
 // todo more tests for individual functions raw has NO test
@@ -1418,3 +1428,7 @@ TEST(FunctionalTest, boarder_create_image_raw) {
  * finish structure, use handles in the structure to find the used bps
  * delete those or rewrite whole structure (erase)
  */
+
+/**
+ * algortithm for removing
+*/

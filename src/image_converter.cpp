@@ -1,5 +1,38 @@
 #include "image_converter.h"
-/// private
+/// windowedHandles
+windowedHandles::windowedHandles(unsigned long s) {
+    // set the size for the vector container
+    target_size = s;
+    // init the list to the target size
+    for(int i = 0; i < target_size; ++i) {
+        previous.push_back(0);
+    }
+}
+
+unsigned long windowedHandles::size() {
+    return previous.size();
+}
+
+void windowedHandles::add(handle_t h) {
+    // pop the oldest element and push in a new one
+    previous.push_front(h);
+    previous.pop_back();
+}
+
+bool windowedHandles::check(handle_t h) {
+    // answers the yes no question if previously seen
+    bool return_value = false;
+    for(auto element : previous) {
+        if(element == h) {
+            return_value = true;
+            break;
+        }
+    }
+    // return me
+    return return_value;
+}
+
+/// image converter
 /**
  * @fn void imageConverter::read()
  * @brief reads the bmp image into the internal bmp struct
@@ -164,6 +197,10 @@ void imageConverter::translate_reformed_into_structure() {
     boundaries->init_structure();
     // generate a pkh association for the reformed nodes
     fill_pkh_with_reformed_raw();
+    // init the window to determine weather or not we found a previous partner
+    windowedHandles previous_checker(TARGET_SIZE_WINDOW);
+    // set up the delete control vector
+    std::vector<bool> delete_control(raw->reformed_boundary_points.size(),false);
     // start and current bp
     auto start = raw->reformed_boundary_points.at(0);
     auto current = start;
@@ -174,6 +211,7 @@ void imageConverter::translate_reformed_into_structure() {
         array_t short_hand = current->point;
         // we use the velocity set for easy directions
         // we could also predict the direction based on the previous one
+        /// todo not sure if only cardinal directions should be allowed?!
         for(int i = 1; i < CHANNELS; ++i) {
             // eigen can init a point with an array but cant add stuff up...
             point_t p = short_hand + velocity_set.col(i);
@@ -181,16 +219,24 @@ void imageConverter::translate_reformed_into_structure() {
             handle_t found_handle = pkh.key_translation(p);
             // add logic and move to the next one
             if(found_handle > 0) {
-                // we use a wrong handle for deletion of the elements in the new structure
-                // from the reformed boundary points
-                boundaries->set_point(current->h,&current->point,current->type);
-                handle_t array_position = found_handle -1;
-                current = raw->reformed_boundary_points.at(array_position);
-                break;
+                // check against previous handles only add if a valid handle
+                if(!previous_checker.check(found_handle)) {
+                    // set up the boundary struct
+                    // we intentionally use the wrong handle here
+                    boundaries->set_point(current->h,&current->point,current->type);
+                    // go to the next element and setup the delete array
+                    handle_t array_position = found_handle -1;
+                    current = raw->reformed_boundary_points[array_position];
+                    delete_control[array_position] = true;
+                    // add to the previously found ones
+                    previous_checker.add(found_handle);
+                    // break out of the for loop
+                    break;
+                }
             }
             // error
             if(i == CHANNELS-1) {
-                throw std::runtime_error("Unclosed surface!");
+                throw std::runtime_error("Unclosed surface or long single row!");
             }
         }
         // check weather or not the current point is the start point
@@ -200,14 +246,28 @@ void imageConverter::translate_reformed_into_structure() {
             break;
         }
     }
-    std::cout << broken << std::endl;
+    /// todo meme analyse prob has more holes than swiss cheese
+    // cant delete cause the handle will be invalid after the first run
     // delete/ erase the points in the reformed boundary points now in the structure
-    for(auto bp : boundaries->boundary_structures[current_structure]->boundary_points) {
-        auto iterator = raw->reformed_boundary_points.begin() + (long) bp->h -1;
-        raw->reformed_boundary_points.erase(iterator);
+    // nessessary to create a seperate flag vector to flag used elements
+    // construct a new vector and clear/ delete the old one, move the new one over
+    // go over the reformed nodes and add the nodes into raw_boundary points again
+    for(int i = 0; i < delete_control.size(); ++i) {
+        // only delete not used elements the others get written into the array
+        /// important: dont loose pointers to the object in this whole ordeal
+        if(delete_control[i]) {
+            // delete element
+            delete raw->reformed_boundary_points[i];
+        }
+        else {
+            // keep the pointer to the object
+            raw->raw_boundary_points.push_back(raw->reformed_boundary_points[i]);
+        }
     }
-    // rewrite the handles to be in order again
-    raw->rewrite_reformed_boundary_handles();
+    // clear the reformed array
+    raw->reformed_boundary_points.clear();
+    // setup the reformed with the the raw data again (move constructor)
+    raw->reformed_boundary_points = raw->raw_boundary_points;
 }
 
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
@@ -266,4 +326,13 @@ void imageConverter::raw_cleanup() {
 
 int imageConverter::return_number_of_colors() {
     return colors_used.size();
+}
+
+unsigned long imageConverter::return_basic_size() {
+    if(bmp.info_header.width > bmp.info_header.height) {
+        return  bmp.info_header.width;
+    }
+    else {
+        return bmp.info_header.height;
+    }
 }

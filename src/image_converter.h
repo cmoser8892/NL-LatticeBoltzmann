@@ -6,11 +6,13 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <list>
 #include "boundary_point_generator.h"
 #include "helper_functions.h"
 
 /// definition of all the different parts of a bmp file
-#define WHITE_COLOR_CODE_24_BIT 0xffffff
+#define WHITE_COLOR_CODE_24_BIT     0xffffff
+#define TARGET_SIZE_WINDOW          4
 
 // file header 14 byte
 typedef struct __attribute__((packed)) BMPFileHeader {
@@ -55,6 +57,20 @@ typedef struct BMP {
     std::vector<uint8_t> data;
 }BMP_t;
 
+class windowedHandles{
+    // dont make this to big
+  private:
+    unsigned long target_size;
+    std::list<handle_t> previous;
+  public:
+    // functions
+    windowedHandles(unsigned long size);
+    unsigned long size();
+    void add(handle_t h);
+    bool check(handle_t h);
+};
+
+
 /// converts a bmp image to a boundary
 class imageConverter {
   private:
@@ -87,6 +103,7 @@ class imageConverter {
     void raw_cleanup();
     // helpers
     int return_number_of_colors();
+    unsigned long return_basic_size();
 };
 
 #endif // NL_LATTICEBOLTZMANN_IMAGE_CONVERTER_H
