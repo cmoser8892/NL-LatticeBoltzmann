@@ -1400,6 +1400,7 @@ TEST(FunctionalTest, boarder_create_image_raw) {
     // from here it should be smooth sailing
     nodeGenerator gen(ic.boundaries);
     ic.boundaries->visualize_2D_boundary(10);
+    // todo neeed to fix handles prob
     // fails in check nodes
     // gen.init_fused(ic.return_basic_size());
     // EXPECT_EQ(gen.node_infos.size(), 8*8);
