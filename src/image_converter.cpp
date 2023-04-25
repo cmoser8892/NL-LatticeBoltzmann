@@ -167,6 +167,7 @@ void imageConverter::translate_reformed_into_structure() {
     // start and current bp
     auto start = raw->reformed_boundary_points.at(0);
     auto current = start;
+    bool broken = false;
     // loop over start with first point; x cause we dont need the value
     for(int x = 0; x < raw->reformed_boundary_points.size(); ++x ) {
         // search in all cardinal directions for a partner + add that one
@@ -183,7 +184,8 @@ void imageConverter::translate_reformed_into_structure() {
                 // we use a wrong handle for deletion of the elements in the new structure
                 // from the reformed boundary points
                 boundaries->set_point(current->h,&current->point,current->type);
-                current = raw->reformed_boundary_points.at(found_handle-1);
+                handle_t array_position = found_handle -1;
+                current = raw->reformed_boundary_points.at(array_position);
                 break;
             }
             // error
@@ -194,9 +196,11 @@ void imageConverter::translate_reformed_into_structure() {
         // check weather or not the current point is the start point
         if(current->h == start->h) {
             // we finished
+            broken = true;
             break;
         }
     }
+    std::cout << broken << std::endl;
     // delete/ erase the points in the reformed boundary points now in the structure
     for(auto bp : boundaries->boundary_structures[current_structure]->boundary_points) {
         auto iterator = raw->reformed_boundary_points.begin() + (long) bp->h -1;

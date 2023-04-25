@@ -44,6 +44,17 @@ void rawBoundaryPoints::fill_keys() {
     }
 }
 
+
+void rawBoundaryPoints::visualize_2D_boundary() {
+    flowfield_t output;
+    output.setZero(size.x(),size.y());
+    for(auto b : raw_boundary_points) {
+        ++output(int(b->point.x()),int(b->point.y()));
+    }
+    std::cout << "Boundary-structure" << std::endl;
+    std::cout << output << std::endl << std::endl;
+}
+
 void rawBoundaryPoints::rewrite_reformed_boundary_handles() {
     handle_t start = 0;
     for(auto reformed_bp : reformed_boundary_points) {

@@ -1366,10 +1366,10 @@ TEST(FunctionalTest, bmp_read_32b) {
 }
 
 TEST(FunctionalTest, bmp_read_24b) {
-    auto bmp_32_test_image = get_base_path();
-    bmp_32_test_image.append("tests");
-    bmp_32_test_image.append("test_24_bit.bmp");
-    imageConverter ic(bmp_32_test_image);
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_24_bit.bmp");
+    imageConverter ic(bmp_24_test_image);
     ic.init();
     EXPECT_EQ(ic.bmp.data.size(),800*400*24/8);
     EXPECT_GT(ic.return_number_of_colors(),2);
@@ -1378,22 +1378,24 @@ TEST(FunctionalTest, bmp_read_24b) {
 TEST(FunctionalTest, boarder_create_image_raw) {
     auto bmp_32_test_image = get_base_path();
     bmp_32_test_image.append("tests");
-    bmp_32_test_image.append("test_24_bit.bmp");
+    bmp_32_test_image.append("test_small.bmp");
     imageConverter ic(bmp_32_test_image);
     ic.init();
     ic.raw_run();
-    EXPECT_NE(ic.raw->raw_boundary_points.size(),ic.raw->reformed_boundary_points.size());
+    EXPECT_EQ(ic.raw->raw_boundary_points.size(),ic.raw->reformed_boundary_points.size());
     // number should be constant between runs
-    EXPECT_EQ(ic.raw->raw_boundary_points.size(), 28908);
-    EXPECT_EQ(ic.raw->reformed_boundary_points.size(), 2330);
+    EXPECT_EQ(ic.raw->raw_boundary_points.size(), 36);
+    EXPECT_EQ(ic.raw->reformed_boundary_points.size(), 36);
     // test correct handle placement for the reformed boundary points
     handle_t start = 0;
     for(auto reformed_bp : ic.raw->reformed_boundary_points) {
         EXPECT_EQ(reformed_bp->h, ++start);
     }
+    // ic.raw_cleanup();
+    ic.raw->visualize_2D_boundary();
 }
 
-// todo more tests for individual functions raw has NO tests
+// todo more tests for individual functions raw has NO test
 
 /**
  * general considerations for converter

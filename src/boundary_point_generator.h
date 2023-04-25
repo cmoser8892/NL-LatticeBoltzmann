@@ -41,6 +41,7 @@ class rawBoundaryPoints {
     void delete_raw_boundary_points();
     void delete_reformed_boundary_points();
     void rewrite_reformed_boundary_handles();
+    void visualize_2D_boundary();
     void read_in_bounce_back(point_t p);
     void read_in_bounce_back(coordinate_t p);
     void reduce();
