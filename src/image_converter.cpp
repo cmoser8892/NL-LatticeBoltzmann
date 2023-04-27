@@ -224,6 +224,7 @@ void imageConverter::translate_reformed_into_structure() {
     raw->reformed_boundary_points.clear();
     // setup the reformed with the the raw data again (move constructor)
     raw->reformed_boundary_points = raw->raw_boundary_points;
+    raw->rewrite_reformed_boundary_handles();
 }
 
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
@@ -289,7 +290,10 @@ void imageConverter::raw_cleanup() {
     boundaries = new boundaryPointConstructor(size);
     // init one structure // do while size of reformed boundary is not 0
     // todo only made for one structure
-    translate_reformed_into_structure();
+    do {
+        raw->raw_boundary_points.clear();
+        translate_reformed_into_structure();
+    }while(!raw->reformed_boundary_points.empty());
     for(auto bs : boundaries->boundary_structures) {
         bs->rewrite_reformed_boundary_handles();
     }

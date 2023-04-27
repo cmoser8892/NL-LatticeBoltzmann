@@ -1471,6 +1471,25 @@ TEST(FunctionalTest, image_outer_inner) {
     ic.init();
     ic.run();
     ic.boundaries->visualize_2D_boundary();
+    nodeGenerator gen(ic.boundaries);
+    gen.init_fused(ic.return_basic_size());
+    gen.visualize_2D_nodes();
+}
+
+TEST(FunctionalTest, image_u_image_90_right) {
+    // todo boundary to image +90 right
+    // also prob smarter to do with an l to determine filp
+    EXPECT_TRUE(true);
+    // test image setup
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
+    bmp_24_test_image.append("test_u.bmp");
+    imageConverter ic(bmp_24_test_image);
+    // run the functions
+    ic.init();
+    ic.run();
+    // ic.boundaries->visualize_2D_boundary();
 }
 
 
