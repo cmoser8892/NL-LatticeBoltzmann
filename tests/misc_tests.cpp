@@ -1399,11 +1399,23 @@ TEST(FunctionalTest, boarder_create_image_raw) {
     EXPECT_EQ(ic.boundaries->boundary_structures[0]->boundary_points.size(), 36);
     // from here it should be smooth sailing
     nodeGenerator gen(ic.boundaries);
-    ic.boundaries->visualize_2D_boundary(10);
+    // check if the bps are in order
+    start = 0;
+    int fails = 0;
+    for(auto bp : ic.boundaries->boundary_structures[0]->boundary_points) {
+        EXPECT_EQ(bp->h, ++start);
+        if(bp->h != start) {
+            ++fails;
+        }
+    }
+    std::cout << fails << std::endl;
+    // ic.boundaries->visualize_2D_boundary(10);
     // todo neeed to fix handles prob
+    // todo small one sized bumps are not supported by straight
     // fails in check nodes
-    // gen.init_fused(ic.return_basic_size());
-    // EXPECT_EQ(gen.node_infos.size(), 8*8);
+    gen.init_fused(ic.return_basic_size());
+    // gen.visualize_2D_nodes(10);
+    EXPECT_EQ(gen.node_infos.size(), 8*8);
 }
 
 // todo more tests for individual functions raw has NO test

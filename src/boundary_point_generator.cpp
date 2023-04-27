@@ -192,6 +192,12 @@ boundaryStructure::~boundaryStructure() {
     boundary_points.clear();
 }
 
+void boundaryStructure::rewrite_reformed_boundary_handles() {
+    handle_t start = 0;
+    for(auto bp : boundary_points) {
+        bp->h = ++start;
+    }
+}
 /**
  * @fn boundaryPointConstructor::boundaryPointConstructor(point_t s)
  * @brief constructor of the boundary points

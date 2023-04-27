@@ -51,6 +51,7 @@ class rawBoundaryPoints {
 class boundaryStructure {
   public:
     ~boundaryStructure();
+    void rewrite_reformed_boundary_handles();
     // data
     std::vector<boundaryPoint_t*> boundary_points;
 };

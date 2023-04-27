@@ -322,6 +322,9 @@ void imageConverter::raw_cleanup() {
     boundaries = new boundaryPointConstructor(size);
     // init one structure // do while size of reformed boundary is not 0
     translate_reformed_into_structure();
+    for(auto bs : boundaries->boundary_structures) {
+        bs->rewrite_reformed_boundary_handles();
+    }
 }
 
 int imageConverter::return_number_of_colors() {

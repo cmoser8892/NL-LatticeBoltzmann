@@ -50,7 +50,7 @@ void straightGenerator::calculate_all_straights() {
             // search in the cardinal directions NESW
             point_t current = bs->boundary_points[array_position]->point;
             point_t candidate;
-            handle_t candidate_handle;
+            handle_t candidate_handle = 0;
             for(int i = 0; i < 4; ++i) {
                 candidate = current + point_t(cardinal_directions.col(i));
                 // std::cout << candidate << std::endl;
@@ -75,6 +75,9 @@ void straightGenerator::calculate_all_straights() {
                     }
                 }
             }
+            if(candidate_handle == 0) {
+                throw std::runtime_error("construction of the containing surface failed!");
+            }
             // add the surface
             auto s  = new surface_t;
             s->point = current;
@@ -85,6 +88,7 @@ void straightGenerator::calculate_all_straights() {
             surfaces.push_back(s);
             // add to blacklist
             blacklist.push_back(candidate_handle);
+            // check for overflow!
             array_position = candidate_handle-1;
         }
     }
