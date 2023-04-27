@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <list>
 #include <filesystem>
 
 bool node_position_comparison(node* n, array_t* pos);
@@ -42,12 +43,28 @@ class rhoWatchdog {
 
 // works with bit interleaving floors points to a full point on the gird!
 class pointKeyHash {
-  public:
+  private:
     std::unordered_multimap<handle_t,handle_t> keys;
+  public:
     void fill_key(handle_t positions_handle, point_t pos);
     void clear();
     handle_t key_translation(point_t pos);
     handle_t key_translation(coordinate_t cord);
+};
+
+// basic stash that holds items for a number of iterations
+// a window with a conveyor belt behind it, specifically for handles
+class windowedHandles{
+    // dont make this to big
+  private:
+    unsigned long target_size;
+    std::list<handle_t> previous;
+  public:
+    // functions
+    windowedHandles(unsigned long size);
+    unsigned long size();
+    void add(handle_t h);
+    bool check(handle_t h);
 };
 
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

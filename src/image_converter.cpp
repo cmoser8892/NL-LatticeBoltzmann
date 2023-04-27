@@ -1,37 +1,4 @@
 #include "image_converter.h"
-/// windowedHandles
-windowedHandles::windowedHandles(unsigned long s) {
-    // set the size for the vector container
-    target_size = s;
-    // init the list to the target size
-    for(int i = 0; i < target_size; ++i) {
-        previous.push_back(0);
-    }
-}
-
-unsigned long windowedHandles::size() {
-    return previous.size();
-}
-
-void windowedHandles::add(handle_t h) {
-    // pop the oldest element and push in a new one
-    previous.push_front(h);
-    previous.pop_back();
-}
-
-bool windowedHandles::check(handle_t h) {
-    // answers the yes no question if previously seen
-    bool return_value = false;
-    for(auto element : previous) {
-        if(element == h) {
-            return_value = true;
-            break;
-        }
-    }
-    // return me
-    return return_value;
-}
-
 /// image converter
 /**
  * @fn void imageConverter::read()
@@ -204,7 +171,6 @@ void imageConverter::translate_reformed_into_structure() {
     // start and current bp
     auto start = raw->reformed_boundary_points.at(0);
     auto current = start;
-    bool broken = false;
     // loop over start with first point; x cause we dont need the value
     for(int x = 0; x < raw->reformed_boundary_points.size(); ++x ) {
         // search in all cardinal directions for a partner + add that one
@@ -241,8 +207,6 @@ void imageConverter::translate_reformed_into_structure() {
         }
         // check weather or not the current point is the start point
         if(current->h == start->h) {
-            // we finished
-            broken = true;
             break;
         }
     }

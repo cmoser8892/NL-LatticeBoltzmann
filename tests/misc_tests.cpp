@@ -1376,10 +1376,11 @@ TEST(FunctionalTest, bmp_read_24b) {
 }
 
 TEST(FunctionalTest, boarder_create_image_raw) {
-    auto bmp_32_test_image = get_base_path();
-    bmp_32_test_image.append("tests");
-    bmp_32_test_image.append("test_small.bmp");
-    imageConverter ic(bmp_32_test_image);
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_small.bmp");
+    imageConverter ic(bmp_24_test_image);
+    //
     ic.init();
     ic.raw_run();
     EXPECT_EQ(ic.raw->raw_boundary_points.size(),ic.raw->reformed_boundary_points.size());
@@ -1408,40 +1409,18 @@ TEST(FunctionalTest, boarder_create_image_raw) {
             ++fails;
         }
     }
-    std::cout << fails << std::endl;
+    EXPECT_EQ(fails, 0);
     // ic.boundaries->visualize_2D_boundary(10);
-    // todo neeed to fix handles prob
-    // todo small one sized bumps are not supported by straight
     // fails in check nodes
     gen.init_fused(ic.return_basic_size());
     // gen.visualize_2D_nodes(10);
     EXPECT_EQ(gen.node_infos.size(), 8*8);
 }
 
+TEST(FunctionalTest, boarder_create_more_than_one) {
+
+}
+
 // todo more tests for individual functions raw has NO test
 
-/**
- * general considerations for converter
- * need to know all the colors used to make a mapping
- * put all colors in a hashtable and check each new point?!
- * create a canvas prob best done with raw data also way easier to pgram prob
- */
 
-/**
- * algorithm structure for reduction:
- * register all the data points
- * perform a reduction based on neighbors and extra handling at the borders
- * perform closed path searches based on neighbors
- * fully initialise the structures in the boundary generator
-*/
-
-/**
- * algorithm to build the boundary structures:
- * search all the reformed boundary points
- * finish structure, use handles in the structure to find the used bps
- * delete those or rewrite whole structure (erase)
- */
-
-/**
- * algortithm for removing
-*/

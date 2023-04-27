@@ -57,20 +57,6 @@ typedef struct BMP {
     std::vector<uint8_t> data;
 }BMP_t;
 
-class windowedHandles{
-    // dont make this to big
-  private:
-    unsigned long target_size;
-    std::list<handle_t> previous;
-  public:
-    // functions
-    windowedHandles(unsigned long size);
-    unsigned long size();
-    void add(handle_t h);
-    bool check(handle_t h);
-};
-
-
 /// converts a bmp image to a boundary
 class imageConverter {
   private:
@@ -93,7 +79,6 @@ class imageConverter {
     BMP_t bmp;
     rawBoundaryPoints* raw;
     boundaryPointConstructor* boundaries;
-    std::unordered_map<colour_t, boundaryType_t> mapping;
     // functions
     explicit imageConverter(std::filesystem::path p);
     void init();
