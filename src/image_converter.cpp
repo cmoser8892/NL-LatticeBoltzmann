@@ -1,4 +1,5 @@
 #include "image_converter.h"
+
 /// image converter
 /**
  * @fn void imageConverter::read()
@@ -83,6 +84,10 @@ void imageConverter::read() {
     }
 }
 
+/**
+ * @fn void imageConverter::detect_colors()
+ * @brief goes through the image and lists the colors, not really necessary, more done for statistics
+ */
 void imageConverter::detect_colors() {
     // how many datums do we have to combine to get a full input
     int data_format = bmp.info_header.bit_count/8;
@@ -95,7 +100,9 @@ void imageConverter::detect_colors() {
         current_shift++;
         if(current_shift >= data_format) {
             // save data
-            compare_save_color_table(full_data);
+            if(!colors_used.contains(full_data)) {
+                colors_used.emplace(full_data,full_data);
+            }
             // reset
             current_shift = 0;
             full_data = 0;
@@ -103,13 +110,10 @@ void imageConverter::detect_colors() {
     }
 }
 
-void imageConverter::compare_save_color_table(uint32_t full_color) {
-    // easier logic thanks to c++20 :)
-    if(!colors_used.contains(full_color)) {
-        colors_used.emplace(full_color,full_color);
-    }
-}
-
+/**
+ * @fn void imageConverter::create_raw()
+ * @brief creates the raw boundary points as given by the image, everything not white (0xfffff) is considered boundary
+ */
 void imageConverter::create_raw() {
     // order the bmp image into a more accessible 2d structure
     // or directly create a 2d struct from the raw bmp data not sure yet
@@ -143,19 +147,19 @@ void imageConverter::create_raw() {
     }
 }
 
-void imageConverter::fill_pkh_with_reformed_raw() {
-    pkh.clear();
-    for(auto reformed_bp : raw->reformed_boundary_points) {
-        pkh.fill_key(reformed_bp->h,reformed_bp->point);
-    }
-}
-
+/**
+ * @fn void imageConverter::translate_reformed_into_structure()
+ * @brief translates the the reformed raw data into an boundary struct
+ */
 void imageConverter::translate_reformed_into_structure() {
     // create a new structure
     current_structure++;
     boundaries->init_structure();
     // generate a pkh association for the reformed nodes
-    fill_pkh_with_reformed_raw();
+    pkh.clear();
+    for(auto reformed_bp : raw->reformed_boundary_points) {
+        pkh.fill_key(reformed_bp->h,reformed_bp->point);
+    }
     // init the window to determine weather or not we found a previous partner
     windowedHandles previous_checker(TARGET_SIZE_WINDOW);
     // set up the delete control vector
@@ -227,6 +231,13 @@ void imageConverter::translate_reformed_into_structure() {
     raw->rewrite_reformed_boundary_handles();
 }
 
+/**
+ * @fn uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride)
+ * @brief removed padding bytes in the raw bmp image
+ * @param align_stride
+ * @param row_stride
+ * @return
+ */
 uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
     uint32_t new_stride = row_stride;
     while (new_stride % align_stride != 0) {
@@ -235,6 +246,12 @@ uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row
     return new_stride;
 }
 
+/**
+ * @fn point_t imageConverter::update_position(point_t p)
+ * @brief updates the position of the piece of data
+ * @param p
+ * @return
+ */
 point_t imageConverter::update_position(point_t p) {
     // update the postion based on strides
     point_t size_shorthand = {bmp.info_header.width,bmp.info_header.height};
@@ -261,18 +278,26 @@ imageConverter::imageConverter(std::filesystem::path p) {
 
 /**
  * @fn void imageConverter::init()
- * @brief
+ * @brief reads in a bmp image
  */
 void imageConverter::init() {
     read();
     detect_colors();
 }
 
+/**
+ * @fn void imageConverter::run()
+ * @brief run function will setup everything
+ */
 void imageConverter::run() {
     raw_run();
     raw_cleanup();
 }
 
+/**
+ * @fn void imageConverter::raw_run()
+ * @brief partial run, used for testing
+ */
 void imageConverter::raw_run() {
     // read in the raw data and reduce the set of boundaries considered
     if(!check_for_white_wet_nodes()) {
@@ -282,6 +307,10 @@ void imageConverter::raw_run() {
     raw->reduce();
 }
 
+/**
+ * @fn void imageConverter::raw_cleanup()
+ * @brief main function to translate
+ */
 void imageConverter::raw_cleanup() {
     // delete the temporary raw points work with the reformed points
     raw->delete_raw_boundary_points();
@@ -289,24 +318,40 @@ void imageConverter::raw_cleanup() {
     point_t size = {bmp.info_header.width,bmp.info_header.height};
     boundaries = new boundaryPointConstructor(size);
     // init one structure // do while size of reformed boundary is not 0
-    // todo only made for one structure
     do {
+        // we use the raw boundary points as a helper structure
         raw->raw_boundary_points.clear();
         translate_reformed_into_structure();
     }while(!raw->reformed_boundary_points.empty());
+    // boundary handles are the handles from raw data, we have to reform them
     for(auto bs : boundaries->boundary_structures) {
         bs->rewrite_reformed_boundary_handles();
     }
 }
 
+/**
+ * @fn int imageConverter::return_number_of_colors()
+ * @brief return the total number of colors in the bmp image, used for testing
+ * @return the number of colors
+ */
 int imageConverter::return_number_of_colors() {
-    return colors_used.size();
+    return (int) colors_used.size();
 }
 
+/**
+ * @fn bool imageConverter::check_for_white_wet_nodes()
+ * @brief check if white is in the image, white is the considered as a wet node
+ * @return yes no white there
+ */
 bool imageConverter::check_for_white_wet_nodes() {
     return colors_used.contains(WHITE_COLOR_CODE_24_BIT);
 }
 
+/**
+ * @fn unsigned long imageConverter::return_basic_size()
+ * @brief return either width or height depending which one is bigger
+ * @return returns a long number
+ */
 unsigned long imageConverter::return_basic_size() {
     if(bmp.info_header.width > bmp.info_header.height) {
         return  bmp.info_header.width;

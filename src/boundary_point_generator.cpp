@@ -119,10 +119,10 @@ rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundar
 }
 
 /**
- * @fn
- * @brief
+ * @fn int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t b)
+ * @brief sets the number of neighbors a bn can have based on position in the image
  * @param b
- * @return
+ * @return the number of maximum allowed neighbors
  */
 int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t b) {
     int return_code = -1;
@@ -142,6 +142,11 @@ int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t
     return return_code;
 }
 
+/**
+ * @fn void rawBoundaryPoints::read_in_bounce_back(point_t p)
+ * @brief point read in
+ * @param p
+ */
 void rawBoundaryPoints::read_in_bounce_back(point_t p) {
     coordinate_t coordinate;
     coordinate.x = std::floor(p.x());
@@ -149,6 +154,11 @@ void rawBoundaryPoints::read_in_bounce_back(point_t p) {
     read_in_bounce_back(coordinate);
 }
 
+/**
+ * @fn void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate)
+ * @brief coordinate read in
+ * @param coordinate
+ */
 void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
     auto new_bp = new boundaryPoint_t;
     new_bp->h = ++current_handle;
@@ -162,6 +172,10 @@ void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
     raw_boundary_points.push_back(new_bp);
 }
 
+/**
+ * @fn void rawBoundaryPoints::reduce()
+ * @brief function that pushes everything that has not contact to the surface out of the raw data
+ */
 void rawBoundaryPoints::reduce() {
     /// todo exceptionally similar to determine neighbors in Neighborhood
     /// todo still quite a number of linear searches
@@ -221,12 +235,17 @@ boundaryStructure::~boundaryStructure() {
     boundary_points.clear();
 }
 
+/**
+ * @fn void boundaryStructure::rewrite_reformed_boundary_handles()
+ * @brief rewrites the reformed boundary handles to be in order again
+ */
 void boundaryStructure::rewrite_reformed_boundary_handles() {
     handle_t start = 0;
     for(auto bp : boundary_points) {
         bp->h = ++start;
     }
 }
+
 /**
  * @fn boundaryPointConstructor::boundaryPointConstructor(point_t s)
  * @brief constructor of the boundary points
@@ -246,6 +265,7 @@ boundaryPointConstructor::boundaryPointConstructor(point_t s) {
 boundaryPointConstructor::~boundaryPointConstructor() {
     delete_structures();
 }
+
 /**
  * @fn void boundaryPointConstructor::init_structure()
  * @brief initilizes a boundary structure to better describe disjunct boundariess
@@ -255,7 +275,6 @@ void boundaryPointConstructor::init_structure() {
     added_handle = 0;
     boundary_structures.push_back(bs);
     current_structure++;
-
 }
 
 /**
@@ -313,7 +332,13 @@ void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
     set_point(++added_handle,p,b);
 }
 
-
+/**
+ * @fn void boundaryPointConstructor::set_point(handle_t h, point_t *p, boundaryType_t b)
+ * @brief adds a point into the current boundary structure
+ * @param h  handle
+ * @param p  postion
+ * @param b  type of boundary
+ */
 void boundaryPointConstructor::set_point(handle_t h, point_t *p, boundaryType_t b) {
     if(current_structure<0) {
         std::cerr << "No structure" << std::endl;
@@ -328,6 +353,10 @@ void boundaryPointConstructor::set_point(handle_t h, point_t *p, boundaryType_t 
     boundary_structures.at(current_structure)->boundary_points.push_back(boundary_point);
 }
 
+/**
+ * @fn void boundaryPointConstructor::rewrite_handles()
+ * @brief rewrites handles to be in order
+ */
 void boundaryPointConstructor::rewrite_handles() {
     for(auto bs : boundary_structures) {
         handle_t start = 0;

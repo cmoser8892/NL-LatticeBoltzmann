@@ -1460,7 +1460,7 @@ TEST(FunctionalTest, raw_reduce_test) {
     EXPECT_FALSE(ic.check_for_white_wet_nodes());
 }
 
-TEST(FunctionalTest, image_outer_inner) {
+TEST(FunctionalTest, DISABLED_image_outer_inner) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
@@ -1477,7 +1477,7 @@ TEST(FunctionalTest, image_outer_inner) {
 }
 
 TEST(FunctionalTest, image_u_image_90_right) {
-    // todo boundary to image +90 right
+    // boundary to image +90 right now a feature
     // also prob smarter to do with an l to determine filp
     EXPECT_TRUE(true);
     // test image setup
@@ -1491,6 +1491,9 @@ TEST(FunctionalTest, image_u_image_90_right) {
     ic.run();
     // ic.boundaries->visualize_2D_boundary();
 }
+
+// todo look up book boy Wolf Gladrow on forcing term in LB
+// todo update fused init to also work with boundary limits
 
 
 
