@@ -249,10 +249,19 @@ point_t imageConverter::update_position(point_t p) {
 }
 
 /// public
+/**
+ * @fn imageConverter::imageConverter(std::filesystem::path p)
+ * @brief constructor of the image converter
+ * @param p
+ */
 imageConverter::imageConverter(std::filesystem::path p) {
     path = p;
 }
 
+/**
+ * @fn void imageConverter::init()
+ * @brief
+ */
 void imageConverter::init() {
     read();
     detect_colors();

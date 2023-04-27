@@ -1305,7 +1305,7 @@ TEST(FunctionalTest, right_link_number) {
 
 TEST(FunctionalTest, periodics_full) {
     // todo implement me
-    // todo pressure periodic = periodic
+    // todo pressure periodic = periodic right now
     int step = 0;
     unsigned int size = 4;
     point_t c = {size,size};
@@ -1367,6 +1367,7 @@ TEST(FunctionalTest, bmp_read_32b) {
 }
 
 TEST(FunctionalTest, bmp_read_24b) {
+    // test image setup
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
     bmp_24_test_image.append("test_images");
@@ -1378,6 +1379,7 @@ TEST(FunctionalTest, bmp_read_24b) {
 }
 
 TEST(FunctionalTest, boarder_create_image_raw) {
+    // test image setup
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
     bmp_24_test_image.append("test_images");
@@ -1421,6 +1423,7 @@ TEST(FunctionalTest, boarder_create_image_raw) {
 }
 
 TEST(FunctionalTest, boarder_create_more_than_one) {
+    // test image setup
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
     bmp_24_test_image.append("test_images");
@@ -1441,11 +1444,13 @@ TEST(FunctionalTest, boarder_create_more_than_one) {
 }
 
 TEST(FunctionalTest, raw_reduce_test) {
+    // test image setup
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
     bmp_24_test_image.append("test_images");
     bmp_24_test_image.append("black.bmp");
     imageConverter ic(bmp_24_test_image);
+    // run the initilizers
     ic.init();
     ic.raw_run();
     // reduce should leave nothing for the reformed boundaries
@@ -1453,6 +1458,19 @@ TEST(FunctionalTest, raw_reduce_test) {
     EXPECT_EQ(ic.raw->reformed_boundary_points.size(),0);
     // also checks color
     EXPECT_FALSE(ic.check_for_white_wet_nodes());
+}
+
+TEST(FunctionalTest, image_outer_inner) {
+    // test image setup
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
+    bmp_24_test_image.append("test_inner_outer.bmp");
+    imageConverter ic(bmp_24_test_image);
+    // run the functions
+    ic.init();
+    ic.run();
+    ic.boundaries->visualize_2D_boundary();
 }
 
 
