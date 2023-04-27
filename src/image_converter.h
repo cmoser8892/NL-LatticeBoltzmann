@@ -70,7 +70,6 @@ class imageConverter {
     void compare_save_color_table(uint32_t full_color);
     void create_raw();
     void translate_reformed_into_structure();
-    void check_for_white();
     uint32_t make_stride_aligned(uint32_t align_stride,uint32_t row_stride);
     point_t update_position(point_t p);
     void fill_pkh_with_reformed_raw();
@@ -88,6 +87,7 @@ class imageConverter {
     void raw_cleanup();
     // helpers
     int return_number_of_colors();
+    bool check_for_white_wet_nodes();
     unsigned long return_basic_size();
 };
 

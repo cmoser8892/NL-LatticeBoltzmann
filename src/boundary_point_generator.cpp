@@ -1,10 +1,20 @@
 #include <iostream>
 #include "boundary_point_generator.h"
 
+/**
+ * @fn rawBoundaryPoints::rawBoundaryPoints(point_t s)
+ * @brief  constructor, sets size and limits
+ * @param s
+ */
 rawBoundaryPoints::rawBoundaryPoints(point_t s) {
     size = s;
+    limits << s.x() -1, s.y() -1;
 }
 
+/**
+ * @fn rawBoundaryPoints::~rawBoundaryPoints()
+ * @brief deconstruction frees the memory in the vectors
+ */
 rawBoundaryPoints::~rawBoundaryPoints() {
     delete_raw_boundary_points();
     delete_reformed_boundary_points();
@@ -44,10 +54,13 @@ void rawBoundaryPoints::fill_keys() {
     }
 }
 
-
+/**
+ * @fn void rawBoundaryPoints::visualize_2D_boundary()
+ * @brief visualizer of the raw boundaries, call before deletion of the raw boundaries, not combinable with pure run
+ */
 void rawBoundaryPoints::visualize_2D_boundary() {
     flowfield_t output;
-    output.setZero(size.x(),size.y());
+    output.setZero(std::floor(size.x()),std::floor(size.y()));
     for(auto b : raw_boundary_points) {
         ++output(int(b->point.x()),int(b->point.y()));
     }
@@ -55,6 +68,10 @@ void rawBoundaryPoints::visualize_2D_boundary() {
     std::cout << output << std::endl << std::endl;
 }
 
+/**
+ * @fn void rawBoundaryPoints::rewrite_reformed_boundary_handles()
+ * @brief rewrite reformed handles to be in order again
+ */
 void rawBoundaryPoints::rewrite_reformed_boundary_handles() {
     handle_t start = 0;
     for(auto reformed_bp : reformed_boundary_points) {
@@ -62,6 +79,12 @@ void rawBoundaryPoints::rewrite_reformed_boundary_handles() {
     }
 }
 
+/**
+ * @fn rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundaryPoint_t &b)
+ * @brief function encapsulates the decision logic for the reduction from raw to reformed boundary points
+ * @param b
+ * @return the correct boarder return code
+ */
 rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundaryPoint_t &b) {
     border_return_code_t return_code = INSIDE;
     point_t short_hand = b.point;
@@ -73,10 +96,10 @@ rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundar
     if(short_hand.y() == 0) {
         counter++;
     }
-    if(short_hand.x() == size.x()) {
+    if(short_hand.x() == limits.x()) {
         counter++;
     }
-    if(short_hand.y() == size.y()) {
+    if(short_hand.y() == limits.y()) {
         counter++;
     }
     // assigning return codes
@@ -95,6 +118,12 @@ rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundar
     return return_code;
 }
 
+/**
+ * @fn
+ * @brief
+ * @param b
+ * @return
+ */
 int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t b) {
     int return_code = -1;
     switch (b) {
@@ -520,9 +549,9 @@ void boundaryPointConstructor::delete_structures() {
  * @brief simple visualizer for boundaries
  * @param size
  */
-void boundaryPointConstructor::visualize_2D_boundary(int size) {
+void boundaryPointConstructor::visualize_2D_boundary() {
     flowfield_t output;
-    output.setZero(size,size);
+    output.setZero(std::floor(size.x()),std::floor(size.y()));
     for(auto bs : boundary_structures) {
         for(auto b : bs->boundary_points) {
             ++output(int(b->point.x()),int(b->point.y()));

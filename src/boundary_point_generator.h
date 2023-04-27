@@ -29,6 +29,7 @@ class rawBoundaryPoints {
     // reminder that valid handles start at 1
     handle_t current_handle = 0;
     point_t size;
+    point_t limits;
     pointKeyHash pkh;
     void fill_keys();
     border_return_code_t check_boarder(boundaryPoint_t &b);
@@ -79,7 +80,7 @@ class boundaryPointConstructor {
     void rewrite_handles();
     void delete_structures();
     // visualize the resulting structure
-    void visualize_2D_boundary(int size);
+    void visualize_2D_boundary();
     // total nodes
     long total_boundary_nodes();
     // different functions to set up different simple structures (heavily used in testing)

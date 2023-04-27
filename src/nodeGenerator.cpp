@@ -492,9 +492,9 @@ void nodeGenerator::delete_node_infos() {
  * @brief simple visualizer node points
  * @param size
  */
-void nodeGenerator::visualize_2D_nodes(int size) {
+void nodeGenerator::visualize_2D_nodes() {
     flowfield_t output;
-    output.setZero(size,size);
+    output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
     for(auto b : node_infos) {
         ++output(int(b->position.x()),int(b->position.y()));
     }

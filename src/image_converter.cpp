@@ -103,14 +103,6 @@ void imageConverter::detect_colors() {
     }
 }
 
-void imageConverter::check_for_white() {
-    uint32_t white = WHITE_COLOR_CODE_24_BIT;
-    if(!colors_used.contains(white)) {
-        std::cerr << "No baseline white for wet nodes detected!" << std::endl;
-        /// todo not sure if i should terminate the program here prob not
-    }
-}
-
 void imageConverter::compare_save_color_table(uint32_t full_color) {
     // easier logic thanks to c++20 :)
     if(!colors_used.contains(full_color)) {
@@ -273,7 +265,9 @@ void imageConverter::run() {
 
 void imageConverter::raw_run() {
     // read in the raw data and reduce the set of boundaries considered
-    check_for_white();
+    if(!check_for_white_wet_nodes()) {
+        std::cerr << "No baseline white for wet nodes detected!" << std::endl;
+    }
     create_raw();
     raw->reduce();
 }
@@ -285,6 +279,7 @@ void imageConverter::raw_cleanup() {
     point_t size = {bmp.info_header.width,bmp.info_header.height};
     boundaries = new boundaryPointConstructor(size);
     // init one structure // do while size of reformed boundary is not 0
+    // todo only made for one structure
     translate_reformed_into_structure();
     for(auto bs : boundaries->boundary_structures) {
         bs->rewrite_reformed_boundary_handles();
@@ -293,6 +288,10 @@ void imageConverter::raw_cleanup() {
 
 int imageConverter::return_number_of_colors() {
     return colors_used.size();
+}
+
+bool imageConverter::check_for_white_wet_nodes() {
+    return colors_used.contains(WHITE_COLOR_CODE_24_BIT);
 }
 
 unsigned long imageConverter::return_basic_size() {

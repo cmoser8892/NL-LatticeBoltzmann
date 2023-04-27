@@ -1356,6 +1356,7 @@ TEST(FunctionalTest, bmp_read_32b) {
     // tests general functionality of the bmp image reading compability of the image converter
     auto bmp_32_test_image = get_base_path();
     bmp_32_test_image.append("tests");
+    bmp_32_test_image.append("test_images");
     bmp_32_test_image.append("test_32_bit.bmp");
     imageConverter ic(bmp_32_test_image);
     ic.init();
@@ -1368,6 +1369,7 @@ TEST(FunctionalTest, bmp_read_32b) {
 TEST(FunctionalTest, bmp_read_24b) {
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
     bmp_24_test_image.append("test_24_bit.bmp");
     imageConverter ic(bmp_24_test_image);
     ic.init();
@@ -1378,6 +1380,7 @@ TEST(FunctionalTest, bmp_read_24b) {
 TEST(FunctionalTest, boarder_create_image_raw) {
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
     bmp_24_test_image.append("test_small.bmp");
     imageConverter ic(bmp_24_test_image);
     //
@@ -1418,9 +1421,39 @@ TEST(FunctionalTest, boarder_create_image_raw) {
 }
 
 TEST(FunctionalTest, boarder_create_more_than_one) {
-
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
+    bmp_24_test_image.append("test_image.bmp");
+    imageConverter ic(bmp_24_test_image);
+    int max_nodes = 80*80; // bad intel joke incuming
+    // run the image converter
+    ic.init();
+    ic.raw_run();
+    // check if raw is bigger than reformed
+    EXPECT_LT(ic.raw->raw_boundary_points.size(), max_nodes);
+    EXPECT_LT(ic.raw->reformed_boundary_points.size(),
+              ic.raw->raw_boundary_points.size());
+    // run the into boundary_structures reformer
+    ic.raw_cleanup();
+    // look at the boundary structure visually
+    // ic.boundaries->visualize_2D_boundary();
 }
 
-// todo more tests for individual functions raw has NO test
+TEST(FunctionalTest, raw_reduce_test) {
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
+    bmp_24_test_image.append("black.bmp");
+    imageConverter ic(bmp_24_test_image);
+    ic.init();
+    ic.raw_run();
+    // reduce should leave nothing for the reformed boundaries
+    EXPECT_EQ(ic.raw->raw_boundary_points.size(),80*80);
+    EXPECT_EQ(ic.raw->reformed_boundary_points.size(),0);
+    // also checks color
+    EXPECT_FALSE(ic.check_for_white_wet_nodes());
+}
+
 
 
