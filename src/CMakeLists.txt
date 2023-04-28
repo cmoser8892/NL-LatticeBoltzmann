@@ -14,6 +14,7 @@ set(MY_HEADERS
 # List of implementation files
 set(MY_CPP
         simulation.cpp
+        types.cpp
         functions.cpp
         helper_functions.cpp
         boundary_point_generator.cpp

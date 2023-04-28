@@ -34,6 +34,8 @@ class rawBoundaryPoints {
     void fill_keys();
     border_return_code_t check_boarder(boundaryPoint_t &b);
     int set_max_neighbors(border_return_code_t b);
+    int set_min_neighbors(border_return_code_t b);
+    bool judge_add_up_found_velocities_vector(vector_t a);
   public:
     std::vector<boundaryPoint_t*> raw_boundary_points;
     std::vector<boundaryPoint_t*> reformed_boundary_points;

@@ -142,6 +142,32 @@ int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t
     return return_code;
 }
 
+int rawBoundaryPoints::set_min_neighbors(rawBoundaryPoints::border_return_code_t b) {
+    int return_code = -1;
+    switch (b) {
+    case CORNER:
+    case BOARDER:
+        return_code = 1;
+        break;
+    case INSIDE:
+        return_code = 3;
+        break;
+    default:
+        throw std::runtime_error("Default in switch case");
+    }
+    return return_code;
+}
+
+bool rawBoundaryPoints::judge_add_up_found_velocities_vector(vector_t a) {
+    // we judge the length of the vector hopefully enough
+    bool return_value = false;
+    vector_t inter = {a.x()/a.x(), a.y()/a.y()};
+    if(!inter.hasNaN()) {
+        return_value = true;
+    }
+    return return_value;
+}
+
 /**
  * @fn void rawBoundaryPoints::read_in_bounce_back(point_t p)
  * @brief point read in
@@ -185,28 +211,41 @@ void rawBoundaryPoints::reduce() {
     handle_t start = 0;
     // loop over the raw nodes
     for(auto rbp : raw_boundary_points) {
+        bool add_me = true;
         // determine boarder code
         border_return_code_t cases = check_boarder(*rbp);
         // set the number on set case where we discard a point
-        int out_number = set_max_neighbors(cases);
+        int out_max_number = set_max_neighbors(cases);
+        int out_min_number = set_min_neighbors(cases);
         // go in all directions to look for a neighbor
         int found_neighbors = 0;
         array_t short_hand = rbp->point;
+        vector_t add_up_found_velocities = {0,0};
         // we use the velocity set for easy directions
         for(int i = 1; i < CHANNELS; ++i) {
             // eigen can init a point with an array but cant add stuff up...
             point_t current = short_hand + velocity_set.col(i);
             handle_t found_handle = pkh.key_translation(current);
             if(found_handle > 0) {
+                // increase number of found neighbors
                 found_neighbors++;
+                // add up the found velocity set
+                add_up_found_velocities += (vector_t) velocity_set.col(i);
             }
 
         }
-        // check how many neighbors were found
-        if(found_neighbors >= out_number) {
-            // out nop
+        // check how many neighbors were found has to be in the range and take care of a special case
+        if(found_neighbors >= out_max_number){
+            // out of the structure
+            add_me = false;
         }
-        else {
+        if(found_neighbors <= out_min_number) {
+            // maybe out (we want to get rid of little bumps mostly)
+            if(!judge_add_up_found_velocities_vector(add_up_found_velocities)) {
+                add_me = false;
+            }
+        }
+        if(add_me) {
             // add to the reformed nodes
             auto copy  = new boundaryPoint_t;
             // copy over

@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 
 #define CHANNELS 9
-
+#define CARDINAL_DIRECTIONS 4
 // redefinitions
 using array_t = Eigen::ArrayXd;
 using matrix_t = Eigen::ArrayXXd;
@@ -20,6 +20,7 @@ using colour_t = uint32_t; // placeholder for colour, whatever the right datafor
 // globals (defined in functions)
 extern matrix_t velocity_set;
 extern matrix_t weights;
+extern matrix_t cardinal_directions;
 
 // structs
 typedef struct coordinate {

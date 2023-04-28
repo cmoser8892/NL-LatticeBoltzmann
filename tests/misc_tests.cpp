@@ -1460,7 +1460,7 @@ TEST(FunctionalTest, raw_reduce_test) {
     EXPECT_FALSE(ic.check_for_white_wet_nodes());
 }
 
-TEST(FunctionalTest, DISABLED_image_outer_inner) {
+TEST(FunctionalTest, image_outer_inner) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");

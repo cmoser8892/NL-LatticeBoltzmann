@@ -38,8 +38,6 @@ void straightGenerator::calculate_keys() {
  */
 void straightGenerator::calculate_all_straights() {
     // go through all the structs -> assumption closed surface
-    matrix_t cardinal_directions = {{0,1,0,-1},
-                                    {1,0,-1,0}};
     for(int i = 0; i< points->boundary_structures.size(); ++i) {
         auto bs = points->boundary_structures[i];
         auto pkh = pkhv[i];
