@@ -1460,22 +1460,6 @@ TEST(FunctionalTest, raw_reduce_test) {
     EXPECT_FALSE(ic.check_for_white_wet_nodes());
 }
 
-TEST(FunctionalTest, image_outer_inner) {
-    // test image setup
-    auto bmp_24_test_image = get_base_path();
-    bmp_24_test_image.append("tests");
-    bmp_24_test_image.append("test_images");
-    bmp_24_test_image.append("test_inner_outer.bmp");
-    imageConverter ic(bmp_24_test_image);
-    // run the functions
-    ic.init();
-    ic.run();
-    ic.boundaries->visualize_2D_boundary();
-    nodeGenerator gen(ic.boundaries);
-    gen.init_fused(ic.return_basic_size());
-    gen.visualize_2D_nodes();
-}
-
 TEST(FunctionalTest, image_u_image_90_right) {
     // boundary to image +90 right now a feature
     // also prob smarter to do with an l to determine filp
@@ -1492,8 +1476,31 @@ TEST(FunctionalTest, image_u_image_90_right) {
     // ic.boundaries->visualize_2D_boundary();
 }
 
+TEST(FunctionalTest, image_outer_inner) {
+    // test image setup
+    auto bmp_24_test_image = get_base_path();
+    bmp_24_test_image.append("tests");
+    bmp_24_test_image.append("test_images");
+    bmp_24_test_image.append("test_inner_outer.bmp");
+    imageConverter ic(bmp_24_test_image);
+    // run the functions
+    ic.init();
+    ic.run();
+    ic.boundaries->visualize_2D_boundary();
+    nodeGenerator gen(ic.boundaries);
+    gen.init_fused(ic.return_basic_size());
+    gen.visualize_2D_nodes();
+}
+
 // todo look up book boy Wolf Gladrow on forcing term in LB
 // todo update fused init to also work with boundary limits
 
-
+/**
+ * algorithm updates for straight.
+ * prob best to generate all possible straight lines in a boundary structure
+ * calculate intersections with the mass center
+ * discard doubles
+ * inteseting part delete inner intersections if tere is an outer intersection
+ * order?! not sure if that is nessessary
+ */
 

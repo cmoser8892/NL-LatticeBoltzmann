@@ -142,6 +142,12 @@ int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t
     return return_code;
 }
 
+/**
+ * @fn int rawBoundaryPoints::set_min_neighbors(rawBoundaryPoints::border_return_code_t b)
+ * @brief sets the minimum number of neighbors otherwise rejected
+ * @param b
+ * @return
+ */
 int rawBoundaryPoints::set_min_neighbors(rawBoundaryPoints::border_return_code_t b) {
     int return_code = -1;
     switch (b) {
@@ -158,6 +164,12 @@ int rawBoundaryPoints::set_min_neighbors(rawBoundaryPoints::border_return_code_t
     return return_code;
 }
 
+/**
+ * @fn bool rawBoundaryPoints::judge_add_up_found_velocities_vector(vector_t a)
+ * @brief function to distinguish between nodes that one should keep and not (corner case)
+ * @param a
+ * @return
+ */
 bool rawBoundaryPoints::judge_add_up_found_velocities_vector(vector_t a) {
     // we judge the length of the vector hopefully enough
     bool return_value = false;
