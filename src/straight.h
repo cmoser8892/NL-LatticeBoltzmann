@@ -15,13 +15,15 @@ class straightGenerator {
   private:
     std::vector<pointKeyHash*> pkhv;
     boundaryPointConstructor* points;
-    std::unordered_multimap<handle_t,handle_t> keys;
     point_t mass_center;
     std::vector<point_t> individual_mass_centers;
+    std::vector<straight_t *> temporary_creation;
     void calculate_mass_center();
     void calculate_keys();
     void calculate_all_straights();
     int calculate_intersections(nodePoint_t* point);
+    void straight_create(int bs);
+    void straight_self_test();
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;
@@ -32,4 +34,6 @@ class straightGenerator {
     bool node_inside(nodePoint_t *point);
     void delete_vector();
 };
+
+double calculate_intersection(straight_t* ray, straight_t* surface);
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H

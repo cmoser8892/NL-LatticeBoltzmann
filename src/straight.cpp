@@ -60,7 +60,7 @@ void straightGenerator::calculate_all_straights() {
             point_t current = bs->boundary_points[array_position]->point;
             point_t candidate;
             handle_t candidate_handle = 0;
-            for(int i = 0; i < 4; ++i) {
+            for(int i = 0; i < cardinal_directions.cols()  ; ++i) {
                 candidate = current + point_t(cardinal_directions.col(i));
                 // std::cout << candidate << std::endl;
                 // linear search over all keys lol
@@ -90,7 +90,7 @@ void straightGenerator::calculate_all_straights() {
             // add the surface
             auto s  = new straight_t;
             s->point = current;
-            // rotate the vector by 90 degrees forward (doesnt really matter which direction)
+            // calculate the vector
             vector_t next = candidate - current;
             s->direction = next;
             // put the point in the middle
@@ -100,6 +100,47 @@ void straightGenerator::calculate_all_straights() {
             // check for overflow!
             array_position = candidate_handle-1;
         }
+    }
+}
+
+void straightGenerator::straight_create(int bs_number) {
+    // creates a temporary object based for the boundary_structre
+    auto bs = points->boundary_structures[bs_number];
+    auto pkh = pkhv[bs_number];
+    for(auto bp : bs->boundary_points) {
+        // setup and short hands
+        point_t current = bp->point;
+        point_t neighbor;
+        handle_t neighbor_handle = 0;
+        // we search in the cardinal directions for neighbors
+        int found = 0;
+        for(int i = 0; i < cardinal_directions.cols()  ; ++i) {
+            neighbor = current + point_t(cardinal_directions.col(i));
+            neighbor_handle = pkh->key_translation(neighbor);
+            if(neighbor_handle > 0) {
+                // we add it to the temporary object used in self test
+                auto s  = new straight_t;
+                s->point = current;
+                s->direction = neighbor - current;
+                temporary_creation.push_back(s);
+                // self test
+                ++found;
+            }
+        }
+        if(found == 0) {
+            throw std::runtime_error("construction of the containing surface failed!");
+        }
+    }
+}
+
+void straightGenerator::straight_self_test() {
+    // todo shares similarities with calculate intersection reprogram
+    // translates the temporary surface into the the used surface object
+    for(auto candidate :temporary_creation) {
+        // shorthands
+        point_t current = candidate->point;
+        vector_t direction = candidate->direction;
+        // we do an intersection test with all the other surfaces in the temporary object
     }
 }
 
@@ -128,6 +169,7 @@ straightGenerator::~straightGenerator() {
 void straightGenerator::init() {
     calculate_mass_center();
     calculate_keys();
+    init_test();
     calculate_all_straights();
 }
 
@@ -135,7 +177,10 @@ void straightGenerator::init_test() {
     // just for testing out the new init structure
     // will get added in the boundary
     // 1st step generate all connections in immediate neighborhood of a point
-
+    for(int i = 0; i < points->boundary_structures.size(); ++i) {
+        straight_create(i);
+        straight_self_test();
+    }
 }
 
 /**
@@ -145,7 +190,8 @@ void straightGenerator::init_test() {
  * @return number of intersections
  */
 int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
-    /// surface based algorithm to calcualte intersections
+    /// todo why 3 passes should not 2 be enough
+    /// surface based algorithm to calculate intersections
     /**
      * 3 passes have to be made to calculate to calcuate a valid intersection
      *  1 does the straight hit the surface in the area between the two points that define it
@@ -153,15 +199,13 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
      *  3 have we already hit an edgepoint
      */
     int number_of_intersections = 0;
-    // check if actually the boundary point
+    // check if actually the boundary point, boundary points are excluded in the first pass
     for(auto surf : surfaces) {
         // check if we are a surface point described (aka a boundary point and do a hard break
         if(surf->point == point_t(node_point->position)) {
             return 0;
         }
     }
-    // corner case mass center lays on point
-    point_t p = node_point->position;
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point->position; // => r
@@ -175,43 +219,45 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
         straight.point.y() += 0.1;
     }
     straight.direction =  mass_center - straight.point;
-    vector_t normal = {straight.direction.y(), -straight.direction.x()}; // => n
     // go through the surface and take a look
     std::vector<point_t> already_found;
     already_found.clear();
     // actual test
-    for(auto surf : surfaces) {
-        // t = ((r - o)·n)/(n·d)
-        // surf->point => o
-        // surf->direction => d
-        // std::cout << straight.point << std::endl;
-        double t = ((straight.point - surf->point).dot(normal))/
-                   (normal.dot(surf->direction));
+    for(auto surface : surfaces) {
+        // in the first pass the surface is actually the ray we are using
+        // we want the intersection to be between 0 and 1
+        straight_t first_pass_surface;
+        first_pass_surface.point = straight.point;
+        first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};
+        double t = calculate_intersection(surface, &first_pass_surface);
+        /// 1 pass
         if((t >= 0.0) && (t <= 1.0)) {
-            // check if direction of the finding is posetiv in the direction of the vector
-            vector_t surface_normal = {surf->direction.y(),-surf->direction.x()};
-            double s = ((surf->point-straight.point).dot(surface_normal))/(surface_normal.dot(straight.direction));
+            // check if direction of the finding is positive in
+            // the direction of the vector outgoing from the center
+            straight_t second_pass_surface;
+            second_pass_surface.point = surface->point;
+            second_pass_surface.direction = {surface->direction.y(),-surface->direction.x()};
+            double s = calculate_intersection(&straight,&second_pass_surface);
+            /// 2 pass
             if(s >= 0) {
+                // compare and check if we already got the same point previously
+                // in case we intersect a node point directly ( no double counting )
                 point_t point = straight.point + s*straight.direction;
                 bool add = true;
-                // might be a bad idea no just check s and not o +sd
-                // but it should be alright
+                /// 3 pass
                 for (auto ps : already_found) {
                     if(ps == point) {
                         add = false;
                     }
                 }
+                // push the point into the already found bin
                 already_found.push_back(point);
+                // increase the numer of intersections
                 if(add) {
                     number_of_intersections++;
                 }
             }
         }
-    }
-    if(0) {
-        std::cout << "Result" << std::endl;
-        std::cout << node_point->position.x() << " " << node_point->position.y() << std::endl;
-        std::cout << number_of_intersections << std::endl;
     }
     return number_of_intersections;
 }
@@ -239,3 +285,26 @@ void straightGenerator::delete_vector() {
     }
 }
 
+double calculate_intersection(straight_t * ray, straight_t * surface) {
+    /**
+     * Theory:
+     * - An intersection occurs if the equation f(x,y) = f(r(t)) = f(o + t*d) = 0 is satisfied
+     * - All points p = (x,y) on a plane
+     *   with surface normal n and offset r satisfy the equation n dot (p - r) = 0
+     * - Therefore the intersection with the ray can be computed based on t:
+     *   n dot (o + t*d - r) = 0 --> t = ((r - o) dot n)/(n dot d)
+     * - we use t to decide on the type of intersection and weather or not it is valid in
+     *   the specific use case
+     */
+    // shorthands
+    point_t o = ray->point;
+    vector_t d = ray->direction;
+    // it is assumed that the surface normal is given
+    // todo save the surface normals instead!
+    point_t r = surface->point;
+    vector_t n = surface->direction;
+    // calculate function
+    /// note return nan if n orthogonal to d
+    double t = ((r -o).dot(n))/(n.dot(d));
+    return t;
+}

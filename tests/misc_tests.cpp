@@ -1476,6 +1476,23 @@ TEST(FunctionalTest, image_u_image_90_right) {
     // ic.boundaries->visualize_2D_boundary();
 }
 
+TEST(FunctionalTest, intersetion_calculation) {
+    // std use case
+    straight_t ray;
+    straight_t surface;
+    ray.point = {0,0};
+    ray.direction = {1,1};
+    surface.point = {1,1};
+    surface.direction = {0,1};
+    EXPECT_EQ(calculate_intersection(&ray,&surface),1);
+    // orthogonal surface to test out
+    ray.point = {0,0};
+    ray.direction = {1,1};
+    surface.point = {1,1};
+    surface.direction = {1,-1};
+    EXPECT_TRUE(std::isnan(calculate_intersection(&ray,&surface)));
+}
+
 TEST(FunctionalTest, image_outer_inner) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
