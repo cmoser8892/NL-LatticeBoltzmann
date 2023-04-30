@@ -78,6 +78,7 @@ class imageConverter {
     boundaryPointConstructor* boundaries;
     // functions
     explicit imageConverter(std::filesystem::path p);
+    ~imageConverter();
     void init();
     void run();
     // individual tests of the run functionality

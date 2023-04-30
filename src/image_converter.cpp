@@ -276,6 +276,11 @@ imageConverter::imageConverter(std::filesystem::path p) {
     path = p;
 }
 
+imageConverter::~imageConverter() {
+    // delete also calls teh deconstructor
+    delete raw;
+    delete boundaries;
+}
 /**
  * @fn void imageConverter::init()
  * @brief reads in a bmp image
