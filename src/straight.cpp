@@ -8,12 +8,23 @@
  */
 void straightGenerator::calculate_mass_center() {
     // add all the points up, divide by the number of points
+    // as an alternative the individual mcs could be added up
     mass_center.setZero();
     for(auto bs : points->boundary_structures) {
+        // set up the individual mass center
+        point_t imc;
+        imc.setZero();
+        // add up
         for(auto b : bs->boundary_points) {
+            imc += b->point;
             mass_center += b->point;
         }
+        // divide by the total size
+        imc /= double(bs->boundary_points.size());
+        // save the individual mc of the boundary_structures
+        individual_mass_centers.push_back(imc);
     }
+    // div by the total size
     mass_center /= double(points->total_boundary_nodes());
 }
 
@@ -33,7 +44,7 @@ void straightGenerator::calculate_keys() {
 
 /**
  * @fn void straightGenerator::calculate_all_straights()
- * @brief calculates the straights between all the boundary points, doesnt reduce them though
+ * @brief calculates the straights between all the boundary points
  * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
@@ -77,7 +88,7 @@ void straightGenerator::calculate_all_straights() {
                 throw std::runtime_error("construction of the containing surface failed!");
             }
             // add the surface
-            auto s  = new surface_t;
+            auto s  = new straight_t;
             s->point = current;
             // rotate the vector by 90 degrees forward (doesnt really matter which direction)
             vector_t next = candidate - current;
@@ -118,6 +129,13 @@ void straightGenerator::init() {
     calculate_mass_center();
     calculate_keys();
     calculate_all_straights();
+}
+
+void straightGenerator::init_test() {
+    // just for testing out the new init structure
+    // will get added in the boundary
+    // 1st step generate all connections in immediate neighborhood of a point
+
 }
 
 /**

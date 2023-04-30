@@ -39,7 +39,7 @@ class rawBoundaryPoints {
   public:
     std::vector<boundaryPoint_t*> raw_boundary_points;
     std::vector<boundaryPoint_t*> reformed_boundary_points;
-    rawBoundaryPoints(point_t size);
+    explicit rawBoundaryPoints(point_t size);
     ~rawBoundaryPoints();
     void delete_raw_boundary_points();
     void delete_reformed_boundary_points();
@@ -63,7 +63,6 @@ class boundaryPointConstructor {
   private:
     // reminder valid handles start at 1
     handle_t added_handle = 0;
-
   public:
     // holds all the boundary points
     long current_structure = -1;
@@ -71,7 +70,7 @@ class boundaryPointConstructor {
     // sizes and limits of the construction field
     point_t size;
     point_t limits;
-    //
+    // functions
     explicit boundaryPointConstructor(point_t s);
     ~boundaryPointConstructor();
     // initializes a general structure

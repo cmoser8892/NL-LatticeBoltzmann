@@ -26,7 +26,7 @@ typedef enum readBack {
  */
 class nodeGenerator {
   private:
-    boundaryPointConstructor* points;
+    boundaryPointConstructor* points = nullptr;
     std::string file_name = "stored_nodes_file";
     bool redo = true;
     bool save = false;
