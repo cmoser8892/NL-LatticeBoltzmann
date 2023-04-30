@@ -55,14 +55,13 @@ void straightGenerator::calculate_all_straights() {
         std::vector<handle_t> blacklist;
         // first point
         handle_t array_position = 0;
-        for(int i = 0; i < bs->boundary_points.size(); ++i) {
+        for(int j = 0; j < bs->boundary_points.size(); ++j) {
             // search in the cardinal directions NESW
             point_t current = bs->boundary_points[array_position]->point;
             point_t candidate;
             handle_t candidate_handle = 0;
-            for(int i = 0; i < cardinal_directions.cols()  ; ++i) {
+            for(int k = 0; k < cardinal_directions.cols()  ; ++k) {
                 candidate = current + point_t(cardinal_directions.col(i));
-                // std::cout << candidate << std::endl;
                 // linear search over all keys lol
                 candidate_handle = pkh->key_translation(candidate);
                 // if not 0 this is valid handle
@@ -103,6 +102,11 @@ void straightGenerator::calculate_all_straights() {
     }
 }
 
+/**
+ * @fn void straightGenerator::straight_create(int bs_number)
+ * @brief creates all possible
+ * @param bs_number (which boundary structure based on index)
+ */
 void straightGenerator::straight_create(int bs_number) {
     // creates a temporary object based for the boundary_structre
     auto bs = points->boundary_structures[bs_number];
@@ -111,7 +115,7 @@ void straightGenerator::straight_create(int bs_number) {
         // setup and short hands
         point_t current = bp->point;
         point_t neighbor;
-        handle_t neighbor_handle = 0;
+        handle_t neighbor_handle;
         // we search in the cardinal directions for neighbors
         int found = 0;
         for(int i = 0; i < cardinal_directions.cols()  ; ++i) {
@@ -133,15 +137,70 @@ void straightGenerator::straight_create(int bs_number) {
     }
 }
 
-void straightGenerator::straight_self_test() {
-    // todo shares similarities with calculate intersection reprogram
+void straightGenerator::straight_self_test(int bs) {
     // translates the temporary surface into the the used surface object
     for(auto candidate :temporary_creation) {
+        // control variable
+        bool add_me = true;
         // shorthands
         point_t current = candidate->point;
         vector_t direction = candidate->direction;
+        // set up a straight line through the middle of the candidate normal to the direction
+        straight_t ray;
+        ray.point = current + 0.5 * direction;
+        ray.direction = {direction.y(), -direction.x()};
         // we do an intersection test with all the other surfaces in the temporary object
+        for(auto partner : temporary_creation) {
+            // ignore self
+            if(partner == candidate) {
+                continue;
+            }
+            // set up the surface
+            straight_t surface;
+            surface.point = partner->point;
+            surface.direction = {partner->point.y(), -partner->point.x()};
+            // do an intersection test
+            // to be more sure of the result we round
+            double t = std::round(calculate_intersection(&ray,&surface));
+            if(t == 0) {
+                // found an equal surface dont add
+                add_me = false;
+                break;
+            }
+            if((t == 1) ||(t == -1)) {
+                // found an adjacent surface
+                // we now test who is closer to the mass center and set add_me according to that
+                if(straight_closer_test(bs,candidate,partner)) {
+                    add_me = false;
+                    break;
+                }
+            }
+        }
+        if(add_me) {
+            // add to the general surface
+            surfaces.push_back(candidate);
+        }
+        else {
+            // delete not necessary
+            delete candidate;
+        }
     }
+}
+
+bool straightGenerator::straight_closer_test(int bs ,straight_t* self, straight_t* partner) {
+    bool return_value = false;
+    // setup
+    point_t current_mc = individual_mass_centers[bs];
+    vector_t mc_self_midpoint = (self->point + 0.5 * self->direction) - current_mc;
+    vector_t mc_partner_midpoint = (partner->point + 0.5 * partner->direction) - current_mc;
+    // which one is longer ?!
+    if(mc_partner_midpoint.norm() > mc_self_midpoint.norm()) {
+        return_value = true;
+    }
+    else if(mc_self_midpoint.norm() == mc_partner_midpoint.norm()) {
+        throw std::runtime_error("Algorithm can not decide which part of the surface to discard");
+    }
+    return return_value;
 }
 
 /// public
@@ -179,7 +238,7 @@ void straightGenerator::init_test() {
     // 1st step generate all connections in immediate neighborhood of a point
     for(int i = 0; i < points->boundary_structures.size(); ++i) {
         straight_create(i);
-        straight_self_test();
+        straight_self_test(i);
     }
 }
 
@@ -194,10 +253,12 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     /// surface based algorithm to calculate intersections
     /**
      * 3 passes have to be made to calculate to calcuate a valid intersection
+     *  0 not a boundary point used in construction
      *  1 does the straight hit the surface in the area between the two points that define it
      *  2 how does the straight hit the surface (posetive or negative we only care about posetiv
      *  3 have we already hit an edgepoint
      */
+    /// 0 pass not a boundary point or point on the surface
     int number_of_intersections = 0;
     // check if actually the boundary point, boundary points are excluded in the first pass
     for(auto surf : surfaces) {
@@ -209,7 +270,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point->position; // => r
-    // check if mass center
+    // check if mass center and shift if yes
     if(straight.point == mass_center) {
         // we do a little shift out of the mass-center
         // any direction should work
@@ -219,10 +280,10 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
         straight.point.y() += 0.1;
     }
     straight.direction =  mass_center - straight.point;
-    // go through the surface and take a look
+    // setup already found
     std::vector<point_t> already_found;
     already_found.clear();
-    // actual test
+    // go over the surfaces
     for(auto surface : surfaces) {
         // in the first pass the surface is actually the ray we are using
         // we want the intersection to be between 0 and 1
@@ -245,7 +306,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
                 point_t point = straight.point + s*straight.direction;
                 bool add = true;
                 /// 3 pass
-                for (auto ps : already_found) {
+                for (auto&  ps : already_found) {
                     if(ps == point) {
                         add = false;
                     }
@@ -285,6 +346,13 @@ void straightGenerator::delete_vector() {
     }
 }
 
+/**
+ * @fn double calculate_intersection(straight_t * ray, straight_t * surface)
+ * @brief calculates the intersection between a ray and a surface, theory is explained in the function body
+ * @param ray
+ * @param surface
+ * @return distance t
+ */
 double calculate_intersection(straight_t * ray, straight_t * surface) {
     /**
      * Theory:

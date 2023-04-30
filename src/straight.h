@@ -12,6 +12,11 @@ typedef struct straight {
 }straight_t;
 
 class straightGenerator {
+    /**
+     * note: surfaces are the boundary point to the next boundary point
+     * connected via a direction vector
+     * it is a straight line
+     */
   private:
     std::vector<pointKeyHash*> pkhv;
     boundaryPointConstructor* points;
@@ -23,7 +28,8 @@ class straightGenerator {
     void calculate_all_straights();
     int calculate_intersections(nodePoint_t* point);
     void straight_create(int bs);
-    void straight_self_test();
+    void straight_self_test(int bs);
+    bool straight_closer_test(int bs, straight_t* self, straight_t* partner);
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;
