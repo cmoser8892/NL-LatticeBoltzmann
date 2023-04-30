@@ -373,6 +373,7 @@ void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, bou
     addup = 0.5 *(-normal + dir);
     *start += addup;
 }
+
 /**
  * @fn void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b)
  * @brief sets up an individual boundary point
