@@ -1527,11 +1527,20 @@ TEST(FunctionalTest, straight_bump) {
     boundaries.set_point(&setter,BOUNCE_BACK);
     setter = {3,1};
     boundaries.set_point(&setter,BOUNCE_BACK);
-    // boundaries.visualize_2D_boundary();
+    setter = {2,2};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,2};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    // straight test
+    straightGenerator s(&boundaries);
+    s.init();
+    EXPECT_EQ(s.surfaces.size(),8);
+    // direct node gen test
     nodeGenerator gen(&boundaries);
-    gen.init_fused(size);
-    //gen.visualize_2D_nodes();
-    EXPECT_EQ(gen.node_infos.size(),6 +8);
+    gen.init(size);
+    gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(),4 +8);
 }
 
 
