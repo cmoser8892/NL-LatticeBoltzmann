@@ -734,6 +734,25 @@ TEST(InitTests, staircase_11) {
     EXPECT_EQ(boundaries.boundary_structures[0]->boundary_points.size(), 8 +7 -1);
 }
 
+TEST(InitTests, up_down_boundary) {
+    unsigned int size = 10;
+    point_t c = {size,size};
+    point_t e1 = {1,0};
+    point_t e2 = {4,4};
+    point_t setter = {0,0};
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    boundaries.one_direction(8,{0,1},&setter,BOUNCE_BACK);
+    boundaries.steps_direction(3,{1,1},&e1,BOUNCE_BACK);
+    setter = {4,3};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.steps_direction(3,{-1,1},&e2,BOUNCE_BACK);
+    setter = {1,7};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),22);
+}
+
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):

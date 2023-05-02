@@ -8,8 +8,7 @@ project(
   VERSION 0.0.1
   LANGUAGES CXX
   DESCRIPTION
-  "Simple C++ MD code, with a static library for common code, milestones for \
-  the project and tests."
+  "lb - cdoe space"
   HOMEPAGE_URL "https://imtek-simulation.github.io/MolecularDynamics/"
 )
 

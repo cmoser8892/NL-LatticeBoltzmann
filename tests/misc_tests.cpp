@@ -1495,6 +1495,46 @@ TEST(FunctionalTest, intersetion_calculation) {
     EXPECT_TRUE(std::isnan(calculate_intersection(&ray,&surface)));
 }
 
+TEST(FunctionalTest, straight_deletions) {
+    unsigned int size = 10;
+    point_t c = {size,size};
+    point_t e1 = {1,0};
+    point_t e2 = {4,4};
+    point_t setter = {0,0};
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    boundaries.one_direction(8,{0,1},&setter,BOUNCE_BACK);
+    boundaries.steps_direction(3,{1,1},&e1,BOUNCE_BACK);
+    setter = {4,3};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.steps_direction(3,{-1,1},&e2,BOUNCE_BACK);
+    setter = {1,7};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    EXPECT_EQ(boundaries.total_boundary_nodes(),22);
+    boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(), 22 + 6 + 4 + 2);
+}
+
+TEST(FunctionalTest, straight_bump) {
+    unsigned int size = 6;
+    point_t c = {size,size};
+    point_t setter = {2,1};
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_quader();
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,1};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    // boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    //gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(),6 +8);
+}
+
+
 TEST(FunctionalTest, image_outer_inner) {
     // test image setupa
     auto bmp_24_test_image = get_base_path();
@@ -1507,8 +1547,10 @@ TEST(FunctionalTest, image_outer_inner) {
     ic.run();
     ic.boundaries->visualize_2D_boundary();
     nodeGenerator gen(ic.boundaries);
-    gen.init_fused(ic.return_basic_size());
+    gen.init(ic.return_basic_size());
     gen.visualize_2D_nodes();
+    // nessessary to to a visual check
+    EXPECT_TRUE(false);
 }
 
 // todo look up book boy Wolf Gladrow on forcing term in LB
