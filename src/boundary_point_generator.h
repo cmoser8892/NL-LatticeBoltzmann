@@ -90,13 +90,12 @@ class boundaryPointConstructor {
     void corner_creation(vector_t dir, point_t *start, boundaryType_t b);
     void init_quader();
     void init_chopped_quader(point_t start, int devider);
-    void init_quader(point_t start);
     void init_quader(point_t start, vector_t size);
     void init_sliding_lid();
     void init_chopped_sliding_lid(point_t start, int devider);
     void init_quader_side_chopped(point_t start, int chopsize);
     void init_sliding_lid_side_chopped(point_t start, int chopsize);
-    void init_sliding_lid_inner(point_t start, point_t cntiues, vector_t inner_size);
+    void init_sliding_lid_inner(point_t start,vector_t outer_size, point_t cntiues, vector_t inner_size);
     void init_poiseuille_flow();
     void pressure_inlet();
 };

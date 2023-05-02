@@ -7,8 +7,12 @@
 #include "helper_functions.h"
 
 typedef struct straight {
+    // s = p + t*d
     point_t point;
     vector_t direction;
+    // validity of the straight
+    double min_t = 0;
+    double max_t = 0;
 }straight_t;
 
 class straightGenerator {
@@ -18,11 +22,16 @@ class straightGenerator {
      * it is a straight line
      */
   private:
-    std::vector<pointKeyHash*> pkhv;
+    // boundary points and pkh of the boundary points
     boundaryPointConstructor* points;
+    std::vector<pointKeyHash*> pkhv;
+    // global and individual mass centers
     point_t mass_center;
     std::vector<point_t> individual_mass_centers;
+    // temporary object storages
     std::vector<straight_t *> temporary_creation;
+    std::vector<straight_t *> temporary_valid;
+    // functions
     void calculate_mass_center();
     void calculate_keys();
     void calculate_all_straights();
@@ -30,6 +39,8 @@ class straightGenerator {
     void straight_create(int bs);
     void straight_self_test(int bs);
     bool straight_closer_test(int bs, straight_t* self, straight_t* partner);
+    void straight_set_t_values(int bs);
+    double go_through_vector(int bs, straight_t* self,int direction);
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;
@@ -39,6 +50,7 @@ class straightGenerator {
     void init_test();
     bool node_inside(nodePoint_t *point);
     void delete_vector();
+    void delete_keys();
 };
 
 double calculate_intersection(straight_t* ray, straight_t* surface);

@@ -424,7 +424,7 @@ void boundaryPointConstructor::rewrite_handles() {
 void boundaryPointConstructor::init_quader() {
     point_t current;
     current.setZero();
-    init_quader(current);
+    init_quader(current,size);
 }
 
 /**
@@ -463,15 +463,6 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
     // go through x
     direction = {0,-1};
     one_direction(int(limits.y()),direction,&current, type);
-}
-
-/**
- * @fn void boundaryPointConstructor::init_quader(point_t p)
- * @brief sets up a quader that doesnt start at 0,0
- * @param p
- */
-void boundaryPointConstructor::init_quader(point_t p) {
-    init_quader(p,size);
 }
 
 /**
@@ -602,8 +593,8 @@ void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int 
  * @param continues
  * @param inner_size
  */
-void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t continues, vector_t inner_size) {
-    init_quader(start,size);
+void boundaryPointConstructor::init_sliding_lid_inner(point_t start,vector_t outer_size, point_t continues, vector_t inner_size) {
+    init_quader(start,outer_size);
     init_quader(continues,inner_size);
     double limit_y = limits.y() + start.y();
     for(auto b : boundary_structures.at(0)->boundary_points) {

@@ -5,6 +5,14 @@
 
 #include <cstdint>
 
+
+#include <cassert>
+#include <cstdio>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+
 typedef struct __attribute__((packed))
 {
     uint16_t wFormatTag;
@@ -17,6 +25,7 @@ WAVEFORMAT;
 
 int main()
 {
+    // todo find out about unique ptrs
     WAVEFORMAT w;
     (void)w;
 }

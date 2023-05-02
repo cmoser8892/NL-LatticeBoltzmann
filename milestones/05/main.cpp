@@ -10,9 +10,9 @@ int main(int argc, char *argv[]) {
     unsigned int sub_size = 202;
     point_t c = {size,size};
     point_t p = {sub_size,sub_size+20};
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
+    boundaries.init_sliding_lid_inner({10,20},p,{34,45},{49,52});
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     // init sim parameters

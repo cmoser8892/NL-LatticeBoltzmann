@@ -227,13 +227,19 @@ TEST(InitTests, sufaces) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_quader({0,1});
+    boundaries.init_quader();
+    boundaries.visualize_2D_boundary();
     straightGenerator st(&boundaries);
     st.init();
     // test size
     EXPECT_EQ(boundaries.total_boundary_nodes(),4*(sub_size-1));
-    EXPECT_EQ(st.surfaces.size(),4*(sub_size-1));
-    EXPECT_EQ(st.surfaces.size(),boundaries.total_boundary_nodes());
+    EXPECT_EQ(st.surfaces.size(),4);
+    // test the lengths of the vectors
+    for(auto s : st.surfaces) {
+        double length = (std::abs(s->min_t) + std::abs(s->max_t))*s->direction.norm();
+        std::cout << length << std::endl;
+    }
+
 }
 
 TEST(InitTests, reduced_surface) {
@@ -284,7 +290,7 @@ TEST(InitTests, outer_inner_quader) {
     point_t p = {outer_size,outer_size};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({1,1},{3,3},{inner_size,inner_size});
+    boundaries.init_sliding_lid_inner({1,1},p,{3,3},{inner_size,inner_size});
     EXPECT_EQ(boundaries.total_boundary_nodes(), ((outer_size-1) + (inner_size-1))*4);
 }
 
@@ -344,13 +350,13 @@ TEST(InitTests, inner_outer_neighbour_test) {
     point_t c = {size,size};
     point_t p = {sub_size +5,sub_size};
     point_t k = {4,10};
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
-    // boundaries.visualize_2D_boundary(30);
+    boundaries.init_sliding_lid_inner({3,5},p,{5,7},k);
+    boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    // gen.visualize_2D_nodes(30);
+    gen.visualize_2D_nodes();
     int expected_total_node_number = p.x()*p.y() - (k.x()-2)*(k.y()-2);
     EXPECT_EQ(expected_total_node_number,gen.node_infos.size());
     int number_nodes = 0;
@@ -395,7 +401,7 @@ TEST(InitTests, init_out_inner_rho_writeout) {
     point_t k = {5,6};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init(size);
     simulation sim(&boundaries,&gen);
@@ -438,7 +444,7 @@ TEST(InitTests, inner_outer_master_test) {
     point_t k = {inner_size,inner_size}; // size of the inner one
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({1,1},{3,3},k);
+    boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
     // boundaries.visualize_2D_boundary(size);
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
@@ -529,7 +535,7 @@ TEST(InitTests, fused_inner_outer_init_simple) {
     point_t k = {inner_size,inner_size}; // size of the inner one
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({1,1},{3,3},k);
+    boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
     // boundaries.visualize_2D_boundary(size);
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
@@ -549,7 +555,7 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     point_t k = {5,6};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     simulation sim(&boundaries,&gen);

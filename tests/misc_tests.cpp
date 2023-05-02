@@ -889,9 +889,10 @@ TEST(FunctionalTest, fused_streaming_13) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
-    // boundaries.visualize_2D_boundary(size);
+    boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
+    gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),2);
     // gen.visualize_2D_nodes(4);
     simulation sm(&boundaries, &gen);
@@ -1222,7 +1223,8 @@ TEST(FunctionalTest, oSimu_streaming_68) {
     point = {1,1};
     boundaries.set_point(&point,BOUNCE_BACK);
     // need to reorder nodes!!!!!!!! so that the surface is closed!!
-    // boundaries.visualize_2D_boundary(size);
+    // new init does this
+    boundaries.visualize_2D_boundary();
     // node init
     // first found points seems to be bugged 2.5,2.5
     nodeGenerator gen(&boundaries);
@@ -1494,7 +1496,7 @@ TEST(FunctionalTest, intersetion_calculation) {
 }
 
 TEST(FunctionalTest, image_outer_inner) {
-    // test image setup
+    // test image setupa
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
     bmp_24_test_image.append("test_images");
