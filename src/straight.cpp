@@ -118,7 +118,9 @@ void straightGenerator::straight_create(int bs_number) {
         handle_t neighbor_handle;
         // we search in the cardinal directions for neighbors
         int found = 0;
-        for(int i = 0; i < cardinal_directions.cols()  ; ++i) {
+        // we just look in the positive directions negative gets ignored :)
+        // so it can happen that we do not find a partner for that point
+        for(int i = 0; i < 2 ; ++i) {
             neighbor = current + point_t(cardinal_directions.col(i));
             neighbor_handle = pkh->key_translation(neighbor);
             if(neighbor_handle > 0) {
@@ -131,18 +133,18 @@ void straightGenerator::straight_create(int bs_number) {
                 ++found;
             }
         }
-        if(found == 0) {
-            throw std::runtime_error("construction of the containing surface failed!");
-        }
     }
 }
 
 void straightGenerator::straight_self_test(int bs) {
     // translates the temporary surface into the the used surface object
+    int surface_number = 0;
     for(int i = 0; i<temporary_creation.size(); ++i) {
         auto candidate = temporary_creation[i];
-        // control variable
-        bool add_me = true;
+        if(candidate == nullptr) {
+            continue;
+        }
+        bool better_candidate = false;
         // shorthands
         point_t current = candidate->point;
         vector_t direction = candidate->direction;
@@ -151,10 +153,8 @@ void straightGenerator::straight_self_test(int bs) {
         ray.point = current + 0.5 * direction;
         ray.direction = {direction.y(), -direction.x()};
         // we do an intersection test with all the other surfaces in the temporary object
-        // std::cout << "candidate" << std::endl;
-        // std::cout << ray.point.x() << " ," << ray.point.y() << std::endl;
-        // std::cout << ray.direction.x() << " ," << ray.direction.y() << std::endl;
-        for(auto partner : temporary_creation) {
+        for(int j = 0; j < temporary_creation.size();++j) {
+            auto partner = temporary_creation[j];
             // ignore self
             if(partner == candidate) {
                 continue;
@@ -167,32 +167,28 @@ void straightGenerator::straight_self_test(int bs) {
             straight_t surface;
             surface.point = partner->point;
             surface.direction = {partner->direction.y(), -partner->direction.x()};
-            // std::cout << surface.point.x() << " ," << surface.point.y() << " ,";
-            // std::cout << surface.direction.x() << " ," << surface.direction.y() << " ,";
             // do an intersection test
             // to be more sure of the result we round
             double t = std::round(calculate_intersection(&ray,&surface));
             if(t == 0) {
-                // found an equal surface dont add
-                add_me = false;
-                break;
-            }
-            if((t == 1) ||(t == -1)) {
-                // found an adjacent surface
-                // we now test who is closer to the mass center and set add_me according to that
-                if(straight_closer_test(bs,candidate,partner)) {
-                    add_me = false;
+                // found an equal surface delete that one
+                // if a point is further starts before the positive direction point elect that one and
+                // stop this loop to delete the candidate
+                if(!straight_better_candidate_test(candidate,partner)) {
+                    delete partner;
+                    temporary_creation[j] = nullptr;
+                }
+                else {
+                    better_candidate = true;
                     break;
                 }
             }
         }
-        if(add_me) {
-            // add to the general surface
-            // surfaces.push_back(candidate);
+        // add to valid if nothing better is found
+        if(!better_candidate) {
             temporary_valid.push_back(candidate);
         }
         else {
-            // delete not necessary
             delete candidate;
             temporary_creation[i] = nullptr;
         }
@@ -225,6 +221,12 @@ bool straightGenerator::straight_closer_test(int bs ,straight_t* self, straight_
             throw std::runtime_error("Algorithm can not decide which part of the surface to discard");
         }
     }
+    return return_value;
+}
+
+bool straightGenerator::straight_better_candidate_test(straight_t *candidate, straight *partner) {
+    bool return_value = false;
+    // todo implement me
     return return_value;
 }
 
@@ -266,6 +268,11 @@ double straightGenerator::go_through_vector(int bs_number, straight_t *self, int
     }
     return return_value;
 }
+
+void straightGenerator::straight_test_creation(int bs) {
+    // 1 step of the creation
+    // we test weather or not all boundary points on that surface are included in the t values
+}
 /// public
 /**
  * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
@@ -306,6 +313,7 @@ void straightGenerator::init_test() {
         // we can now clear the temp creation all valids are in temp valids
         temporary_creation.clear();
         straight_set_t_values(i);
+
         // clear temp valid too objects got added to surfaces vector
         temporary_valid.clear();
     }

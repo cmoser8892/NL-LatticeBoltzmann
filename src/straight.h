@@ -39,8 +39,10 @@ class straightGenerator {
     void straight_create(int bs);
     void straight_self_test(int bs);
     bool straight_closer_test(int bs, straight_t* self, straight_t* partner);
+    bool straight_better_candidate_test(straight_t* candidate, straight* partner);
     void straight_set_t_values(int bs);
     double go_through_vector(int bs, straight_t* self,int direction);
+    void straight_test_creation(int bs);
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;

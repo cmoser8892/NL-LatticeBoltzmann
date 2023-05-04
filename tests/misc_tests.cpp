@@ -1501,6 +1501,7 @@ TEST(FunctionalTest, straight_deletions) {
     point_t e1 = {1,0};
     point_t e2 = {4,4};
     point_t setter = {0,0};
+    // set up a boundary test structure to tests interrupting lines
     boundaryPointConstructor boundaries(c);
     boundaries.init_structure();
     boundaries.one_direction(8,{0,1},&setter,BOUNCE_BACK);
@@ -1512,6 +1513,10 @@ TEST(FunctionalTest, straight_deletions) {
     boundaries.set_point(&setter,BOUNCE_BACK);
     EXPECT_EQ(boundaries.total_boundary_nodes(),22);
     boundaries.visualize_2D_boundary();
+
+    straightGenerator s(&boundaries);
+    s.init();
+
     nodeGenerator gen(&boundaries);
     gen.init(size);
     gen.visualize_2D_nodes();
