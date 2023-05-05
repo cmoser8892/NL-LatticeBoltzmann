@@ -274,6 +274,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
         // now we use that to determine t values and check weather or not we have to partition the thing
         // control variables
         double expected_distance = 1;
+        double start_point = 0;
         int iteration_counter = 0;
         auto current_surface = s;
         // special cases counter
@@ -293,17 +294,18 @@ void straightGenerator::find_surface_boundary_points(int bs) {
                     }
                     // set t values
                     current_surface->min_t = 0;
-                    current_surface->max_t = expected_distance - 1;
+                    current_surface->max_t = expected_distance - 1 - start_point;
                     // push into the temporary field
                     temporary.push_back(current_surface);
                     // create and setup a new surface
                     auto temp = new straight_t;
-                    temp->point = current_surface->point + expected_distance*current_surface->direction;
+                    temp->point = current_surface->point + d*current_surface->direction;
                     temp->direction = current_surface->direction;
                     current_surface = temp;
                     // reset control variables
-                    expected_distance = 1;
+                    expected_distance = d + 1;
                     iteration_counter = 0;
+                    start_point = d;
                 }
                 else {
                     ++expected_distance;
@@ -315,7 +317,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
         }
         // set values
         current_surface->min_t = 0;
-        current_surface->max_t = expected_distance - 1;
+        current_surface->max_t = expected_distance - 1 - start_point;
         if((current_surface->min_t == 0) && (current_surface->max_t == 0)) {
             delete current_surface;
         }

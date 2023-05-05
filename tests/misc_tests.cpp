@@ -1636,6 +1636,7 @@ TEST(FunctionalTest, straight_inner_missing_68) {
     }
     EXPECT_EQ(ones,4);
     EXPECT_EQ(tows,4);
+    EXPECT_EQ(errors,0);
 }
 
 
@@ -1657,10 +1658,40 @@ TEST(FunctionalTest, straight_deletions) {
     boundaries.set_point(&setter,BOUNCE_BACK);
     EXPECT_EQ(boundaries.total_boundary_nodes(),22);
     boundaries.visualize_2D_boundary();
-
+    // manually set up the straight generator to tests out performance
     straightGenerator s(&boundaries);
     s.init();
-
+    EXPECT_EQ(s.surfaces.size(),12);
+    // control the values
+    int ones = 0;
+    int twos = 0;
+    int threes = 0;
+    int sevens = 0;
+    int errors = 0;
+    for(auto surface : s.surfaces) {
+        EXPECT_EQ(surface->min_t,0);
+        if(surface->max_t == 1) {
+            ++ones;
+        }
+        else if(surface->max_t == 2) {
+            ++twos;
+        }
+        else if(surface->max_t == 3) {
+            ++threes;
+        }
+        else if(surface->max_t == 7) {
+            ++sevens;
+        }
+        else {
+            ++errors;
+        }
+    }
+    EXPECT_EQ(ones,8);
+    EXPECT_EQ(twos,2);
+    EXPECT_EQ(threes, 1);
+    EXPECT_EQ(sevens,1);
+    EXPECT_EQ(errors,0);
+    // test out the fully integrated thing in the node generator
     nodeGenerator gen(&boundaries);
     gen.init(size);
     gen.visualize_2D_nodes();
