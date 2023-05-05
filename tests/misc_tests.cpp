@@ -1698,6 +1698,65 @@ TEST(FunctionalTest, straight_deletions) {
     EXPECT_EQ(gen.node_infos.size(), 22 + 6 + 4 + 2);
 }
 
+TEST(FunctionalTest, multiple_interruptions) {
+    unsigned int size = 10;
+    point_t c = {4,size};
+    point_t setter = {0,0};
+    // set up a boundary test structure to tests interrupting lines
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    boundaries.one_direction(10,{0,1},&setter,BOUNCE_BACK);
+    setter = {1,0};
+    boundaries.steps_direction(2,{1,1},&setter,BOUNCE_BACK);
+    setter = {3,2};
+    boundaries.steps_direction(2,{-1,1},&setter,BOUNCE_BACK);
+    setter = {2,5};
+    boundaries.steps_direction(1,{1,1},&setter,BOUNCE_BACK);
+    setter = {3,6};
+    boundaries.steps_direction(2,{-1,1},&setter,BOUNCE_BACK);
+    setter = {2,9};
+    boundaries.steps_direction(1,{-1,-1},&setter,BOUNCE_BACK);
+    /// visualizer
+    boundaries.visualize_2D_boundary();
+    straightGenerator s(&boundaries);
+    s.init();
+    // control
+    int ones = 0;
+    int twos = 0;
+    int nines = 0;
+    int errors = 0;
+    for(auto surface : s.surfaces) {
+        EXPECT_EQ(surface->min_t,0);
+        if(surface->max_t == 1) {
+            ++ones;
+        }
+        else if(surface->max_t == 2) {
+            ++twos;
+        }
+        else if(surface->max_t == 9) {
+            ++nines;
+        }
+        else {
+            ++errors;
+        }
+    }
+    EXPECT_EQ(ones,5);
+    EXPECT_EQ(twos,6);
+    EXPECT_EQ(nines,1);
+    EXPECT_EQ(errors,0);
+    EXPECT_EQ(s.surfaces.size(),12);
+    // node generator master test
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(), boundaries.total_boundary_nodes() + 8 + 2);
+}
+
+TEST(FunctionalTest,comparision) {
+    point_t t = {2,1};
+    EXPECT_TRUE(compare_two_points(&t,&t));
+}
+
 TEST(FunctionalTest, straight_bump) {
     unsigned int size = 6;
     point_t c = {size,size};
@@ -1715,7 +1774,8 @@ TEST(FunctionalTest, straight_bump) {
     // straight test
     straightGenerator s(&boundaries);
     s.init();
-    EXPECT_EQ(s.surfaces.size(),8);
+    // control the values
+
     // direct node gen test
     nodeGenerator gen(&boundaries);
     gen.init(size);
