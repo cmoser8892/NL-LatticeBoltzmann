@@ -226,8 +226,103 @@ bool straightGenerator::straight_closer_test(int bs ,straight_t* self, straight_
 
 bool straightGenerator::straight_better_candidate_test(straight_t *candidate, straight *partner) {
     bool return_value = false;
-    // todo implement me
+    // if either x or y value of the origin is lower prob better
+    if(partner->point.x() < candidate->point.x() ) {
+        return_value = true;
+    }
+    if(partner->point.y() < candidate->point.y()) {
+        return_value = true;
+    }
     return return_value;
+}
+
+void straightGenerator::find_surface_boundary_points(int bs) {
+    auto bps = points->boundary_structures[bs]->boundary_points;
+    for (auto s : temporary_valid) {
+        std::vector<point_t*> on_surface_points;
+        std::vector<double> distances;
+        vector_t direction = {s->direction.y(),-s->direction.x()};
+        for( auto bp : bps) {
+            // construct
+            vector_t check = bp->point - s->point;
+            if(std::round(direction.dot(check)) == 0) {
+                // orthogonal so on the surface
+                on_surface_points.push_back(&bp->point);
+            }
+        }
+        // we found all the boundary points on the structure
+        // now we determine the t values
+        // first we determine all the distances form the origin of the surface
+        for(auto surface_points : on_surface_points) {
+            vector_t temp = (*surface_points - s->point);
+            double d = temp.norm();
+            // std::cout << d << std::endl;
+            if(d > 0) {
+                // directional control / check
+                temp /= d;
+                if((temp.x() == -1) || (temp.y() == -1)) {
+                    /// todo negate this expression to be a onliner
+                }
+                else {
+                    distances.push_back(d);
+                }
+            };
+        }
+        // std::cout << std::endl;
+        // then we make sure to have them sorted
+        std::sort(distances.begin(),distances.end());
+        // now we use that to determine t values and check weather or not we have to partition the thing
+        // control variables
+        double expected_distance = 1;
+        int iteration_counter = 0;
+        auto current_surface = s;
+        // special cases counter
+        int inner_bump = 0; //
+        int i = 0;
+        // do while loop for easier control
+        while(i < distances.size()){
+            // setup d
+            auto d = distances[i];
+            // ignore negative distances
+            if(d > 0) {
+                //
+                if(d != expected_distance) {
+                    // first entry is more away than expected
+                    if(iteration_counter == 0) {
+                        // error ?!
+                    }
+                    // set t values
+                    current_surface->min_t = 0;
+                    current_surface->max_t = expected_distance - 1;
+                    // push into the temporary field
+                    temporary.push_back(current_surface);
+                    // create and setup a new surface
+                    auto temp = new straight_t;
+                    temp->point = current_surface->point + expected_distance*current_surface->direction;
+                    temp->direction = current_surface->direction;
+                    current_surface = temp;
+                    // reset control variables
+                    expected_distance = 1;
+                    iteration_counter = 0;
+                }
+                else {
+                    ++expected_distance;
+                    ++iteration_counter;
+                }
+            }
+            // iterator up
+            ++i;
+        }
+        // set values
+        current_surface->min_t = 0;
+        current_surface->max_t = expected_distance - 1;
+        if((current_surface->min_t == 0) && (current_surface->max_t == 0)) {
+            delete current_surface;
+        }
+        else {
+            temporary.push_back(current_surface);
+        }
+    }
 }
 
 void straightGenerator::straight_set_t_values(int bs_number) {
@@ -272,6 +367,9 @@ double straightGenerator::go_through_vector(int bs_number, straight_t *self, int
 void straightGenerator::straight_test_creation(int bs) {
     // 1 step of the creation
     // we test weather or not all boundary points on that surface are included in the t values
+    for(auto s : temporary) {
+        surfaces.push_back(s);
+    }
 }
 /// public
 /**
@@ -312,10 +410,12 @@ void straightGenerator::init_test() {
         straight_self_test(i);
         // we can now clear the temp creation all valids are in temp valids
         temporary_creation.clear();
-        straight_set_t_values(i);
-
-        // clear temp valid too objects got added to surfaces vector
+        find_surface_boundary_points(i);
         temporary_valid.clear();
+        // straight_set_t_values(i);
+        straight_test_creation(i);
+        // clear temp valid too objects got added to surfaces vector
+        temporary.clear();
     }
 }
 

@@ -245,9 +245,11 @@ TEST(InitTests, sufaces) {
 TEST(InitTests, reduced_surface) {
     unsigned int size = 6;
     unsigned int sub_size = 4;
+    point_t c = {size, size};
     point_t p = {sub_size,sub_size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_chopped_sliding_lid({1,1},0);
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_chopped_sliding_lid({1,1},p,0);
+    boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
     // chekc if 8x8
@@ -269,9 +271,11 @@ TEST(InitTests, reduced_surface) {
 TEST(InitTests, chopped_boundaries) {
     unsigned int size = 6;
     unsigned int sub_size = 4;
+    point_t c = {size,size};
     point_t p = {sub_size,sub_size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_chopped_sliding_lid({1,1},4);
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_chopped_sliding_lid({1,1},p,4);
+    boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(), (sub_size-1)*4);
     // check if even with the bulge the sizes are still the same
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4);

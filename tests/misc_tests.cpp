@@ -1149,7 +1149,7 @@ TEST(FunctionalTest, oSimu_streaming_57) {
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {0,1};
     boundaries.set_point(&point,BOUNCE_BACK);
-    // boundaries.visualize_2D_boundary(size);
+    boundaries.visualize_2D_boundary();
     // node init
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
@@ -1494,6 +1494,150 @@ TEST(FunctionalTest, intersetion_calculation) {
     surface.direction = {1,-1};
     EXPECT_TRUE(std::isnan(calculate_intersection(&ray,&surface)));
 }
+
+TEST(FunctionalTest, simple_use_case_straight) {
+    // simple quader without any special cases for the straight surface generator
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size};
+    // init
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    // boundaries.visualize_2D_boundary();
+    // straight tests
+    straightGenerator s(&boundaries);
+    s.init();
+    EXPECT_EQ(s.surfaces.size(),4);
+    for(auto surface : s.surfaces) {
+        EXPECT_EQ(surface->max_t, 3);
+        EXPECT_EQ(surface->min_t, 0);
+    }
+}
+
+TEST(FunctionalTest, straight_inner_missing_57) {
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size};
+    // init boundaries
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_structure();
+    point_t point = {0,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    //
+    straightGenerator s(&boundaries);
+    s.init();
+    // check the surfaces
+    EXPECT_EQ(s.surfaces.size(),8);
+    // control the values
+    int ones = 0;
+    int tows = 0;
+    int errors = 0;
+    for(auto surface : s.surfaces) {
+        EXPECT_EQ(surface->min_t,0);
+        if(surface->max_t == 1) {
+            ++ones;
+        }
+        else if(surface->max_t == 2) {
+            ++tows;
+        }
+        else {
+            ++errors;
+        }
+    }
+    EXPECT_EQ(ones,4);
+    EXPECT_EQ(tows,4);
+    EXPECT_EQ(errors,0);
+}
+
+TEST(FunctionalTest, straight_inner_missing_68) {
+    // sizes matters
+    int step = 0;
+    int size = 4;
+    point_t start = {0,0};
+    point_t end = {size,0};
+    point_t sim_area = {size,size};
+    boundaryPointConstructor boundaries(sim_area);
+    // init boundaries
+    boundaries.init_structure();
+    point_t point = {1,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,0};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {3,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {2,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,3};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,2};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {0,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    point = {1,1};
+    boundaries.set_point(&point,BOUNCE_BACK);
+    // need to reorder nodes!!!!!!!! so that the surface is closed!!
+    // new init does this
+    boundaries.visualize_2D_boundary();
+    //
+    straightGenerator s(&boundaries);
+    s.init();
+    // check the surfaces
+    EXPECT_EQ(s.surfaces.size(),8);
+    // control the values
+    int ones = 0;
+    int tows = 0;
+    int errors = 0;
+    for(auto surface : s.surfaces) {
+        EXPECT_EQ(surface->min_t,0);
+        if(surface->max_t == 1) {
+            ++ones;
+        }
+        else if(surface->max_t == 2) {
+            ++tows;
+        }
+        else {
+            ++errors;
+        }
+    }
+    EXPECT_EQ(ones,4);
+    EXPECT_EQ(tows,4);
+}
+
 
 TEST(FunctionalTest, straight_deletions) {
     unsigned int size = 10;

@@ -31,6 +31,7 @@ class straightGenerator {
     // temporary object storages
     std::vector<straight_t *> temporary_creation;
     std::vector<straight_t *> temporary_valid;
+    std::vector<straight_t *> temporary;
     // functions
     void calculate_mass_center();
     void calculate_keys();
@@ -40,6 +41,7 @@ class straightGenerator {
     void straight_self_test(int bs);
     bool straight_closer_test(int bs, straight_t* self, straight_t* partner);
     bool straight_better_candidate_test(straight_t* candidate, straight* partner);
+    void find_surface_boundary_points(int bs);
     void straight_set_t_values(int bs);
     double go_through_vector(int bs, straight_t* self,int direction);
     void straight_test_creation(int bs);

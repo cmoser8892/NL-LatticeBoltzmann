@@ -433,7 +433,7 @@ void boundaryPointConstructor::init_quader() {
  * @param point
  * @param devider
  */
-void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
+void boundaryPointConstructor::init_chopped_quader(point_t point, point_t size, int devider) {
     // devider is a devider
     if(devider == 0) {
         devider = 2147483647;
@@ -441,6 +441,8 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
     if(devider < 2) {
         throw std::runtime_error("unrealitic devider");
     }
+    point_t local_limit;
+    local_limit << size.x() - 1, size.y() - 1;
     init_structure();
     boundaryType_t type = BOUNCE_BACK;
     point_t current = point;
@@ -450,19 +452,19 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, int devider) {
     vector_t direction;
     // go through x
     direction = {1,0};
-    one_direction(int(limits.x())-chop_x,direction,&current, type);
+    one_direction(int(local_limit.x())-chop_x,direction,&current, type);
     direction = {0,1};
     one_direction(chop_y,direction,&current, type);
     direction = {1,0};
     one_direction(chop_x,direction,&current, type);
     direction = {0,1};
-    one_direction(int(limits.y())-chop_y,direction,&current, type);
+    one_direction(int(local_limit.y())-chop_y,direction,&current, type);
     // go through y
     direction = {-1,0};
-    one_direction(int(limits.x()),direction,&current, type);
+    one_direction(int(local_limit.x()),direction,&current, type);
     // go through x
     direction = {0,-1};
-    one_direction(int(limits.y()),direction,&current, type);
+    one_direction(int(local_limit.y()),direction,&current, type);
 }
 
 /**
@@ -517,9 +519,11 @@ void boundaryPointConstructor::init_sliding_lid() {
  * @param start
  * @param chopfactor
  */
-void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopfactor) {
-    double limit_y = limits.y() + start.y();
-    init_chopped_quader(start,chopfactor);
+void boundaryPointConstructor::init_chopped_sliding_lid(point_t start,point_t size ,int chopfactor) {
+    point_t local_limit;
+    local_limit << size.x() - 1, size.y() - 1;
+    double limit_y = local_limit.y() + start.y();
+    init_chopped_quader(start,size,chopfactor);
     for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;
