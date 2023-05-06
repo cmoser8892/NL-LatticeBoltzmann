@@ -384,7 +384,7 @@ void straightGenerator::look_for_bumps(int bs) {
             surface.point = self->point + 0.5 * self->direction;
             surface.direction = self->direction;
             // setup vectors
-            std::vector<std::tuple<double,double, straight_t*>> values;
+            std::vector<std::tuple<double,double,handle_t, straight_t*>> values;
             // search for potential parters
             handle_t i = 0;
             for(auto partner : temporary) {
@@ -402,10 +402,11 @@ void straightGenerator::look_for_bumps(int bs) {
                 ray.direction = partner->direction;
                 double t = calculate_intersection(&ray,&surface);
                 if((t >= partner->min_t) && (t <= partner->max_t)) {
-                    // calculate distance
-                    double s = calculate_intersection(self,partner);
+                    double s = 1;
+                    // todo distance calc all wrong
                     // add to lists
-                    values.push_back(std::make_tuple(s,t,partner));
+                    if(s != 0)
+                        values.push_back(std::make_tuple(s,t,i,partner));
                 }
             }
             // sort via the abs values of the distance
@@ -418,8 +419,9 @@ void straightGenerator::look_for_bumps(int bs) {
                 bool valid = false;
                 double distance;
                 double t;
+                handle_t h;
                 straight_t* straight;
-                std::tie(distance,t,straight) = candy;
+                std::tie(distance,t,h,straight) = candy;
                 // validity test
                 if(distance > 0) {
                     // positive
@@ -663,15 +665,11 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
     return t;
 }
 
-bool compare_bumps_sort(const std::tuple<double,double,straight_t*> &a,
-                        const std::tuple<double,double,straight_t*> &b) {
-    // unpack all the stuff
-    double distance_a;
-    double distance_b;
-    double t;
-    straight_t* dont_care;
-    std::tie(distance_a, t, dont_care) = a;
-    std::tie(distance_b, t, dont_care) = b;
+bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
+                        const std::tuple<double,double,handle_t,straight_t*> &b) {
+    // shorthand to the distance i guess
+    double distance_a = std::get<0>(a);
+    double distance_b = std::get<0>(b);
     // compare absolute distance values
     return std::abs(distance_a) > std::abs(distance_b);
 }

@@ -59,6 +59,6 @@ class straightGenerator {
 };
 
 double calculate_intersection(straight_t* ray, straight_t* surface);
-bool compare_bumps_sort(const std::tuple<double,double,straight_t*> &a,
-                        const std::tuple<double,double,straight_t*> &b);
+bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
+                        const std::tuple<double,double,handle_t,straight_t*> &b);
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H
