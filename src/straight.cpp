@@ -261,7 +261,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
                 // directional control / check
                 temp /= d;
                 if((temp.x() == -1) || (temp.y() == -1)) {
-                    /// todo negate this expression to be a onliner
+                    /// todo negate this expression to be a oneliner
                 }
                 else {
                     distances.push_back(d);
@@ -365,11 +365,111 @@ double straightGenerator::go_through_vector(int bs_number, straight_t *self, int
     return return_value;
 }
 
+void straightGenerator::look_for_bumps(int bs) {
+    // test out straights with length 1
+    for(int i = 0; i < temporary.size();++i) {
+        // anti nullptr work
+        auto self = temporary[i];
+        if(self == nullptr) {
+            continue;
+        }
+        // only do something if we are the length 1
+        if(self->max_t == 1) {
+            // we do an intersection test with all the others
+            // if we intersect between 0 and max we have to decide weather this one is necessary
+            // we also have to check the distance between them
+            // all the distances get recorded too.
+            // construct the surface, just move the origin to the middle
+            straight_t surface;
+            surface.point = self->point + 0.5 * self->direction;
+            surface.direction = self->direction;
+            // setup vectors
+            std::vector<std::tuple<double,double, straight_t*>> values;
+            // search for potential parters
+            handle_t i = 0;
+            for(auto partner : temporary) {
+                ++i;
+                // exclusion craterias
+                if(partner == nullptr) {
+                    continue;
+                }
+                if(partner == self) {
+                    continue;
+                }
+                // ray is the
+                straight_t ray;
+                ray.point = partner->point;
+                ray.direction = partner->direction;
+                double t = calculate_intersection(&ray,&surface);
+                if((t >= partner->min_t) && (t <= partner->max_t)) {
+                    // calculate distance
+                    double s = calculate_intersection(self,partner);
+                    // add to lists
+                    values.push_back(std::make_tuple(s,t,partner));
+                }
+            }
+            // sort via the abs values of the distance
+            std::sort(values.begin(),values.end(), compare_bumps_sort);
+            // go through list of partners
+            int expected_plus = 1;
+            int expected_minus = -1;
+            for(auto candy : values) {
+                // unpack
+                bool valid = false;
+                double distance;
+                double t;
+                straight_t* straight;
+                std::tie(distance,t,straight) = candy;
+                // validity test
+                if(distance > 0) {
+                    // positive
+                    if (distance == expected_plus) {
+                        valid = true;
+                        ++expected_plus;
+                    }
+                    else {
+                        // set to unclear values
+                        expected_plus = -1;
+                    }
+                }
+                else {
+                    // negative
+                    if(distance == expected_minus) {
+                        valid = true;
+                        --expected_minus;
+                    }
+                    else {
+                        // set to unachievable value
+                        expected_minus = 1;
+                    }
+                }
+                // completely independent of expected distance only necessary to be a valid one
+                if(straight->max_t == 1) {
+                    // delete that candidate
+                }
+                else if(straight->max_t > 1) {
+                    // partition the partner
+                    double lower = std::floor(t);
+                    double higher = std::ceil(t);
+                    // create a new surface (later part)
+                    auto new_part = new straight_t;
+                    new_part->point = straight->point + higher*straight->direction;
+                    new_part->direction = straight->direction;
+                    new_part->min_t =  0;
+                    new_part->max_t = straight->max_t - higher;
+                    // reduce the reach of the first part
+                    straight->max_t = lower;
+                }
+            }
+        }
+    }
+}
+
 void straightGenerator::straight_test_creation(int bs) {
-    // 1 step of the creation
-    // we test weather or not all boundary points on that surface are included in the t values
     for(auto s : temporary) {
-        surfaces.push_back(s);
+        if(s != nullptr) {
+            surfaces.push_back(s);
+        }
     }
 }
 /// public
@@ -413,7 +513,7 @@ void straightGenerator::init_test() {
         temporary_creation.clear();
         find_surface_boundary_points(i);
         temporary_valid.clear();
-        // straight_set_t_values(i);
+        look_for_bumps(i);
         straight_test_creation(i);
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
@@ -561,4 +661,17 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
     /// note return nan if n orthogonal to d
     double t = ((r -o).dot(n))/(n.dot(d));
     return t;
+}
+
+bool compare_bumps_sort(const std::tuple<double,double,straight_t*> &a,
+                        const std::tuple<double,double,straight_t*> &b) {
+    // unpack all the stuff
+    double distance_a;
+    double distance_b;
+    double t;
+    straight_t* dont_care;
+    std::tie(distance_a, t, dont_care) = a;
+    std::tie(distance_b, t, dont_care) = b;
+    // compare absolute distance values
+    return std::abs(distance_a) > std::abs(distance_b);
 }

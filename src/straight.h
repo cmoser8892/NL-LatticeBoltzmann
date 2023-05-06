@@ -44,6 +44,7 @@ class straightGenerator {
     void find_surface_boundary_points(int bs);
     void straight_set_t_values(int bs);
     double go_through_vector(int bs, straight_t* self,int direction);
+    void look_for_bumps(int bs);
     void straight_test_creation(int bs);
   public:
     // suface defined as middle point between two boundary points and a normal vector
@@ -58,4 +59,6 @@ class straightGenerator {
 };
 
 double calculate_intersection(straight_t* ray, straight_t* surface);
+bool compare_bumps_sort(const std::tuple<double,double,straight_t*> &a,
+                        const std::tuple<double,double,straight_t*> &b);
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H

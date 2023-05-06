@@ -1774,8 +1774,30 @@ TEST(FunctionalTest, straight_bump) {
     // straight test
     straightGenerator s(&boundaries);
     s.init();
+    EXPECT_EQ(s.surfaces.size(),8);
     // control the values
-
+    int ones = 0;
+    int twos = 0;
+    int fives = 0;
+    int errors = 0;
+    for(auto surface : s.surfaces) {
+        if(surface->max_t == 1) {
+            ++ones;
+        }
+        else if(surface->max_t == 2) {
+            ++twos;
+        }
+        else if(surface->max_t == 5) {
+            ++fives;
+        }
+        else {
+            ++errors;
+        }
+    }
+    EXPECT_EQ(ones,1);
+    EXPECT_EQ(twos,4);
+    EXPECT_EQ(fives, 3);
+    EXPECT_EQ(errors,0);
     // direct node gen test
     nodeGenerator gen(&boundaries);
     gen.init(size);
