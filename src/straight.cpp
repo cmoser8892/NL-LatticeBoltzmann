@@ -277,8 +277,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
         double start_point = 0;
         int iteration_counter = 0;
         auto current_surface = s;
-        // special cases counter
-        int inner_bump = 0; //
+        point_t current_surface_start_point = s->point;
         int i = 0;
         // do while loop for easier control
         while(i < distances.size()){
@@ -299,7 +298,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
                     temporary.push_back(current_surface);
                     // create and setup a new surface
                     auto temp = new straight_t;
-                    temp->point = current_surface->point + d*current_surface->direction;
+                    temp->point = current_surface_start_point + d*current_surface->direction;
                     temp->direction = current_surface->direction;
                     current_surface = temp;
                     // reset control variables

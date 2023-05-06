@@ -269,12 +269,6 @@ void nodeGenerator::check_nodes(handle_t* current) {
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
-        std::cout << n->position << std::endl;
-        point_t t = {2,1};
-        point_t t2 = n->position;
-        if(compare_two_points(&t2,&t)) {
-            std::cout << "here" << std::endl;
-        }
         bool c = straight.node_inside(n);
         if(!c) {
             n->handle = *current;
