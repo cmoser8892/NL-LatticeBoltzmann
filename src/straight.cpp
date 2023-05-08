@@ -418,7 +418,9 @@ void straightGenerator::look_for_bumps(int bs) {
             int expected_plus = 0;
             int expected_minus = -1;
             int position_minus_max = -1;
-            int position_plus_max = 0;
+            int position_plus_max = -1;
+            // control vector which of the values is a bad apple
+            std::vector<bool> delete_true_candidates(values.size(),false);
             // loop over the found values
             for(int k = 0; k < values.size();++k) {
                 auto candy = values[k];
@@ -432,28 +434,36 @@ void straightGenerator::look_for_bumps(int bs) {
                 if(distance >= 0) {
                     // positive
                     if (distance == expected_plus) {
+                        // enable delete for the previous candidate
+                        if(position_plus_max >= 0)
+                            delete_true_candidates[position_plus_max] = true;
+
                         position_plus_max = k;
                         ++expected_plus;
                     }
                     else {
-                        // set to unclear values
+                        // set to unclear values and save the element
                         expected_plus = -1;
                     }
                 }
                 else {
                     // negative
                     if(distance == expected_minus) {
+                        // enable delete for the previous candidate
+                        if(position_minus_max >= 0)
+                            delete_true_candidates[position_minus_max] = true;
                         position_minus_max = k;
                         --expected_minus;
                     }
                     else {
-                        // set to unachievable value
+                        // set to unachievable value and safe the element
                         expected_minus = 1;
                     }
                 }
             }
             for(int k = 0; k < values.size(); ++k) {
                 auto candy = values[k];
+                auto delete_me = delete_true_candidates[k];
                 // unpack
                 double distance;
                 double t;
@@ -479,7 +489,7 @@ void straightGenerator::look_for_bumps(int bs) {
                 else {
                     // todo not that simple there are cases where the opposite side
                     // is just 1 long!!!
-                    if(straight->max_t == 1) {
+                    if(delete_me) {
                         long true_position = (long) h - 1;
                         delete temporary[true_position];
                         temporary[true_position] = nullptr;
@@ -491,8 +501,6 @@ void straightGenerator::look_for_bumps(int bs) {
                 // completely independent of expected distance only necessary
                 // to be a valid one
                 if((straight->max_t == 1) && (valid)) {
-                    // delete yourself
-                    // todo not sure whom to delete
                     // make sure who is more close to mc?!
                     delete temporary[i];
                     temporary[i] = nullptr;
