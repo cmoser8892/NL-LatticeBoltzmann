@@ -386,14 +386,11 @@ void straightGenerator::look_for_bumps(int bs) {
             // setup vectors
             std::vector<std::tuple<double,double,handle_t, straight_t*>> values;
             // search for potential parters
-            handle_t i = 0;
+            handle_t handle = 0;
             for(auto partner : temporary) {
-                ++i;
+                ++handle;
                 // exclusion craterias
                 if(partner == nullptr) {
-                    continue;
-                }
-                if(partner == self) {
                     continue;
                 }
                 // ray is the
@@ -402,31 +399,40 @@ void straightGenerator::look_for_bumps(int bs) {
                 ray.direction = partner->direction;
                 double t = calculate_intersection(&ray,&surface);
                 if((t >= partner->min_t) && (t <= partner->max_t)) {
-                    double s = 1;
-                    // todo distance calc all wrong
+                    // why does eigen not support 2d cross products?!
+                    // set up everything to work correctlly
+                    straight_t partner_surface;
+                    partner_surface.point = partner->point;
+                    partner_surface.direction = {partner->direction.y(), - partner->direction.x()};
+                    straight_t self_ray;
+                    self_ray.point = self->point;
+                    self_ray.direction = {self->direction.y(), -self->direction.x()};
+                    double s = calculate_intersection(&self_ray,&partner_surface);
                     // add to lists
-                    if(s != 0)
-                        values.push_back(std::make_tuple(s,t,i,partner));
+                    values.push_back(std::make_tuple(s,t,handle,partner));
                 }
             }
             // sort via the abs values of the distance
             std::sort(values.begin(),values.end(), compare_bumps_sort);
             // go through list of partners
-            int expected_plus = 1;
+            int expected_plus = 0;
             int expected_minus = -1;
-            for(auto candy : values) {
+            int position_minus_max = -1;
+            int position_plus_max = 0;
+            // loop over the found values
+            for(int k = 0; k < values.size();++k) {
+                auto candy = values[k];
                 // unpack
-                bool valid = false;
                 double distance;
                 double t;
                 handle_t h;
                 straight_t* straight;
                 std::tie(distance,t,h,straight) = candy;
                 // validity test
-                if(distance > 0) {
+                if(distance >= 0) {
                     // positive
                     if (distance == expected_plus) {
-                        valid = true;
+                        position_plus_max = k;
                         ++expected_plus;
                     }
                     else {
@@ -437,7 +443,7 @@ void straightGenerator::look_for_bumps(int bs) {
                 else {
                     // negative
                     if(distance == expected_minus) {
-                        valid = true;
+                        position_minus_max = k;
                         --expected_minus;
                     }
                     else {
@@ -445,11 +451,51 @@ void straightGenerator::look_for_bumps(int bs) {
                         expected_minus = 1;
                     }
                 }
-                // completely independent of expected distance only necessary to be a valid one
-                if(straight->max_t == 1) {
-                    // delete that candidate
+            }
+            for(int k = 0; k < values.size(); ++k) {
+                auto candy = values[k];
+                // unpack
+                double distance;
+                double t;
+                handle_t h;
+                straight_t* straight;
+                std::tie(distance,t,h,straight) = candy;
+                if((position_minus_max == k) || (position_plus_max == k)) {
+                    if(straight->max_t > 1) {
+                        // partition the partner
+                        double lower = std::floor(t);
+                        double higher = std::ceil(t);
+                        // create a new surface (later part)
+                        auto new_part = new straight_t;
+                        new_part->point = straight->point + higher*straight->direction;
+                        new_part->direction = straight->direction;
+                        new_part->min_t =  0;
+                        new_part->max_t = straight->max_t - higher;
+                        // reduce the reach of the first part
+                        straight->max_t = lower;
+                        temporary.push_back(new_part);
+                    }
                 }
-                else if(straight->max_t > 1) {
+                else {
+                    if(straight->max_t == 1) {
+                        long true_position = (long) h - 1;
+                        delete temporary[true_position];
+                        temporary[true_position] = nullptr;
+                    }
+                }
+            }
+            /*
+            if(0) {
+                // completely independent of expected distance only necessary
+                // to be a valid one
+                if((straight->max_t == 1) && (valid)) {
+                    // delete yourself
+                    // todo not sure whom to delete
+                    // make sure who is more close to mc?!
+                    delete temporary[i];
+                    temporary[i] = nullptr;
+                }
+                else if((straight->max_t > 1) && (valid)) {
                     // partition the partner
                     double lower = std::floor(t);
                     double higher = std::ceil(t);
@@ -461,8 +507,10 @@ void straightGenerator::look_for_bumps(int bs) {
                     new_part->max_t = straight->max_t - higher;
                     // reduce the reach of the first part
                     straight->max_t = lower;
+                    temporary.push_back(new_part);
                 }
             }
+             */
         }
     }
 }
@@ -515,8 +563,8 @@ void straightGenerator::init_test() {
         temporary_creation.clear();
         find_surface_boundary_points(i);
         temporary_valid.clear();
-        // todo look for bumps is a bad function makes more stuff unstable too
-        // look_for_bumps(i);
+        // todo look for bumps is a bad function breaks more than just one test
+        look_for_bumps(i);
         straight_test_creation(i);
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
@@ -650,6 +698,8 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
      *   with surface normal n and offset r satisfy the equation n dot (p - r) = 0
      * - Therefore the intersection with the ray can be computed based on t:
      *   n dot (o + t*d - r) = 0 --> t = ((r - o) dot n)/(n dot d)
+     *   where o and d are the direction of a ray
+     *   and r and n describe a surface point and a normal to describe a surface
      * - we use t to decide on the type of intersection and weather or not it is valid in
      *   the specific use case
      */
@@ -672,5 +722,5 @@ bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
     double distance_a = std::get<0>(a);
     double distance_b = std::get<0>(b);
     // compare absolute distance values
-    return std::abs(distance_a) > std::abs(distance_b);
+    return std::abs(distance_a) < std::abs(distance_b);
 }

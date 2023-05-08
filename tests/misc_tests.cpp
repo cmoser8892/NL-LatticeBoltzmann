@@ -1782,6 +1782,8 @@ TEST(FunctionalTest, straight_bump) {
     int errors = 0;
     for(auto surface : s.surfaces) {
         if(surface->max_t == 1) {
+            EXPECT_EQ(surface->point.x(),2);
+            EXPECT_EQ(surface->point.y(),2);
             ++ones;
         }
         else if(surface->max_t == 2) {
@@ -1800,7 +1802,7 @@ TEST(FunctionalTest, straight_bump) {
     EXPECT_EQ(errors,0);
     // direct node gen test
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init_fused(size);
     gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),4 +8);
 }
