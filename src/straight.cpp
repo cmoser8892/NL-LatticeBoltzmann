@@ -26,6 +26,11 @@ void straightGenerator::calculate_mass_center() {
     }
     // div by the total size
     mass_center /= double(points->total_boundary_nodes());
+    // todo fix errors related to mass center placement in the check inside algorithm :)
+    also todo  make 3 mcs for a more stable algorithm
+    how do i test sth to be convex?!
+    write one more test related to the construction oposing bumps should not be a prob thou
+    mass_center /=3;
 }
 
 /**
@@ -412,6 +417,10 @@ void straightGenerator::look_for_bumps(int bs) {
                     values.push_back(std::make_tuple(s,t,handle,partner));
                 }
             }
+            // if values has just the size 2 we can skip the next steps
+            if(values.size() == 2) {
+                continue;
+            }
             // sort via the abs values of the distance
             std::sort(values.begin(),values.end(), compare_bumps_sort);
             // go through list of partners
@@ -421,6 +430,9 @@ void straightGenerator::look_for_bumps(int bs) {
             int position_plus_max = -1;
             // control vector which of the values is a bad apple
             std::vector<bool> delete_true_candidates(values.size(),false);
+            if(values.size() > 2) {
+                std::cout << "here" << std::endl;
+            }
             // loop over the found values
             for(int k = 0; k < values.size();++k) {
                 auto candy = values[k];
@@ -482,8 +494,13 @@ void straightGenerator::look_for_bumps(int bs) {
                         new_part->min_t =  0;
                         new_part->max_t = straight->max_t - higher;
                         // reduce the reach of the first part
-                        straight->max_t = lower;
-                        temporary.push_back(new_part);
+                        if(new_part->max_t > 0) {
+                            straight->max_t = lower;
+                            temporary.push_back(new_part);
+                        }
+                        else {
+                            delete new_part;
+                        }
                     }
                 }
                 else {
