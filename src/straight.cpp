@@ -477,6 +477,8 @@ void straightGenerator::look_for_bumps(int bs) {
                     }
                 }
                 else {
+                    // todo not that simple there are cases where the opposite side
+                    // is just 1 long!!!
                     if(straight->max_t == 1) {
                         long true_position = (long) h - 1;
                         delete temporary[true_position];
