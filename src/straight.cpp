@@ -515,7 +515,8 @@ void straightGenerator::init_test() {
         temporary_creation.clear();
         find_surface_boundary_points(i);
         temporary_valid.clear();
-        look_for_bumps(i);
+        // todo look for bumps is a bad function makes more stuff unstable too
+        // look_for_bumps(i);
         straight_test_creation(i);
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
