@@ -483,11 +483,8 @@ void straightGenerator::look_for_bumps(int bs) {
             if((position_minus_max == -1) || (position_plus_max == -1)) {
                 delete_true_candidates[0] = false;
             }
-            // corner case the bump is at a corner
-            bool corner_bump = false;
-            if(values.size() == 3) {
-                corner_bump = true;
-            }
+            // TODO i have to test for the base of the partner to be partitioned
+            // especially if i have 4 potential partners i the easy case
             // go over the values again and delete marked straights and part to big ones
             for(int k = 0; k < values.size(); ++k) {
                 auto candy = values[k];

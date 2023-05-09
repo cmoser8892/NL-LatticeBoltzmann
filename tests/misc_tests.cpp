@@ -1894,6 +1894,8 @@ TEST(FunctionalTest, special_case_little_bump) {
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
+TEST(FunctionalTest)
+
 TEST(FunctionalTest, wierd_bump_top) {
     // init variables
     unsigned int size = 20;
