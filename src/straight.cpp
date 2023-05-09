@@ -27,9 +27,11 @@ void straightGenerator::calculate_mass_center() {
     // div by the total size
     mass_center /= double(points->total_boundary_nodes());
     // todo fix errors related to mass center placement in the check inside algorithm :)
-    also todo  make 3 mcs for a more stable algorithm
-    how do i test sth to be convex?!
-    write one more test related to the construction oposing bumps should not be a prob thou
+    // also todo  make 3 mcs for a more stable algorithm
+    // add more mass centers based on
+    // how do i test sth to be convex?!
+    // write one more test related to the construction oposing bumps should not be a prob thou
+    // min out + general cleanup 
     mass_center /=3;
 }
 
@@ -430,9 +432,6 @@ void straightGenerator::look_for_bumps(int bs) {
             int position_plus_max = -1;
             // control vector which of the values is a bad apple
             std::vector<bool> delete_true_candidates(values.size(),false);
-            if(values.size() > 2) {
-                std::cout << "here" << std::endl;
-            }
             // loop over the found values
             for(int k = 0; k < values.size();++k) {
                 auto candy = values[k];
@@ -504,8 +503,6 @@ void straightGenerator::look_for_bumps(int bs) {
                     }
                 }
                 else {
-                    // todo not that simple there are cases where the opposite side
-                    // is just 1 long!!!
                     if(delete_me) {
                         long true_position = (long) h - 1;
                         delete temporary[true_position];
@@ -513,31 +510,6 @@ void straightGenerator::look_for_bumps(int bs) {
                     }
                 }
             }
-            /*
-            if(0) {
-                // completely independent of expected distance only necessary
-                // to be a valid one
-                if((straight->max_t == 1) && (valid)) {
-                    // make sure who is more close to mc?!
-                    delete temporary[i];
-                    temporary[i] = nullptr;
-                }
-                else if((straight->max_t > 1) && (valid)) {
-                    // partition the partner
-                    double lower = std::floor(t);
-                    double higher = std::ceil(t);
-                    // create a new surface (later part)
-                    auto new_part = new straight_t;
-                    new_part->point = straight->point + higher*straight->direction;
-                    new_part->direction = straight->direction;
-                    new_part->min_t =  0;
-                    new_part->max_t = straight->max_t - higher;
-                    // reduce the reach of the first part
-                    straight->max_t = lower;
-                    temporary.push_back(new_part);
-                }
-            }
-             */
         }
     }
 }

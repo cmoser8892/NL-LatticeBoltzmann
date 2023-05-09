@@ -1807,6 +1807,43 @@ TEST(FunctionalTest, straight_bump) {
     EXPECT_EQ(gen.node_infos.size(),4 +8);
 }
 
+TEST(FunctionalTest, multiple_bumps) {
+    unsigned int size = 9;
+    point_t c = {size,size};
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_quader();
+    point_t setter = {2,1};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,1};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {2,2};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,2};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {5,1};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {6,1};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {5,2};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {6,2};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {2,7};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,7};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {2,6};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,6};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
+}
+
+
 
 TEST(FunctionalTest, image_outer_inner) {
     // test image setupa
