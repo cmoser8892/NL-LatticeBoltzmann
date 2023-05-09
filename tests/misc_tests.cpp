@@ -1894,8 +1894,7 @@ TEST(FunctionalTest, special_case_little_bump) {
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
-TEST(FunctionalTest, wierd_bump) {
-    // todo there is a hole in the constructed surface
+TEST(FunctionalTest, wierd_bump_top) {
     // init variables
     unsigned int size = 20;
     unsigned int sub_size = 9;
@@ -1921,7 +1920,92 @@ TEST(FunctionalTest, wierd_bump) {
     setter = {7,8};
     boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
     setter = {7,9};
-    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  //
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    setter = {10,8};
+    boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
+    setter = {10,4};
+    boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    // it is always a good idea to look at straight.temporary for a good test
+    // test for right surface
+    straightGenerator stg(&boundaries);
+    stg.init();
+    EXPECT_EQ(stg.surfaces.size(),10);
+    // testing surface lengths + individually inspect
+    // control the values
+    int ones = 0;
+    int twos = 0;
+    int threes = 0;
+    int fours = 0;
+    int fives = 0;
+    int tens = 0;
+    int errors = 0;
+    for(auto surface : stg.surfaces) {
+        switch(int(surface->max_t)) {
+        case 1:
+            ++ones;
+            break;
+        case 2:
+            ++twos;
+            break;
+        case 3:
+            ++threes;
+            break;
+        case 4:
+            ++fours;
+            break;
+        case 5:
+            ++fives;
+            break;
+        case 10:
+            ++tens;
+            break;
+        default:
+            ++errors;
+            break;
+        }
+
+    }
+    EXPECT_EQ(ones,2);
+    EXPECT_EQ(twos,1);
+    EXPECT_EQ(threes,1);
+    EXPECT_EQ(fours,2);
+    EXPECT_EQ(fives,1);
+    EXPECT_EQ(tens,3);
+    EXPECT_EQ(errors,0);
+    // full node generator
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    gen.visualize_2D_nodes();
+}
+
+TEST(FunctionalTest, wierd_bump_bottom) {
+    // init variables
+    unsigned int size = 20;
+    unsigned int sub_size = 9;
+    point_t c = {size,size};
+    point_t s = {sub_size,sub_size};
+    vector_t shift = {4,4};
+    point_t setter = {2,1};
+    // basic setup
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    // structural init
+    setter = {4,4};
+    boundaries.one_direction(10,{0,1},&setter,BOUNCE_BACK);
+    setter = {4,14};
+    boundaries.one_direction(10,{1,0},&setter,BOUNCE_BACK);
+    setter = {14,14};
+    boundaries.one_direction(10,{0,-1},&setter,BOUNCE_BACK);
+    // delicate stuff
+    setter = {5,4};
+    boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
+    setter = {7,5};
+    boundaries.one_direction(3,{0,1},&setter,BOUNCE_BACK);
+    setter = {7,8};
+    boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
+    setter = {9,9};
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
     setter = {10,8};
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};

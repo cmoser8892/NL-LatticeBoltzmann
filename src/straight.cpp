@@ -480,7 +480,7 @@ void straightGenerator::look_for_bumps(int bs) {
                 }
             }
             // corner case we got the top straight (it will be marked as to be deleted)
-            if((expected_minus == 1) || (expected_plus == -1)) {
+            if((position_minus_max == -1) || (position_plus_max == -1)) {
                 delete_true_candidates[0] = false;
             }
             // go over the values again and delete marked straights and part to big ones
