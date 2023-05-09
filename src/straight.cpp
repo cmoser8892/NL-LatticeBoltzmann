@@ -422,6 +422,14 @@ void straightGenerator::look_for_bumps(int bs) {
             if(values.size() == 2) {
                 continue;
             }
+            point_t test_point = {7,8};
+            if(self->point  == test_point) {
+                std::cout << "here" << std::endl;
+            }
+            test_point = {7,9};
+            if(self->point == test_point) {
+                std::cout << "here" << std::endl;
+            }
             // sort via the abs values of the distance
             std::sort(values.begin(),values.end(), compare_bumps_sort);
             // go through list of partners
@@ -471,6 +479,11 @@ void straightGenerator::look_for_bumps(int bs) {
                     }
                 }
             }
+            // corner case we got the top straight (it will be marked as to be deleted)
+            if((expected_minus == 1) || (expected_plus == -1)) {
+                delete_true_candidates[0] = false;
+            }
+            // go over the values again and delete marked straights and part to big ones
             for(int k = 0; k < values.size(); ++k) {
                 auto candy = values[k];
                 auto delete_me = delete_true_candidates[k];
@@ -499,9 +512,16 @@ void straightGenerator::look_for_bumps(int bs) {
                         else {
                             delete new_part;
                         }
+                        // old straight now has the length 0
+                        if(straight->max_t == 0) {
+                            long true_position = (long) h - 1;
+                            delete temporary[true_position];
+                            temporary[true_position] = nullptr;
+                        }
                     }
                 }
                 else {
+                    // delete the marked straights
                     if(delete_me) {
                         long true_position = (long) h - 1;
                         delete temporary[true_position];

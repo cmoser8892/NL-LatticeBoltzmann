@@ -1927,6 +1927,7 @@ TEST(FunctionalTest, wierd_bump) {
     setter = {10,4};
     boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
     boundaries.visualize_2D_boundary();
+    // it is always a good idea to look at straight.temporary for a good test
     // test for right surface
     straightGenerator stg(&boundaries);
     stg.init();
@@ -1967,7 +1968,7 @@ TEST(FunctionalTest, wierd_bump) {
 
     }
     EXPECT_EQ(ones,2);
-    EXPECT_EQ(twos,2);
+    EXPECT_EQ(twos,1);
     EXPECT_EQ(threes,1);
     EXPECT_EQ(fours,2);
     EXPECT_EQ(fives,1);
