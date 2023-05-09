@@ -422,7 +422,7 @@ void straightGenerator::look_for_bumps(int bs) {
             if(values.size() == 2) {
                 continue;
             }
-            point_t test_point = {7,8};
+            point_t test_point = {9,9};
             if(self->point  == test_point) {
                 std::cout << "here" << std::endl;
             }
@@ -483,6 +483,11 @@ void straightGenerator::look_for_bumps(int bs) {
             if((position_minus_max == -1) || (position_plus_max == -1)) {
                 delete_true_candidates[0] = false;
             }
+            // corner case the bump is at a corner
+            bool corner_bump = false;
+            if(values.size() == 3) {
+                corner_bump = true;
+            }
             // go over the values again and delete marked straights and part to big ones
             for(int k = 0; k < values.size(); ++k) {
                 auto candy = values[k];
@@ -505,8 +510,8 @@ void straightGenerator::look_for_bumps(int bs) {
                         new_part->min_t =  0;
                         new_part->max_t = straight->max_t - higher;
                         // reduce the reach of the first part
+                        straight->max_t = lower;
                         if(new_part->max_t > 0) {
-                            straight->max_t = lower;
                             temporary.push_back(new_part);
                         }
                         else {
