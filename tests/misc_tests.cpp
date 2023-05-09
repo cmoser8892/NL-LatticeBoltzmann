@@ -1895,11 +1895,7 @@ TEST(FunctionalTest, special_case_little_bump) {
 }
 
 TEST(FunctionalTest, wierd_bump) {
-    /*
-     * Note:
-     * I am not quite sure why the combination of an bump at a conrner
-     * is a special case
-     */
+    // todo there is a hole in the constructed surface
     // init variables
     unsigned int size = 20;
     unsigned int sub_size = 9;
@@ -1931,6 +1927,53 @@ TEST(FunctionalTest, wierd_bump) {
     setter = {10,4};
     boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
     boundaries.visualize_2D_boundary();
+    // test for right surface
+    straightGenerator stg(&boundaries);
+    stg.init();
+    EXPECT_EQ(stg.surfaces.size(),10);
+    // testing surface lengths + individually inspect
+    // control the values
+    int ones = 0;
+    int twos = 0;
+    int threes = 0;
+    int fours = 0;
+    int fives = 0;
+    int tens = 0;
+    int errors = 0;
+    for(auto surface : stg.surfaces) {
+        switch(int(surface->max_t)) {
+        case 1:
+            ++ones;
+            break;
+        case 2:
+            ++twos;
+            break;
+        case 3:
+            ++threes;
+            break;
+        case 4:
+            ++fours;
+            break;
+        case 5:
+            ++fives;
+            break;
+        case 10:
+            ++tens;
+            break;
+        default:
+            ++errors;
+            break;
+        }
+
+    }
+    EXPECT_EQ(ones,2);
+    EXPECT_EQ(twos,2);
+    EXPECT_EQ(threes,1);
+    EXPECT_EQ(fours,2);
+    EXPECT_EQ(fives,1);
+    EXPECT_EQ(tens,3);
+    EXPECT_EQ(errors,0);
+    // full node generator
     nodeGenerator gen(&boundaries);
     gen.init(size);
     gen.visualize_2D_nodes();
@@ -1954,6 +1997,6 @@ TEST(FunctionalTest, image_outer_inner) {
     EXPECT_TRUE(false);
 }
 
-// todo look up book boy Wolf Gladrow on forcing term in LB
+// todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // todo update fused init to also work with boundary limits
 
