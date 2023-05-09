@@ -446,14 +446,15 @@ TEST(InitTests, inner_outer_master_test) {
     point_t c = {size,size}; // size or the canvas
     point_t p = {sub_size,sub_size}; // size of the  quader
     point_t k = {inner_size,inner_size}; // size of the inner one
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
-    // boundaries.visualize_2D_boundary(size);
+    boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
     // check boundaries right at least
     gen.init(size);
+    gen.visualize_2D_nodes();
     // boundary point sanity check
     int dry_nodes_number = 0;
     for(auto node : gen.node_infos) {
@@ -537,7 +538,7 @@ TEST(InitTests, fused_inner_outer_init_simple) {
     point_t c = {size,size}; // size or the canvas
     point_t p = {sub_size,sub_size}; // size of the  quader
     point_t k = {inner_size,inner_size}; // size of the inner one
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
     // boundaries.visualize_2D_boundary(size);

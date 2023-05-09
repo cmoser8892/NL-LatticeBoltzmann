@@ -31,8 +31,7 @@ void straightGenerator::calculate_mass_center() {
     // add more mass centers based on
     // how do i test sth to be convex?!
     // write one more test related to the construction oposing bumps should not be a prob thou
-    // min out + general cleanup 
-    mass_center /=3;
+    // min out + general cleanup
 }
 
 /**
@@ -616,7 +615,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     // go over the surfaces
     for(auto surface : surfaces) {
         // in the first pass the surface is actually the ray we are using
-        // we want the intersection to be between 0 and 1
+        // we want the intersection to be between 0 and max value
         straight_t first_pass_surface;
         first_pass_surface.point = straight.point;
         first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};

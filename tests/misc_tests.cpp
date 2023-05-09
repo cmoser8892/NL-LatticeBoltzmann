@@ -1843,7 +1843,98 @@ TEST(FunctionalTest, multiple_bumps) {
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
+TEST(FunctionalTest, special_case_little_bump) {
+    unsigned int size = 20;
+    unsigned int sub_size = 9;
+    point_t c = {size,size};
+    point_t s = {sub_size,sub_size};
+    boundaryPointConstructor boundaries(c);
+    vector_t shift = {4,4};
+    boundaries.init_quader(shift,s);
+    point_t setter = {2,1};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,1};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {2,2};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,2};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {5,1};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {6,1};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {5,2};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {6,2};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {2,7};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,7};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {2,6};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    setter = {3,6};
+    setter += shift;
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
+}
 
+TEST(FunctionalTest, wierd_bump) {
+    /*
+     * Note:
+     * I am not quite sure why the combination of an bump at a conrner
+     * is a special case
+     */
+    // init variables
+    unsigned int size = 20;
+    unsigned int sub_size = 9;
+    point_t c = {size,size};
+    point_t s = {sub_size,sub_size};
+    vector_t shift = {4,4};
+    point_t setter = {2,1};
+    // basic setup
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    // structural init
+    setter = {4,4};
+    boundaries.one_direction(10,{0,1},&setter,BOUNCE_BACK);
+    setter = {4,14};
+    boundaries.one_direction(10,{1,0},&setter,BOUNCE_BACK);
+    setter = {14,14};
+    boundaries.one_direction(10,{0,-1},&setter,BOUNCE_BACK);
+    // delicate stuff
+    setter = {5,4};
+    boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
+    setter = {7,5};
+    boundaries.one_direction(3,{0,1},&setter,BOUNCE_BACK);
+    setter = {7,8};
+    boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
+    setter = {7,9};
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  //
+    setter = {10,8};
+    boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
+    setter = {10,4};
+    boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    gen.visualize_2D_nodes();
+}
 
 TEST(FunctionalTest, image_outer_inner) {
     // test image setupa
@@ -1865,13 +1956,4 @@ TEST(FunctionalTest, image_outer_inner) {
 
 // todo look up book boy Wolf Gladrow on forcing term in LB
 // todo update fused init to also work with boundary limits
-
-/**
- * algorithm updates for straight.
- * prob best to generate all possible straight lines in a boundary structure
- * calculate intersections with the mass center
- * discard doubles
- * inteseting part delete inner intersections if tere is an outer intersection
- * order?! not sure if that is nessessary
- */
 

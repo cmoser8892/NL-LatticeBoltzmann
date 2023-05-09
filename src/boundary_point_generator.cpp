@@ -471,16 +471,16 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, point_t size, 
  * @fn void boundaryPointConstructor::init_quader(point_t p,vector_t size)
  * @brief sets up a quader with a specific size
  * @param p
- * @param size
+ * @param s
  */
-void boundaryPointConstructor::init_quader(point_t p,vector_t size) {
+void boundaryPointConstructor::init_quader(point_t p,vector_t s) {
     boundaryType_t type = BOUNCE_BACK;
     point_t current = p;
     init_structure();
     // go from 0 till the in x directions
     vector_t direction;
-    int size_x = int(size.x()-1);
-    int size_y = int(size.y()-1);
+    int size_x = int(s.x()-1);
+    int size_y = int(s.y()-1);
     // go through x
     direction = {1,0};
     one_direction(size_x,direction,&current, type);
