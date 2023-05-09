@@ -484,6 +484,7 @@ void straightGenerator::look_for_bumps(int bs) {
                 delete_true_candidates[0] = false;
             }
             // TODO i have to test for the base of the partner to be partitioned
+            /// corner case is not deleted and 3 neighbors instead of 2 !!
             // especially if i have 4 potential partners i the easy case
             // go over the values again and delete marked straights and part to big ones
             for(int k = 0; k < values.size(); ++k) {

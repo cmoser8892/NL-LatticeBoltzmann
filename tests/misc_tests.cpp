@@ -1894,7 +1894,20 @@ TEST(FunctionalTest, special_case_little_bump) {
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
-TEST(FunctionalTest)
+TEST(FunctionalTest, one_high_side_walls) {
+    int size = 6;
+    point_t sim_area = {size,size};
+    // init
+    boundaryPointConstructor boundaries(sim_area);
+    boundaries.init_quader();
+    point_t setter = {2,1};
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init_fused(size);
+    gen.visualize_2D_nodes();
+    EXPECT_EQ(gen.node_infos.size(),4+3+3+4);
+}
 
 TEST(FunctionalTest, wierd_bump_top) {
     // init variables
