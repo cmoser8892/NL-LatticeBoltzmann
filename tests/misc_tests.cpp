@@ -2091,7 +2091,8 @@ TEST(FunctionalTest, image_outer_inner) {
     ic.run();
     ic.boundaries->visualize_2D_boundary();
     nodeGenerator gen(ic.boundaries);
-    gen.init(ic.return_basic_size());
+    // if the fused init runs this test is considered complete
+    gen.init_fused(ic.return_basic_size());
     gen.visualize_2D_nodes();
     // nessessary to to a visual check
     EXPECT_TRUE(false);
