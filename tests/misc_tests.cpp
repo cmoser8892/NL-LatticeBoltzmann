@@ -1512,7 +1512,6 @@ TEST(FunctionalTest, simple_use_case_straight) {
     EXPECT_EQ(s.surfaces.size(),4);
     for(auto surface : s.surfaces) {
         EXPECT_EQ(surface->max_t, 3);
-        EXPECT_EQ(surface->min_t, 0);
     }
 }
 
@@ -1560,7 +1559,6 @@ TEST(FunctionalTest, straight_inner_missing_57) {
     int tows = 0;
     int errors = 0;
     for(auto surface : s.surfaces) {
-        EXPECT_EQ(surface->min_t,0);
         if(surface->max_t == 1) {
             ++ones;
         }
@@ -1623,7 +1621,6 @@ TEST(FunctionalTest, straight_inner_missing_68) {
     int tows = 0;
     int errors = 0;
     for(auto surface : s.surfaces) {
-        EXPECT_EQ(surface->min_t,0);
         if(surface->max_t == 1) {
             ++ones;
         }
@@ -1669,7 +1666,6 @@ TEST(FunctionalTest, straight_deletions) {
     int sevens = 0;
     int errors = 0;
     for(auto surface : s.surfaces) {
-        EXPECT_EQ(surface->min_t,0);
         if(surface->max_t == 1) {
             ++ones;
         }
@@ -1726,7 +1722,6 @@ TEST(FunctionalTest, multiple_interruptions) {
     int nines = 0;
     int errors = 0;
     for(auto surface : s.surfaces) {
-        EXPECT_EQ(surface->min_t,0);
         if(surface->max_t == 1) {
             ++ones;
         }

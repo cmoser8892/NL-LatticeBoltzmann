@@ -236,7 +236,7 @@ TEST(InitTests, sufaces) {
     EXPECT_EQ(st.surfaces.size(),4);
     // test the lengths of the vectors
     for(auto s : st.surfaces) {
-        double length = (std::abs(s->min_t) + std::abs(s->max_t))*s->direction.norm();
+        double length = std::abs(s->max_t)*s->direction.norm();
         EXPECT_EQ(length,7);
     }
 

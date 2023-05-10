@@ -258,7 +258,6 @@ void straightGenerator::find_surface_boundary_points(int bs) {
                         // error ?!
                     }
                     // set t values
-                    current_surface->min_t = 0;
                     current_surface->max_t = expected_distance - 1 - start_point;
                     // push into the temporary field
                     temporary.push_back(current_surface);
@@ -281,9 +280,8 @@ void straightGenerator::find_surface_boundary_points(int bs) {
             ++i;
         }
         // set values
-        current_surface->min_t = 0;
         current_surface->max_t = expected_distance - 1 - start_point;
-        if((current_surface->min_t == 0) && (current_surface->max_t == 0)) {
+        if(current_surface->max_t == 0) {
             delete current_surface;
         }
         else {
@@ -336,7 +334,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
                 ray.point = partner->point;
                 ray.direction = partner->direction;
                 double t = calculate_intersection(&ray,&surface);
-                if((t >= partner->min_t) && (t <= partner->max_t)) {
+                if((t >= 0) && (t <= partner->max_t)) {
                     // why does eigen not support 2d cross products?!
                     // set up everything to work correctlly
                     straight_t partner_surface;
@@ -461,7 +459,6 @@ void straightGenerator::look_for_bumps(int bs_number) {
                         auto new_part = new straight_t;
                         new_part->point = straight->point + higher*straight->direction;
                         new_part->direction = straight->direction;
-                        new_part->min_t =  0;
                         new_part->max_t = straight->max_t - higher;
                         // reduce the reach of the first part
                         straight->max_t = lower;
@@ -605,7 +602,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
         first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};
         double t = calculate_intersection(surface, &first_pass_surface);
         /// 1 pass
-        if((t >= surface->min_t) && (t <= surface->max_t)) {
+        if((t >= 0) && (t <= surface->max_t)) {
             // check if direction of the finding is positive in
             // the direction of the vector outgoing from the center
             straight_t second_pass_surface;
