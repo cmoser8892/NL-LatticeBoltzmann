@@ -433,6 +433,7 @@ void straightGenerator::look_for_bumps(int bs) {
             // sort via the abs values of the distance
             std::sort(values.begin(),values.end(), compare_bumps_sort);
             // go through list of partners
+            int total = 0;
             int expected_plus = 0;
             int expected_minus = -1;
             int position_minus_max = -1;
@@ -453,9 +454,10 @@ void straightGenerator::look_for_bumps(int bs) {
                     // positive
                     if (distance == expected_plus) {
                         // enable delete for the previous candidate
-                        if(position_plus_max >= 0)
+                        if(position_plus_max >= 0) {
                             delete_true_candidates[position_plus_max] = true;
-
+                        }
+                        ++total;
                         position_plus_max = k;
                         ++expected_plus;
                     }
@@ -468,8 +470,10 @@ void straightGenerator::look_for_bumps(int bs) {
                     // negative
                     if(distance == expected_minus) {
                         // enable delete for the previous candidate
-                        if(position_minus_max >= 0)
+                        if(position_minus_max >= 0) {
                             delete_true_candidates[position_minus_max] = true;
+                        }
+                        ++total;
                         position_minus_max = k;
                         --expected_minus;
                     }
@@ -480,8 +484,12 @@ void straightGenerator::look_for_bumps(int bs) {
                 }
             }
             // corner case we got the top straight (it will be marked as to be deleted)
-            if((position_minus_max == -1) || (position_plus_max == -1)) {
+            if(total == 2) {
                 delete_true_candidates[0] = false;
+                std::cout << "reverse deletion" << std::endl;
+                // we now have to determine where we are on the overall surface of the boundary
+                // if we got 2 neighbors we dont have the special condition (in cardinal directions)
+                // but if we got 3 we must not divide the partner on the other side
             }
             // TODO i have to test for the base of the partner to be partitioned
             /// corner case is not deleted and 3 neighbors instead of 2 !!
