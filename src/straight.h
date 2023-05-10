@@ -12,8 +12,6 @@ typedef struct straight {
     vector_t direction;
     // validity of the straight
     double max_t = 0;
-    //
-    long surface_id_number = -1;
 }straight_t;
 
 class straightGenerator {

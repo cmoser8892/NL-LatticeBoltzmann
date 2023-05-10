@@ -2088,9 +2088,47 @@ TEST(FunctionalTest, image_outer_inner) {
 TEST(FunctionalTest,InnerCorner) {
     // todo one of the errors possible with convex surfaces is a shadow cast by the surface
     // make sure that sth like that doesnt crash the node generator
+    // init variables
+    unsigned int size = 20;
+    unsigned int sub_size = 9;
+    point_t c = {size,size};
+    point_t s = {sub_size,sub_size};
+    vector_t shift = {4,4};
+    point_t setter = {2,1};
+    // basic setup
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    // structural init
+    setter = {4,4};
+    boundaries.one_direction(10,{0,1},&setter,BOUNCE_BACK);
+    setter = {4,14};
+    boundaries.one_direction(10,{1,0},&setter,BOUNCE_BACK);
+    setter = {14,14};
+    boundaries.one_direction(10,{0,-1},&setter,BOUNCE_BACK);
+    // delicate stuff
+    setter = {5,4};
+    boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
+    setter = {7,5};
+    boundaries.one_direction(3,{0,1},&setter,BOUNCE_BACK);
+    setter = {7,8};
+    boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
+    setter = {7,9};
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    // setter = {10,9};
+    // boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    setter = {10,8};
+    boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
+    setter = {10,4};
+    boundaries.one_direction(4,{1,0},&setter,BOUNCE_BACK);
+    boundaries.visualize_2D_boundary();
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    gen.visualize_2D_nodes();
     EXPECT_TRUE(false);
 }
 
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // todo update fused init to also work with boundary limits
-
+// todo read about std::atomic may be useful
+// todo investigate alternatives to the mass center algorithm for determining inside outside
+// -> 8 neighbor based using the neighbors as mcs instead?!
