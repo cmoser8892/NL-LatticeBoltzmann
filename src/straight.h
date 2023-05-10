@@ -35,30 +35,34 @@ class straightGenerator {
     // functions
     void calculate_mass_center();
     void calculate_keys();
-    void calculate_all_straights();
+    void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
     int calculate_intersections(nodePoint_t* point);
     void straight_create(int bs);
-    void straight_self_test(int bs);
-    bool straight_closer_test(int bs, straight_t* self, straight_t* partner);
-    bool straight_better_candidate_test(straight_t* candidate, straight* partner);
+    void straight_reduce(int bs);
     void find_surface_boundary_points(int bs);
-    void straight_set_t_values(int bs);
-    double go_through_vector(int bs, straight_t* self,int direction);
     void look_for_bumps(int bs);
-    void straight_test_creation(int bs);
+    void temporary_to_surface(int bs);
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;
     explicit straightGenerator(boundaryPointConstructor* p);
     ~straightGenerator();
     void init();
-    void init_test();
     bool node_inside(nodePoint_t *point);
     void delete_vector();
     void delete_keys();
 };
 
+bool straight_better_candidate_test(straight_t* candidate, straight* partner);
 double calculate_intersection(straight_t* ray, straight_t* surface);
 bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
                         const std::tuple<double,double,handle_t,straight_t*> &b);
+
+// todo fix errors related to mass center placement in the check inside algorithm :)
+// also todo  make 3 mcs for a more stable algorithm
+// alternatively add a surface identifier to a surface if we cut the same surface more than once we know that we got sth convex
+// add more mass centers based on
+// how do i test sth to be convex?!
+// write one more test related to the construction oposing bumps should not be a prob thou
+// min out + general cleanup
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H

@@ -26,12 +26,6 @@ void straightGenerator::calculate_mass_center() {
     }
     // div by the total size
     mass_center /= double(points->total_boundary_nodes());
-    // todo fix errors related to mass center placement in the check inside algorithm :)
-    // also todo  make 3 mcs for a more stable algorithm
-    // add more mass centers based on
-    // how do i test sth to be convex?!
-    // write one more test related to the construction oposing bumps should not be a prob thou
-    // min out + general cleanup
 }
 
 /**
@@ -50,7 +44,7 @@ void straightGenerator::calculate_keys() {
 
 /**
  * @fn void straightGenerator::calculate_all_straights()
- * @brief calculates the straights between all the boundary points
+ * @brief calculates the straights between all the boundary points, only works on concave surfaces with no bumps
  * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
@@ -142,9 +136,16 @@ void straightGenerator::straight_create(int bs_number) {
     }
 }
 
-void straightGenerator::straight_self_test(int bs) {
+/**
+ * @fn void straightGenerator::straight_reduce(int bs)
+ * @brief tests all the straights created in straight create and checks weather or not they are valid
+ * @param bs
+ */
+void straightGenerator::straight_reduce(int bs) {
+    // main function here is to reduce the number of surfaces
     // translates the temporary surface into the the used surface object
     int surface_number = 0;
+    // we loop over the just created stuff
     for(int i = 0; i<temporary_creation.size(); ++i) {
         auto candidate = temporary_creation[i];
         if(candidate == nullptr) {
@@ -200,48 +201,11 @@ void straightGenerator::straight_self_test(int bs) {
         }
     }
 }
-
-bool straightGenerator::straight_closer_test(int bs ,straight_t* self, straight_t* partner) {
-    bool return_value = false;
-    bool distance_test = false;
-    // make sure we are in the boarders of the other guy
-    // the ray here is given by the parter
-    straight_t surface_self;
-    surface_self.point = self->point + 0.5*self->direction;
-    surface_self.direction = {self->direction.y(), -self->direction.x()};
-    double t = calculate_intersection(partner, &surface_self);
-    if((t >= 0.0) && (t <= 1.0)) {
-        distance_test = true;
-    }
-    // do the distance test
-    if(distance_test) {
-        // setup for who is more distant to the mc
-        point_t current_mc = individual_mass_centers[bs];
-        vector_t mc_self_midpoint = (self->point + 0.5 * self->direction) - current_mc;
-        vector_t mc_partner_midpoint = (partner->point + 0.5 * partner->direction) - current_mc;
-        // which one is longer ?!
-        if(mc_partner_midpoint.norm() > mc_self_midpoint.norm()) {
-            return_value = true;
-        }
-        else if(mc_self_midpoint.norm() == mc_partner_midpoint.norm()) {
-            throw std::runtime_error("Algorithm can not decide which part of the surface to discard");
-        }
-    }
-    return return_value;
-}
-
-bool straightGenerator::straight_better_candidate_test(straight_t *candidate, straight *partner) {
-    bool return_value = false;
-    // if either x or y value of the origin is lower prob better
-    if(partner->point.x() < candidate->point.x() ) {
-        return_value = true;
-    }
-    if(partner->point.y() < candidate->point.y()) {
-        return_value = true;
-    }
-    return return_value;
-}
-
+/**
+ * @fn void straightGenerator::find_surface_boundary_points(int bs)
+ * @brief we us the key hash table to find all the original boundary points to determine the length of each surface
+ * @param bs
+ */
 void straightGenerator::find_surface_boundary_points(int bs) {
     auto bps = points->boundary_structures[bs]->boundary_points;
     for (auto s : temporary_valid) {
@@ -262,19 +226,15 @@ void straightGenerator::find_surface_boundary_points(int bs) {
         for(auto surface_points : on_surface_points) {
             vector_t temp = (*surface_points - s->point);
             double d = temp.norm();
-            // std::cout << d << std::endl;
             if(d > 0) {
                 // directional control / check
                 temp /= d;
-                if((temp.x() == -1) || (temp.y() == -1)) {
-                    /// todo negate this expression to be a oneliner
-                }
+                if((temp.x() == -1) || (temp.y() == -1)) {}
                 else {
                     distances.push_back(d);
                 }
             };
         }
-        // std::cout << std::endl;
         // then we make sure to have them sorted
         std::sort(distances.begin(),distances.end());
         // now we use that to determine t values and check weather or not we have to partition the thing
@@ -332,54 +292,26 @@ void straightGenerator::find_surface_boundary_points(int bs) {
     }
 }
 
-void straightGenerator::straight_set_t_values(int bs_number) {
-    // set up the correct structures
-    auto pkh = pkhv[bs_number];
-    // we go through temp_valid and look in minus and plus directions to set the t values
-    for(auto s : temporary_valid) {
-        // set min_t
-        s->min_t = go_through_vector(bs_number,s,-1);
-        s->max_t = go_through_vector(bs_number,s,1);
-        // if the surface is good one should not be 0
-        if((s->min_t == 0) && (s->max_t == 0)) {
-            throw std::runtime_error("bad surface");
-        }
-        surfaces.push_back(s);
-    }
-}
-
-double straightGenerator::go_through_vector(int bs_number, straight_t *self, int plus_minus) {
-    double return_value = 0;
-    // set up the correct structures
-    auto pkh = pkhv[bs_number];
-    long max_iterations = points->total_boundary_nodes();
-    // shorthands
-    point_t origin = self->point;
-    point_t current = origin;
-    point_t direction = self->direction;
-    int previous = 0;
-    for(int i = 0; i < max_iterations; ++i) {
-        current = origin + direction*plus_minus*i;
-        if(pkh->key_translation(current)) {
-            previous = i;
-        }
-        else {
-            return_value = plus_minus*previous;
-            break;
-        }
-    }
-    return return_value;
-}
-
+/**
+ * @fn void straightGenerator::look_for_bumps(int bs_number)
+ * @brief looks for the special case of 1 long straights in the surface and resolves problems related for more details look at the note after the function header
+ * @param bs_number
+ */
 void straightGenerator::look_for_bumps(int bs_number) {
-    // test out straights with length 1
+    /**
+     * Note on what this function does:
+     * - 1 long straights can be a special case with 2 corner cases associated, this function tries to tackle all of them
+     * - the simplest and non corner case is two 1 opposing each other with lots of fluid between, will get ignored
+     * - second we can have a various amount of 1 long straights stacked, we keep the top one and partition the bottom straight
+     * - third, we get an extra 1 long straight at a corner inside the fluid, this is the special corner case that takes up most of the function to handle
+     */
     for(int i = 0; i < temporary.size();++i) {
         // anti nullptr work
         auto self = temporary[i];
         if(self == nullptr) {
             continue;
         }
-        // only do something if we are the length 1
+        /// only do something if we are the length 1
         if(self->max_t == 1) {
             // we do an intersection test with all the others
             // if we intersect between 0 and max we have to decide weather this one is necessary
@@ -395,7 +327,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
             handle_t handle = 0;
             for(auto partner : temporary) {
                 ++handle;
-                // exclusion craterias
+                // exclusion criteria
                 if(partner == nullptr) {
                     continue;
                 }
@@ -432,7 +364,8 @@ void straightGenerator::look_for_bumps(int bs_number) {
             int position_plus_max = -1;
             // control vector which of the values is a bad apple
             std::vector<bool> delete_true_candidates(values.size(),false);
-            // loop over the found values
+            // loop over the found values and find the top and the bottom of the bump delete
+            // prepare to delete the rest
             for(int k = 0; k < values.size();++k) {
                 auto candy = values[k];
                 // unpack
@@ -475,7 +408,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
                     }
                 }
             }
-            // corner case we got the top straight (it will be marked as to be deleted)
+            // corner case we just get two participates in the surface, there is a possibility that one of them gets deleted
             bool partition_allowed = true;
             if(total == 2) {
                 delete_true_candidates[0] = false;
@@ -509,8 +442,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
                     partition_allowed = false;
                 }
             }
-            // especially if i have 4 potential partners i the easy case
-            // go over the values again and delete marked straights and part to big ones
+            // go over the values again and delete marked straights and part to big ones if allowed
             for(int k = 0; k < values.size(); ++k) {
                 auto candy = values[k];
                 auto delete_me = delete_true_candidates[k];
@@ -560,7 +492,12 @@ void straightGenerator::look_for_bumps(int bs_number) {
     }
 }
 
-void straightGenerator::straight_test_creation(int bs) {
+/**
+ * @fn void straightGenerator::temporary_to_surface(int bs)
+ * @brief writes and finalizes temporary to surface
+ * @param bs
+ */
+void straightGenerator::temporary_to_surface(int bs) {
     for(auto s : temporary) {
         if(s != nullptr) {
             surfaces.push_back(s);
@@ -591,28 +528,29 @@ straightGenerator::~straightGenerator() {
  * @brief calculates the mass center and all the straights
  */
 void straightGenerator::init() {
+    // calculate main mass center and all the keys to the boundary points
     calculate_mass_center();
     calculate_keys();
-    init_test();
-    // calculate_all_straights();
-}
-
-void straightGenerator::init_test() {
-    // just for testing out the new init structure
-    // will get added in the boundary
-    // 1st step generate all connections in immediate neighborhood of a point
+    // loop over the boundary structures to create the straights
     for(int i = 0; i < points->boundary_structures.size(); ++i) {
+        // we 1st create all possible straights in north and west direction
+        // ( if the surface is not connected this will make it fail later on)
         straight_create(i);
-        straight_self_test(i);
+        // we reduce the straights used for the surfaces to the absolute minimum
+        // ( and connect in the process previously interrupted surfaces)
+        straight_reduce(i);
         // we can now clear the temp creation all valids are in temp valids
         temporary_creation.clear();
+        //
         find_surface_boundary_points(i);
         temporary_valid.clear();
+        // we look for all the small bumps created by surfaces with the length 1
         look_for_bumps(i);
-        straight_test_creation(i);
+        temporary_to_surface(i);
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
     }
+    // calculate_all_straights();
 }
 
 /**
@@ -759,6 +697,13 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
     return t;
 }
 
+/**
+ * @fn bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a, const std::tuple<double,double,handle_t,straight_t*> &b)
+ * @brief compare function to sort tuples of values encountered in look for bumps based on distance
+ * @param a
+ * @param b
+ * @return
+ */
 bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
                         const std::tuple<double,double,handle_t,straight_t*> &b) {
     // shorthand to the distance i guess
@@ -766,4 +711,23 @@ bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
     double distance_b = std::get<0>(b);
     // compare absolute distance values
     return std::abs(distance_a) < std::abs(distance_b);
+}
+
+/**
+ * @fn bool straight_better_candidate_test(straight_t *candidate, straight *partner)
+ * @brief compares the candidate with its partner returns true if the x or y value of the partner is smaller
+ * @param candidate
+ * @param partner
+ * @return
+ */
+bool straight_better_candidate_test(straight_t *candidate, straight *partner) {
+    bool return_value = false;
+    // if either x or y value of the origin is lower prob better
+    if(partner->point.x() < candidate->point.x() ) {
+        return_value = true;
+    }
+    if(partner->point.y() < candidate->point.y()) {
+        return_value = true;
+    }
+    return return_value;
 }
