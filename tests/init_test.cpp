@@ -228,7 +228,7 @@ TEST(InitTests, sufaces) {
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
-    boundaries.visualize_2D_boundary();
+    /// boundaries.visualize_2D_boundary();
     straightGenerator st(&boundaries);
     st.init();
     // test size
@@ -237,7 +237,7 @@ TEST(InitTests, sufaces) {
     // test the lengths of the vectors
     for(auto s : st.surfaces) {
         double length = (std::abs(s->min_t) + std::abs(s->max_t))*s->direction.norm();
-        std::cout << length << std::endl;
+        EXPECT_EQ(length,7);
     }
 
 }
@@ -249,7 +249,7 @@ TEST(InitTests, reduced_surface) {
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(c);
     boundaries.init_chopped_sliding_lid({1,1},p,0);
-    boundaries.visualize_2D_boundary();
+    /// boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
     // chekc if 8x8
@@ -275,7 +275,7 @@ TEST(InitTests, chopped_boundaries) {
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(c);
     boundaries.init_chopped_sliding_lid({1,1},p,4);
-    boundaries.visualize_2D_boundary();
+    /// boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(), (sub_size-1)*4);
     // check if even with the bulge the sizes are still the same
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4);
@@ -357,10 +357,10 @@ TEST(InitTests, inner_outer_neighbour_test) {
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({3,5},p,{5,7},k);
-    boundaries.visualize_2D_boundary();
+    /// boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    gen.visualize_2D_nodes();
+    /// gen.visualize_2D_nodes();
     int expected_total_node_number = p.x()*p.y() - (k.x()-2)*(k.y()-2);
     EXPECT_EQ(expected_total_node_number,gen.node_infos.size());
     int number_nodes = 0;
@@ -449,12 +449,12 @@ TEST(InitTests, inner_outer_master_test) {
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
-    boundaries.visualize_2D_boundary();
+    /// boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
     // check boundaries right at least
     gen.init(size);
-    gen.visualize_2D_nodes();
+    /// gen.visualize_2D_nodes();
     // boundary point sanity check
     int dry_nodes_number = 0;
     for(auto node : gen.node_infos) {
@@ -754,7 +754,7 @@ TEST(InitTests, up_down_boundary) {
     boundaries.steps_direction(3,{-1,1},&e2,BOUNCE_BACK);
     setter = {1,7};
     boundaries.set_point(&setter,BOUNCE_BACK);
-    boundaries.visualize_2D_boundary();
+    /// boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),22);
 }
 

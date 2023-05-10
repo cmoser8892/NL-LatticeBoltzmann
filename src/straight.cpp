@@ -422,14 +422,6 @@ void straightGenerator::look_for_bumps(int bs_number) {
             if(values.size() == 2) {
                 continue;
             }
-            point_t test_point = {9,9};
-            if(self->point  == test_point) {
-                std::cout << "here" << std::endl;
-            }
-            test_point = {7,9};
-            if(self->point == test_point) {
-                std::cout << "here" << std::endl;
-            }
             // sort via the abs values of the distance
             std::sort(values.begin(),values.end(), compare_bumps_sort);
             // go through list of partners
@@ -487,7 +479,6 @@ void straightGenerator::look_for_bumps(int bs_number) {
             bool partition_allowed = true;
             if(total == 2) {
                 delete_true_candidates[0] = false;
-                std::cout << "reverse deletion: " << std::endl;
                 // we now have to determine where we are on the overall surface of the boundary
                 // if we got 2 neighbors we dont have the special condition (in cardinal directions)
                 // but if we got 3 we must not divide the partner on the other side
@@ -514,13 +505,10 @@ void straightGenerator::look_for_bumps(int bs_number) {
                         ++found;
                     }
                 }
-                std::cout << found << std::endl;
                 if(found > 2) {
                     partition_allowed = false;
                 }
             }
-            // TODO i have to test for the base of the partner to be partitioned
-            /// corner case is not deleted and 3 neighbors instead of 2 !!
             // especially if i have 4 potential partners i the easy case
             // go over the values again and delete marked straights and part to big ones
             for(int k = 0; k < values.size(); ++k) {
@@ -620,7 +608,6 @@ void straightGenerator::init_test() {
         temporary_creation.clear();
         find_surface_boundary_points(i);
         temporary_valid.clear();
-        // todo look for bumps is a bad function breaks more than just one test
         look_for_bumps(i);
         straight_test_creation(i);
         // clear temp valid too objects got added to surfaces vector
@@ -764,7 +751,6 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
     point_t o = ray->point;
     vector_t d = ray->direction;
     // it is assumed that the surface normal is given
-    // todo save the surface normals instead!
     point_t r = surface->point;
     vector_t n = surface->direction;
     // calculate function
