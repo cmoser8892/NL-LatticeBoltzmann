@@ -371,7 +371,7 @@ double straightGenerator::go_through_vector(int bs_number, straight_t *self, int
     return return_value;
 }
 
-void straightGenerator::look_for_bumps(int bs) {
+void straightGenerator::look_for_bumps(int bs_number) {
     // test out straights with length 1
     for(int i = 0; i < temporary.size();++i) {
         // anti nullptr work
@@ -484,12 +484,40 @@ void straightGenerator::look_for_bumps(int bs) {
                 }
             }
             // corner case we got the top straight (it will be marked as to be deleted)
+            bool partition_allowed = true;
             if(total == 2) {
                 delete_true_candidates[0] = false;
-                std::cout << "reverse deletion" << std::endl;
+                std::cout << "reverse deletion: " << std::endl;
                 // we now have to determine where we are on the overall surface of the boundary
                 // if we got 2 neighbors we dont have the special condition (in cardinal directions)
                 // but if we got 3 we must not divide the partner on the other side
+                auto pkh = pkhv[bs_number];
+                // unpack
+                double distance;
+                double t;
+                handle_t h;
+                straight_t* straight;
+                std::tie(distance,t,h,straight) = values[0];
+                // setup and short hands
+                point_t current = straight->point;
+                point_t neighbor;
+                handle_t neighbor_handle;
+                // we search in the cardinal directions for neighbors
+                int found = 0;
+                // we just look in the positive directions negative gets ignored :)
+                // so it can happen that we do not find a partner for that point
+                for(int l = 0; l < cardinal_directions.cols() ; ++l) {
+                    neighbor = current + point_t(cardinal_directions.col(l));
+                    neighbor_handle = pkh->key_translation(neighbor);
+                    if (neighbor_handle > 0) {
+                        // self test
+                        ++found;
+                    }
+                }
+                std::cout << found << std::endl;
+                if(found > 2) {
+                    partition_allowed = false;
+                }
             }
             // TODO i have to test for the base of the partner to be partitioned
             /// corner case is not deleted and 3 neighbors instead of 2 !!
@@ -505,7 +533,7 @@ void straightGenerator::look_for_bumps(int bs) {
                 straight_t* straight;
                 std::tie(distance,t,h,straight) = candy;
                 if((position_minus_max == k) || (position_plus_max == k)) {
-                    if(straight->max_t > 1) {
+                    if((straight->max_t > 1) && partition_allowed) {
                         // partition the partner
                         double lower = std::floor(t);
                         double higher = std::ceil(t);

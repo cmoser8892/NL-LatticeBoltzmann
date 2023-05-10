@@ -1989,9 +1989,9 @@ TEST(FunctionalTest, wierd_bump_top) {
     EXPECT_EQ(tens,3);
     EXPECT_EQ(errors,0);
     // full node generator
-    // nodeGenerator gen(&boundaries);
-    // gen.init(size);
-    // gen.visualize_2D_nodes();
+    nodeGenerator gen(&boundaries);
+    gen.init(size);
+    gen.visualize_2D_nodes();
 }
 
 TEST(FunctionalTest, wierd_bump_bottom) {
