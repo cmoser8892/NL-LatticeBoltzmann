@@ -28,6 +28,11 @@ void straightGenerator::calculate_mass_center() {
     mass_center /= double(points->total_boundary_nodes());
 }
 
+void straightGenerator::detect_boundary_proximity_main_mass_center() {
+    // goes over a search field and tries to find boundary nodes in close proximity
+    // todo
+}
+
 /**
  * @fn void straightGenerator::calculate_keys()
  * @brief generates keys holdings for all the individual boundary-structures a boundary has
@@ -38,6 +43,7 @@ void straightGenerator::calculate_keys() {
         pkhv.push_back(pkh);
         for(auto bp : bs->boundary_points) {
             pkh->fill_key(bp->h,bp->point);
+            full_pkh.fill_key(bp->h,bp->point);
         }
     }
 }
@@ -558,7 +564,7 @@ void straightGenerator::init() {
  * @param node_point
  * @return number of intersections
  */
-int straightGenerator::calculate_intersections(nodePoint_t* node_point, point_t* individual_mc) {
+int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
     /// todo why 3 passes should not 2 be enough
     /// surface based algorithm to calculate intersections
     /**
@@ -569,25 +575,27 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point, point_t*
      *  3 have we already hit an edgepoint
      */
     /// 0 pass not a boundary point or point on the surface
+    // todo at least use the point key hashes if it is in there
     int number_of_intersections = 0;
     // check if actually the boundary point, boundary points are excluded in the first pass
     for(auto bs: points->boundary_structures) {
         for(auto bp : bs->boundary_points) {
             // check if we are a surface point described (aka a boundary point and do a hard break
-            if(bp->point == point_t(node_point->position)) {
+            if(bp->point == node_point) {
                 return 0;
             }
         }
     }
     // determine straight to the mass center
     straight_t straight;
-    straight.point = node_point->position; // => r
+    straight.point = node_point; // => r
     // check if mass center and shift if yes
     if(straight.point == *individual_mc) {
         // we do a little shift out of the mass-center
         // any direction should work
         std::cerr << "Node-point is the mass-center, algorithm potentially broken" << std::endl;
         std::cerr << "Check correct node-size or amount of wet node neighbours" << std::endl;
+        std::cerr << "There is just a heuristic fix to it in place" << std::endl;
         straight.point.x() += 0.1;
         straight.point.y() += 0.1;
     }
@@ -635,6 +643,17 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point, point_t*
     return number_of_intersections;
 }
 
+int straightGenerator::calculate_intersections_verified(nodePoint_t *point) {
+    // calculates with intersections with 3 additional mass centers in a circle around the original mc
+    // todo
+}
+
+int straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point) {
+    // calculates intersections based on a star around the node point, no mc is needed ( we kinda cheat thou )
+    // the typical roles of mc and node point are switched in this method
+    // todo
+}
+
 /**
  * @fn bool straightGenerator::node_inside_simple(nodePoint_t *point)
  * @brief number of intersections modulo 2, if it can be divided by two and noting remains the node is inside
@@ -644,7 +663,7 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point, point_t*
 bool straightGenerator::node_inside_simple(nodePoint_t *point) {
     // even out; odd in
     /// uses a surface representation to calculate weather nodes are inside or outside
-    int value = calculate_intersections(point, &mass_center);
+    int value = calculate_intersections(point->position, &mass_center);
     return ((value%2) == 0);
 }
 

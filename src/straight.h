@@ -23,6 +23,7 @@ class straightGenerator {
   private:
     // boundary points and pkh of the boundary points
     boundaryPointConstructor* points;
+    pointKeyHash full_pkh;
     std::vector<pointKeyHash*> pkhv;
     // global and individual mass centers
     point_t mass_center;
@@ -33,9 +34,12 @@ class straightGenerator {
     std::vector<straight_t *> temporary;
     // functions
     void calculate_mass_center();
+    void detect_boundary_proximity_main_mass_center();
     void calculate_keys();
     void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
-    int calculate_intersections(nodePoint_t* point, point_t *individual_mc);
+    int calculate_intersections(point_t node_point, point_t *individual_mc);
+    int calculate_intersections_verified(nodePoint_t* point);
+    int calculate_intersections_star_node_point(nodePoint_t* point);
     // creation related methods
     void straight_create(int bs);
     void straight_reduce(int bs);
