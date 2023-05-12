@@ -2086,7 +2086,6 @@ TEST(FunctionalTest, image_outer_inner) {
 }
 
 TEST(FunctionalTest,InnerCorner) {
-    // todo one of the errors possible with convex surfaces is a shadow cast by the surface
     // make sure that sth like that doesnt crash the node generator
     // init variables
     unsigned int size = 20;
