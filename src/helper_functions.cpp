@@ -212,6 +212,24 @@ uint32_t reduce_32_2(uint32_t b) {
     return _pext_u32(b,0x80000001);
 }
 
+/**
+ * @fn std::filesystem::path get_base_path()
+ * @brief gets the path to the NL-directory
+ * @return the path to the NL-directory
+ */
+std::filesystem::path get_base_path() {
+    auto executable_path = std::filesystem::current_path();
+    std::filesystem::path return_path;
+    auto search_string = "NL-LatticeBoltzmann";
+    for(auto s : executable_path) {
+        return_path.append(s.string());
+        if(s == search_string) {
+            break;
+        }
+    }
+    return return_path;
+}
+
 /// helper and sub-classes
 /**
  * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
@@ -296,4 +314,65 @@ handle_t pointKeyHash::key_translation(coordinate_t coord) {
         return_key = found_iter->second;
     }
     return return_key;
+}
+
+/**
+ * @fn void pointKeyHash::clear()
+ * @brief clears the pkh key table
+ */
+void pointKeyHash::clear() {
+    keys.clear();
+}
+
+/**
+ * @fn windowedHandles::windowedHandles(unsigned long s)
+ * @brief constructor set up the list with the wished for size
+ * @param s
+ */
+windowedHandles::windowedHandles(unsigned long s) {
+    // set the size for the vector container
+    target_size = s;
+    // init the list to the target size
+    for(int i = 0; i < target_size; ++i) {
+        previous.push_back(0);
+    }
+}
+
+/**
+ * @fn unsigned long windowedHandles::size()
+ * @brief returns the size of the list data-structure
+ * @return size of the list data-structure
+ */
+unsigned long windowedHandles::size() {
+    return previous.size();
+}
+
+/**
+ * @fn void windowedHandles::add(handle_t h)
+ * @brief adds a new element into the list pops the oldest one
+ * @param h
+ */
+void windowedHandles::add(handle_t h) {
+    // pop the oldest element and push in a new one
+    previous.push_front(h);
+    previous.pop_back();
+}
+
+/**
+ * @fn bool windowedHandles::check(handle_t h)
+ * @brief checks if the given handle h is in the buffer
+ * @param h
+ * @return returns true if the handle h is in the buffer
+ */
+bool windowedHandles::check(handle_t h) {
+    // answers the yes no question if previously seen
+    bool return_value = false;
+    for (auto element : previous) {
+        if (element == h) {
+            return_value = true;
+            break;
+        }
+    }
+    // return me
+    return return_value;
 }

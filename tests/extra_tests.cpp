@@ -1,4 +1,6 @@
-#include <immintrin.h>
+#include "image_converter.h"
+
+#include <immintrin.h> // intel instructions
 #include <gtest/gtest.h>
 
 TEST(Extra_tests,avx) {
@@ -8,4 +10,13 @@ TEST(Extra_tests,avx) {
     for(int i = 0; i < 8; i++){
         EXPECT_EQ(AB[i],0);
     }
+}
+
+TEST(Extra_tests, packed_and_counted_bmp_headers) {
+    BMPFileHeader_t t;
+    EXPECT_EQ(sizeof(t),14);
+    BMPInfoHeader_t k;
+    EXPECT_EQ(sizeof(k),40);
+    BMPColorTable_t s;
+    EXPECT_EQ(sizeof(s),20+16*4);
 }

@@ -6,6 +6,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <list>
+#include <filesystem>
 
 bool node_position_comparison(node* n, array_t* pos);
 void write_flowfield_data(flowfield_t* field,std::string filename,bool write_to_file);
@@ -24,6 +26,9 @@ uint32_t bit_extraleaving_3d_y(uint64_t);
 uint32_t bit_extraleaving_3d_z(uint64_t);
 // reduce 32 bit numbers to 2 bit numbers
 uint32_t reduce_32_2(uint32_t);
+// base path
+std::filesystem::path get_base_path();
+
 /// helper classes/sub-classes
 // watchdog for rho
 class rhoWatchdog {
@@ -36,12 +41,30 @@ class rhoWatchdog {
     bool check(node* n,int step);
 };
 
+// works with bit interleaving floors points to a full point on the gird!
 class pointKeyHash {
-  public:
+  private:
     std::unordered_multimap<handle_t,handle_t> keys;
+  public:
     void fill_key(handle_t positions_handle, point_t pos);
+    void clear();
     handle_t key_translation(point_t pos);
     handle_t key_translation(coordinate_t cord);
+};
+
+// basic stash that holds items for a number of iterations
+// a window with a conveyor belt behind it, specifically for handles
+class windowedHandles{
+    // dont make this to big
+  private:
+    unsigned long target_size;
+    std::list<handle_t> previous;
+  public:
+    // functions
+    windowedHandles(unsigned long size);
+    unsigned long size();
+    void add(handle_t h);
+    bool check(handle_t h);
 };
 
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

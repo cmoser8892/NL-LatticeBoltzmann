@@ -227,21 +227,29 @@ TEST(InitTests, sufaces) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
     boundaryPointConstructor boundaries(p);
-    boundaries.init_quader({0,1});
+    boundaries.init_quader();
+    /// boundaries.visualize_2D_boundary();
     straightGenerator st(&boundaries);
     st.init();
     // test size
     EXPECT_EQ(boundaries.total_boundary_nodes(),4*(sub_size-1));
-    EXPECT_EQ(st.surfaces.size(),4*(sub_size-1));
-    EXPECT_EQ(st.surfaces.size(),boundaries.total_boundary_nodes());
+    EXPECT_EQ(st.surfaces.size(),4);
+    // test the lengths of the vectors
+    for(auto s : st.surfaces) {
+        double length = std::abs(s->max_t)*s->direction.norm();
+        EXPECT_EQ(length,7);
+    }
+
 }
 
 TEST(InitTests, reduced_surface) {
     unsigned int size = 6;
     unsigned int sub_size = 4;
+    point_t c = {size, size};
     point_t p = {sub_size,sub_size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_chopped_sliding_lid({1,1},0);
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_chopped_sliding_lid({1,1},p,0);
+    /// boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
     // chekc if 8x8
@@ -263,9 +271,11 @@ TEST(InitTests, reduced_surface) {
 TEST(InitTests, chopped_boundaries) {
     unsigned int size = 6;
     unsigned int sub_size = 4;
+    point_t c = {size,size};
     point_t p = {sub_size,sub_size};
-    boundaryPointConstructor boundaries(p);
-    boundaries.init_chopped_sliding_lid({1,1},4);
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_chopped_sliding_lid({1,1},p,4);
+    /// boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(), (sub_size-1)*4);
     // check if even with the bulge the sizes are still the same
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4);
@@ -284,7 +294,7 @@ TEST(InitTests, outer_inner_quader) {
     point_t p = {outer_size,outer_size};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({1,1},{3,3},{inner_size,inner_size});
+    boundaries.init_sliding_lid_inner({1,1},p,{3,3},{inner_size,inner_size});
     EXPECT_EQ(boundaries.total_boundary_nodes(), ((outer_size-1) + (inner_size-1))*4);
 }
 
@@ -344,13 +354,13 @@ TEST(InitTests, inner_outer_neighbour_test) {
     point_t c = {size,size};
     point_t p = {sub_size +5,sub_size};
     point_t k = {4,10};
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
-    // boundaries.visualize_2D_boundary(30);
+    boundaries.init_sliding_lid_inner({3,5},p,{5,7},k);
+    /// boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    // gen.visualize_2D_nodes(30);
+    /// gen.visualize_2D_nodes();
     int expected_total_node_number = p.x()*p.y() - (k.x()-2)*(k.y()-2);
     EXPECT_EQ(expected_total_node_number,gen.node_infos.size());
     int number_nodes = 0;
@@ -395,13 +405,14 @@ TEST(InitTests, init_out_inner_rho_writeout) {
     point_t k = {5,6};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init(size);
     simulation sim(&boundaries,&gen);
     sim.init();
     flowfield_t rho;
     rho.resize(size,size);
+    rho.setZero();
     for(auto n : sim.nodes) {
         write_rho(n,&rho);
     }
@@ -435,14 +446,15 @@ TEST(InitTests, inner_outer_master_test) {
     point_t c = {size,size}; // size or the canvas
     point_t p = {sub_size,sub_size}; // size of the  quader
     point_t k = {inner_size,inner_size}; // size of the inner one
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({1,1},{3,3},k);
-    // boundaries.visualize_2D_boundary(size);
+    boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
+    /// boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
     // check boundaries right at least
     gen.init(size);
+    /// gen.visualize_2D_nodes();
     // boundary point sanity check
     int dry_nodes_number = 0;
     for(auto node : gen.node_infos) {
@@ -526,9 +538,9 @@ TEST(InitTests, fused_inner_outer_init_simple) {
     point_t c = {size,size}; // size or the canvas
     point_t p = {sub_size,sub_size}; // size of the  quader
     point_t k = {inner_size,inner_size}; // size of the inner one
-    boundaryPointConstructor boundaries(p);
+    boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({1,1},{3,3},k);
+    boundaries.init_sliding_lid_inner({1,1},p,{3,3},k);
     // boundaries.visualize_2D_boundary(size);
     EXPECT_EQ(boundaries.total_boundary_nodes(),(sub_size-1)*4 + (inner_size -1)*4);
     nodeGenerator gen(&boundaries);
@@ -548,7 +560,7 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     point_t k = {5,6};
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({3,5},{9,7},k);
+    boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     simulation sim(&boundaries,&gen);
@@ -725,6 +737,25 @@ TEST(InitTests, staircase_11) {
     // boundaries.visualize_2D_boundary(8);
     // in the creation logic the last point is not set so -1
     EXPECT_EQ(boundaries.boundary_structures[0]->boundary_points.size(), 8 +7 -1);
+}
+
+TEST(InitTests, up_down_boundary) {
+    unsigned int size = 10;
+    point_t c = {size,size};
+    point_t e1 = {1,0};
+    point_t e2 = {4,4};
+    point_t setter = {0,0};
+    boundaryPointConstructor boundaries(c);
+    boundaries.init_structure();
+    boundaries.one_direction(8,{0,1},&setter,BOUNCE_BACK);
+    boundaries.steps_direction(3,{1,1},&e1,BOUNCE_BACK);
+    setter = {4,3};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    boundaries.steps_direction(3,{-1,1},&e2,BOUNCE_BACK);
+    setter = {1,7};
+    boundaries.set_point(&setter,BOUNCE_BACK);
+    /// boundaries.visualize_2D_boundary();
+    EXPECT_EQ(boundaries.total_boundary_nodes(),22);
 }
 
 /*
