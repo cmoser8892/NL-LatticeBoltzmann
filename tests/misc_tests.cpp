@@ -2119,10 +2119,10 @@ TEST(FunctionalTest,InnerCorner) {
     setter = {10,8};
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};
-    boundaries.one_direction(4,{1,0},&setter,BOUNCE_BACK);
+    boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
     boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init_fused(size);
     gen.visualize_2D_nodes();
     EXPECT_TRUE(false);
 }

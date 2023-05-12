@@ -35,7 +35,8 @@ class straightGenerator {
     void calculate_mass_center();
     void calculate_keys();
     void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
-    int calculate_intersections(nodePoint_t* point);
+    int calculate_intersections(nodePoint_t* point, point_t *individual_mc);
+    // creation related methods
     void straight_create(int bs);
     void straight_reduce(int bs);
     void find_surface_boundary_points(int bs);
@@ -47,7 +48,7 @@ class straightGenerator {
     explicit straightGenerator(boundaryPointConstructor* p);
     ~straightGenerator();
     void init();
-    bool node_inside(nodePoint_t *point);
+    bool node_inside_simple(nodePoint_t *point);
     void delete_vector();
     void delete_keys();
 };

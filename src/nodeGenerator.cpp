@@ -269,7 +269,7 @@ void nodeGenerator::check_nodes(handle_t* current) {
     straight.init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
-        bool c = straight.node_inside(n);
+        bool c = straight.node_inside_simple(n);
         if(!c) {
             n->handle = *current;
             n->boundary = NO_BOUNDARY;
