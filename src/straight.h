@@ -38,7 +38,7 @@ class straightGenerator {
     void calculate_keys();
     void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
     int calculate_intersections(point_t node_point, point_t *individual_mc);
-    int calculate_intersections_verified(nodePoint_t* point);
+    int calculate_intersections_redundant(nodePoint_t* point);
     int calculate_intersections_star_node_point(nodePoint_t* point);
     // creation related methods
     void straight_create(int bs);

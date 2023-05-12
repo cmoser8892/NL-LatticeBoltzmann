@@ -28,6 +28,10 @@ void straightGenerator::calculate_mass_center() {
     mass_center /= double(points->total_boundary_nodes());
 }
 
+/**
+ * @fn void straightGenerator::detect_boundary_proximity_main_mass_center()
+ * @brief detects and moves away the mass center if it is too close to a boundary
+ */
 void straightGenerator::detect_boundary_proximity_main_mass_center() {
     // goes over a search field and tries to find boundary nodes in close proximity
     // we search in the full pkh for near boundaries in a 7x7 area around th point and
@@ -596,16 +600,11 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
      *  3 have we already hit an edgepoint
      */
     /// 0 pass not a boundary point or point on the surface
-    // todo at least use the point key hashes if it is in here
     int number_of_intersections = 0;
     // check if actually the boundary point, boundary points are excluded in the first pass
-    for(auto bs: points->boundary_structures) {
-        for(auto bp : bs->boundary_points) {
-            // check if we are a surface point described (aka a boundary point and do a hard break
-            if(bp->point == node_point) {
-                return 0;
-            }
-        }
+    if(full_pkh.key_translation(node_point) > 0) {
+        // todo still not ideal
+        return 0;
     }
     // determine straight to the mass center
     straight_t straight;
@@ -664,9 +663,50 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
     return number_of_intersections;
 }
 
-int straightGenerator::calculate_intersections_verified(nodePoint_t *point) {
-    // calculates with intersections with 3 additional mass centers in a circle around the original mc
-    // todo
+int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
+    // calculates with intersections with 3 additional mass centers in a "circle" around the original mc
+    int intersection_count = 0;
+    matrix_t movers = { {2,-1,-1},
+                        {0, 2,-2}};
+    point_t individual_mc = mass_center;
+    // 7 as a magic number
+    double mover_distance = points->size.x()/7;
+    std::vector<int> intersections;
+    // calculate the intersections 3 times redundant
+    for(int i = 0; i < 3; ++i) {
+        individual_mc += mover_distance * (vector_t)movers.col(i);
+        intersections.push_back(calculate_intersections(point->position,&individual_mc));
+    }
+    std::vector<int> intersections_copy = intersections;
+    // we can sort and search for unique values i guess
+    std::sort(intersections.begin(),intersections.end());
+    auto last = std::unique(intersections.begin(),intersections.end());
+    intersections.erase(last,intersections.end());
+    // we check the size of the thing now
+    if(intersections.size() == 1) {
+        intersection_count = intersections[0];
+    }
+    if(intersections.size() == 2) {
+        std::cout << "Intersection test, alternate State 1" << std::endl;
+        int first_number_count = std::count(intersections_copy.begin(),
+                                            intersections_copy.end(),
+                                            intersections[0]);
+        int second_number_count = std::count(intersections_copy.begin(),
+                                             intersections_copy.end(),
+                                             intersections[1]);
+        if(first_number_count > second_number_count) {
+            intersection_count = intersections[0];
+        }
+        else {
+            intersection_count = intersections[1];
+        }
+    }
+    if(intersections.size() == 3) {
+        std::cerr << "Intersection test, alternate State 2" << std::endl;
+        // we use the original mass center here for our output
+        intersection_count = calculate_intersections(point->position,&mass_center);
+    }
+    return intersection_count;
 }
 
 int straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point) {
