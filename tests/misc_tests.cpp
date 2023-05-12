@@ -2086,8 +2086,6 @@ TEST(FunctionalTest, image_outer_inner) {
 }
 
 TEST(FunctionalTest,InnerCorner) {
-    // todo it is intentional that this test fails currently will branch out to
-    //  develop a better intersection test
     // todo one of the errors possible with convex surfaces is a shadow cast by the surface
     // make sure that sth like that doesnt crash the node generator
     // init variables
