@@ -30,7 +30,26 @@ void straightGenerator::calculate_mass_center() {
 
 void straightGenerator::detect_boundary_proximity_main_mass_center() {
     // goes over a search field and tries to find boundary nodes in close proximity
-    // todo
+    // we search in the full pkh for near boundaries in a 7x7 area around th point and
+    // move the center based on the proximity of the found bp
+    // floor the mc, we have to keep in mind to move the actual mass_center instead of floored on
+    array_t floored_mc;
+    floored_mc.resize(2);
+    floored_mc << std::floor(mass_center.x()),std::floor(mass_center.y());
+    for(int i = 1; i < 4; ++i) {
+        // we move the mc based on the proximity
+        int move = 4-i;
+        for(int j = 1; j < CHANNELS;++j) {
+            point_t current = floored_mc + i*velocity_set.col(j);
+            handle_t found_handle = full_pkh.key_translation(current);
+            if(found_handle > 0) {
+                // we found sth now move the actual mass center int the opposite direction of the found point
+                vector_t mover = -1*move*velocity_set.col(j);
+                mass_center += mover;
+            }
+        }
+
+    }
 }
 
 /**
@@ -535,6 +554,8 @@ void straightGenerator::init() {
     calculate_mass_center();
     // calculates hash keys for all the boundary structures
     calculate_keys();
+    // see weather or not moving the mass center away from the boundaries makes sense
+    detect_boundary_proximity_main_mass_center();
     // loop over the boundary structures to create the straights
     for(int i = 0; i < points->boundary_structures.size(); ++i) {
         // we 1st create all possible straights in north and west direction
@@ -575,7 +596,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
      *  3 have we already hit an edgepoint
      */
     /// 0 pass not a boundary point or point on the surface
-    // todo at least use the point key hashes if it is in there
+    // todo at least use the point key hashes if it is in here
     int number_of_intersections = 0;
     // check if actually the boundary point, boundary points are excluded in the first pass
     for(auto bs: points->boundary_structures) {
