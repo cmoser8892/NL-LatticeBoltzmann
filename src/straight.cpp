@@ -530,6 +530,14 @@ void straightGenerator::temporary_to_surface(int bs) {
         }
     }
 }
+
+void straightGenerator::post_run_messages() {
+    // prob still a good idea to display those
+    if(intersection_test_alternate_state_2 > 0) {
+        std::cerr << "Intersection tests Alternate state 2: "
+                  << intersection_test_alternate_state_2 << std::endl;
+    }
+}
 /// public
 /**
  * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
@@ -545,6 +553,7 @@ straightGenerator::straightGenerator(boundaryPointConstructor *p) {
  * @brief deletes the straights vector
  */
 straightGenerator::~straightGenerator() {
+    post_run_messages();
     delete_vector();
     delete_keys();
 }
@@ -663,6 +672,12 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
     return number_of_intersections;
 }
 
+/**
+ * @fn int straightGenerator::calculate_intersections_redundant(nodePoint_t *point)
+ * @brief supposed to be a more stable alternative for the calculate intersection function
+ * @param point
+ * @return the number of intersections detected
+ */
 int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     // calculates with intersections with 3 additional mass centers in a "circle" around the original mc
     int intersection_count = 0;
@@ -687,7 +702,7 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
         intersection_count = intersections[0];
     }
     if(intersections.size() == 2) {
-        std::cout << "Intersection test, alternate State 1" << std::endl;
+        ++intersection_test_alternate_state_1;
         int first_number_count = std::count(intersections_copy.begin(),
                                             intersections_copy.end(),
                                             intersections[0]);
@@ -702,17 +717,34 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
         }
     }
     if(intersections.size() == 3) {
-        std::cerr << "Intersection test, alternate State 2" << std::endl;
+        ++intersection_test_alternate_state_2;
         // we use the original mass center here for our output
         intersection_count = calculate_intersections(point->position,&mass_center);
     }
     return intersection_count;
 }
 
-int straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point) {
+bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point) {
     // calculates intersections based on a star around the node point, no mc is needed ( we kinda cheat thou )
     // the typical roles of mc and node point are switched in this method
-    // todo
+    // we reuse the velocity matrix for this
+    bool return_value = false;
+    std::vector<bool> tests;
+    array_t self = point->position;
+    point_t self_point = self;
+    // check in the directions of the velocity field
+    for(int i = 1; i < velocity_set.cols();++i) {
+        point_t current = self + velocity_set.col(i);
+        // remember postion and mc are swapped here
+        int counter = calculate_intersections(current,&self_point);
+        tests.push_back((counter%2) == 0);
+    }
+    // count the numbers of true
+    int passes = std::count(tests.begin(),tests.end(),true);
+    if(passes > 4) {
+        return_value = true;
+    }
+    return return_value;
 }
 
 /**
@@ -724,7 +756,8 @@ int straightGenerator::calculate_intersections_star_node_point(nodePoint_t *poin
 bool straightGenerator::node_inside_simple(nodePoint_t *point) {
     // even out; odd in
     /// uses a surface representation to calculate weather nodes are inside or outside
-    int value = calculate_intersections(point->position, &mass_center);
+    // int value = calculate_intersections(point->position, &mass_center);
+    int value = calculate_intersections_redundant(point);
     return ((value%2) == 0);
 }
 

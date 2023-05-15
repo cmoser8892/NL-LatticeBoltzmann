@@ -21,6 +21,8 @@ class straightGenerator {
      * it is a straight line
      */
   private:
+    int intersection_test_alternate_state_1 = 0;
+    int intersection_test_alternate_state_2 = 0;
     // boundary points and pkh of the boundary points
     boundaryPointConstructor* points;
     pointKeyHash full_pkh;
@@ -39,13 +41,14 @@ class straightGenerator {
     void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
     int calculate_intersections(point_t node_point, point_t *individual_mc);
     int calculate_intersections_redundant(nodePoint_t* point);
-    int calculate_intersections_star_node_point(nodePoint_t* point);
+    bool calculate_intersections_star_node_point(nodePoint_t* point);
     // creation related methods
     void straight_create(int bs);
     void straight_reduce(int bs);
     void find_surface_boundary_points(int bs);
     void look_for_bumps(int bs);
     void temporary_to_surface(int bs);
+    void post_run_messages();
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;
