@@ -2076,19 +2076,16 @@ TEST(FunctionalTest, image_outer_inner) {
     // run the functions
     ic.init();
     ic.run();
-    /// ic.boundaries->visualize_2D_boundary();
+    ic.boundaries->visualize_2D_boundary();
     nodeGenerator gen(ic.boundaries);
     // if the fused init runs this test is considered complete
     gen.init_fused(ic.return_basic_size());
-    /// gen.visualize_2D_nodes();
+    gen.visualize_2D_nodes();
     // nessessary to to a visual check
     EXPECT_TRUE(true);
 }
 
 TEST(FunctionalTest,InnerCorner) {
-    // todo it is intentional that this test fails currently will branch out to
-    //  develop a better intersection test
-    // todo one of the errors possible with convex surfaces is a shadow cast by the surface
     // make sure that sth like that doesnt crash the node generator
     // init variables
     unsigned int size = 20;
@@ -2121,12 +2118,13 @@ TEST(FunctionalTest,InnerCorner) {
     setter = {10,8};
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};
-    boundaries.one_direction(4,{1,0},&setter,BOUNCE_BACK);
+    boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
     boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init_fused(size);
     gen.visualize_2D_nodes();
-    EXPECT_TRUE(false);
+    // as long as the test does not crash it is considered ok
+    EXPECT_TRUE(true);
 }
 
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5

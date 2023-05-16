@@ -29,6 +29,34 @@ void straightGenerator::calculate_mass_center() {
 }
 
 /**
+ * @fn void straightGenerator::detect_boundary_proximity_main_mass_center()
+ * @brief detects and moves away the mass center if it is too close to a boundary
+ */
+void straightGenerator::detect_boundary_proximity_main_mass_center() {
+    // goes over a search field and tries to find boundary nodes in close proximity
+    // we search in the full pkh for near boundaries in a 7x7 area around th point and
+    // move the center based on the proximity of the found bp
+    // floor the mc, we have to keep in mind to move the actual mass_center instead of floored on
+    array_t floored_mc;
+    floored_mc.resize(2);
+    floored_mc << std::floor(mass_center.x()),std::floor(mass_center.y());
+    for(int i = 1; i < 4; ++i) {
+        // we move the mc based on the proximity
+        int move = 4-i;
+        for(int j = 1; j < CHANNELS;++j) {
+            point_t current = floored_mc + i*velocity_set.col(j);
+            handle_t found_handle = full_pkh.key_translation(current);
+            if(found_handle > 0) {
+                // we found sth now move the actual mass center int the opposite direction of the found point
+                vector_t mover = -1*move*velocity_set.col(j);
+                mass_center += mover;
+            }
+        }
+
+    }
+}
+
+/**
  * @fn void straightGenerator::calculate_keys()
  * @brief generates keys holdings for all the individual boundary-structures a boundary has
  */
@@ -38,6 +66,7 @@ void straightGenerator::calculate_keys() {
         pkhv.push_back(pkh);
         for(auto bp : bs->boundary_points) {
             pkh->fill_key(bp->h,bp->point);
+            full_pkh.fill_key(bp->h,bp->point);
         }
     }
 }
@@ -501,6 +530,14 @@ void straightGenerator::temporary_to_surface(int bs) {
         }
     }
 }
+
+void straightGenerator::post_run_messages() {
+    // prob still a good idea to display those
+    if(intersection_test_alternate_state_2 > 0) {
+        std::cerr << "Intersection tests Alternate state 2: "
+                  << intersection_test_alternate_state_2 << std::endl;
+    }
+}
 /// public
 /**
  * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
@@ -516,6 +553,7 @@ straightGenerator::straightGenerator(boundaryPointConstructor *p) {
  * @brief deletes the straights vector
  */
 straightGenerator::~straightGenerator() {
+    post_run_messages();
     delete_vector();
     delete_keys();
 }
@@ -527,7 +565,10 @@ straightGenerator::~straightGenerator() {
 void straightGenerator::init() {
     // calculate main mass center and all the keys to the boundary points
     calculate_mass_center();
+    // calculates hash keys for all the boundary structures
     calculate_keys();
+    // see weather or not moving the mass center away from the boundaries makes sense
+    detect_boundary_proximity_main_mass_center();
     // loop over the boundary structures to create the straights
     for(int i = 0; i < points->boundary_structures.size(); ++i) {
         // we 1st create all possible straights in north and west direction
@@ -538,7 +579,7 @@ void straightGenerator::init() {
         straight_reduce(i);
         // we can now clear the temp creation all valids are in temp valids
         temporary_creation.clear();
-        //
+        // find the boundary points of the surface again
         find_surface_boundary_points(i);
         temporary_valid.clear();
         // we look for all the small bumps created by surfaces with the length 1
@@ -547,6 +588,7 @@ void straightGenerator::init() {
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
     }
+    // old legacy method
     // calculate_all_straights();
 }
 
@@ -556,7 +598,7 @@ void straightGenerator::init() {
  * @param node_point
  * @return number of intersections
  */
-int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
+int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
     /// todo why 3 passes should not 2 be enough
     /// surface based algorithm to calculate intersections
     /**
@@ -569,27 +611,24 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
     /// 0 pass not a boundary point or point on the surface
     int number_of_intersections = 0;
     // check if actually the boundary point, boundary points are excluded in the first pass
-    for(auto bs: points->boundary_structures) {
-        for(auto bp : bs->boundary_points) {
-            // check if we are a surface point described (aka a boundary point and do a hard break
-            if(bp->point == point_t(node_point->position)) {
-                return 0;
-            }
-        }
+    if(full_pkh.key_translation(node_point) > 0) {
+        // todo still not ideal
+        return 0;
     }
     // determine straight to the mass center
     straight_t straight;
-    straight.point = node_point->position; // => r
+    straight.point = node_point; // => r
     // check if mass center and shift if yes
-    if(straight.point == mass_center) {
+    if(straight.point == *individual_mc) {
         // we do a little shift out of the mass-center
         // any direction should work
         std::cerr << "Node-point is the mass-center, algorithm potentially broken" << std::endl;
         std::cerr << "Check correct node-size or amount of wet node neighbours" << std::endl;
+        std::cerr << "There is just a heuristic fix to it in place" << std::endl;
         straight.point.x() += 0.1;
         straight.point.y() += 0.1;
     }
-    straight.direction =  mass_center - straight.point;
+    straight.direction =  *individual_mc - straight.point;
     // setup already found
     std::vector<point_t> already_found;
     already_found.clear();
@@ -634,15 +673,91 @@ int straightGenerator::calculate_intersections(nodePoint_t* node_point) {
 }
 
 /**
- * @fn bool straightGenerator::node_inside(nodePoint_t *point)
+ * @fn int straightGenerator::calculate_intersections_redundant(nodePoint_t *point)
+ * @brief supposed to be a more stable alternative for the calculate intersection function
+ * @param point
+ * @return the number of intersections detected
+ */
+int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
+    // calculates with intersections with 3 additional mass centers in a "circle" around the original mc
+    int intersection_count = 0;
+    matrix_t movers = { {2,-1,-1},
+                        {0, 2,-2}};
+    point_t individual_mc = mass_center;
+    // 7 as a magic number
+    double mover_distance = points->size.x()/7;
+    std::vector<int> intersections;
+    // calculate the intersections 3 times redundant
+    for(int i = 0; i < 3; ++i) {
+        individual_mc += mover_distance * (vector_t)movers.col(i);
+        intersections.push_back(calculate_intersections(point->position,&individual_mc));
+    }
+    std::vector<int> intersections_copy = intersections;
+    // we can sort and search for unique values i guess
+    std::sort(intersections.begin(),intersections.end());
+    auto last = std::unique(intersections.begin(),intersections.end());
+    intersections.erase(last,intersections.end());
+    // we check the size of the thing now
+    if(intersections.size() == 1) {
+        intersection_count = intersections[0];
+    }
+    if(intersections.size() == 2) {
+        ++intersection_test_alternate_state_1;
+        int first_number_count = std::count(intersections_copy.begin(),
+                                            intersections_copy.end(),
+                                            intersections[0]);
+        int second_number_count = std::count(intersections_copy.begin(),
+                                             intersections_copy.end(),
+                                             intersections[1]);
+        if(first_number_count > second_number_count) {
+            intersection_count = intersections[0];
+        }
+        else {
+            intersection_count = intersections[1];
+        }
+    }
+    if(intersections.size() == 3) {
+        ++intersection_test_alternate_state_2;
+        // we use the original mass center here for our output
+        intersection_count = calculate_intersections(point->position,&mass_center);
+    }
+    return intersection_count;
+}
+
+bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point) {
+    // calculates intersections based on a star around the node point, no mc is needed ( we kinda cheat thou )
+    // the typical roles of mc and node point are switched in this method
+    // we reuse the velocity matrix for this
+    bool return_value = false;
+    std::vector<bool> tests;
+    array_t self = point->position;
+    point_t self_point = self;
+    // check in the directions of the velocity field
+    for(int i = 1; i < velocity_set.cols();++i) {
+        point_t current = self + velocity_set.col(i);
+        // remember postion and mc are swapped here
+        int counter = calculate_intersections(current,&self_point);
+        tests.push_back((counter%2) == 0);
+    }
+    // count the numbers of true
+    int passes = std::count(tests.begin(),tests.end(),true);
+    if(passes > 4) {
+        return_value = true;
+    }
+    return return_value;
+}
+
+/**
+ * @fn bool straightGenerator::node_inside_simple(nodePoint_t *point)
  * @brief number of intersections modulo 2, if it can be divided by two and noting remains the node is inside
  * @param point
  * @return false if inside true if outside
  */
-bool straightGenerator::node_inside(nodePoint_t *point) {
+bool straightGenerator::node_inside_simple(nodePoint_t *point) {
     // even out; odd in
     /// uses a surface representation to calculate weather nodes are inside or outside
-    int value = calculate_intersections(point);
+    // int value = calculate_intersections(point->position, &mass_center);
+    int value = calculate_intersections_redundant(point);
     return ((value%2) == 0);
 }
 
