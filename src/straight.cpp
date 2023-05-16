@@ -724,6 +724,12 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     return intersection_count;
 }
 
+/**
+ * @fn bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point)
+ * @brief this method is a good idea but not really implemented well
+ * @param point
+ * @return
+ */
 bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point) {
     // calculates intersections based on a star around the node point, no mc is needed ( we kinda cheat thou )
     // the typical roles of mc and node point are switched in this method
@@ -732,16 +738,23 @@ bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *poi
     std::vector<bool> tests;
     array_t self = point->position;
     point_t self_point = self;
+    matrix_t d = {{1,0,-1,0,1,-1,-1,1},
+                  {0,1,0,-1,1,1,-1,-1}};
+    matrix_t e  ={{2,1,-1,-2,-2,-1,1,2},
+                  {1,2,2,1,-1,-2,-2,-1}};
+    matrix_t combined = d + e;
     // check in the directions of the velocity field
-    for(int i = 1; i < velocity_set.cols();++i) {
-        point_t current = self + velocity_set.col(i);
+    for(int i = 1; i < combined.cols();++i) {
+         point_t current = self + combined.col(i);
         // remember postion and mc are swapped here
         int counter = calculate_intersections(current,&self_point);
-        tests.push_back((counter%2) == 0);
+        if(counter != 0) {
+            tests.push_back((counter%2) == 0);
+        }
     }
     // count the numbers of true
     int passes = std::count(tests.begin(),tests.end(),true);
-    if(passes > 4) {
+    if(passes > tests.size()/2) {
         return_value = true;
     }
     return return_value;
@@ -761,6 +774,15 @@ bool straightGenerator::node_inside_simple(nodePoint_t *point) {
     return ((value%2) == 0);
 }
 
+/**
+ * @fn bool straightGenerator::node_inside_star(nodePoint_t *point)
+ * @brief node inside variant
+ * @param point
+ * @return
+ */
+bool straightGenerator::node_inside_star(nodePoint_t *point) {
+    return calculate_intersections_star_node_point(point);
+}
 /**
  * @fn void straightGenerator::delete_vector()
  * @brief deletes the vector infos

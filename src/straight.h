@@ -56,6 +56,7 @@ class straightGenerator {
     ~straightGenerator();
     void init();
     bool node_inside_simple(nodePoint_t *point);
+    bool node_inside_star(nodePoint_t *point);
     void delete_vector();
     void delete_keys();
 };
