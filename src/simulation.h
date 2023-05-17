@@ -56,6 +56,7 @@ class oSimu {
     void init();
     void run(int current_step);
     void get_data(bool write_to_file, point_t org);
+    void get_data(bool write_to_file);
     void delete_nodes();
 };
 

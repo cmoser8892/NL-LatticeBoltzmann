@@ -504,6 +504,10 @@ void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 
+
+void oSimu::get_data(bool write_to_file) {
+    get_data(write_to_file,boundary_points->size);
+}
 /**
  * @fn void oSimu::delete_nodes()
  * @brief frees up the memory again
