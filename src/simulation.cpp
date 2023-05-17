@@ -321,7 +321,7 @@ void simulation::delete_nodes() {
 oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
     boundary_points = c;
     node_generator = g;
-    force = new circularForce(100,0.001);
+    force = new circularForce(10000,1);
 }
 
 /**
@@ -469,7 +469,8 @@ void oSimu::run(int current_step) {
     for(auto n : nodes) {
         n->offset = (current_step & 0x1) * 9;
         // macro and collision
-        one_step_macro_collision(n,parameters.relaxation);
+        //one_step_macro_collision(n,parameters.relaxation);
+        one_step_macro_collision_forcing(n);
         // streaming
         streaming(n);
         // moving boundary
