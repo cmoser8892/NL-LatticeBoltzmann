@@ -2177,6 +2177,29 @@ TEST(FuncitonalTest, vector_force) {
     }
 }
 
+TEST(FunctionalTest, circular_force) {
+    // test for the circular class implementation
+    int swicht = 10;
+    double magnitude = 0.1;
+    circularForce force(swicht,magnitude);
+    for(int i = 0; i < 9; ++i) {
+        EXPECT_EQ(magnitude,force.return_current_x());
+        EXPECT_EQ(magnitude,force.return_next_x());
+        EXPECT_EQ(0, force.return_current_y());
+        EXPECT_EQ(0, force.return_next_y());
+        force.increment();
+    }
+    EXPECT_EQ(magnitude,force.return_current_x());
+    EXPECT_EQ(0,force.return_next_x());
+    EXPECT_EQ(0, force.return_current_y());
+    EXPECT_EQ(magnitude, force.return_next_y());
+    force.increment();
+    EXPECT_EQ(0 ,force.return_current_x());
+    EXPECT_EQ(0 ,force.return_next_x());
+    EXPECT_EQ(magnitude, force.return_current_y());
+    EXPECT_EQ(magnitude, force.return_next_y());
+}
+
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // main equation is 5.2.9.
 // todo update fused init to also work with boundary limits

@@ -246,7 +246,7 @@ std::vector<vector_t> circular_force_generation(int total_steps, int switch_time
     int selector = 0;
     for(int i = 0; i < total_steps; ++i) {
         // switch selector up and down
-        if(total_steps % switch_time) {
+        if((total_steps % switch_time) == 0) {
             selector = (++selector) % 3;
         }
         // we select on of the vectors and multiply with the magnitude
@@ -260,22 +260,45 @@ std::vector<vector_t> circular_force_generation(int total_steps, int switch_time
 circularForce::circularForce(long switchtime, double mag) {
     switch_time = switchtime;
     magnitude = mag;
+    counter = 1;
+    // setup x and y force
+    x_force = {{1,0,-1,0}};
+    y_force = {{0,1,0,-1}};
+    x_force *= magnitude;
+    y_force *= magnitude;
+    // setup selectors
+    selector_switchero();
+}
+
+void circularForce::selector_switchero() {
+    if((counter % switch_time) == 0) {
+        current_selector =  (++current_selector)%3;
+    }
+    if(((counter +1) % switch_time) == 0) {
+        next_selector =  (++next_selector)%3;
+    }
 }
 
 double circularForce::return_current_x() {
-
+    return x_force(current_selector);
 }
 
 double circularForce::return_current_y() {
-
+    return y_force(current_selector);
 }
 
 double circularForce::return_next_x() {
-
+    return x_force(next_selector);
 }
 
 double circularForce::return_next_y() {
+    return y_force(next_selector);
+}
 
+void circularForce::increment() {
+    // look if we need to change the selectors
+    selector_switchero();
+    ++counter;
 }
 
 /**
