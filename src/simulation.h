@@ -43,6 +43,7 @@ class oSimu {
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
+    circularForce* force;
   public:
     int offset_sim = 1;
     std::vector<oNode*> nodes;
