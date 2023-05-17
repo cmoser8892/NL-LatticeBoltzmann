@@ -325,6 +325,14 @@ double circularForce::return_next_y() {
     return y_force(next_selector);
 }
 
+double circularForce::return_current_next_x() {
+    return x_force(current_selector) + x_force(next_selector);
+}
+
+double circularForce::return_current_next_y() {
+    return y_force(current_selector) + y_force(next_selector);
+}
+
 /**
  * @fn void circularForce::increment()
  * @brief increments the counter and checks if we have to change the selectors

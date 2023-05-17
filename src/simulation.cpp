@@ -366,6 +366,50 @@ void oSimu::bounce_back_moving(oNode *n) {
         (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
     }
 }
+
+void oSimu::one_step_macro_collision_forcing(oNode *node) {
+    double relaxation = parameters.relaxation;
+    int o = node->offset;
+    // macro calc
+    auto p = node->populations.begin() + o;
+    // macro part
+    // rho
+    const double rho = (p + 0).operator*() +
+                       (p + 1).operator*() +
+                       (p + 2).operator*() +
+                       (p + 3).operator*() +
+                       (p + 4).operator*() +
+                       (p + 5).operator*() +
+                       (p + 6).operator*() +
+                       (p + 7).operator*() +
+                       (p + 8).operator*();
+    // ux + uy
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    ux /= rho;
+    uy /= rho;
+    // collision
+    (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
+    (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    (p + 2).operator*() -= relaxation * ((p + 2).operator*() - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    (p + 3).operator*() -= relaxation * ((p + 3).operator*() - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    (p + 4).operator*() -= relaxation * ((p + 4).operator*() - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    (p + 5).operator*() -= relaxation * ((p + 5).operator*() - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 6).operator*() -= relaxation * ((p + 6).operator*() - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 7).operator*() -= relaxation * ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+}
+
 /**
  * @fn void oSimu::init()
  * @brief inits the sim based on info in the node generator
@@ -409,7 +453,7 @@ void oSimu::run(int current_step) {
         // streaming
         streaming(n);
         // moving boundary
-        bounce_back_moving(n);
+        // bounce_back_moving(n);
     }
 }
 

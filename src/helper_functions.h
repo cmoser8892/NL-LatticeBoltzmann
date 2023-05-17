@@ -53,6 +53,8 @@ class circularForce {
     double return_current_y();
     double return_next_x();
     double return_next_y();
+    double return_current_next_x();
+    double return_current_next_y();
     void increment();
 };
 
