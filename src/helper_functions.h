@@ -28,8 +28,24 @@ uint32_t bit_extraleaving_3d_z(uint64_t);
 uint32_t reduce_32_2(uint32_t);
 // base path
 std::filesystem::path get_base_path();
-
+// create circular force
+std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude);
 /// helper classes/sub-classes
+// circular force as a class instead of a big vector
+class circularForce {
+  private:
+    long counter = 0;
+    double magnitude = 0;
+    long switch_time = 0;
+  public:
+    circularForce(long switchtime, double magnitude);
+    double return_current_x();
+    double return_current_y();
+    double return_next_x();
+    double return_next_y();
+    void increment();
+};
+
 // watchdog for rho
 class rhoWatchdog {
     /// just prints out std error msgs

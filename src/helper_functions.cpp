@@ -230,7 +230,54 @@ std::filesystem::path get_base_path() {
     return return_path;
 }
 
+/**
+ * @fn std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude)
+ * @brief
+ * @param total_steps
+ * @param switch_time
+ * @param magnitude
+ * @return
+ */
+std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude) {
+    //
+    std::vector<vector_t> return_vector;
+    matrix_t helper = {{1,0,-1,0},
+                       {0,1,0,-1}};
+    int selector = 0;
+    for(int i = 0; i < total_steps; ++i) {
+        // switch selector up and down
+        if(total_steps % switch_time) {
+            selector = (++selector) % 3;
+        }
+        // we select on of the vectors and multiply with the magnitude
+        vector_t current = helper.col(selector) * magnitude;
+        // push back
+        return_vector.push_back(current);
+    }
+    return return_vector;
+}
 /// helper and sub-classes
+circularForce::circularForce(long switchtime, double mag) {
+    switch_time = switchtime;
+    magnitude = mag;
+}
+
+double circularForce::return_current_x() {
+
+}
+
+double circularForce::return_current_y() {
+
+}
+
+double circularForce::return_next_x() {
+
+}
+
+double circularForce::return_next_y() {
+
+}
+
 /**
  * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
  * @brief constructor for the rho_watchdog

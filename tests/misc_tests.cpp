@@ -2165,8 +2165,19 @@ TEST(FunctionalTest, StarIntersections) {
     gen.visualize_2D_nodes();
 }
 
+TEST(FuncitonalTest, vector_force) {
+    // a bit of a simple and non-memory efficient way to implement different forces
+    int total_size = 160;
+    int swicht = 10;
+    double magnitude = 0.1;
+    std::vector<vector_t> f = circular_force_generation(total_size,swicht,magnitude);
+    EXPECT_EQ(f.size(),total_size);
+    for(auto v : f) {
+        EXPECT_EQ(v.norm(),magnitude);
+    }
+}
+
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
+// main equation is 5.2.9.
 // todo update fused init to also work with boundary limits
 // todo read about std::atomic may be useful
-// todo investigate alternatives to the mass center algorithm for determining inside outside
-// -> 8 neighbor based using the neighbors as mcs instead?!
