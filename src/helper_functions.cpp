@@ -257,6 +257,12 @@ std::vector<vector_t> circular_force_generation(int total_steps, int switch_time
     return return_vector;
 }
 /// helper and sub-classes
+/**
+ * @fn circularForce::circularForce(long switchtime, double mag)
+ * @brief constructor of the circular force calculation
+ * @param switchtime
+ * @param mag
+ */
 circularForce::circularForce(long switchtime, double mag) {
     switch_time = switchtime;
     magnitude = mag;
@@ -270,6 +276,10 @@ circularForce::circularForce(long switchtime, double mag) {
     selector_switchero();
 }
 
+/**
+ * @fn
+ * @brief
+ */
 void circularForce::selector_switchero() {
     if((counter % switch_time) == 0) {
         current_selector =  (++current_selector)%3;
@@ -279,22 +289,46 @@ void circularForce::selector_switchero() {
     }
 }
 
+/**
+ * @fn double circularForce::return_current_x()
+ * @brief returns th current x force component
+ * @return
+ */
 double circularForce::return_current_x() {
     return x_force(current_selector);
 }
 
+/**
+ * @fn double circularForce::return_current_y()
+ * @brief returns the current y force component
+ * @return
+ */
 double circularForce::return_current_y() {
     return y_force(current_selector);
 }
 
+/**
+ * @fn double circularForce::return_next_x()
+ * @brief returns the next x force component
+ * @return
+ */
 double circularForce::return_next_x() {
     return x_force(next_selector);
 }
 
+/**
+ * @fn double circularForce::return_next_y()
+ * @brief returns the next y force component
+ * @return
+ */
 double circularForce::return_next_y() {
     return y_force(next_selector);
 }
 
+/**
+ * @fn void circularForce::increment()
+ * @brief increments the counter and checks if we have to change the selectors
+ */
 void circularForce::increment() {
     // look if we need to change the selectors
     selector_switchero();
