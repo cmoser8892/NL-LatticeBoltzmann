@@ -21,6 +21,7 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
  */
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
+    delete straight_surfaces;
 }
 
 /**
@@ -265,11 +266,11 @@ void nodeGenerator::board_creation(unsigned int size) {
  * @param current
  */
 void nodeGenerator::check_nodes(handle_t* current) {
-    straightGenerator straight(points);
-    straight.init();
+    straight_surfaces = new straightGenerator(points);
+    straight_surfaces->init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
-        bool c = straight.node_inside_simple(n);
+        bool c = straight_surfaces->node_inside_simple(n);
         if(!c) {
             n->handle = *current;
             n->boundary = NO_BOUNDARY;
@@ -283,7 +284,6 @@ void nodeGenerator::check_nodes(handle_t* current) {
         }
     }
     node_infos = reformed_nodes;
-    straight.write_out_surface();
 }
 
 /**

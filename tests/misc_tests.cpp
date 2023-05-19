@@ -2162,7 +2162,7 @@ TEST(FunctionalTest, StarIntersections) {
     // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
 }
 
 TEST(FuncitonalTest, vector_force) {

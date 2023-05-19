@@ -46,7 +46,11 @@ int main(int argc, char *argv[]) {
         }
         sim.run(i);
     }
+    // write out the data
     sim.get_data(true);
+    if(gen.straight_surfaces != nullptr)
+        gen.straight_surfaces->write_out_surface();
+    // time the whole thing
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
     std::cout << "Took " <<duration.count()<< "s" << std::endl;

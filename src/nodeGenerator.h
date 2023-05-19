@@ -45,6 +45,7 @@ class nodeGenerator {
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
   public:
     std::vector<nodePoint_t*> node_infos;
+    straightGenerator* straight_surfaces = nullptr;
     explicit nodeGenerator(boundaryPointConstructor* p);
     ~nodeGenerator();
     void set_discovery_vector(vector_t set);
