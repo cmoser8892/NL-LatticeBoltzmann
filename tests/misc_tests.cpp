@@ -2204,3 +2204,5 @@ TEST(FunctionalTest, circular_force) {
 // main equation is 5.2.9.
 // todo update fused init to also work with boundary limits
 // todo read about std::atomic may be useful
+// todo need a way to visulaize the boundary in the python image
+// -> draw sth around it ?!
