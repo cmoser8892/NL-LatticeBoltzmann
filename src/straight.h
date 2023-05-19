@@ -59,6 +59,7 @@ class straightGenerator {
     bool node_inside_star(nodePoint_t *point);
     void delete_vector();
     void delete_keys();
+    void write_out_surface();
 };
 
 bool straight_better_candidate_test(straight_t* candidate, straight* partner);

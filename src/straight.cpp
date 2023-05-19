@@ -1,6 +1,7 @@
 #include "straight.h"
+#include <fstream>
 #include <iostream>
-
+#
 /// private
 /**
  * @fn void straightGenerator::calculate_mass_center()
@@ -783,6 +784,7 @@ bool straightGenerator::node_inside_simple(nodePoint_t *point) {
 bool straightGenerator::node_inside_star(nodePoint_t *point) {
     return calculate_intersections_star_node_point(point);
 }
+
 /**
  * @fn void straightGenerator::delete_vector()
  * @brief deletes the vector infos
@@ -793,9 +795,37 @@ void straightGenerator::delete_vector() {
     }
 }
 
+/**
+ * @fn void straightGenerator::delete_keys()
+ * @brief delete the key classes
+ */
 void straightGenerator::delete_keys() {
     for(auto k : pkhv) {
         delete k;
+    }
+}
+
+void straightGenerator::write_out_surface() {
+    // function to write out the surface for boundary representation in pyplot
+    std::ofstream out;
+    out.open("xy_surfaces");
+    if(out.is_open()) {
+        // go over the surface
+        for(auto s : surfaces) {
+            // write out beginning and end of the surface
+            point_t begin = s->point;
+            point_t end = begin + s->direction*s->max_t;
+            // write the info into the file
+            // both x first then the ys
+            out << begin.x() << "  "
+                << end.x()   << "  "
+                << begin.y() << "  "
+                << end.y()   << "  "
+                << std::endl;
+        }
+    }
+    else {
+        throw std::runtime_error("Open file has failed");
     }
 }
 

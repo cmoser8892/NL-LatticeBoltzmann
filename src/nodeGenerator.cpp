@@ -283,6 +283,7 @@ void nodeGenerator::check_nodes(handle_t* current) {
         }
     }
     node_infos = reformed_nodes;
+    straight.write_out_surface();
 }
 
 /**

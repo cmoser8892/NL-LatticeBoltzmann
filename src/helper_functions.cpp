@@ -38,15 +38,20 @@ void write_flowfield_data(flowfield_t * field, std::string filename, bool write_
     out.open(filename);
     // preamble size infos
     // print out the rows first then to file
-    for(int i = 0; i < field->rows(); ++i) {
-        if(write_to_file) {
-            out << field->row(i) << std::endl;
+    if(out.is_open()) {
+        for(int i = 0; i < field->rows(); ++i) {
+            if(write_to_file) {
+                out << field->row(i) << std::endl;
+            }
+            else {
+                std::cout << field->row(i) << std::endl;
+            }
         }
-        else {
-            std::cout << field->row(i) << std::endl;
-        }
+        out.close();
     }
-    out.close();
+    else {
+        throw std::runtime_error("Open file has failed");
+    }
 }
 
 /**
