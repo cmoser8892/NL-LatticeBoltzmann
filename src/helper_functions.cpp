@@ -425,6 +425,7 @@ handle_t pointKeyHash::key_translation(point_t pos) {
  */
 handle_t pointKeyHash::key_translation(coordinate_t coord) {
     handle_t return_key = 0;
+    // todo assertion to not exceed max coordinates
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
     if(auto found_iter = keys.find(search_key); found_iter != keys.end()) {
         // does not do the translation into an array position
