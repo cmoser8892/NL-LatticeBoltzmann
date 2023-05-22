@@ -62,6 +62,7 @@ void straightGenerator::detect_boundary_proximity_main_mass_center() {
  * @brief generates keys holdings for all the individual boundary-structures a boundary has
  */
 void straightGenerator::calculate_keys() {
+    // fills the hash class that mirrors the boundary structures
     for(auto bs: points->boundary_structures) {
         auto pkh = new pointKeyHash;
         pkhv.push_back(pkh);
@@ -79,6 +80,7 @@ void straightGenerator::calculate_keys() {
  */
 void straightGenerator::calculate_all_straights() {
     // go through all the structs -> assumption closed surface
+    // we just look for the nearest neighbor in the pkh in the cardinal directions
     for(int i = 0; i< points->boundary_structures.size(); ++i) {
         auto bs = points->boundary_structures[i];
         auto pkh = pkhv[i];
@@ -145,14 +147,13 @@ void straightGenerator::straight_create(int bs_number) {
         // setup and short hands
         point_t current = bp->point;
         point_t neighbor;
-        handle_t neighbor_handle;
         // we search in the cardinal directions for neighbors
         int found = 0;
         // we just look in the positive directions negative gets ignored :)
         // so it can happen that we do not find a partner for that point
         for(int i = 0; i < 2 ; ++i) {
             neighbor = current + point_t(cardinal_directions.col(i));
-            neighbor_handle = pkh->key_translation(neighbor);
+            handle_t neighbor_handle = pkh->key_translation(neighbor);
             if(neighbor_handle > 0) {
                 // we add it to the temporary object used in self test
                 auto s  = new straight_t;
@@ -231,12 +232,14 @@ void straightGenerator::straight_reduce(int bs) {
         }
     }
 }
+
 /**
  * @fn void straightGenerator::find_surface_boundary_points(int bs)
  * @brief we us the key hash table to find all the original boundary points to determine the length of each surface
  * @param bs
  */
 void straightGenerator::find_surface_boundary_points(int bs) {
+    // we need to check the reduced surfaces for interruptions in between
     auto bps = points->boundary_structures[bs]->boundary_points;
     for (auto s : temporary_valid) {
         std::vector<point_t*> on_surface_points;
@@ -519,26 +522,6 @@ void straightGenerator::look_for_bumps(int bs_number) {
     }
 }
 
-/**
- * @fn void straightGenerator::temporary_to_surface(int bs)
- * @brief writes and finalizes temporary to surface
- * @param bs
- */
-void straightGenerator::temporary_to_surface(int bs) {
-    for(auto s : temporary) {
-        if(s != nullptr) {
-            surfaces.push_back(s);
-        }
-    }
-}
-
-void straightGenerator::post_run_messages() {
-    // prob still a good idea to display those
-    if(intersection_test_alternate_state_2 > 0) {
-        std::cerr << "Intersection tests Alternate state 2: "
-                  << intersection_test_alternate_state_2 << std::endl;
-    }
-}
 /// public
 /**
  * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
@@ -554,7 +537,6 @@ straightGenerator::straightGenerator(boundaryPointConstructor *p) {
  * @brief deletes the straights vector
  */
 straightGenerator::~straightGenerator() {
-    post_run_messages();
     delete_vector();
     delete_keys();
 }
@@ -585,7 +567,10 @@ void straightGenerator::init() {
         temporary_valid.clear();
         // we look for all the small bumps created by surfaces with the length 1
         look_for_bumps(i);
-        temporary_to_surface(i);
+        std::copy_if(temporary.begin(),
+                     temporary.end(),
+                     std::back_inserter(surfaces),
+                     [](straight_t* s){return s != nullptr;});
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
     }
@@ -703,7 +688,6 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
         intersection_count = intersections[0];
     }
     if(intersections.size() == 2) {
-        ++intersection_test_alternate_state_1;
         int first_number_count = std::count(intersections_copy.begin(),
                                             intersections_copy.end(),
                                             intersections[0]);
@@ -718,7 +702,6 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
         }
     }
     if(intersections.size() == 3) {
-        ++intersection_test_alternate_state_2;
         // we use the original mass center here for our output
         intersection_count = calculate_intersections(point->position,&mass_center);
     }
@@ -805,6 +788,10 @@ void straightGenerator::delete_keys() {
     }
 }
 
+/**
+ * @fn void straightGenerator::write_out_surface()
+ * @brief writes out the points where the surface begins and ends xx yy
+ */
 void straightGenerator::write_out_surface() {
     // function to write out the surface for boundary representation in pyplot
     std::ofstream out;

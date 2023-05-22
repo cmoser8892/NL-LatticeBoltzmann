@@ -55,6 +55,7 @@ class oSimu {
     void one_step_macro_collision_forcing(oNode* n);
     void init();
     void run(int current_step);
+    void current_run(int current_step);
     void get_data(bool write_to_file, point_t org);
     void get_data(bool write_to_file);
     void delete_nodes();

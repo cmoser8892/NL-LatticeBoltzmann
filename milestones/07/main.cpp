@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        sim.run(i);
+        sim.current_run(i);
     }
     // write out the data
     sim.get_data(true);

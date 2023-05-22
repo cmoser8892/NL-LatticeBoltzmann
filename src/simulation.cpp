@@ -459,12 +459,25 @@ void oSimu::init() {
     }
 }
 
+void oSimu::run(int current_step ) {
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    for(auto n : nodes) {
+        n->offset = (current_step & 0x1) * 9;
+        // macro and collision
+        one_step_macro_collision(n,parameters.relaxation);
+        // streaming
+        streaming(n);
+        // moving boundary
+        bounce_back_moving(n);
+    }
+}
+
 /**
  * @fn void oSimu::run(int current_step)
  * @brief runs all the steps in a lbm sim
  * @param current_step
  */
-void oSimu::run(int current_step) {
+void oSimu::current_run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     for(auto n : nodes) {
         n->offset = (current_step & 0x1) * 9;
@@ -473,8 +486,6 @@ void oSimu::run(int current_step) {
         one_step_macro_collision_forcing(n);
         // streaming
         streaming(n);
-        // moving boundary
-        // bounce_back_moving(n);
     }
 }
 
@@ -485,6 +496,8 @@ void oSimu::run(int current_step) {
  * @param orgiginalo
  */
 void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
+    // we create a bunch of big arrays to store our data in
+    // to be able to display like an array again
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;

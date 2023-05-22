@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
-    int steps = 100;
+    int steps = 100000;
     unsigned int size = 302;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);

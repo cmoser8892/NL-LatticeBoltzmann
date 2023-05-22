@@ -21,8 +21,6 @@ class straightGenerator {
      * it is a straight line
      */
   private:
-    int intersection_test_alternate_state_1 = 0;
-    int intersection_test_alternate_state_2 = 0;
     // boundary points and pkh of the boundary points
     boundaryPointConstructor* points;
     pointKeyHash full_pkh;
@@ -47,8 +45,6 @@ class straightGenerator {
     void straight_reduce(int bs);
     void find_surface_boundary_points(int bs);
     void look_for_bumps(int bs);
-    void temporary_to_surface(int bs);
-    void post_run_messages();
   public:
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces;
