@@ -765,6 +765,11 @@ bool straightGenerator::node_inside_simple(nodePoint_t *point) {
  * @return
  */
 bool straightGenerator::node_inside_star(nodePoint_t *point) {
+    /**
+     * this method is truely crap, but the star idea is a good one
+     * just not sure on the overall implementation
+     *
+     */
     return calculate_intersections_star_node_point(point);
 }
 
