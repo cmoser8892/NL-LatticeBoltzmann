@@ -321,7 +321,7 @@ void simulation::delete_nodes() {
 oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
     boundary_points = c;
     node_generator = g;
-    force = new circularForce(1000,0.001);
+    force = new circleForce(0.001,c->size);
 }
 
 /**
@@ -406,28 +406,32 @@ void oSimu::one_step_macro_collision_forcing(oNode *node) {
                            + (0);
     (p + 1).operator*() -= relaxation *
                            ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)))
-                           + (1.0/12*force->return_current_next_x()) ;
+                           + (1.0/12*force->return_current_next_x(&node->position,1)) ;
     (p + 2).operator*() -= relaxation *
                            ((p + 2).operator*() - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)))
-                           + (1.0/12*force->return_current_next_y());
+                           + (1.0/12*force->return_current_next_y(&node->position,2));
     (p + 3).operator*() -= relaxation *
                            ((p + 3).operator*() - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)))
-                           + (-1.0/12*force->return_current_next_x());
+                           + (-1.0/12*force->return_current_next_x(&node->position,3));
     (p + 4).operator*() -= relaxation *
                            ((p + 4).operator*() - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)))
-                           + (-1.0/12*force->return_current_next_y());
+                           + (-1.0/12*force->return_current_next_y(&node->position,4));
     (p + 5).operator*() -= relaxation *
                            ((p + 5).operator*() - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)))
-                           + (1.0/12*force->return_current_next_x() + 1.0/12*force->return_current_next_y());
+                           + (1.0/12*force->return_current_next_x(&node->position,5)
+                              + 1.0/12*force->return_current_next_y(&node->position,5));
     (p + 6).operator*() -= relaxation *
                            ((p + 6).operator*() - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)))
-                           + (-1.0/12*force->return_current_next_x() + 1.0/12*force->return_current_next_y());
+                           + (-1.0/12*force->return_current_next_x(&node->position,6)
+                              + 1.0/12*force->return_current_next_y(&node->position,6));
     (p + 7).operator*() -= relaxation *
                            ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)))
-                           + (-1.0/12*force->return_current_next_x() - 1.0/12*force->return_current_next_y());
+                           + (-1.0/12*force->return_current_next_x(&node->position,7) +
+                              - 1.0/12*force->return_current_next_y(&node->position,7));
     (p + 8).operator*() -= relaxation *
                            ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)))
-                           + (1.0/12*force->return_current_next_x() - 1.0/12*force->return_current_next_y());
+                           + (1.0/12*force->return_current_next_x(&node->position,8)
+                              - 1.0/12*force->return_current_next_y(&node->position,8));
 }
 
 /**

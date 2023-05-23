@@ -58,6 +58,19 @@ class circularForce {
     void increment();
 };
 
+class circleForce {
+  private:
+    double force = 0;
+    point_t middle;
+    double max_distance;
+    double return_position_x(point_t* self_position);
+    double return_position_y(point_t* self_position);
+  public:
+    // first implementation assumes that we rotate around the center of the canvas
+    circleForce(double force, point_t canvas_size);
+    double return_current_next_x(point_t* self_position, int channel);
+    double return_current_next_y(point_t* self_position, int channel );
+};
 // watchdog for rho
 class rhoWatchdog {
     /// just prints out std error msgs

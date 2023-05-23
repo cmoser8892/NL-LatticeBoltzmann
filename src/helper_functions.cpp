@@ -348,6 +348,49 @@ void circularForce::increment() {
     ++counter;
 }
 
+
+double circleForce::return_position_x(point_t *self_position) {
+    // we determine the force magnitude
+    vector_t distance_vector = (*self_position) - middle;
+    double force_magnitude = distance_vector.norm()/max_distance * force;
+    // we determine the x component
+    distance_vector /= distance_vector.norm();
+    // change directions and multiply with the force magnitude
+    return distance_vector.y() * force_magnitude;
+}
+
+double circleForce::return_position_y(point_t *self_position) {
+    // we determine the force magnitude
+    vector_t distance_vector = (*self_position) - middle;
+    double force_magnitude = distance_vector.norm()/max_distance * force;
+    // we determine the x component
+    distance_vector /= distance_vector.norm();
+    // change directions and multiply with the force magnitude
+    return - distance_vector.x() * force_magnitude;
+}
+
+circleForce::circleForce(double f, point_t canvas_size) {
+    // force denotes the force at the extremes of the canvas
+    max_distance = (canvas_size - canvas_size/2).norm();
+    middle = canvas_size/2;
+    force = f;
+}
+
+double circleForce::return_current_next_x(point_t *self_position, int channel) {
+    // setup the cidt position
+    array_t intermediate = *self_position;
+    point_t next = intermediate + velocity_set.col(channel);
+    // calculate
+    return return_position_x(self_position) + return_position_x(&next);
+}
+
+double circleForce::return_current_next_y(point_t *self_position, int channel ) {
+    // setup the cidt position
+    array_t intermediate = *self_position;
+    point_t next = intermediate + velocity_set.col(channel);
+    // calculate
+    return return_position_y(self_position) + return_position_y(&next);
+}
 /**
  * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
  * @brief constructor for the rho_watchdog
