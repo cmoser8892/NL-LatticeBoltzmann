@@ -321,7 +321,7 @@ void simulation::delete_nodes() {
 oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
     boundary_points = c;
     node_generator = g;
-    force = new circleForce(0.001,c->size);
+    force = new circleForce(0.007,c->size);
 }
 
 /**

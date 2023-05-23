@@ -12,11 +12,12 @@ int main(int argc, char *argv[]) {
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
     bmp_24_test_image.append("test_images");
-    bmp_24_test_image.append("test_inner_outer.bmp");
+    bmp_24_test_image.append("small_t.bmp");
     imageConverter ic(bmp_24_test_image);
     // run the functions
     ic.init();
     ic.run();
+    ic.boundaries->visualize_2D_boundary();
     // ic.boundaries->visualize_2D_boundary();
     nodeGenerator gen(ic.boundaries);
     // if the fused init runs this test is considered complete
