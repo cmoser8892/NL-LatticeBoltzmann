@@ -71,6 +71,10 @@ class circleForce {
     double return_current_next_x(point_t* self_position, int channel);
     double return_current_next_y(point_t* self_position, int channel );
 };
+
+class rotatingForce {
+
+};
 // watchdog for rho
 class rhoWatchdog {
     /// just prints out std error msgs
