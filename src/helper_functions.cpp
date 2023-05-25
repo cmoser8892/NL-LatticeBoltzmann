@@ -218,6 +218,18 @@ uint32_t reduce_32_2(uint32_t b) {
 }
 
 /**
+ * @fn double calculate_distance(point_t* p1, point_t* p2)
+ * @brief calculate the distance between two points
+ * @param p1
+ * @param p2
+ * @return
+ */
+double calculate_distance(point_t* p1, point_t* p2) {
+    // hide this ugliness
+    return (*p1 - *p2).norm();
+}
+
+/**
  * @fn std::filesystem::path get_base_path()
  * @brief gets the path to the NL-directory
  * @return the path to the NL-directory
@@ -282,8 +294,8 @@ circularForce::circularForce(long switchtime, double mag) {
 }
 
 /**
- * @fn
- * @brief
+ * @fn void circularForce::selector_switchero()
+ * @brief count up to three then go back to 0
  */
 void circularForce::selector_switchero() {
     if((counter % switch_time) == 0) {
@@ -330,10 +342,20 @@ double circularForce::return_next_y() {
     return y_force(next_selector);
 }
 
+/**
+ * @fn double circularForce::return_current_next_x()
+ * @brief returns both force components
+ * @return
+ */
 double circularForce::return_current_next_x() {
     return x_force(current_selector) + x_force(next_selector);
 }
 
+/**
+ * @fn double circularForce::return_current_next_y()
+ * @brief returns both force components
+ * @return
+ */
 double circularForce::return_current_next_y() {
     return y_force(current_selector) + y_force(next_selector);
 }
@@ -348,7 +370,12 @@ void circularForce::increment() {
     ++counter;
 }
 
-
+/**
+ * @fn double circleForce::return_position_x(point_t *self_position)
+ * @brief
+ * @param self_position
+ * @return
+ */
 double circleForce::return_position_x(point_t *self_position) {
     // we determine the force magnitude
     vector_t distance_vector = (*self_position) - middle;
@@ -359,6 +386,12 @@ double circleForce::return_position_x(point_t *self_position) {
     return distance_vector.y() * force_magnitude;
 }
 
+/**
+ * @fn double circleForce::return_position_y(point_t *self_position)
+ * @brief returns the force at a specific point
+ * @param self_position
+ * @return
+ */
 double circleForce::return_position_y(point_t *self_position) {
     // we determine the force magnitude
     vector_t distance_vector = (*self_position) - middle;
@@ -369,6 +402,12 @@ double circleForce::return_position_y(point_t *self_position) {
     return - distance_vector.x() * force_magnitude;
 }
 
+/**
+ * @fn circleForce::circleForce(double f, point_t canvas_size)
+ * @brief constructor sets the size and middle of the rotating frame, also sets the basic force
+ * @param f
+ * @param canvas_size
+ */
 circleForce::circleForce(double f, point_t canvas_size) {
     // force denotes the force at the extremes of the canvas
     max_distance = (canvas_size - canvas_size/2).norm();
@@ -376,6 +415,13 @@ circleForce::circleForce(double f, point_t canvas_size) {
     force = f;
 }
 
+/**
+ * @fn double circleForce::return_current_next_x(point_t *self_position, int channel)
+ * @brief function to return the next x foce component
+ * @param self_position
+ * @param channel
+ * @return
+ */
 double circleForce::return_current_next_x(point_t *self_position, int channel) {
     // setup the cidt position
     array_t intermediate = *self_position;
@@ -384,6 +430,13 @@ double circleForce::return_current_next_x(point_t *self_position, int channel) {
     return return_position_x(self_position) + return_position_x(&next);
 }
 
+/**
+ * @fn double circleForce::return_current_next_y(point_t *self_position, int channel )
+ * @brief calculates the y forces
+ * @param self_position
+ * @param channel
+ * @return
+ */
 double circleForce::return_current_next_y(point_t *self_position, int channel ) {
     // setup the cidt position
     array_t intermediate = *self_position;
@@ -391,6 +444,43 @@ double circleForce::return_current_next_y(point_t *self_position, int channel ) 
     // calculate
     return return_position_y(self_position) + return_position_y(&next);
 }
+
+/// class rotating force
+void rotatingForce::calculate_F_alpha() {
+    force_alpha.setZero();
+    // F_c = -2 (w x v)
+    double force_c_alpha_value = -2 * omega.norm() * velocity.norm();
+    double force_z_alpha_value = omega.norm() * omega.norm() * distance;
+    // F_z =  w2r
+    vector_t force;
+    force.x() = force_c_alpha_value;
+    force.y() = force_z_alpha_value;
+    // F_c = -2 (w x v)
+    Eigen::Rotation2D<double> rot;
+    rot.angle() = 10; // parts of pi use EIGEN_PI
+    force = rot * force;
+}
+
+rotatingForce::rotatingForce(point_t o, double o1, double o2) {
+    origin = o;
+    omega.x() = o1;
+    omega.y() = o2;
+}
+
+void rotatingForce::precalculate(double ux, double uy, point_t *position) {
+    // set velocity
+    velocity.x() = ux;
+    velocity.y() = uy;
+    // calculate distance
+    distance = calculate_distance(position,&origin);
+
+}
+
+double rotatingForce::return_force(int channel_i) {
+    // truncation of the forcing term (viggen 236)
+
+}
+
 /**
  * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
  * @brief constructor for the rho_watchdog

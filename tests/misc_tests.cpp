@@ -7,10 +7,6 @@
 #include "image_converter.h"
 #include <gtest/gtest.h>
 
-TEST(MiscTest, TestingWhatever) {
-    EXPECT_TRUE(true);
-}
-
 TEST(FunctionalTest, correct_equilibrium) {
     // check weather or not the pen and computer agree
     handle_t h = 1;
@@ -2199,6 +2195,7 @@ TEST(FunctionalTest, circular_force) {
     EXPECT_EQ(magnitude, force.return_current_y());
     EXPECT_EQ(magnitude, force.return_next_y());
 }
+// this shit got laggy as fuck on my pc ill make a new on
 
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // main equation is 5.2.9.
