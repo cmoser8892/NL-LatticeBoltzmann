@@ -230,6 +230,45 @@ double calculate_distance(point_t* p1, point_t* p2) {
 }
 
 /**
+ * @fn double calculate_truncation_force(array_t c, array_t u, vector_t force)
+ * @brief calculates the ugly part of  th truncation of the forcoe term term (viggen 236)
+ * @param c veloicty set
+ * @param u velocitay
+ * @param force
+ * @return
+ */
+double calculate_truncation_force(array_t c, array_t u, vector_t force) {
+    double return_value = 0;
+    double cs_2 = 1.0/3;
+    for(int alpha = 0; alpha < c.size(); ++alpha) {
+        for(int beta = 0; beta < u.size(); ++beta) {
+            // std::cout << c(alpha) << std::endl;
+            // std::cout << c(beta) << std::endl;
+            return_value += ((c(alpha)/cs_2) +
+                             (((c(alpha)*c(beta) - cs_2 * conical_delta(alpha,beta)) *u(beta)) / (cs_2*cs_2)))
+                             *force(alpha);
+            // std::cout << return_value << std::endl;
+        }
+    }
+    // std::cout << std::endl;
+    return return_value;
+}
+
+/**
+ * @fn int conical_delta(int a, int b)
+ * @brief returns 1 if a == b otherwise 0
+ * @param a
+ * @param b
+ * @return
+ */
+int conical_delta(int a, int b) {
+    if(a == b) {
+        return 1;
+    }
+    return 0;
+}
+
+/**
  * @fn std::filesystem::path get_base_path()
  * @brief gets the path to the NL-directory
  * @return the path to the NL-directory
@@ -450,21 +489,29 @@ void rotatingForce::calculate_F_alpha() {
     force_alpha.setZero();
     // F_c = -2 (w x v)
     double force_c_alpha_value = -2 * omega.norm() * velocity.norm();
-    double force_z_alpha_value = omega.norm() * omega.norm() * distance;
+    double force_z_alpha_value = omega.norm() * omega.norm() * radius;
     // F_z =  w2r
-    vector_t force;
-    force.x() = force_c_alpha_value;
-    force.y() = force_z_alpha_value;
+    force_alpha.x() = force_c_alpha_value;
+    force_alpha.y() = force_z_alpha_value;
     // F_c = -2 (w x v)
     Eigen::Rotation2D<double> rot;
-    rot.angle() = 10; // parts of pi use EIGEN_PI
-    force = rot * force;
+    rot.angle() = angle; // parts of pi use EIGEN_PI
+    force_alpha = rot * force_alpha;
 }
 
-rotatingForce::rotatingForce(point_t o, double o1, double o2) {
+void rotatingForce::calculate_F_i() {
+    for(int i = 0; i < CHANNELS; ++i) {
+        force_channels[i] = weights(i) * calculate_truncation_force(velocity_set.col(i),velocity,force_alpha);
+    }
+}
+
+rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2) {
     origin = o;
+    middle = c;
     omega.x() = o1;
     omega.y() = o2;
+    force_channels.resize(CHANNELS);
+    force_channels.setZero();
 }
 
 void rotatingForce::precalculate(double ux, double uy, point_t *position) {
@@ -472,13 +519,19 @@ void rotatingForce::precalculate(double ux, double uy, point_t *position) {
     velocity.x() = ux;
     velocity.y() = uy;
     // calculate distance
-    distance = calculate_distance(position,&origin);
-
+    radius = calculate_distance(position,&origin);
+    angle = 2* asin(calculate_distance(&middle,position)/(2*radius));
+    calculate_F_alpha();
+    calculate_F_i();
 }
 
 double rotatingForce::return_force(int channel_i) {
     // truncation of the forcing term (viggen 236)
+    return force_channels[channel_i];
+}
 
+vector_t rotatingForce::return_force_alpha() {
+    return force_alpha;
 }
 
 /**

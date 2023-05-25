@@ -18,6 +18,36 @@ TEST(FunctionalTest, rotation_eigen) {
     EXPECT_NEAR(test.x(),0,1e-10);
 }
 
-TEST(FunctionalTEST, rotatingForceBasic) {
+TEST(FunctionalTest, truncation_force) {
+    // setup the vectors
+    vector_t c = {0,0};
+    vector_t u = {0,0};
+    vector_t f = {0,0};
+    EXPECT_EQ(calculate_truncation_force(c,u,f),0);
+    c = {0,0};
+    u = {1,-1};
+    f = {1,1};
+    EXPECT_EQ(calculate_truncation_force(c,u,f),0);
+    c = {1,0};
+    u = {0,0};
+    f = {1,1};
+    EXPECT_EQ(calculate_truncation_force(c,u,f),6);
+    c = {1,0};
+    u = {1,1};
+    f = {1,1};
+    EXPECT_EQ(calculate_truncation_force(c,u,f),9);
+    c = {1,1};
+    u = {1,1};
+    f = {1,1};
+    EXPECT_EQ(calculate_truncation_force(c,u,f),42);
+}
 
+TEST(FunctionalTest, rotating_zeros) {
+    point_t origin = {0,0};
+    point_t middle = {5,5};
+    point_t point = middle;
+    rotatingForce rf(origin,middle,0,0);
+    rf.precalculate(0,0,&point);
+    EXPECT_EQ(rf.return_force_alpha().x(),0);
+    EXPECT_EQ(rf.return_force_alpha().y(),0);
 }

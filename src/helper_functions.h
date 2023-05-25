@@ -27,6 +27,8 @@ uint32_t bit_extraleaving_3d_z(uint64_t);
 // reduce 32 bit numbers to 2 bit numbers
 uint32_t reduce_32_2(uint32_t);
 double calculate_distance(point_t* p1, point_t* p2);
+double calculate_truncation_force(array_t c, array_t u, vector_t force);
+int conical_delta(int a, int b);
 // base path
 std::filesystem::path get_base_path();
 // create circular force
@@ -76,16 +78,22 @@ class circleForce {
 class rotatingForce {
   private:
     point_t origin;
+    point_t middle;
     vector_t omega;
     vector_t velocity;
     vector_t force_alpha;
-    double distance;
-    double angle;
+
+    double radius = 0;
+    double angle = 0;
+    // 9 long for 2dq9
+    array_t force_channels;
     void calculate_F_alpha();
+    void calculate_F_i();
   public:
-    rotatingForce(point_t origin, double omega_1, double omega_2);
+    rotatingForce(point_t origin, point_t canvas_middle, double omega_1, double omega_2);
     void precalculate(double ux, double uy,point_t* position);
     double return_force(int channel_i);
+    vector_t return_force_alpha();
 };
 
 // watchdog for rho
