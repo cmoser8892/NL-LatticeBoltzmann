@@ -51,3 +51,10 @@ TEST(FunctionalTest, rotating_zeros) {
     EXPECT_EQ(rf.return_force_alpha().x(),0);
     EXPECT_EQ(rf.return_force_alpha().y(),0);
 }
+
+// todo look up book boy Wolf Gladrow on forcing term in LB cap 5
+// todo try out the guo term also described in viggen 6.14
+// main equation is 5.2.9.
+// todo update fused init to also work with boundary limits,
+//  there are some strange cases still left -> investigate
+// todo read about std::atomic may be useful

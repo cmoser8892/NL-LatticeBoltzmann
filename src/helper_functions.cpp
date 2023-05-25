@@ -485,6 +485,10 @@ double circleForce::return_current_next_y(point_t *self_position, int channel ) 
 }
 
 /// class rotating force
+/**
+ * @fn void rotatingForce::calculate_F_alpha()
+ * @brief calculates the physical force in the domain
+ */
 void rotatingForce::calculate_F_alpha() {
     force_alpha.setZero();
     // F_c = -2 (w x v)
@@ -499,13 +503,26 @@ void rotatingForce::calculate_F_alpha() {
     force_alpha = rot * force_alpha;
 }
 
+/**
+ * @fn calculates the channel dependent force
+ * @brief
+ */
 void rotatingForce::calculate_F_i() {
     for(int i = 0; i < CHANNELS; ++i) {
         force_channels[i] = weights(i) * calculate_truncation_force(velocity_set.col(i),velocity,force_alpha);
     }
 }
 
+/**
+ * @fn rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2)
+ * @brief construtor does constructor things
+ * @param o
+ * @param c
+ * @param o1
+ * @param o2
+ */
 rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2) {
+    // todo might be a good idea to reduce omega doesnt make sense as a vector
     origin = o;
     middle = c;
     omega.x() = o1;
@@ -514,6 +531,13 @@ rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2) {
     force_channels.setZero();
 }
 
+/**
+ * @fn void rotatingForce::precalculate(double ux, double uy, point_t *position)
+ * @brief precalculates everything in used in the fused macro streaming step
+ * @param ux
+ * @param uy
+ * @param position
+ */
 void rotatingForce::precalculate(double ux, double uy, point_t *position) {
     // set velocity
     velocity.x() = ux;
@@ -525,12 +549,24 @@ void rotatingForce::precalculate(double ux, double uy, point_t *position) {
     calculate_F_i();
 }
 
+/**
+ * @fn double rotatingForce::return_force(int channel_i)
+ * @brief calculates the forces dependent on the channels
+ * @param channel_i
+ * @return
+ */
 double rotatingForce::return_force(int channel_i) {
     // truncation of the forcing term (viggen 236)
     return force_channels[channel_i];
 }
 
+/**
+ * @fn vector_t rotatingForce::return_force_alpha()
+ * @brief returns the alpha force component
+ * @return
+ */
 vector_t rotatingForce::return_force_alpha() {
+    // useful for testing
     return force_alpha;
 }
 

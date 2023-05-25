@@ -2196,10 +2196,3 @@ TEST(FunctionalTest, circular_force) {
     EXPECT_EQ(magnitude, force.return_next_y());
 }
 // this shit got laggy as fuck on my pc ill make a new on
-
-// todo look up book boy Wolf Gladrow on forcing term in LB cap 5
-// main equation is 5.2.9.
-// todo update fused init to also work with boundary limits
-// todo read about std::atomic may be useful
-// todo need a way to visulaize the boundary in the python image
-// -> draw sth around it ?!
