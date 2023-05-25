@@ -73,8 +73,16 @@ class circleForce {
 };
 
 class rotatingForce {
-
+  private:
+    point_t origin;
+    double omega = 0;
+    void calculate_F_alpha();
+  public:
+    rotatingForce(point_t origin, double omega);
+    void precalculate();
+    void return_force(int channel_i);
 };
+
 // watchdog for rho
 class rhoWatchdog {
     /// just prints out std error msgs
