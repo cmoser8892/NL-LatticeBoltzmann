@@ -2,10 +2,11 @@
 #include <iostream>
 #include <chrono>
 
-/// fused variant of m2
+
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
-    int steps = 10000;
+    // init variant
+    int steps = 100000;
     unsigned int size = 302;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
@@ -19,18 +20,19 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
-    simulation sim(&boundaries,&gen);
+    oSimu sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
-    sim.fused_init();
+    sim.init();
     // run sim
     for(int i = 0; i < steps; ++i) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        // possible bug in fused run i will not fix that
-        sim.fused_run();
+        sim.run(i);
     }
     sim.get_data(true,c);
+    if(gen.straight_surfaces != nullptr)
+        gen.straight_surfaces->write_out_surface();
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
     std::cout << "Took " <<duration.count()<< "s" << std::endl;
