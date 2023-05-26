@@ -20,8 +20,8 @@ set(MY_TESTS_HEADERS
 
 set(MY_TESTS_CPP
         misc_tests_1.cpp
-        init_test.cpp
-        bb_stream_test.cpp
+        init_tests.cpp
+        bb_stream_tests.cpp
         extra_tests.cpp
         misc_tests_2.cpp)
 

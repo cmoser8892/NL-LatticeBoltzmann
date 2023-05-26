@@ -1105,5 +1105,3 @@ TEST(FunctionalTest, StarIntersections) {
     gen.init(size);
     // gen.visualize_2D_nodes();
 }
-
-// this shit got laggy as fuck on my pc ill make a new on
