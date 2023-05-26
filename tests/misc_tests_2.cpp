@@ -93,3 +93,4 @@ TEST(ForceTest, circular_force) {
 // todo update fused init to also work with boundary limits,
 //  there are some strange cases still left -> investigate
 // todo read about std::atomic may be useful
+// todo negative numbers in pkh

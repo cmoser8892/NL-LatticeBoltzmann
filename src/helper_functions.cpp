@@ -621,6 +621,10 @@ void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
     if(coordinate.y >= pow(2,22)) {
         throw std::invalid_argument("Overflow while bit-interleaving");
     }
+    if(coordinate.x < 0 || coordinate.y < 0) {
+        // if there is negative number in the hash table we get two entries which we can not handle
+        throw std::invalid_argument("PKH has to be modified to handle negative numbers");
+    }
     keys.emplace(key,positions_handle);
 }
 
@@ -647,7 +651,7 @@ handle_t pointKeyHash::key_translation(point_t pos) {
  */
 handle_t pointKeyHash::key_translation(coordinate_t coord) {
     handle_t return_key = 0;
-    // todo assertion to not exceed max coordinates
+    // todo no handling if there is more than one result found
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
     if(auto found_iter = keys.find(search_key); found_iter != keys.end()) {
         // does not do the translation into an array position
