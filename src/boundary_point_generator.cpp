@@ -600,7 +600,7 @@ void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int 
 void boundaryPointConstructor::init_sliding_lid_inner(point_t start,vector_t outer_size, point_t continues, vector_t inner_size) {
     init_quader(start,outer_size);
     init_quader(continues,inner_size);
-    double limit_y = limits.y() + start.y();
+    double limit_y = start.y() + outer_size.y()-1;
     for(auto b : boundary_structures.at(0)->boundary_points) {
         if(b->point.y() == limit_y) {
             b->type = BOUNCE_BACK_MOVING;

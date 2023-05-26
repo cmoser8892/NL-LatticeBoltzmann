@@ -1,5 +1,6 @@
 /**
  * 00 is general testing ground, quick and dirty
+ * when i dont want it in tests
  */
 
 

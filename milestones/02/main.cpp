@@ -22,9 +22,7 @@ int main(int argc, char *argv[]) {
     boundaries.init_sliding_lid();
     // init the sim runner
     nodeGenerator gen(&boundaries);
-    //gen.set_no_ordering();
     gen.init();
-    // gen.set_no_ordering();
     // init sim parameters
     double re = 1000;
     double base_length = size - 2;

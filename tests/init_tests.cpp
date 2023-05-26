@@ -561,6 +561,7 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
+
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     simulation sim(&boundaries,&gen);
@@ -568,6 +569,7 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     // check
     int expected_total_node_number = (p.x()-2)*(p.y()-2) - (k.x()*k.y());
     EXPECT_EQ(sim.nodes.size(),expected_total_node_number);
+    // nessessary to check the boundary nodes too
 }
 
 TEST(InitTests, p_flow) {
