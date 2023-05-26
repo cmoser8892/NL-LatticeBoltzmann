@@ -19,10 +19,11 @@ set(MY_TESTS_HEADERS
 )
 
 set(MY_TESTS_CPP
-        misc_tests.cpp
+        misc_tests_1.cpp
         init_test.cpp
+        bb_stream_test.cpp
         extra_tests.cpp
-        add_misc_test.cpp)
+        misc_tests_2.cpp)
 
 # Creating the test executable
 add_executable(my_tests ${MY_TESTS_CPP} ${MY_TESTS_HEADERS})

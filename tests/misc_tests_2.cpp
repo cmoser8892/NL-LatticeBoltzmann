@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 
 // the misc file got to laggy apparently i should stop at 2000 lines
-TEST(FunctionalTest, rotation_eigen) {
+TEST(ForceTest, rotation_eigen) {
     Eigen::Rotation2D<double> rot;
     rot.angle() = EIGEN_PI/2;
     vector_t test;
@@ -18,7 +18,7 @@ TEST(FunctionalTest, rotation_eigen) {
     EXPECT_NEAR(test.x(),0,1e-10);
 }
 
-TEST(FunctionalTest, truncation_force) {
+TEST(ForceTest, truncation_force) {
     // setup the vectors
     vector_t c = {0,0};
     vector_t u = {0,0};
@@ -42,7 +42,7 @@ TEST(FunctionalTest, truncation_force) {
     EXPECT_EQ(calculate_truncation_force(c,u,f),42);
 }
 
-TEST(FunctionalTest, rotating_zeros) {
+TEST(ForceTest, rotating_zeros) {
     point_t origin = {0,0};
     point_t middle = {5,5};
     point_t point = middle;
@@ -50,6 +50,41 @@ TEST(FunctionalTest, rotating_zeros) {
     rf.precalculate(0,0,&point);
     EXPECT_EQ(rf.return_force_alpha().x(),0);
     EXPECT_EQ(rf.return_force_alpha().y(),0);
+}
+
+TEST(ForceTest, vector_force) {
+    // a bit of a simple and non-memory efficient way to implement different forces
+    int total_size = 160;
+    int swicht = 10;
+    double magnitude = 0.1;
+    std::vector<vector_t> f = circular_force_generation(total_size,swicht,magnitude);
+    EXPECT_EQ(f.size(),total_size);
+    for(auto v : f) {
+        EXPECT_EQ(v.norm(),magnitude);
+    }
+}
+
+TEST(ForceTest, circular_force) {
+    // test for the circular class implementation
+    int swicht = 10;
+    double magnitude = 0.1;
+    circularForce force(swicht,magnitude);
+    for(int i = 0; i < 9; ++i) {
+        EXPECT_EQ(magnitude,force.return_current_x());
+        EXPECT_EQ(magnitude,force.return_next_x());
+        EXPECT_EQ(0, force.return_current_y());
+        EXPECT_EQ(0, force.return_next_y());
+        force.increment();
+    }
+    EXPECT_EQ(magnitude,force.return_current_x());
+    EXPECT_EQ(0,force.return_next_x());
+    EXPECT_EQ(0, force.return_current_y());
+    EXPECT_EQ(magnitude, force.return_next_y());
+    force.increment();
+    EXPECT_EQ(0 ,force.return_current_x());
+    EXPECT_EQ(0 ,force.return_next_x());
+    EXPECT_EQ(magnitude, force.return_current_y());
+    EXPECT_EQ(magnitude, force.return_next_y());
 }
 
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
