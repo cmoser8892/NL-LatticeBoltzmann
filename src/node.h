@@ -33,7 +33,7 @@ class node {
     node(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
 };
 
-/// reduced and optimized node, used in simulations (fused)
+/// reduced and optimized node, used in oSim
 class oNode {
   public:
     // handle and boundary
@@ -41,7 +41,7 @@ class oNode {
     point_t position;
     boundaryType_t boundary_type;
     // 2xChannels
-    int offset = 0; // 0 or 9 // todo not sure if need you
+    int offset = 0; // 0 or 9
     array_t populations;
     std::vector<link_pointer> neighbors;
     // constructor
