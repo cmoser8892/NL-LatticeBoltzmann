@@ -37,7 +37,7 @@ class node {
 class oNode {
   public:
     // handle and boundary
-    handle_t handle; // extra-leave handle for position?!
+    handle_t handle;
     point_t position;
     boundaryType_t boundary_type;
     // 2xChannels
