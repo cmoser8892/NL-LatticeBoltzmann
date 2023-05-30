@@ -355,11 +355,7 @@ void oSimu::set_simulation_parameters(simulation_parameters_t t) {
  */
 void oSimu::streaming(oNode *node) {
     // loop through
-    for(int i = 1; i < CHANNELS; ++i) {
-        // pointer magic
-        auto origin = node->populations.begin() + offset_node + i;
-        (node->neighbors[i-1] + offset_sim).operator*() = origin.operator*();
-    }
+    streaming(&node->populations,&node->neighbors);
 }
 
 /**
@@ -375,6 +371,11 @@ void oSimu::bounce_back_moving(oNode *n) {
     }
 }
 
+/**
+ * @fn void oSimu::one_step_macro_collision_forcing(oNode *node)
+ * @brief one stop mactor forcing term
+ * @param node
+ */
 void oSimu::one_step_macro_collision_forcing(oNode *node) {
     double relaxation = parameters.relaxation;
     int o = offset_node;
@@ -447,9 +448,15 @@ void oSimu::one_step_macro_collision_forcing(oNode *node) {
  * @param relaxation
  */
 void oSimu::one_step_macro_collision(oNode* node, double relaxation) {
-    int o = offset_node;
     // macro calc
-    auto p = node->populations.begin() + o;
+    one_step_macro_collision(&node->populations);
+}
+
+inline void oSimu::one_step_macro_collision(array_t *a) {
+    int o = offset_node;
+    double relaxation = parameters.relaxation;
+    // macro calc
+    auto p = a->begin() + o;
     // macro part
     // rho
     const double rho = (p + 0).operator*() +
@@ -488,6 +495,21 @@ void oSimu::one_step_macro_collision(oNode* node, double relaxation) {
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
+inline void oSimu::bounce_back_moving(array_t *a) {
+    // bb
+    auto pointer = a->begin() + offset_sim;
+    (pointer + 7).operator*() += -1.0/6 * parameters.u_wall;
+    (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
+}
+
+inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list) {
+    // just the sim
+    for(int i = 1; i < CHANNELS; ++i) {
+        // pointer magic
+        auto origin = a->begin() + offset_node + i;
+        (list->operator[](i-1) + offset_sim).operator*() = origin.operator*();
+    }
+}
 /**
  * @fn void oSimu::init()
  * @brief inits the sim based on info in the node generator
@@ -517,6 +539,15 @@ void oSimu::init() {
     }
 }
 
+void oSimu::init_sub_array() {
+    // we push the information into the sub arrays
+    for(auto n : nodes) {
+        arrays_of_the_nodes.push_back(&n->populations);
+        neighborhood_list.push_back(&n->neighbors);
+        boundary.push_back(n->boundary_type);
+    }
+}
+
 /**
  * @fn void oSimu::run(int current_step)
  * @brief run the sim
@@ -533,6 +564,24 @@ void oSimu::run(int current_step ) {
         streaming(n);
         // moving boundary
         bounce_back_moving(n);
+    }
+}
+
+void oSimu::run_sub_array(int current_step) {
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    offset_node = (current_step & 0x1) * 9;
+    long range = nodes.size();
+    for(int i = 0; i < range; ++i) {
+        // shorthands
+        auto population = arrays_of_the_nodes[i];
+        auto pointer = neighborhood_list[i];
+        auto bound = boundary[i];
+        // functions
+        one_step_macro_collision(population);
+        streaming(population,pointer);
+        if(bound == BOUNCE_BACK_MOVING) {
+            bounce_back_moving(population);
+        }
     }
 }
 
@@ -583,7 +632,11 @@ void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 
-
+/**
+ * @fn void oSimu::get_data(bool write_to_file)
+ * @brief gets the data and writes it to file
+ * @param write_to_file
+ */
 void oSimu::get_data(bool write_to_file) {
     get_data(write_to_file,boundary_points->size);
 }
