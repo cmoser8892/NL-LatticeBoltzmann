@@ -41,7 +41,6 @@ class oNode {
     point_t position;
     boundaryType_t boundary_type;
     // 2xChannels
-    // int offset = 0; // 0 or 9 // todo do i need u here?!
     array_t populations;
     std::vector<link_pointer> neighbors;
     // constructor
