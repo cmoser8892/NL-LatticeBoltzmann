@@ -582,7 +582,11 @@ void oSimu::run(int current_step ) {
         bounce_back_moving(n);
     }
 }
-
+/**
+ * @fn void oSimu::run_sub_array(int current_step)
+ * @brief
+ * @param current_step
+ */
 void oSimu::run_sub_array(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
@@ -595,6 +599,7 @@ void oSimu::run_sub_array(int current_step) {
         // functions
         one_step_macro_collision(population);
         streaming(population,pointer);
+        // todo investigate cost of this statement / -> sort him out?!
         if(bound == BOUNCE_BACK_MOVING) {
             bounce_back_moving(population);
         }
