@@ -46,7 +46,10 @@ class oSimu {
     circleForce* force;
   public:
     int offset_sim = 1;
+    // holding of the general nodes
     std::vector<oNode*> nodes;
+    // indirect pointers to the arrays
+    // indirect pointers to the nl structure
     oSimu(boundaryPointConstructor* c,nodeGenerator* g);
     ~oSimu();
     void set_simulation_parameters(simulation_parameters_t t);
