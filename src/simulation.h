@@ -43,19 +43,24 @@ class oSimu {
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
-    circleForce* force;
+    circleForce* force = nullptr;
   public:
     int offset_sim = 1;
+    int offset_node = 0;
     // holding of the general nodes
     std::vector<oNode*> nodes;
     // indirect pointers to the arrays
+    std::vector<array_t*> arrays_of_nodes;
     // indirect pointers to the nl structure
+    std::vector<std::vector<link_pointer>*> neighborhood_list;
+    // methods
     oSimu(boundaryPointConstructor* c,nodeGenerator* g);
     ~oSimu();
     void set_simulation_parameters(simulation_parameters_t t);
     void streaming(oNode* n);
     void bounce_back_moving(oNode* n);
     void one_step_macro_collision_forcing(oNode* n);
+    void one_step_macro_collision(oNode* n, double relaxation);
     void init();
     void run(int current_step);
     void current_run(int current_step);

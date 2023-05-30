@@ -11,7 +11,6 @@ double calculate_later_equilibrium(double cx, double cy, double ux, double uy);
 array_t equilibrium_2d(double ux, double uy, double rho);
 void collision(node* node,double relaxation);
 void fused_collision(node* node, double relaxation);
-void one_step_macro_collision(oNode* node, double relaxation);
 void macro(node * node);
 void fused_macro(node* node);
 void pressure_periodic_in(node* node, double rho);
@@ -22,9 +21,9 @@ int switch_link_dimensions(int link_channel);
 void write_rho(node* node, flowfield_t* rho);
 void write_ux(node* node, flowfield_t* uy); // writes velocity based on the place in the field
 void write_uy(node* node,flowfield_t* ux);
-double calculate_ux(oNode* n);
-double calculate_uy(oNode* n);
-double calculate_rho(oNode* n);
+double calculate_ux(oNode* n,int offset);
+double calculate_uy(oNode* n, int offset);
+double calculate_rho(oNode* n, int offset);
 // debug method
 void debug_node(node* node, bool printing);
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H
