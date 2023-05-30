@@ -65,6 +65,7 @@ class oSimu {
     void one_step_macro_collision_forcing(oNode* n);
     void one_step_macro_collision(oNode* n, double relaxation);
     inline void one_step_macro_collision(array_t* a);
+    inline void forcing_terms(array_t* a);
     // other stuff
     void init();
     void init_sub_array();

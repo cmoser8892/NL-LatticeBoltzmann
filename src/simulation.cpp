@@ -500,6 +500,14 @@ inline void oSimu::one_step_macro_collision(array_t *a) {
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
+inline void oSimu::forcing_terms(array_t* a) {
+    // set some shorthands
+    int o = offset_node;
+    auto p = a->begin() + o;
+    // precalculate the force
+    // todo i am here
+
+}
 /**
  * @fn inline void oSimu::bounce_back_moving(array_t *a)
  * @brief simple bb based on the array only
@@ -555,6 +563,10 @@ void oSimu::init() {
     }
 }
 
+/**
+ * @fn void oSimu::init_sub_array()
+ * @brief init the sub arrays too
+ */
 void oSimu::init_sub_array() {
     // we push the information into the sub arrays
     for(auto n : nodes) {
