@@ -561,7 +561,15 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     boundaryPointConstructor boundaries(p);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
-
+    int counter = 0;
+    for(auto bs : boundaries.boundary_structures) {
+        for(auto bp : bs->boundary_points) {
+            if(bp->type == BOUNCE_BACK_MOVING) {
+                ++counter;
+            }
+        }
+    }
+    EXPECT_EQ(counter, sub_size);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     simulation sim(&boundaries,&gen);
