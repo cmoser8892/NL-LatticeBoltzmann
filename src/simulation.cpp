@@ -452,6 +452,11 @@ void oSimu::one_step_macro_collision(oNode* node, double relaxation) {
     one_step_macro_collision(&node->populations);
 }
 
+/**
+ * @fn inline void oSimu::one_step_macro_collision(array_t *a)
+ * @brief performs the the macro and collision step in one go
+ * @param a
+ */
 inline void oSimu::one_step_macro_collision(array_t *a) {
     int o = offset_node;
     double relaxation = parameters.relaxation;
@@ -495,6 +500,11 @@ inline void oSimu::one_step_macro_collision(array_t *a) {
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
+/**
+ * @fn inline void oSimu::bounce_back_moving(array_t *a)
+ * @brief simple bb based on the array only
+ * @param a
+ */
 inline void oSimu::bounce_back_moving(array_t *a) {
     // bb
     auto pointer = a->begin() + offset_sim;
@@ -502,6 +512,12 @@ inline void oSimu::bounce_back_moving(array_t *a) {
     (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
 }
 
+/**
+ * @fn inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list)
+ * @brief just array and linked list based streaming
+ * @param a
+ * @param list
+ */
 inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list) {
     // just the sim
     for(int i = 1; i < CHANNELS; ++i) {
@@ -640,6 +656,7 @@ void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
 void oSimu::get_data(bool write_to_file) {
     get_data(write_to_file,boundary_points->size);
 }
+
 /**
  * @fn void oSimu::delete_nodes()
  * @brief frees up the memory again
