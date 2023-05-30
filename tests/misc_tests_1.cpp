@@ -270,8 +270,8 @@ TEST(FunctionalTest, periodics_full) {
     }
     // manual streaming step begin
     sim.offset_sim = ((step +1) & 0x1) * 9;
+    sim.offset_node = (step & 0x1) * 9;
     for(auto n : sim.nodes) {
-        n->offset = (step & 0x1) * 9;
         sim.streaming(n);
     }
     step++;
