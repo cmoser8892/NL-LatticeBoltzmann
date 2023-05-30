@@ -44,7 +44,7 @@ void imageConverter::read() {
         bmp_file_input.seekg(bmp.file_header.offset_data, bmp_file_input.beg);
 
         // color header is for transparent images
-        /// todo prob not necessary
+        /// note only 24 bit images really work lol
         if(bmp.info_header.bit_count == 32) {
             bmp.info_header.size = sizeof(BMPInfoHeader_t) + sizeof(BMPColorTable_t);
             bmp.file_header.offset_data = sizeof(BMPFileHeader_t) + sizeof(BMPInfoHeader_t) + sizeof(BMPColorTable_t);
@@ -206,7 +206,6 @@ void imageConverter::translate_reformed_into_structure() {
             break;
         }
     }
-    /// todo meme analyse prob has more holes than swiss cheese
     // cant delete cause the handle will be invalid after the first run
     // delete/ erase the points in the reformed boundary points now in the structure
     // nessessary to create a seperate flag vector to flag used elements

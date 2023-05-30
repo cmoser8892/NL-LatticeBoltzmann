@@ -582,6 +582,7 @@ void oSimu::run(int current_step ) {
         bounce_back_moving(n);
     }
 }
+
 /**
  * @fn void oSimu::run_sub_array(int current_step)
  * @brief
@@ -595,14 +596,14 @@ void oSimu::run_sub_array(int current_step) {
         // shorthands
         auto population = arrays_of_the_nodes[i];
         auto pointer = neighborhood_list[i];
-        auto bound = boundary[i];
+        // auto bound = boundary[i];
         // functions
         one_step_macro_collision(population);
         streaming(population,pointer);
         // todo investigate cost of this statement / -> sort him out?!
-        if(bound == BOUNCE_BACK_MOVING) {
-            bounce_back_moving(population);
-        }
+        // todo prob one of the last possible optimizations left sort
+        // so we dont have to load this var in memory
+        // if(bound == BOUNCE_BACK_MOVING) {bounce_back_moving(population);}
     }
 }
 

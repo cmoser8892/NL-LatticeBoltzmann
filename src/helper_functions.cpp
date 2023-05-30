@@ -72,6 +72,7 @@ bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* 
     }
     return return_value;
 }
+
  /**
   * @fn bool compare_two_points(point_t* p1, point_t* p2 )
   * @brief compares tow points
@@ -90,6 +91,7 @@ bool compare_two_points(point_t* p1, point_t* p2 ) {
     }
     return return_value;
 }
+
 /**
  * @fn std::vector<std::string> split_string (std::string s, std::string delimiter)
  * @brief splits a string

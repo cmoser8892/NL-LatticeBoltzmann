@@ -2,7 +2,13 @@
 #include <iostream>
 #include <chrono>
 
-
+/**
+ * @fn
+ * @brief special pretest version that doesnt do bb moving to investigate the speedups
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
