@@ -795,6 +795,7 @@ TEST(StreamTests, fused_streaming_24) {
 TEST(FunctionalTest, one_step_macro_collison) {
     // test against original
     double relaxation_time = 0.5;
+    oSimu oLuv(nullptr, nullptr);
     point_t pos = {0,0};
     node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
     node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
@@ -808,9 +809,9 @@ TEST(FunctionalTest, one_step_macro_collison) {
     fused_macro(&node_fused);
     collision(&node_original,relaxation_time);
     fused_collision(&node_fused, relaxation_time);
-    one_step_macro_collision(&s_node,relaxation_time);
+    oLuv.one_step_macro_collision(&s_node,relaxation_time);
     // compare values
-    int o= s_node.offset;
+    int o= 0;
     for(int i = 0; i < velocity_set.cols(); ++i) {
         EXPECT_EQ(node_original.population_even(i),node_fused.population_even(i));
         EXPECT_EQ(s_node.populations(o + i),node_original.population_even(i));
@@ -848,8 +849,8 @@ TEST(StreamTests, oSimu_streaming_13) {
     // do steps and check correct positions
     // channels switched (bb)
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -857,8 +858,8 @@ TEST(StreamTests, oSimu_streaming_13) {
     EXPECT_EQ(sm.nodes.at(1)->populations(3 + sm.offset_sim), 1);
     // propagation test
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -897,8 +898,8 @@ TEST(StreamTests, oSimu_streaming_24) {
     // do steps and check correct positions
     // channels switched (bb)
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -906,8 +907,8 @@ TEST(StreamTests, oSimu_streaming_24) {
     EXPECT_EQ(sm.nodes.at(1)->populations(4 + sm.offset_sim), 1);
     // propagation test
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -969,8 +970,8 @@ TEST(StreamTests, oSimu_streaming_57) {
     // do steps and check correct positions
     // channels switched (bb)
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -978,8 +979,8 @@ TEST(StreamTests, oSimu_streaming_57) {
     EXPECT_EQ(sm.nodes.at(1)->populations(7 + sm.offset_sim), 1);
     // propagation test
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -1044,8 +1045,8 @@ TEST(StreamTests, oSimu_streaming_68) {
     // do steps and check correct positions
     // channels switched (bb)
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;
@@ -1053,8 +1054,8 @@ TEST(StreamTests, oSimu_streaming_68) {
     EXPECT_EQ(sm.nodes.at(1)->populations(8 + sm.offset_sim), 1);
     // propagation test
     sm.offset_sim = ((step +1) & 0x1) * 9;
+    sm.offset_node = (step & 0x1) * 9;
     for(auto n : sm.nodes) {
-        n->offset = (step & 0x1) * 9;
         sm.streaming(n);
     }
     step++;

@@ -23,12 +23,13 @@ int main(int argc, char *argv[]) {
     oSimu sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.init();
+    sim.init_sub_array();
     // run sim
     for(int i = 0; i < steps; ++i) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        sim.run(i);
+        sim.run_sub_array(i);
     }
     sim.get_data(true,c);
     if(gen.straight_surfaces != nullptr)
