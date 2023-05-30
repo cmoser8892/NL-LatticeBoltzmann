@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
-    int steps = 100000;
+    int steps = 10000;
     unsigned int size = 302;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     if(gen.straight_surfaces != nullptr)
         gen.straight_surfaces->write_out_surface();
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-    std::cout << "Took " <<duration.count()<< "s" << std::endl;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    std::cout << "Took " <<duration.count()<< "ms" << std::endl;
     return 0;
 }
