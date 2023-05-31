@@ -487,6 +487,19 @@ double circleForce::return_current_next_y(point_t *self_position, int channel ) 
 }
 
 /// class rotating force
+void rotatingForce::calculate_F_circle(point_t* p) {
+    // todo im here
+    double max_distance = 30;
+    double force = 0.007;
+    // we determine the force magnitude
+    vector_t distance_vector = (*p) - middle;
+    double force_magnitude = distance_vector.norm()/max_distance * force;
+    // we determine the x component
+    distance_vector /= distance_vector.norm();
+    // change directions and multiply with the force magnitude
+    return - distance_vector.x() * force_magnitude;
+}
+
 /**
  * @fn void rotatingForce::calculate_F_alpha()
  * @brief calculates the physical force in the domain

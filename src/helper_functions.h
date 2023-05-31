@@ -88,6 +88,7 @@ class rotatingForce {
     double angle = 0;
     // 9 long for 2dq9
     array_t force_channels;
+    void calculate_F_circle(point_t* p);
     void calculate_F_alpha();
     void calculate_F_i();
   public:
