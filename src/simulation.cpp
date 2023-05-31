@@ -312,6 +312,39 @@ void simulation::delete_nodes() {
 }
 
 /// one step run class
+inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a) {
+    // return als a struct
+    // calculate rho ux and uy
+    int o = offset_node;
+    auto p = a->begin() + o;
+    double rho = (p + 0).operator*() +
+                 (p + 1).operator*() +
+                 (p + 2).operator*() +
+                 (p + 3).operator*() +
+                 (p + 4).operator*() +
+                 (p + 5).operator*() +
+                 (p + 6).operator*() +
+                 (p + 7).operator*() +
+                 (p + 8).operator*();
+    // ux + uy
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    ux /= rho;
+    uy /= rho;
+    // return all the values
+    return {rho, ux, uy};
+}
+
 /**
  * @fn oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g)
  * @brief constructor sets the sub-classes
@@ -383,30 +416,7 @@ void oSimu::one_step_macro_collision_forcing(oNode *node) {
     auto p = node->populations.begin() + o;
     // macro part
     // rho
-    const double rho = (p + 0).operator*() +
-                       (p + 1).operator*() +
-                       (p + 2).operator*() +
-                       (p + 3).operator*() +
-                       (p + 4).operator*() +
-                       (p + 5).operator*() +
-                       (p + 6).operator*() +
-                       (p + 7).operator*() +
-                       (p + 8).operator*();
-    // ux + uy
-    double ux = (((p + 1).operator*() +
-                  (p + 5).operator*() +
-                  (p + 8).operator*())-
-                 ((p + 3).operator*() +
-                  (p + 6).operator*()+
-                  (p + 7).operator*()));
-    double uy = (((p + 2).operator*() +
-                  (p + 5).operator*() +
-                  (p + 6).operator*())-
-                 ((p + 4).operator*() +
-                  (p + 7).operator*()+
-                  (p + 8).operator*()));
-    ux /= rho;
-    uy /= rho;
+    auto [rho,ux,uy] = calculate_macro(&node->populations);
     // collision
     (p + 0).operator*() -= relaxation *
                            ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)))
@@ -463,31 +473,7 @@ inline void oSimu::one_step_macro_collision(array_t *a) {
     // macro calc
     auto p = a->begin() + o;
     // macro part
-    // rho
-    const double rho = (p + 0).operator*() +
-                       (p + 1).operator*() +
-                       (p + 2).operator*() +
-                       (p + 3).operator*() +
-                       (p + 4).operator*() +
-                       (p + 5).operator*() +
-                       (p + 6).operator*() +
-                       (p + 7).operator*() +
-                       (p + 8).operator*();
-    // ux + uy
-    double ux = (((p + 1).operator*() +
-                  (p + 5).operator*() +
-                  (p + 8).operator*())-
-                 ((p + 3).operator*() +
-                  (p + 6).operator*()+
-                  (p + 7).operator*()));
-    double uy = (((p + 2).operator*() +
-                  (p + 5).operator*() +
-                  (p + 6).operator*())-
-                 ((p + 4).operator*() +
-                  (p + 7).operator*()+
-                  (p + 8).operator*()));
-    ux /= rho;
-    uy /= rho;
+    auto [rho,ux,uy] = calculate_macro(a);
     // collision
     (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
     (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
@@ -656,9 +642,10 @@ void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
     rho.resize(size_x,size_y);
     // make sure to get the correct one
     for(auto node: nodes) {
-        ux(int(node->position(0)),int(node->position(1))) = calculate_ux(node,offset_node);
-        uy(int(node->position(0)),int(node->position(1))) = calculate_uy(node,offset_node);
-        rho(int(node->position(0)),int(node->position(1))) = calculate_rho(node,offset_node);
+        auto [rho_local,ux_local, uy_local] = calculate_macro(&node->populations);
+        ux(int(node->position(0)),int(node->position(1))) = ux_local;
+        uy(int(node->position(0)),int(node->position(1))) = uy_local;
+        rho(int(node->position(0)),int(node->position(1))) = rho_local;
     }
     // write to a file otherwise useless
     write_flowfield_data(&ux, "ux_data_file",write_to_file);

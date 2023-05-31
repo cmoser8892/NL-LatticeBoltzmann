@@ -1,5 +1,4 @@
 #include "functions.h"
-#include <cmath>
 #include <iostream>
 
 /// implementation is for d2q9
@@ -191,65 +190,6 @@ void write_rho(node* node, flowfield_t * rho) {
 }
 
 /**
- * @fn double calculate_ux(oNode* node)
- * @brief calculate ux
- * @param node
- * @return
- */
-double calculate_ux(oNode* node, int offset) {
-    int o = offset;
-    auto p = node->populations.begin() + o;
-    double rho = calculate_rho(node, offset);
-    double ux = (((p + 1).operator*() +
-                  (p + 5).operator*() +
-                  (p + 8).operator*())-
-                 ((p + 3).operator*() +
-                  (p + 6).operator*()+
-                  (p + 7).operator*()));
-    return ux/rho;
-}
-
-/**
- * @fn double calculate_uy(oNode* node)
- * @brief calculates uy
- * @param node
- * @return
- */
-double calculate_uy(oNode* node, int offset) {
-    int o = offset;
-    auto p = node->populations.begin() + o;
-    double rho = calculate_rho(node, offset);
-    double uy = (((p + 2).operator*() +
-                  (p + 5).operator*() +
-                  (p + 6).operator*())-
-                 ((p + 4).operator*() +
-                  (p + 7).operator*()+
-                  (p + 8).operator*()));
-    return uy/rho;
-}
-
-/**
- * @fn double calculate_rho(oNode* node)
- * @brief calculates rho
- * @param node
- * @return
- */
-double calculate_rho(oNode* node,int offset) {
-    int o = offset;
-    auto p = node->populations.begin() + o;
-    double rho = (p + 0).operator*() +
-                 (p + 1).operator*() +
-                 (p + 2).operator*() +
-                 (p + 3).operator*() +
-                 (p + 4).operator*() +
-                 (p + 5).operator*() +
-                 (p + 6).operator*() +
-                 (p + 7).operator*() +
-                 (p + 8).operator*();
-    return rho;
-}
-
-/**
  * @fn void debug_node(node* node, bool printing)
  * @brief print out stuff dont forget to set printing to true
  * @param node
@@ -332,26 +272,52 @@ int switch_link_dimensions(int link_channel) {
     return return_channel;
 }
 
+std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset) {
+    // return als a struct
+    // calculate rho ux and uy
+    int o = offset;
+    auto p = a->begin() + o;
+    double rho = (p + 0).operator*() +
+                 (p + 1).operator*() +
+                 (p + 2).operator*() +
+                 (p + 3).operator*() +
+                 (p + 4).operator*() +
+                 (p + 5).operator*() +
+                 (p + 6).operator*() +
+                 (p + 7).operator*() +
+                 (p + 8).operator*();
+    // ux + uy
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    ux /= rho;
+    uy /= rho;
+    // return all the values
+    return {rho, ux, uy};
+}
+
 // todo implement me
 void pressure_periodic_in(oNode* node, double rho_in) {
-    double ux = calculate_ux(node,1);
-    double uy = calculate_uy(node,1);
-    double rho = calculate_rho(node,1);
     int o = 0;
     // macro calc
     auto p = node->populations.begin() + o;
 }
 
-
 void pressure_periodic_out(oNode* node , double rho_out) {
-    double ux = calculate_ux(node,1);
-    double uy = calculate_uy(node,1);
-    double rho = calculate_rho(node,1);
     int o = 0;
     // macro calc
     auto p = node->populations.begin() + o;
-    array_t eq = equilibrium_2d(ux,uy,rho);
-    array_t eq_out = equilibrium_2d(ux,uy,rho_out);
+    // array_t eq = equilibrium_2d(ux,uy,rho);
+    // array_t eq_out = equilibrium_2d(ux,uy,rho_out);
     // pressure is not local :/
     for(int i = 0; i < CHANNELS; ++i) {
         (p+i).operator*() = 0;

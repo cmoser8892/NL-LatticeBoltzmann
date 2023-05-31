@@ -44,6 +44,8 @@ class oSimu {
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
     circleForce* force = nullptr;
+    // general methods
+    inline std::tuple<double, double, double> calculate_macro(array_t* a);
   public:
     int offset_sim = 1;
     int offset_node = 0;

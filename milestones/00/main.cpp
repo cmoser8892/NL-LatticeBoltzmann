@@ -4,29 +4,24 @@
  */
 
 
-#include <cstdint>
-
-
-#include <cassert>
-#include <cstdio>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
-
-typedef struct __attribute__((packed))
-{
-    uint16_t wFormatTag;
-    uint16_t nChannels;
-    uint32_t nSamplesPerSec;
-    uint32_t nAvgBytesPerSec;
-    uint16_t nBlockAlign;
+auto divide(int dividend, int divisor) {
+    struct result {int quotient; int remainder;};
+    return result {dividend / divisor, dividend % divisor};
 }
-WAVEFORMAT;
 
-int main()
-{
-    // todo find out about unique ptrs
-    WAVEFORMAT w;
-    (void)w;
+#include <iostream>
+#include "functions.h"
+
+int main() {
+    using namespace std;
+
+    auto result = divide(14, 3);
+
+    cout << result.quotient << ',' << result.remainder << endl;
+
+    // or
+
+    auto [quotient, remainder] = divide(14, 3);
+
+    cout << quotient << ',' << remainder << endl;
 }
