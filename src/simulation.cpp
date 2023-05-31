@@ -415,7 +415,7 @@ void oSimu::one_step_macro_collision_forcing(oNode *node) {
     // macro calc
     auto p = node->populations.begin() + o;
     // macro part
-    // rho
+    // rho ux and uy inlined
     auto [rho,ux,uy] = calculate_macro(&node->populations);
     // collision
     (p + 0).operator*() -= relaxation *
@@ -472,7 +472,7 @@ inline void oSimu::one_step_macro_collision(array_t *a) {
     double relaxation = parameters.relaxation;
     // macro calc
     auto p = a->begin() + o;
-    // macro part
+    // rho ux and uy inlined
     auto [rho,ux,uy] = calculate_macro(a);
     // collision
     (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
