@@ -497,7 +497,8 @@ void rotatingForce::calculate_F_circle(point_t* p) {
     // we determine the x component
     distance_vector /= distance_vector.norm();
     // change directions and multiply with the force magnitude
-    return - distance_vector.x() * force_magnitude;
+    force_alpha = {  distance_vector.y() * force_magnitude,
+                   - distance_vector.x() * force_magnitude};
 }
 
 /**
