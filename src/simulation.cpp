@@ -312,6 +312,12 @@ void simulation::delete_nodes() {
 }
 
 /// one step run class
+/**
+ * @fn inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a)
+ * @brief function to calculate the rho, ux and uy values (macro values in the equilibrium function)
+ * @param a
+ * @return
+ */
 inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a) {
     // return als a struct
     // calculate rho ux and uy
@@ -343,6 +349,67 @@ inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a) {
     uy /= rho;
     // return all the values
     return {rho, ux, uy};
+}
+
+/**
+ * @fn inline void oSimu::forcing_terms(oNode* n,double ux, double uy)
+ * @brief calculates the forcing term
+ * @param n
+ * @param ux
+ * @param uy
+ */
+inline void oSimu::forcing_terms(oNode* n,double ux, double uy) {
+    // set some shorthands
+    int o = offset_node;
+    auto p = n->populations.begin() + o;
+    // precalculate the force
+    rForce->precalculate(ux,uy,&n->position);
+    for(int i = 0; i < CHANNELS; ++i) {
+        (p + i).operator*() -= rForce->return_force(i);
+    }
+}
+
+/**
+ * @fn inline void oSimu::bounce_back_moving(array_t *a)
+ * @brief simple bb based on the array only
+ * @param a
+ */
+inline void oSimu::bounce_back_moving(array_t *a) {
+    // bb
+    auto pointer = a->begin() + offset_sim;
+    (pointer + 7).operator*() += -1.0/6 * parameters.u_wall;
+    (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
+}
+
+/**
+ * @fn inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list)
+ * @brief just array and linked list based streaming
+ * @param a
+ * @param list
+ */
+inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list) {
+    // just the sim
+    for(int i = 1; i < CHANNELS; ++i) {
+        // pointer magic
+        auto origin = a->begin() + offset_node + i;
+        (list->operator[](i-1) + offset_sim).operator*() = origin.operator*();
+    }
+}
+
+inline void oSimu::collision(array_t* a, double rho, double ux, double uy) {
+    // undrosed collision term
+    int o = offset_node;
+    double relaxation = parameters.relaxation;
+    auto p = a->begin() + o;
+    (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
+    (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    (p + 2).operator*() -= relaxation * ((p + 2).operator*() - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    (p + 3).operator*() -= relaxation * ((p + 3).operator*() - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
+    (p + 4).operator*() -= relaxation * ((p + 4).operator*() - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
+    (p + 5).operator*() -= relaxation * ((p + 5).operator*() - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 6).operator*() -= relaxation * ((p + 6).operator*() - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 7).operator*() -= relaxation * ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
 /**
@@ -467,7 +534,7 @@ void oSimu::one_step_macro_collision(oNode* node, double relaxation) {
  * @brief performs the the macro and collision step in one go
  * @param a
  */
-inline void oSimu::one_step_macro_collision(array_t *a) {
+void oSimu::one_step_macro_collision(array_t *a) {
     int o = offset_node;
     double relaxation = parameters.relaxation;
     // macro calc
@@ -475,51 +542,9 @@ inline void oSimu::one_step_macro_collision(array_t *a) {
     // rho ux and uy inlined
     auto [rho,ux,uy] = calculate_macro(a);
     // collision
-    (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
-    (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
-    (p + 2).operator*() -= relaxation * ((p + 2).operator*() - weights.col(2).x()*rho*(1+ 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
-    (p + 3).operator*() -= relaxation * ((p + 3).operator*() - weights.col(3).x()*rho*(1- 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
-    (p + 4).operator*() -= relaxation * ((p + 4).operator*() - weights.col(4).x()*rho*(1- 3*uy+ 4.5*uy*uy- 1.5*(ux*ux +uy*uy)));
-    (p + 5).operator*() -= relaxation * ((p + 5).operator*() - weights.col(5).x()*rho*(1+ 3*ux+ 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
-    (p + 6).operator*() -= relaxation * ((p + 6).operator*() - weights.col(6).x()*rho*(1- 3*ux+ 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
-    (p + 7).operator*() -= relaxation * ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
-    (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
+    collision(a,rho,ux,uy);
 }
 
-inline void oSimu::forcing_terms(array_t* a) {
-    // set some shorthands
-    int o = offset_node;
-    auto p = a->begin() + o;
-    // precalculate the force
-    // todo i am here
-
-}
-/**
- * @fn inline void oSimu::bounce_back_moving(array_t *a)
- * @brief simple bb based on the array only
- * @param a
- */
-inline void oSimu::bounce_back_moving(array_t *a) {
-    // bb
-    auto pointer = a->begin() + offset_sim;
-    (pointer + 7).operator*() += -1.0/6 * parameters.u_wall;
-    (pointer + 8).operator*() +=  1.0/6 * parameters.u_wall;
-}
-
-/**
- * @fn inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list)
- * @brief just array and linked list based streaming
- * @param a
- * @param list
- */
-inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list) {
-    // just the sim
-    for(int i = 1; i < CHANNELS; ++i) {
-        // pointer magic
-        auto origin = a->begin() + offset_node + i;
-        (list->operator[](i-1) + offset_sim).operator*() = origin.operator*();
-    }
-}
 /**
  * @fn void oSimu::init()
  * @brief inits the sim based on info in the node generator
@@ -571,7 +596,6 @@ void oSimu::run(int current_step ) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
-        // n->offset = (current_step & 0x1) * 9;
         // macro and collision
         one_step_macro_collision(n,parameters.relaxation);
         // streaming
@@ -594,32 +618,39 @@ void oSimu::run_sub_array(int current_step) {
         // shorthands
         auto population = arrays_of_the_nodes[i];
         auto pointer = neighborhood_list[i];
-        // auto bound = boundary[i];
+        auto bound = boundary[i];
         // functions
         one_step_macro_collision(population);
         streaming(population,pointer);
         // todo investigate cost of this statement / -> sort him out?!
         // todo prob one of the last possible optimizations left sort
         // so we dont have to load this var in memory
-        // if(bound == BOUNCE_BACK_MOVING) {bounce_back_moving(population);}
+        if(bound == BOUNCE_BACK_MOVING) {bounce_back_moving(population);}
     }
 }
 
-/**
- * @fn void oSimu::run(int current_step)
- * @brief runs all the steps in a lbm sim
- * @param current_step
- */
+
 void oSimu::current_run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
-        // n->offset = (current_step & 0x1) * 9;
         // macro and collision
         //one_step_macro_collision(n,parameters.relaxation);
         one_step_macro_collision_forcing(n);
         // streaming
         streaming(n);
+    }
+}
+
+void oSimu::forcing_run(int current_step) {
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    offset_node = (current_step & 0x1) * 9;
+    for(auto n : nodes) {
+        // macro
+        one_step_macro_collision(&n->populations);
+        // streaming
+        streaming(n);
+
     }
 }
 

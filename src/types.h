@@ -56,5 +56,5 @@ typedef struct toLinks {
 
 // eigen smart pointer
 using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>;
-
+using array_pointer = link_pointer;
 #endif // MY_GENERAL_CODE_TYPES_H

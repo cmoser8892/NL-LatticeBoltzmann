@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     // run the functions
     ic.init();
     ic.run();
-    ic.boundaries->visualize_2D_boundary();
+    // ic.boundaries->visualize_2D_boundary();
     // ic.boundaries->visualize_2D_boundary();
     nodeGenerator gen(ic.boundaries);
     // if the fused init runs this test is considered complete
