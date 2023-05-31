@@ -526,7 +526,8 @@ void rotatingForce::calculate_F_i() {
 rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2) {
     // todo might be a good idea to reduce omega doesnt make sense as a vector
     origin = o;
-    middle = c;
+    size = c;
+    middle = c/2;
     omega.x() = o1;
     omega.y() = o2;
     force_channels.resize(CHANNELS);

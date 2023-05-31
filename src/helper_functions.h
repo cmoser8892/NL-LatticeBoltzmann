@@ -78,6 +78,7 @@ class circleForce {
 class rotatingForce {
   private:
     point_t origin;
+    point_t size;
     point_t middle;
     vector_t omega;
     vector_t velocity;
@@ -90,7 +91,7 @@ class rotatingForce {
     void calculate_F_alpha();
     void calculate_F_i();
   public:
-    rotatingForce(point_t origin, point_t canvas_middle, double omega_1, double omega_2);
+    rotatingForce(point_t origin, point_t canvas_size, double omega_1, double omega_2);
     void precalculate(double ux, double uy,point_t* position);
     double return_force(int channel_i);
     vector_t return_force_alpha();
