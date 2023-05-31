@@ -646,11 +646,15 @@ void oSimu::forcing_run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
+        // full inline now need to test with the constant circ force
         // macro
-        one_step_macro_collision(&n->populations);
+        auto [rho, ux, uy] = calculate_macro(&n->populations);
+        // collision
+        collision(&n->populations,rho,ux,uy);
+        // force
+        forcing_terms(n,ux,uy);
         // streaming
-        streaming(n);
-
+        streaming(&n->populations,&n->neighbors);
     }
 }
 
