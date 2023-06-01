@@ -144,8 +144,8 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 */
 void goaForce::calculate_F_i() {
    for(int i = 0; i < CHANNELS; ++i) {
-       vector_t vel = velocity_set.col(i);
-       force_channels[i] = weights(i) * calculate_truncation_force(&vel,
+       velocity_channel_set = velocity_set.col(i);
+       force_channels[i] = weights(i) * calculate_truncation_force(&velocity_channel_set,
                                                                    &velocity,
                                                                    &force_alpha);
    }
@@ -168,11 +168,6 @@ goaForce::goaForce(point_t o, point_t c, double o1, double o2) {
    omega.y() = o2;
    force_channels.resize(CHANNELS);
    force_channels.setZero();
-}
-
-void goaForce::precalculate(double ux, double uy, point_t *position) {
-   calculate_F_circle(position);
-   calculate_F_i();
 }
 
 /**

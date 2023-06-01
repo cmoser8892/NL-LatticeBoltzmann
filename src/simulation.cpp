@@ -363,7 +363,8 @@ inline void oSimu::forcing_terms(oNode* n,double ux, double uy) {
     int o = offset_node;
     auto p = n->populations.begin() + o;
     // precalculate the force
-    rot_force->precalculate(ux,uy,&n->position);
+    rot_force->calculate_F_circle(&n->position);
+    rot_force->calculate_F_i();
     for(int i = 0; i < CHANNELS; ++i) {
         (p + i).operator*() += rot_force->force_channels[i];
     }
