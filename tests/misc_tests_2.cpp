@@ -23,23 +23,28 @@ TEST(ForceTest, truncation_force) {
     vector_t c = {0,0};
     vector_t u = {0,0};
     vector_t f = {0,0};
-    EXPECT_EQ(calculate_truncation_force(c,u,f),0);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),0);
     c = {0,0};
     u = {1,-1};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(c,u,f),0);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),0);
     c = {1,0};
     u = {0,0};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(c,u,f),6);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),6);
     c = {1,0};
     u = {1,1};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(c,u,f),9);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),9);
     c = {1,1};
     u = {1,1};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(c,u,f),42);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),42);
+}
+
+TEST(FuntionalTest, conical_delta) {
+    EXPECT_EQ(conical_delta(2,3),0);
+    EXPECT_EQ(conical_delta(1,1),1);
 }
 
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
