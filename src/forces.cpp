@@ -1,23 +1,23 @@
 #include "forces.h"
 
 /**
- * @fn double calculate_truncation_force(array_t c, array_t u, vector_t force)
+ * @fn inline double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force)
  * @brief calculates the ugly part of  th truncation of the forcoe term term (viggen 236)
  * @param c veloicty set
  * @param u velocitay
  * @param force
  * @return
  */
-double calculate_truncation_force(array_t c, array_t u, vector_t force) {
+double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
    double return_value = 0;
    double cs_2 = 1.0/3;
-   for(int alpha = 0; alpha < c.size(); ++alpha) {
-       for(int beta = 0; beta < u.size(); ++beta) {
+   for(int alpha = 0; alpha < c->size(); ++alpha) {
+       for(int beta = 0; beta < u->size(); ++beta) {
            // std::cout << c(alpha) << std::endl;
            // std::cout << c(beta) << std::endl;
-           return_value += ((c(alpha)/cs_2) +
-                            (((c(alpha)*c(beta) - cs_2 * conical_delta(alpha,beta)) *u(beta)) / (cs_2*cs_2)))
-                           *force(alpha);
+           return_value += ((c->operator[](alpha)/cs_2) +
+                            (((c->operator[](alpha)*c->operator[](beta) - cs_2 * conical_delta(alpha,beta)) *u->operator[](beta)) / (cs_2*cs_2)))
+                           *force->operator[](alpha);
            // std::cout << return_value << std::endl;
        }
    }
@@ -117,11 +117,15 @@ void goaForce::calculate_F_circle(point_t* p) {
 }
 
 /**
-* @fn void goaForce::calculate_F_alpha()
+* @fn void goaForce::calculate_F_rotation()
 * @brief calculates the physical force in the domain
 */
-void goaForce::calculate_F_alpha() {
-   force_alpha.setZero();
+void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
+   // setup the internal variables
+   velocity.x() = ux;
+   velocity.y() = uy;
+   radius = calculate_distance(p,&origin);
+   angle = 2* asin(calculate_distance(&middle,p)/(2*radius));
    // F_c = -2 (w x v)
    double force_c_alpha_value = -2 * omega.norm() * velocity.norm();
    double force_z_alpha_value = omega.norm() * omega.norm() * radius;
@@ -140,7 +144,10 @@ void goaForce::calculate_F_alpha() {
 */
 void goaForce::calculate_F_i() {
    for(int i = 0; i < CHANNELS; ++i) {
-       force_channels[i] = weights(i) * calculate_truncation_force(velocity_set.col(i),velocity,force_alpha);
+       vector_t vel = velocity_set.col(i);
+       force_channels[i] = weights(i) * calculate_truncation_force(&vel,
+                                                                   &velocity,
+                                                                   &force_alpha);
    }
 }
 
@@ -163,34 +170,9 @@ goaForce::goaForce(point_t o, point_t c, double o1, double o2) {
    force_channels.setZero();
 }
 
-/**
-* @fn void goaForce::precalculate(double ux, double uy, point_t *position)
-* @brief precalculates everything in used in the fused macro streaming step
-* @param ux
-* @param uy
-* @param position
-*/
 void goaForce::precalculate(double ux, double uy, point_t *position) {
-   // set velocity
-   velocity.x() = ux;
-   velocity.y() = uy;
-   // calculate distance
-   // radius = calculate_distance(position,&origin);
-   // angle = 2* asin(calculate_distance(&middle,position)/(2*radius));
    calculate_F_circle(position);
-   // calculate_F_alpha();
    calculate_F_i();
-}
-
-/**
-* @fn double goaForce::return_force(int channel_i)
-* @brief calculates the forces dependent on the channels
-* @param channel_i
-* @return
-*/
-double goaForce::return_force(int channel_i) {
-   // truncation of the forcing term (viggen 236)
-   return force_channels[channel_i];
 }
 
 /**

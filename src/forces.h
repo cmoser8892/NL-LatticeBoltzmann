@@ -6,8 +6,7 @@
 #include "helper_functions.h"
 
 // create circular force
-std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude);
-double calculate_truncation_force(array_t c, array_t u, vector_t force);
+double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force);
 
 class gladrowForce {
   private:
@@ -35,14 +34,13 @@ class goaForce {
     double radius = 0;
     double angle = 0;
     // 9 long for 2dq9
-    array_t force_channels;
     void calculate_F_circle(point_t* p);
-    void calculate_F_alpha();
+    void calculate_F_rotation(double ux, double uy, point_t * p);
     void calculate_F_i();
   public:
+    array_t force_channels;
     goaForce(point_t origin, point_t canvas_size, double omega_1, double omega_2);
     void precalculate(double ux, double uy,point_t* position);
-    double return_force(int channel_i);
     vector_t return_force_alpha();
 };
 

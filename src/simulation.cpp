@@ -365,7 +365,7 @@ inline void oSimu::forcing_terms(oNode* n,double ux, double uy) {
     // precalculate the force
     rot_force->precalculate(ux,uy,&n->position);
     for(int i = 0; i < CHANNELS; ++i) {
-        (p + i).operator*() += rot_force->return_force(i);
+        (p + i).operator*() += rot_force->force_channels[i];
     }
 }
 

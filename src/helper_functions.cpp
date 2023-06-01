@@ -239,10 +239,7 @@ double calculate_distance(point_t* p1, point_t* p2) {
  * @return
  */
 int conical_delta(int a, int b) {
-    if(a == b) {
-        return 1;
-    }
-    return 0;
+    return a == b;
 }
 
 /**
