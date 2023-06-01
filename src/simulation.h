@@ -7,6 +7,7 @@
 #include "nodeGenerator.h"
 #include "types.h"
 #include "functions.h"
+#include "forces.h"
 
 typedef struct simulation_parameters {
     double relaxation = 0.5;

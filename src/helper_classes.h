@@ -1,5 +1,5 @@
-#ifndef NL_LATTICEBOLTZMANN_FORCES_H
-#define NL_LATTICEBOLTZMANN_FORCES_H
+#ifndef NL_LATTICEBOLTZMANN_HELPER_CLASS_H
+#define NL_LATTICEBOLTZMANN_HELPER_CLASS_H
 
 #include "types.h"
 #include "node.h"
@@ -47,4 +47,4 @@ class windowedHandles{
     bool check(handle_t h);
 };
 
-#endif // NL_LATTICEBOLTZMANN_FORCES_H
+#endif // NL_LATTICEBOLTZMANN_HELPER_CLASS_H

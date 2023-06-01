@@ -3,6 +3,7 @@ set(MY_HEADERS
         simulation.h
         types.h
         functions.h
+        forces.h
         helper_functions.h
         helper_classes.h
         boundary_point_generator.h
@@ -17,6 +18,7 @@ set(MY_CPP
         simulation.cpp
         types.cpp
         functions.cpp
+        forces.cpp
         helper_functions.cpp
         helper_classes.cpp
         boundary_point_generator.cpp
