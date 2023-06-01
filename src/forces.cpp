@@ -103,7 +103,7 @@ double goaForce::truncation_force() {
    double cs_2 = 1.0/3;
    for(int alpha = 0; alpha < velocity_channel_set.size(); ++alpha) {
        for(int beta = 0; beta < velocity.size(); ++beta) {
-           return_value += ((velocity_channel_set(alpha)/cs_2) + (((velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * conical_delta(alpha,beta)) *velocity(beta)) / (cs_2*cs_2)))*force_alpha(alpha);
+           return_value += ((velocity_channel_set(alpha)/cs_2) + (((velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * (alpha == beta)) *velocity(beta)) / (cs_2*cs_2)))*force_alpha(alpha);
        }
    }
    // std::cout << std::endl;
