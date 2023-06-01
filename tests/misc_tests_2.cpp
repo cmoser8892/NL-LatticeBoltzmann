@@ -46,7 +46,7 @@ TEST(ForceTest, rotating_zeros) {
     point_t origin = {0,0};
     point_t middle = {5,5};
     point_t point = middle;
-    rotatingForce rf(origin,middle,0,0);
+    goaForce rf(origin,middle,0,0);
     rf.precalculate(0,0,&point);
     EXPECT_EQ(rf.return_force_alpha().x(),0);
     EXPECT_EQ(rf.return_force_alpha().y(),0);

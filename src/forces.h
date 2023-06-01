@@ -37,7 +37,7 @@ class circularForce {
     void increment();
 };
 
-class circleForce {
+class gladrowForce {
   private:
     double force = 0;
     point_t middle;
@@ -46,12 +46,12 @@ class circleForce {
     double return_position_y(point_t* self_position);
   public:
     // first implementation assumes that we rotate around the center of the canvas
-    circleForce(double force, point_t canvas_size);
+    gladrowForce(double force, point_t canvas_size);
     double return_current_next_x(point_t* self_position, int channel);
     double return_current_next_y(point_t* self_position, int channel );
 };
 
-class rotatingForce {
+class goaForce {
   private:
     point_t origin;
     point_t size;
@@ -68,7 +68,7 @@ class rotatingForce {
     void calculate_F_alpha();
     void calculate_F_i();
   public:
-    rotatingForce(point_t origin, point_t canvas_size, double omega_1, double omega_2);
+    goaForce(point_t origin, point_t canvas_size, double omega_1, double omega_2);
     void precalculate(double ux, double uy,point_t* position);
     double return_force(int channel_i);
     vector_t return_force_alpha();

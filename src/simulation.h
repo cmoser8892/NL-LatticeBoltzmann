@@ -45,8 +45,8 @@ class oSimu {
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
     // todo need to combine the different force at some point
-    circleForce* force = nullptr;
-    rotatingForce* rot_force = nullptr;
+    gladrowForce * force = nullptr;
+    goaForce * rot_force = nullptr;
     // inlined core methods
     inline std::tuple<double, double, double> calculate_macro(array_t* a);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
@@ -65,7 +65,7 @@ class oSimu {
     std::vector<boundaryType_t> boundary;
     // methods
     oSimu(boundaryPointConstructor* c,nodeGenerator* g);
-    oSimu(boundaryPointConstructor* c,nodeGenerator* g, rotatingForce* f);
+    oSimu(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
     ~oSimu();
     void set_simulation_parameters(simulation_parameters_t t);
     // test methods

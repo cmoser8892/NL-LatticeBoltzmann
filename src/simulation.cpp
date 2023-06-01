@@ -423,7 +423,7 @@ oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
     node_generator = g;
     // only do if not given 0s
     if(g != nullptr && c != nullptr) {
-        force = new circleForce(0.007,c->size);
+        force = new gladrowForce(0.007,c->size);
     }
     else {
         std::cout << "You gave me nullptr, i will not work and crash" << std::endl;
@@ -431,7 +431,7 @@ oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
 
 }
 
-oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g, rotatingForce* f) {
+oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g, goaForce * f) {
     boundary_points = c;
     node_generator = g;
     rot_force = f;

@@ -150,12 +150,12 @@ void circularForce::increment() {
 }
 
 /**
-* @fn double circleForce::return_position_x(point_t *self_position)
+* @fn double gladrowForce::return_position_x(point_t *self_position)
 * @brief
 * @param self_position
 * @return
 */
-double circleForce::return_position_x(point_t *self_position) {
+double gladrowForce::return_position_x(point_t *self_position) {
    // we determine the force magnitude
    vector_t distance_vector = (*self_position) - middle;
    double force_magnitude = distance_vector.norm()/max_distance * force;
@@ -166,12 +166,12 @@ double circleForce::return_position_x(point_t *self_position) {
 }
 
 /**
-* @fn double circleForce::return_position_y(point_t *self_position)
+* @fn double gladrowForce::return_position_y(point_t *self_position)
 * @brief returns the force at a specific point
 * @param self_position
 * @return
 */
-double circleForce::return_position_y(point_t *self_position) {
+double gladrowForce::return_position_y(point_t *self_position) {
    // we determine the force magnitude
    vector_t distance_vector = (*self_position) - middle;
    double force_magnitude = distance_vector.norm()/max_distance * force;
@@ -182,12 +182,12 @@ double circleForce::return_position_y(point_t *self_position) {
 }
 
 /**
-* @fn circleForce::circleForce(double f, point_t canvas_size)
+* @fn gladrowForce::gladrowForce(double f, point_t canvas_size)
 * @brief constructor sets the size and middle of the rotating frame, also sets the basic force
 * @param f
 * @param canvas_size
 */
-circleForce::circleForce(double f, point_t canvas_size) {
+gladrowForce::gladrowForce(double f, point_t canvas_size) {
    // force denotes the force at the extremes of the canvas
    max_distance = (canvas_size - canvas_size/2).norm();
    middle = canvas_size/2;
@@ -195,13 +195,13 @@ circleForce::circleForce(double f, point_t canvas_size) {
 }
 
 /**
-* @fn double circleForce::return_current_next_x(point_t *self_position, int channel)
+* @fn double gladrowForce::return_current_next_x(point_t *self_position, int channel)
 * @brief function to return the next x foce component
 * @param self_position
 * @param channel
 * @return
 */
-double circleForce::return_current_next_x(point_t *self_position, int channel) {
+double gladrowForce::return_current_next_x(point_t *self_position, int channel) {
    // setup the cidt position
    array_t intermediate = *self_position;
    point_t next = intermediate + velocity_set.col(channel);
@@ -210,13 +210,13 @@ double circleForce::return_current_next_x(point_t *self_position, int channel) {
 }
 
 /**
-* @fn double circleForce::return_current_next_y(point_t *self_position, int channel )
+* @fn double gladrowForce::return_current_next_y(point_t *self_position, int channel )
 * @brief calculates the y forces
 * @param self_position
 * @param channel
 * @return
 */
-double circleForce::return_current_next_y(point_t *self_position, int channel ) {
+double gladrowForce::return_current_next_y(point_t *self_position, int channel ) {
    // setup the cidt position
    array_t intermediate = *self_position;
    point_t next = intermediate + velocity_set.col(channel);
@@ -225,7 +225,7 @@ double circleForce::return_current_next_y(point_t *self_position, int channel ) 
 }
 
 /// class rotating force
-void rotatingForce::calculate_F_circle(point_t* p) {
+void goaForce::calculate_F_circle(point_t* p) {
    double max_distance = (size - size/2).norm();;
    double force = 0.0035;
    // we determine the force magnitude
@@ -239,10 +239,10 @@ void rotatingForce::calculate_F_circle(point_t* p) {
 }
 
 /**
-* @fn void rotatingForce::calculate_F_alpha()
+* @fn void goaForce::calculate_F_alpha()
 * @brief calculates the physical force in the domain
 */
-void rotatingForce::calculate_F_alpha() {
+void goaForce::calculate_F_alpha() {
    force_alpha.setZero();
    // F_c = -2 (w x v)
    double force_c_alpha_value = -2 * omega.norm() * velocity.norm();
@@ -260,21 +260,21 @@ void rotatingForce::calculate_F_alpha() {
 * @fn calculates the channel dependent force
 * @brief
 */
-void rotatingForce::calculate_F_i() {
+void goaForce::calculate_F_i() {
    for(int i = 0; i < CHANNELS; ++i) {
        force_channels[i] = weights(i) * calculate_truncation_force(velocity_set.col(i),velocity,force_alpha);
    }
 }
 
 /**
-* @fn rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2)
+* @fn goaForce::goaForce(point_t o, point_t c, double o1, double o2)
 * @brief construtor does constructor things
 * @param o
 * @param c
 * @param o1
 * @param o2
 */
-rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2) {
+goaForce::goaForce(point_t o, point_t c, double o1, double o2) {
    // todo might be a good idea to reduce omega doesnt make sense as a vector
    origin = o;
    size = c;
@@ -286,13 +286,13 @@ rotatingForce::rotatingForce(point_t o, point_t c, double o1, double o2) {
 }
 
 /**
-* @fn void rotatingForce::precalculate(double ux, double uy, point_t *position)
+* @fn void goaForce::precalculate(double ux, double uy, point_t *position)
 * @brief precalculates everything in used in the fused macro streaming step
 * @param ux
 * @param uy
 * @param position
 */
-void rotatingForce::precalculate(double ux, double uy, point_t *position) {
+void goaForce::precalculate(double ux, double uy, point_t *position) {
    // set velocity
    velocity.x() = ux;
    velocity.y() = uy;
@@ -305,22 +305,22 @@ void rotatingForce::precalculate(double ux, double uy, point_t *position) {
 }
 
 /**
-* @fn double rotatingForce::return_force(int channel_i)
+* @fn double goaForce::return_force(int channel_i)
 * @brief calculates the forces dependent on the channels
 * @param channel_i
 * @return
 */
-double rotatingForce::return_force(int channel_i) {
+double goaForce::return_force(int channel_i) {
    // truncation of the forcing term (viggen 236)
    return force_channels[channel_i];
 }
 
 /**
-* @fn vector_t rotatingForce::return_force_alpha()
+* @fn vector_t goaForce::return_force_alpha()
 * @brief returns the alpha force component
 * @return
 */
-vector_t rotatingForce::return_force_alpha() {
+vector_t goaForce::return_force_alpha() {
    // useful for testing
    return force_alpha;
 }

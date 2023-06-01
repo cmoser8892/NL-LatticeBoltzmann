@@ -27,7 +27,6 @@ uint32_t bit_extraleaving_3d_z(uint64_t);
 // reduce 32 bit numbers to 2 bit numbers
 uint32_t reduce_32_2(uint32_t);
 double calculate_distance(point_t* p1, point_t* p2);
-double calculate_truncation_force(array_t c, array_t u, vector_t force);
 int conical_delta(int a, int b);
 // base path
 std::filesystem::path get_base_path();
