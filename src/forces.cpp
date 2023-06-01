@@ -13,12 +13,7 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
    double cs_2 = 1.0/3;
    for(int alpha = 0; alpha < c->size(); ++alpha) {
        for(int beta = 0; beta < u->size(); ++beta) {
-           // std::cout << c(alpha) << std::endl;
-           // std::cout << c(beta) << std::endl;
-           return_value += ((c->operator[](alpha)/cs_2) +
-                            (((c->operator[](alpha)*c->operator[](beta) - cs_2 * conical_delta(alpha,beta)) *u->operator[](beta)) / (cs_2*cs_2)))
-                           *force->operator[](alpha);
-           // std::cout << return_value << std::endl;
+           return_value += ((c->operator[](alpha)/cs_2) + (((c->operator[](alpha)*c->operator[](beta) - cs_2 * conical_delta(alpha,beta)) *u->operator[](beta)) / (cs_2*cs_2)))*force->operator[](alpha);
        }
    }
    // std::cout << std::endl;
@@ -26,7 +21,6 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
 }
 
 /// helper and sub-classes
-
 /**
 * @fn double gladrowForce::return_position_x(point_t *self_position)
 * @brief
@@ -102,7 +96,25 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
    return return_position_y(self_position) + return_position_y(&next);
 }
 
-/// class rotating force
+/// class goa force
+
+double goaForce::truncation_force() {
+   double return_value = 0;
+   double cs_2 = 1.0/3;
+   for(int alpha = 0; alpha < velocity_channel_set.size(); ++alpha) {
+       for(int beta = 0; beta < velocity.size(); ++beta) {
+           return_value += ((velocity_channel_set(alpha)/cs_2) + (((velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * conical_delta(alpha,beta)) *velocity(beta)) / (cs_2*cs_2)))*force_alpha(alpha);
+       }
+   }
+   // std::cout << std::endl;
+   return return_value;
+}
+
+/**
+ * @fn void goaForce::calculate_F_circle(point_t* p)
+ * @brief circular force field
+ * @param p
+ */
 void goaForce::calculate_F_circle(point_t* p) {
    double max_distance = (size - size/2).norm();;
    double force = 0.0035;
@@ -145,9 +157,7 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 void goaForce::calculate_F_i() {
    for(int i = 0; i < CHANNELS; ++i) {
        velocity_channel_set = velocity_set.col(i);
-       force_channels[i] = weights(i) * calculate_truncation_force(&velocity_channel_set,
-                                                                   &velocity,
-                                                                   &force_alpha);
+       force_channels[i] = weights(i) * truncation_force();
    }
 }
 

@@ -34,6 +34,8 @@ class goaForce {
     // vars
     double radius = 0;
     double angle = 0;
+    // functions
+    inline double truncation_force();
   public:
     array_t force_channels;
     goaForce(point_t origin, point_t canvas_size, double omega_1, double omega_2);
