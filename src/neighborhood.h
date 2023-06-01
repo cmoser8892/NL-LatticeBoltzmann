@@ -4,6 +4,7 @@
 #include "types.h"
 #include "node.h"
 #include "helper_functions.h"
+#include "helper_classes.h"
 /**
  * first we put nodes into a cell
  * this may seem unnecessary for computation of an uniform grid

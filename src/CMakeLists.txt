@@ -4,6 +4,7 @@ set(MY_HEADERS
         types.h
         functions.h
         helper_functions.h
+        helper_classes.h
         boundary_point_generator.h
         nodeGenerator.h
         straight.h
@@ -17,6 +18,7 @@ set(MY_CPP
         types.cpp
         functions.cpp
         helper_functions.cpp
+        helper_classes.cpp
         boundary_point_generator.cpp
         node.cpp
         nodeGenerator.cpp
