@@ -42,51 +42,6 @@ TEST(ForceTest, truncation_force) {
     EXPECT_EQ(calculate_truncation_force(c,u,f),42);
 }
 
-TEST(ForceTest, rotating_zeros) {
-    point_t origin = {0,0};
-    point_t middle = {5,5};
-    point_t point = middle;
-    goaForce rf(origin,middle,0,0);
-    rf.precalculate(0,0,&point);
-    EXPECT_EQ(rf.return_force_alpha().x(),0);
-    EXPECT_EQ(rf.return_force_alpha().y(),0);
-}
-
-TEST(ForceTest, vector_force) {
-    // a bit of a simple and non-memory efficient way to implement different forces
-    int total_size = 160;
-    int swicht = 10;
-    double magnitude = 0.1;
-    std::vector<vector_t> f = circular_force_generation(total_size,swicht,magnitude);
-    EXPECT_EQ(f.size(),total_size);
-    for(auto v : f) {
-        EXPECT_EQ(v.norm(),magnitude);
-    }
-}
-
-TEST(ForceTest, circular_force) {
-    // test for the circular class implementation
-    int swicht = 10;
-    double magnitude = 0.1;
-    circularForce force(swicht,magnitude);
-    for(int i = 0; i < 9; ++i) {
-        EXPECT_EQ(magnitude,force.return_current_x());
-        EXPECT_EQ(magnitude,force.return_next_x());
-        EXPECT_EQ(0, force.return_current_y());
-        EXPECT_EQ(0, force.return_next_y());
-        force.increment();
-    }
-    EXPECT_EQ(magnitude,force.return_current_x());
-    EXPECT_EQ(0,force.return_next_x());
-    EXPECT_EQ(0, force.return_current_y());
-    EXPECT_EQ(magnitude, force.return_next_y());
-    force.increment();
-    EXPECT_EQ(0 ,force.return_current_x());
-    EXPECT_EQ(0 ,force.return_next_x());
-    EXPECT_EQ(magnitude, force.return_current_y());
-    EXPECT_EQ(magnitude, force.return_next_y());
-}
-
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // todo try out the guo term also described in viggen 6.14
 // main equation is 5.2.9.

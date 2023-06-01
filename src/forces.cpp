@@ -1,33 +1,6 @@
 #include "forces.h"
 
 /**
-* @fn std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude)
-* @brief
-* @param total_steps
-* @param switch_time
-* @param magnitude
-* @return
-*/
-std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude) {
-   //
-   std::vector<vector_t> return_vector;
-   matrix_t helper = {{1,0,-1,0},
-                      {0,1,0,-1}};
-   int selector = 0;
-   for(int i = 0; i < total_steps; ++i) {
-       // switch selector up and down
-       if((total_steps % switch_time) == 0) {
-           selector = (++selector) % 3;
-       }
-       // we select on of the vectors and multiply with the magnitude
-       vector_t current = helper.col(selector) * magnitude;
-       // push back
-       return_vector.push_back(current);
-   }
-   return return_vector;
-}
-
-/**
  * @fn double calculate_truncation_force(array_t c, array_t u, vector_t force)
  * @brief calculates the ugly part of  th truncation of the forcoe term term (viggen 236)
  * @param c veloicty set
@@ -53,101 +26,6 @@ double calculate_truncation_force(array_t c, array_t u, vector_t force) {
 }
 
 /// helper and sub-classes
-/**
-* @fn circularForce::circularForce(long switchtime, double mag)
-* @brief constructor of the circular force calculation
-* @param switchtime
-* @param mag
-*/
-circularForce::circularForce(long switchtime, double mag) {
-   switch_time = switchtime;
-   magnitude = mag;
-   counter = 1;
-   // setup x and y force
-   x_force = {{1,0,-1,0}};
-   y_force = {{0,1,0,-1}};
-   x_force *= magnitude;
-   y_force *= magnitude;
-   // setup selectors
-   selector_switchero();
-}
-
-/**
-* @fn void circularForce::selector_switchero()
-* @brief count up to three then go back to 0
-*/
-void circularForce::selector_switchero() {
-   if((counter % switch_time) == 0) {
-       current_selector =  (++current_selector)%3;
-   }
-   if(((counter +1) % switch_time) == 0) {
-       next_selector =  (++next_selector)%3;
-   }
-}
-
-/**
-* @fn double circularForce::return_current_x()
-* @brief returns th current x force component
-* @return
-*/
-double circularForce::return_current_x() {
-   return x_force(current_selector);
-}
-
-/**
-* @fn double circularForce::return_current_y()
-* @brief returns the current y force component
-* @return
-*/
-double circularForce::return_current_y() {
-   return y_force(current_selector);
-}
-
-/**
-* @fn double circularForce::return_next_x()
-* @brief returns the next x force component
-* @return
-*/
-double circularForce::return_next_x() {
-   return x_force(next_selector);
-}
-
-/**
-* @fn double circularForce::return_next_y()
-* @brief returns the next y force component
-* @return
-*/
-double circularForce::return_next_y() {
-   return y_force(next_selector);
-}
-
-/**
-* @fn double circularForce::return_current_next_x()
-* @brief returns both force components
-* @return
-*/
-double circularForce::return_current_next_x() {
-   return x_force(current_selector) + x_force(next_selector);
-}
-
-/**
-* @fn double circularForce::return_current_next_y()
-* @brief returns both force components
-* @return
-*/
-double circularForce::return_current_next_y() {
-   return y_force(current_selector) + y_force(next_selector);
-}
-
-/**
-* @fn void circularForce::increment()
-* @brief increments the counter and checks if we have to change the selectors
-*/
-void circularForce::increment() {
-   // look if we need to change the selectors
-   selector_switchero();
-   ++counter;
-}
 
 /**
 * @fn double gladrowForce::return_position_x(point_t *self_position)

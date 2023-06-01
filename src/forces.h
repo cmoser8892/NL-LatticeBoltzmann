@@ -9,34 +9,6 @@
 std::vector<vector_t> circular_force_generation(int total_steps, int switch_time, double magnitude);
 double calculate_truncation_force(array_t c, array_t u, vector_t force);
 
-// classes
-class circularForce {
-    /*
-     * also not used right now
-     * This force hides the housekeeping necessary for the calculation of a force
-     * going around and switching directions ever so often, it is supposed to be just
-     * an adhoc test to get a familiar with the collision term with a force
-     */
-  private:
-    long counter = 0;
-    int current_selector =  0;
-    int next_selector = 0;
-    double magnitude = 0;
-    long switch_time = 0;
-    matrix_t x_force;
-    matrix_t y_force;
-    void selector_switchero();
-  public:
-    circularForce(long switchtime, double magnitude);
-    double return_current_x();
-    double return_current_y();
-    double return_next_x();
-    double return_next_y();
-    double return_current_next_x();
-    double return_current_next_y();
-    void increment();
-};
-
 class gladrowForce {
   private:
     double force = 0;
