@@ -30,5 +30,6 @@ double calculate_distance(point_t* p1, point_t* p2);
 int conical_delta(int a, int b);
 // base path
 std::filesystem::path get_base_path();
-
+// solve
+void solve_truncation_force_symbols(int channel);
 #endif // NL_LATTICEBOLTZMANN_HELPER_FUNCTIONS_H

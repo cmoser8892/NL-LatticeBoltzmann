@@ -4,24 +4,9 @@
  */
 
 
-auto divide(int dividend, int divisor) {
-    struct result {int quotient; int remainder;};
-    return result {dividend / divisor, dividend % divisor};
-}
-
 #include <iostream>
-#include "functions.h"
+#include "helper_functions.h"
 
 int main() {
-    using namespace std;
-
-    auto result = divide(14, 3);
-
-    cout << result.quotient << ',' << result.remainder << endl;
-
-    // or
-
-    auto [quotient, remainder] = divide(14, 3);
-
-    cout << quotient << ',' << remainder << endl;
+    solve_truncation_force_symbols(5);
 }

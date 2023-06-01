@@ -98,7 +98,7 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
 
 /// class goa force
 
-double goaForce::truncation_force() {
+inline double goaForce::truncation_force() {
    double return_value = 0;
    double cs_2 = 1.0/3;
    for(int alpha = 0; alpha < velocity_channel_set.size(); ++alpha) {
@@ -108,6 +108,31 @@ double goaForce::truncation_force() {
    }
    // std::cout << std::endl;
    return return_value;
+}
+
+inline array_t goaForce::truncation_force_array() {
+   //
+   array_t return_array;
+   return_array.resize(9);
+   /// channel 0
+   return_array[0] = -3*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+   /// channel 1 - 4
+   return_array[1] =  6*force_alpha[0] + 6*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+   return_array[2] = -3*velocity[0]*force_alpha[0] + 6*force_alpha[1]  + 6*velocity[1]*force_alpha[1];
+   return_array[3] = -6*force_alpha[0] + 6*velocity[0]*force_alpha[0]  - 3*velocity[1]*force_alpha[1];
+   return_array[4] = -3*velocity[0]*force_alpha[0] - 6*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   /// channel 5 - 6
+   return_array[5] =   6* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                     + 6* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   return_array[6] = - 6* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                     + 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   /// channel 7 - 8
+   return_array[7] = - 6* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                     - 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   return_array[8] =   6* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                     - 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];;
+   // return the array
+   return return_array;
 }
 
 /**
@@ -155,10 +180,7 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 * @brief
 */
 void goaForce::calculate_F_i() {
-   for(int i = 0; i < CHANNELS; ++i) {
-       velocity_channel_set = velocity_set.col(i);
-       force_channels[i] = weights(i) * truncation_force();
-   }
+   force_channels = weights*truncation_force_array();
 }
 
 /**

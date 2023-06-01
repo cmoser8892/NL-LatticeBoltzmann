@@ -259,3 +259,16 @@ std::filesystem::path get_base_path() {
     }
     return return_path;
 }
+
+void solve_truncation_force_symbols(int channel) {
+    double return_value = 0;
+    double cs_2 = 1.0/3;
+    vector_t velocity_channel_set = velocity_set.col(channel);
+    for(int alpha = 0; alpha < velocity_channel_set.size(); ++alpha) {
+        for(int beta = 0; beta < velocity_channel_set.size(); ++beta) {
+            double first = (velocity_channel_set(alpha)/cs_2);
+            double second = (velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * (alpha == beta))/ (cs_2*cs_2);
+            std::cout << "(" << first << " + " << second << " u(" << beta << ")) * F("<< alpha << ")"<< std::endl;
+        }
+    }
+}
