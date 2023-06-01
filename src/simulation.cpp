@@ -363,9 +363,9 @@ inline void oSimu::forcing_terms(oNode* n,double ux, double uy) {
     int o = offset_node;
     auto p = n->populations.begin() + o;
     // precalculate the force
-    rForce->precalculate(ux,uy,&n->position);
+    rot_force->precalculate(ux,uy,&n->position);
     for(int i = 0; i < CHANNELS; ++i) {
-        (p + i).operator*() -= rForce->return_force(i);
+        (p + i).operator*() += rot_force->return_force(i);
     }
 }
 
@@ -428,6 +428,13 @@ oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
     else {
         std::cout << "You gave me nullptr, i will not work and crash" << std::endl;
     }
+
+}
+
+oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g, rotatingForce* f) {
+    boundary_points = c;
+    node_generator = g;
+    rot_force = f;
 }
 
 /**

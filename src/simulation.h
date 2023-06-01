@@ -45,7 +45,7 @@ class oSimu {
     nodeGenerator* node_generator = nullptr;
     // todo need to combine the different force at some point
     circleForce* force = nullptr;
-    rotatingForce* rForce = nullptr;
+    rotatingForce* rot_force = nullptr;
     // inlined core methods
     inline std::tuple<double, double, double> calculate_macro(array_t* a);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);

@@ -488,9 +488,8 @@ double circleForce::return_current_next_y(point_t *self_position, int channel ) 
 
 /// class rotating force
 void rotatingForce::calculate_F_circle(point_t* p) {
-    // todo im here
-    double max_distance = 30;
-    double force = 0.007;
+    double max_distance = (size - size/2).norm();;
+    double force = 0.0035;
     // we determine the force magnitude
     vector_t distance_vector = (*p) - middle;
     double force_magnitude = distance_vector.norm()/max_distance * force;
@@ -560,9 +559,10 @@ void rotatingForce::precalculate(double ux, double uy, point_t *position) {
     velocity.x() = ux;
     velocity.y() = uy;
     // calculate distance
-    radius = calculate_distance(position,&origin);
-    angle = 2* asin(calculate_distance(&middle,position)/(2*radius));
-    calculate_F_alpha();
+    // radius = calculate_distance(position,&origin);
+    // angle = 2* asin(calculate_distance(&middle,position)/(2*radius));
+    calculate_F_circle(position);
+    // calculate_F_alpha();
     calculate_F_i();
 }
 

@@ -37,6 +37,7 @@ std::vector<vector_t> circular_force_generation(int total_steps, int switch_time
 // circular force as a class instead of a big vector
 class circularForce {
     /*
+     * also not used right now
      * This force hides the housekeeping necessary for the calculation of a force
      * going around and switching directions ever so often, it is supposed to be just
      * an adhoc test to get a familiar with the collision term with a force
