@@ -161,7 +161,6 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    velocity.x() = ux;
    velocity.y() = uy;
    radius = calculate_distance(p,&origin);
-   // todo angle doesnt work
    vector_t origin_to_point = *p - origin;
    angle = calculate_angle(&reference,&origin_to_point);
    // F_c = -2 (w x v)
@@ -193,7 +192,6 @@ void goaForce::calculate_F_i() {
 * @param o2
 */
 goaForce::goaForce(point_t o, point_t c, double o1) {
-   // todo might be a good idea to reduce omega doesnt make sense as a vector
    origin = o;
    size = c;
    middle = c/2;
@@ -211,4 +209,8 @@ goaForce::goaForce(point_t o, point_t c, double o1) {
 vector_t goaForce::return_force_alpha() {
    // useful for testing
    return force_alpha;
+}
+
+void goaForce::set_force_alpha(vector_t f) {
+   force_alpha = f;
 }

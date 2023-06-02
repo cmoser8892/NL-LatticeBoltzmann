@@ -78,6 +78,17 @@ TEST(ForceTest, functional_master_test_rotation_zero) {
     }
 }
 
+TEST(ForceTest, correct_truncation_terms) {
+    // test against the c style implementation with the same inputs
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    double omega = 0.00;
+    goaForce test(origin,canvas_size,omega);
+    vector_t f = {0,0};
+    // set force
+    test.set_force_alpha(f);
+    test.calculate_F_i();
+}
 
 TEST(FuntionalTest, conical_delta) {
     EXPECT_EQ(conical_delta(2,3),0);

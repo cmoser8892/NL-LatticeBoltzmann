@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
-    int steps = 10000;
+    int steps = 1000;
     // test image setupa
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
