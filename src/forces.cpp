@@ -164,8 +164,8 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    // todo angle doesnt work
    //angle = 2* asin(calculate_distance(&middle,p)/(2*radius));
    // F_c = -2 (w x v)
-   double force_c_alpha_value = -2 * omega.norm() * velocity.norm();
-   double force_z_alpha_value = omega.norm() * omega.norm() * radius;
+   double force_c_alpha_value = -2 * omega * velocity.norm();
+   double force_z_alpha_value = omega * omega* radius;
    // F_z =  w2r
    force_alpha.x() = force_c_alpha_value;
    force_alpha.y() = force_z_alpha_value;
@@ -191,15 +191,15 @@ void goaForce::calculate_F_i() {
 * @param o1
 * @param o2
 */
-goaForce::goaForce(point_t o, point_t c, double o1, double o2) {
+goaForce::goaForce(point_t o, point_t c, double o1) {
    // todo might be a good idea to reduce omega doesnt make sense as a vector
    origin = o;
    size = c;
    middle = c/2;
-   omega.x() = o1;
-   omega.y() = o2;
+   omega = o1;
    force_channels.resize(CHANNELS);
    force_channels.setZero();
+   // calculate the angle
 }
 
 /**
