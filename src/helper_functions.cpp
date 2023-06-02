@@ -250,7 +250,12 @@ int conical_delta(int a, int b) {
  * @return
  */
 double calculate_angle(vector_t* v1, vector_t* v2) {
-    return std::acos((v1->dot(*v2))/(v1->norm() * v2->norm()));
+    double angle = std::acos((v1->dot(*v2))/(v1->norm() * v2->norm()));
+    // if one of the vectors has length 0 the thing breaks and i get nan i want a 0 tho
+    if(std::isnan(angle)) {
+        angle = 0;
+    }
+    return angle;
 }
 
 /**

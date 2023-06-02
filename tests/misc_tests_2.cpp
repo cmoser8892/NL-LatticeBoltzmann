@@ -61,6 +61,9 @@ TEST(ForceTest, rotation_force) {
     test.calculate_F_rotation(0,0,&canvas_size);
     vector_t f = test.return_force_alpha();
     EXPECT_EQ(f.norm(),0);
+    test.calculate_F_rotation(0,0,&origin);
+    f = test.return_force_alpha();
+    EXPECT_EQ(f.norm(),0);
 }
 
 TEST(FuntionalTest, conical_delta) {

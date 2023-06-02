@@ -162,7 +162,8 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    velocity.y() = uy;
    radius = calculate_distance(p,&origin);
    // todo angle doesnt work
-   //angle = 2* asin(calculate_distance(&middle,p)/(2*radius));
+   vector_t origin_to_point = *p - origin;
+   angle = calculate_angle(&reference,&origin_to_point);
    // F_c = -2 (w x v)
    double force_c_alpha_value = -2 * omega * velocity.norm();
    double force_z_alpha_value = omega * omega* radius;
@@ -172,7 +173,7 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    // F_c = -2 (w x v)
    Eigen::Rotation2D<double> rot;
    rot.angle() = angle; // parts of pi use EIGEN_PI
-   //force_alpha = rot * force_alpha;
+   force_alpha = rot * force_alpha;
 }
 
 /**
@@ -199,7 +200,7 @@ goaForce::goaForce(point_t o, point_t c, double o1) {
    omega = o1;
    force_channels.resize(CHANNELS);
    force_channels.setZero();
-   // calculate the angle
+   reference ={1,0};
 }
 
 /**

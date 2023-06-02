@@ -30,6 +30,7 @@ class goaForce {
     vector_t velocity;
     vector_t force_alpha;
     vector_t velocity_channel_set;
+    vector_t reference;
     // vars
     double radius = 0;
     double angle = 0;
