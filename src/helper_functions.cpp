@@ -243,6 +243,17 @@ int conical_delta(int a, int b) {
 }
 
 /**
+ * @fn double calculate_angle(vector_t* v1, vector_t* v2)
+ * @brief calculates the angle between two vectors (hides ulginess)
+ * @param v1
+ * @param v2
+ * @return
+ */
+double calculate_angle(vector_t* v1, vector_t* v2) {
+    return std::acos((v1->dot(*v2))/(v1->norm() * v2->norm()));
+}
+
+/**
  * @fn std::filesystem::path get_base_path()
  * @brief gets the path to the NL-directory
  * @return the path to the NL-directory
@@ -260,6 +271,11 @@ std::filesystem::path get_base_path() {
     return return_path;
 }
 
+/**
+ * @fn void solve_truncation_force_symbols(int channel)
+ * @brief solves the force term symbolically for a specific velocity set
+ * @param channel
+ */
 void solve_truncation_force_symbols(int channel) {
     double return_value = 0;
     double cs_2 = 1.0/3;
@@ -267,7 +283,7 @@ void solve_truncation_force_symbols(int channel) {
     for(int alpha = 0; alpha < velocity_channel_set.size(); ++alpha) {
         for(int beta = 0; beta < velocity_channel_set.size(); ++beta) {
             double first = (velocity_channel_set(alpha)/cs_2);
-            double second = (velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * (alpha == beta))/ (cs_2*cs_2);
+            double second = (velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * (conical_delta(alpha,beta)))/ (cs_2*cs_2);
             std::cout << "(" << first << " + " << second << " u(" << beta << ")) * F("<< alpha << ")"<< std::endl;
         }
     }

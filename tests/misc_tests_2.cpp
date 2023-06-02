@@ -42,6 +42,27 @@ TEST(ForceTest, truncation_force) {
     EXPECT_EQ(calculate_truncation_force(&c,&u,&f),42);
 }
 
+TEST(ForceTest, circle_force) {
+    double force = 0.0035;
+    point_t dont_care = {0,0};
+    point_t canvas_size = {50,50};
+    goaForce test(dont_care,canvas_size,0,0);
+    test.calculate_F_circle(&dont_care, force);
+    // the norm of the force should be
+    vector_t f = test.return_force_alpha();
+    EXPECT_NEAR(f.norm(), force, 1e-5);
+}
+
+TEST(ForceTest, rotation_force) {
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    double omega = 0.00;
+    goaForce test(origin,canvas_size,omega,0);
+    test.calculate_F_rotation(0,0,&canvas_size);
+    vector_t f = test.return_force_alpha();
+    EXPECT_EQ(f.norm(),0);
+}
+
 TEST(FuntionalTest, conical_delta) {
     EXPECT_EQ(conical_delta(2,3),0);
     EXPECT_EQ(conical_delta(1,1),1);

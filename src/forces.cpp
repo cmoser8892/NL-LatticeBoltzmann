@@ -140,12 +140,11 @@ inline array_t goaForce::truncation_force_array() {
  * @brief circular force field
  * @param p
  */
-void goaForce::calculate_F_circle(point_t* p) {
+void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude) {
    double max_distance = (size - size/2).norm();;
-   double force = 0.0035;
    // we determine the force magnitude
    vector_t distance_vector = (*p) - middle;
-   double force_magnitude = distance_vector.norm()/max_distance * force;
+   double force_magnitude = distance_vector.norm()/max_distance * max_force_magnitude;
    // we determine the x component
    distance_vector /= distance_vector.norm();
    // change directions and multiply with the force magnitude
@@ -162,7 +161,8 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    velocity.x() = ux;
    velocity.y() = uy;
    radius = calculate_distance(p,&origin);
-   angle = 2* asin(calculate_distance(&middle,p)/(2*radius));
+   // todo angle doesnt work
+   //angle = 2* asin(calculate_distance(&middle,p)/(2*radius));
    // F_c = -2 (w x v)
    double force_c_alpha_value = -2 * omega.norm() * velocity.norm();
    double force_z_alpha_value = omega.norm() * omega.norm() * radius;
@@ -172,7 +172,7 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    // F_c = -2 (w x v)
    Eigen::Rotation2D<double> rot;
    rot.angle() = angle; // parts of pi use EIGEN_PI
-   force_alpha = rot * force_alpha;
+   //force_alpha = rot * force_alpha;
 }
 
 /**
