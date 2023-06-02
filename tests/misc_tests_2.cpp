@@ -47,7 +47,7 @@ TEST(ForceTest, circle_force) {
     point_t dont_care = {0,0};
     point_t canvas_size = {50,50};
     goaForce test(dont_care,canvas_size,0);
-    test.calculate_F_circle(&dont_care, force);
+    test.calculate_F_circle(&dont_care, force,0,0);
     // the norm of the force should be
     vector_t f = test.return_force_alpha();
     EXPECT_NEAR(f.norm(), force, 1e-5);

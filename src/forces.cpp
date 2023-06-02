@@ -140,7 +140,9 @@ inline array_t goaForce::truncation_force_array() {
  * @brief circular force field
  * @param p
  */
-void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude) {
+void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double ux, double uy) {
+   velocity.x() = ux;
+   velocity.y() = uy;
    double max_distance = (size - size/2).norm();;
    // we determine the force magnitude
    vector_t distance_vector = (*p) - middle;
