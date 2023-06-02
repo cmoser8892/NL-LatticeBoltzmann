@@ -46,6 +46,7 @@ class goaForce {
     void calculate_F_i();
     vector_t return_force_alpha();
     void set_force_alpha(vector_t f);
+    void set_velocity(vector_t v);
 };
 
 

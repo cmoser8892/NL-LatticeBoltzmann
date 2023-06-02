@@ -85,9 +85,52 @@ TEST(ForceTest, correct_truncation_terms) {
     double omega = 0.00;
     goaForce test(origin,canvas_size,omega);
     vector_t f = {0,0};
+    vector_t v = {0,0};
     // set force
     test.set_force_alpha(f);
+    test.set_velocity(v);
     test.calculate_F_i();
+    for(int i = 0; i < CHANNELS; ++i) {
+        vector_t c = velocity_set.col(i);
+        double check = calculate_truncation_force(&c,&v,&f);
+        EXPECT_EQ(check,test.force_channels(i));
+    }
+    /// individual test
+    f = {1,1};
+    v = {1,1};
+    test.set_force_alpha(f);
+    test.set_velocity(v);
+    test.calculate_F_i();
+    for(int i = 0; i < CHANNELS; ++i) {
+        std::cout << i << std::endl;
+        vector_t c = velocity_set.col(i);
+        double check = calculate_truncation_force(&c,&v,&f);
+        EXPECT_NEAR(check,test.force_channels(i),1e-5);
+    }
+    /// individual test
+    f = {2,3};
+    v = {4,5};
+    test.set_force_alpha(f);
+    test.set_velocity(v);
+    test.calculate_F_i();
+    for(int i = 0; i < CHANNELS; ++i) {
+        std::cout << i << std::endl;
+        vector_t c = velocity_set.col(i);
+        double check = calculate_truncation_force(&c,&v,&f);
+        EXPECT_NEAR(check,test.force_channels(i),1e-5);
+    }
+    /// individual test
+    f = {-1,-1};
+    v = {-1,-1};
+    test.set_force_alpha(f);
+    test.set_velocity(v);
+    test.calculate_F_i();
+    for(int i = 0; i < CHANNELS; ++i) {
+        std::cout << i << std::endl;
+        vector_t c = velocity_set.col(i);
+        double check = calculate_truncation_force(&c,&v,&f);
+        EXPECT_NEAR(check,test.force_channels(i),1e-5);
+    }
 }
 
 TEST(FuntionalTest, conical_delta) {

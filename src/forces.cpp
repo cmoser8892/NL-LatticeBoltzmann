@@ -128,7 +128,7 @@ inline array_t goaForce::truncation_force_array() {
                      + 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
    /// channel 7 - 8
    return_array[7] = - 6* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
-                     - 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+                     - 6* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
    return_array[8] =   6* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
                      - 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];;
    // return the array
@@ -215,4 +215,8 @@ vector_t goaForce::return_force_alpha() {
 
 void goaForce::set_force_alpha(vector_t f) {
    force_alpha = f;
+}
+
+void goaForce::set_velocity(vector_t v) {
+   velocity = v;
 }
