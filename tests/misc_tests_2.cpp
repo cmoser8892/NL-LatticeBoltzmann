@@ -53,7 +53,7 @@ TEST(ForceTest, circle_force) {
     EXPECT_NEAR(f.norm(), force, 1e-5);
 }
 
-TEST(ForceTest, rotation_force) {
+TEST(ForceTest, rotation_force_zero) {
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
     double omega = 0.00;
@@ -76,6 +76,11 @@ TEST(ForceTest, functional_master_test_rotation_zero) {
     for(auto channels : test.force_channels) {
         EXPECT_EQ(channels,0);
     }
+}
+
+TEST(ForceTest, rotationing_force) {
+    // todo implement me for general rotating force !!
+    EXPECT_TRUE(false);
 }
 
 TEST(ForceTest, correct_truncation_terms) {
