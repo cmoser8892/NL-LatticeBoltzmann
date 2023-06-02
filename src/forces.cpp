@@ -181,7 +181,7 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 * @brief
 */
 void goaForce::calculate_F_i() {
-   force_channels = weights*truncation_force_array();
+   force_channels = truncation_force_array();
 }
 
 /**

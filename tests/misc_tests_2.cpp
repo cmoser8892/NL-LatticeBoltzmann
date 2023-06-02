@@ -66,6 +66,19 @@ TEST(ForceTest, rotation_force) {
     EXPECT_EQ(f.norm(),0);
 }
 
+TEST(ForceTest, functional_master_test_rotation_zero) {
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    double omega = 0.00;
+    goaForce test(origin,canvas_size,omega);
+    test.calculate_F_rotation(0,0,&canvas_size);
+    test.calculate_F_i();
+    for(auto channels : test.force_channels) {
+        EXPECT_EQ(channels,0);
+    }
+}
+
+
 TEST(FuntionalTest, conical_delta) {
     EXPECT_EQ(conical_delta(2,3),0);
     EXPECT_EQ(conical_delta(1,1),1);
