@@ -97,7 +97,11 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
 }
 
 /// class goa force
-
+/**
+ * @fn inline double goaForce::truncation_force()
+ * @brief non optimized version of the channel force calculation
+ * @return
+ */
 inline double goaForce::truncation_force() {
    double return_value = 0;
    double cs_2 = 1.0/3;
@@ -110,6 +114,11 @@ inline double goaForce::truncation_force() {
    return return_value;
 }
 
+/**
+ * @fn inline array_t goaForce::truncation_force_array()
+ * @brief inlined the complicated part of the "channel" dependent force for 2dq9
+ * @return
+ */
 inline array_t goaForce::truncation_force_array() {
    //
    array_t return_array;
@@ -165,16 +174,17 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    radius = calculate_distance(p,&origin);
    vector_t origin_to_point = *p - origin;
    angle = calculate_angle(&reference,&origin_to_point);
-   // F_c = -2 (w x v)
-   double force_c_alpha_value = -2 * omega * velocity.norm();
-   double force_z_alpha_value = omega * omega* radius;
    // F_z =  w2r
-   force_alpha.x() = force_c_alpha_value;
+   double force_z_alpha_value = omega * omega* radius;
+   force_alpha.x() = 0;
    force_alpha.y() = force_z_alpha_value;
-   // F_c = -2 (w x v)
+   // we rotate the force so its always out looking
    Eigen::Rotation2D<double> rot;
    rot.angle() = angle; // parts of pi use EIGEN_PI
    force_alpha = rot * force_alpha;
+   // F_c = -2 (w x v)
+
+
 }
 
 /**
@@ -213,10 +223,29 @@ vector_t goaForce::return_force_alpha() {
    return force_alpha;
 }
 
+/**
+ * @fn void goaForce::set_force_alpha(vector_t f)
+ * @brief sets the force value in the force class (for testing)
+ * @param f
+ */
 void goaForce::set_force_alpha(vector_t f) {
    force_alpha = f;
 }
 
+/**
+ * @fn void goaForce::set_velocity(vector_t v)
+ * @brief sets tje velocity value in the force class (for testing)
+ * @param v
+ */
 void goaForce::set_velocity(vector_t v) {
    velocity = v;
+}
+
+/**
+ * @fn void goaForce::set_omega(double o)
+ * @brief sets the omega rotation in plane
+ * @param o
+ */
+void goaForce::set_omega(double o) {
+   omega = o;
 }

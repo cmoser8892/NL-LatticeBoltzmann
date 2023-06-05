@@ -79,12 +79,28 @@ TEST(ForceTest, functional_master_test_rotation_zero) {
 }
 
 TEST(ForceTest, rotationing_force) {
-    // todo implement me for general rotating force !!
-    EXPECT_TRUE(false);
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    point_t test_point = {50,0};
+    vector_t f;
+    double omega = 1.00;
+    goaForce test(origin,canvas_size,omega);
+    test.calculate_F_rotation(0,0,&test_point);
+    f = test.return_force_alpha();
+    // std::cout << f << std::endl;
+    // first component is just the centrifugal force
+    // in the direction outboard dirction of the rotation
+    // f_zentrifugal = w*w*r
+    EXPECT_EQ(f.norm(),50);
+    test_point = {50,50};
+    test.calculate_F_rotation(0,0,&test_point);
+    f = test.return_force_alpha();
+    EXPECT_EQ(f.norm(),test_point.norm());
 }
 
 TEST(ForceTest, correct_truncation_terms) {
     // test against the c style implementation with the same inputs
+    // the c function is assumed to be correct (tested previously)
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
     double omega = 0.00;
