@@ -168,13 +168,14 @@ void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double 
 * @brief calculates the physical force in the domain
 */
 void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
+   // todo what to do with mass?!
    // setup the internal variables
    velocity.x() = ux;
    velocity.y() = uy;
    radius = calculate_distance(p,&origin);
    vector_t origin_to_point = *p - origin;
    angle = calculate_angle(&reference,&origin_to_point);
-   // F_z =  w2r
+   // a_z =  w2r
    double force_z_alpha_value = omega * omega* radius;
    force_alpha.x() = 0;
    force_alpha.y() = force_z_alpha_value;
@@ -182,9 +183,14 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    Eigen::Rotation2D<double> rot;
    rot.angle() = angle; // parts of pi use EIGEN_PI
    force_alpha = rot * force_alpha;
-   // F_c = -2 (w x v)
-
-
+   // a_c = -2 (w x v)
+    vector3d_t omega_vec = {0,0,omega};
+    vector3d_t velocity_vec = {velocity.x(),velocity.y(),0};
+    vector3d_t result = -2 *(velocity_vec.cross(omega_vec));
+    // crash in case we get a z value
+    assert(result.z() == 0);
+    force_alpha.x() += result.x();
+    force_alpha.y() += result.y();
 }
 
 /**

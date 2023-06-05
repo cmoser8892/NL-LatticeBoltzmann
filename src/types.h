@@ -13,6 +13,8 @@ using flowfield_t = Eigen::ArrayXXd;
 using point_t = Eigen::Vector2d;
 using vector_t = Eigen::Vector2d;
 
+using vector3d_t = Eigen::Vector3d;
+
 using handle_t = uint64_t; // counter to denote a node
 
 using colour_t = uint32_t; // placeholder for colour, whatever the right dataformat may be

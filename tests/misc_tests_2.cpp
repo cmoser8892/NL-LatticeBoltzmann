@@ -78,7 +78,7 @@ TEST(ForceTest, functional_master_test_rotation_zero) {
     }
 }
 
-TEST(ForceTest, rotationing_force) {
+TEST(ForceTest, zentrifugal_force) {
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
     point_t test_point = {50,0};
@@ -96,6 +96,27 @@ TEST(ForceTest, rotationing_force) {
     test.calculate_F_rotation(0,0,&test_point);
     f = test.return_force_alpha();
     EXPECT_EQ(f.norm(),test_point.norm());
+    omega = 2;
+    test_point = {50,50};
+    test.set_omega(omega);
+    test.calculate_F_rotation(0,0,&test_point);
+    f = test.return_force_alpha();
+    EXPECT_EQ(f.norm(),4*test_point.norm());
+}
+
+TEST(ForceTest, coriolis_force) {
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    point_t test_point = {50,0};
+    vector_t f;
+    double omega = 1.00;
+    goaForce test(origin,canvas_size,omega);
+    test.calculate_F_rotation(1,0,&test_point);
+    f = test.return_force_alpha();
+    std::cout << f << std::endl;
+    EXPECT_EQ(f.x(),0);
+    EXPECT_EQ(f.y(),52);
+    // todo finish test, more test cases
 }
 
 TEST(ForceTest, correct_truncation_terms) {
