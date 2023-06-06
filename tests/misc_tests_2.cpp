@@ -113,10 +113,22 @@ TEST(ForceTest, coriolis_force) {
     goaForce test(origin,canvas_size,omega);
     test.calculate_F_rotation(1,0,&test_point);
     f = test.return_force_alpha();
-    std::cout << f << std::endl;
     EXPECT_EQ(f.x(),0);
     EXPECT_EQ(f.y(),52);
-    // todo finish test, more test cases
+    omega = 2.00;
+    test.set_omega(omega);
+    test_point =  {0,0};
+    test.calculate_F_rotation(1,0,&test_point);
+    f = test.return_force_alpha();
+    EXPECT_EQ(f.x(),0);
+    EXPECT_EQ(f.y(),4);
+    omega = 2.00;
+    test.set_omega(omega);
+    test_point =  {0,0};
+    test.calculate_F_rotation(0,1,&test_point);
+    f = test.return_force_alpha();
+    EXPECT_EQ(f.x(),-4);
+    EXPECT_EQ(f.y(),0);
 }
 
 TEST(ForceTest, correct_truncation_terms) {

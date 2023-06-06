@@ -3,21 +3,31 @@
 /**
  * @fn inline double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force)
  * @brief calculates the ugly part of  th truncation of the forcoe term term (viggen 236)
+ * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @param c veloicty set
  * @param u velocitay
  * @param force
  * @return
  */
 double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
-   double return_value = 0;
-   double cs_2 = 1.0/3;
-   for(int alpha = 0; alpha < c->size(); ++alpha) {
+    /**
+     * force term for one channel i
+               ⎛c    ⎛c  ⋅ c ⎞ ⋅ u ⎞
+               ⎜ a   ⎝ a    b⎠    b⎟
+        F = w ⎜── + ──────────────⎟ ⋅ F
+              ⎜ 2          4      ⎟    a
+              ⎜c          c       ⎟
+              ⎝ s          s      ⎠
+     */
+    double return_value = 0;
+    double cs_2 = 1.0/3;
+    for(int alpha = 0; alpha < c->size(); ++alpha) {
        for(int beta = 0; beta < u->size(); ++beta) {
            return_value += ((c->operator[](alpha)/cs_2) + (((c->operator[](alpha)*c->operator[](beta) - cs_2 * conical_delta(alpha,beta)) *u->operator[](beta)) / (cs_2*cs_2)))*force->operator[](alpha);
        }
-   }
-   // std::cout << std::endl;
-   return return_value;
+    }
+    // std::cout << std::endl;
+    return return_value;
 }
 
 /// helper and sub-classes
@@ -120,7 +130,7 @@ inline double goaForce::truncation_force() {
  * @return
  */
 inline array_t goaForce::truncation_force_array() {
-   //
+   // zitat reien!! todo
    array_t return_array;
    return_array.resize(9);
    /// channel 0
