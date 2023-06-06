@@ -1,9 +1,13 @@
 # List of headers
 set(MY_HEADERS
+        one_step_simulation.h
+        two_step_simulation.h
         simulation.h)
 
 # List of implementation files
 set(MY_CPP
+        one_step_simulation.cpp
+        two_step_simulation.cpp
         simulation.cpp)
 
 # Create a static library
