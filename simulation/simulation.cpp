@@ -45,12 +45,14 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
         ‾‾‾                ‾‾‾
          i                  i
      */
-    double force_add = prefactor *(f+1).operator*() +
-                       prefactor *(f+2).operator*() -
-                       prefactor *(f+3).operator*() -
-                       prefactor *(f+4).operator*() +
-                       2 * prefactor *(f+1).operator*() -
-                       2 * prefactor *(f+1).operator*();
+    double force_add = (f+1).operator*() +
+                       (f+2).operator*() -
+                       (f+3).operator*() -
+                       (f+4).operator*() +
+                       2 * (f+5).operator*() -
+                       2 * (f+7).operator*();
+    ////todo def mistakes here
+    force_add *= prefactor;
     double ux = (((p + 1).operator*() +
                   (p + 5).operator*() +
                   (p + 8).operator*())-
@@ -63,6 +65,8 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  ((p + 4).operator*() +
                   (p + 7).operator*()+
                   (p + 8).operator*()));
+    ////todo def mistakes here
+    /// ux and uy through
     ux = (ux+force_add)/rho;
     uy = (uy+force_add)/rho;
     return {rho, ux, uy};
