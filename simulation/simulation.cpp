@@ -26,17 +26,17 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  (p + 5).operator*() +
                  (p + 6).operator*() +
                  (p + 7).operator*() +
-                 (p + 8).operator*() +
-                 // forcing terms
-                 prefactor*(f+0).operator*() +
-                 prefactor*(f+1).operator*() +
-                 prefactor*(f+2).operator*() +
-                 prefactor*(f+3).operator*() +
-                 prefactor*(f+4).operator*() +
-                 prefactor*(f+5).operator*() +
-                 prefactor*(f+6).operator*() +
-                 prefactor*(f+7).operator*() +
-                 prefactor*(f+8).operator*();
+                 (p + 8).operator*();
+    double f_term = (f+0).operator*() +
+                    (f+1).operator*() +
+                    (f+2).operator*() +
+                    (f+3).operator*() +
+                    (f+4).operator*() +
+                    (f+5).operator*() +
+                    (f+6).operator*() +
+                    (f+7).operator*() +
+                    (f+8).operator*();
+    rho += f_term*prefactor;
     // ux and uy
     /* Equation for the calculation of ux and uy
         ___           dt   ___
