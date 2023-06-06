@@ -1,7 +1,7 @@
 #include "nodeGenerator.h"
 #include "helper_functions.h"
-#include "simulation.h"
 #include "neighborhood.h"
+#include "functions.h"
 #include <iostream>
 #include <fstream>
 #include <filesystem>

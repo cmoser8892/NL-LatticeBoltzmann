@@ -2,4 +2,4 @@
 add_executable(02 main.cpp)
 
 # Linking against our MD code (propagates all dependencies)
-target_link_libraries(02 PUBLIC my_lib)
+target_link_libraries(02 PUBLIC simulation_lib)

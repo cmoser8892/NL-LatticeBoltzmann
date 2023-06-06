@@ -9,11 +9,6 @@
 #include "functions.h"
 #include "forces.h"
 
-typedef struct simulation_parameters {
-    double relaxation = 0.5;
-    double u_wall = 0;
-}simulation_parameters_t;
-
 class simulation {
   private:
     simulation_parameters_t parameters;

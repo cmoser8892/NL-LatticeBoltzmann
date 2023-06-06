@@ -61,6 +61,7 @@ if(USE_MPI)
   find_package(MPI 3 REQUIRED)
 endif()
 
-add_subdirectory(src)         # Contains our MD library
+add_subdirectory(simulation)  # contains the different iterations of the simulation code
+add_subdirectory(src)         # Contains our common code pieces
 add_subdirectory(tests)       # Tests for the library
 add_subdirectory(milestones)  # Code for the different project milestones
