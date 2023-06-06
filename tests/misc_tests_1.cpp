@@ -1,5 +1,5 @@
 // Include a library file to make sure proper includes are set
-#include "simulation.h"
+#include "one_step_simulation.h"
 #include "node.h"
 #include "functions.h"
 #include "helper_functions.h"

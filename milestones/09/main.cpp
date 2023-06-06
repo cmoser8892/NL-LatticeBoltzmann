@@ -1,4 +1,4 @@
-#include "simulation.h"
+#include "one_step_simulation.h"
 #include "image_converter.h"
 #include <iostream>
 #include <chrono>

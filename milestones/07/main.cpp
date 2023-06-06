@@ -1,8 +1,7 @@
-#include "simulation.h"
+#include "one_step_simulation.h"
 #include "image_converter.h"
 #include <iostream>
 #include <chrono>
-
 
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
