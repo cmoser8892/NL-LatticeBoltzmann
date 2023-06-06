@@ -11,7 +11,8 @@ set(MY_HEADERS
         straight.h
         neighborhood.h
         node.h
-        image_converter.h)
+        image_converter.h
+        forced_simulation.h)
 
 # List of implementation files
 set(MY_CPP
@@ -26,7 +27,8 @@ set(MY_CPP
         nodeGenerator.cpp
         straight.cpp
         neighborhood.cpp
-        image_converter.cpp)
+        image_converter.cpp
+        forced_simulation.cpp)
 
 # Create a static library
 add_library(my_lib STATIC ${MY_CPP} ${MY_HEADERS})
