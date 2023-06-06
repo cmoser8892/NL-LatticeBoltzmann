@@ -59,6 +59,7 @@ typedef struct toLinks {
 typedef struct simulation_parameters {
     double relaxation = 0.5;
     double u_wall = 0;
+    double dt = 1;
 }simulation_parameters_t;
 
 // eigen smart pointer

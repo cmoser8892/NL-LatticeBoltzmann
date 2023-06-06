@@ -91,6 +91,14 @@ inline void optimizedSimulation::streaming(array_t *a, std::vector<link_pointer>
     }
 }
 
+/**
+ * @fn inline void optimizedSimulation::collision(array_t* a, double rho, double ux, double uy)
+ * @brief optimized collision step
+ * @param a
+ * @param rho
+ * @param ux
+ * @param uy
+ */
 inline void optimizedSimulation::collision(array_t* a, double rho, double ux, double uy) {
     // undrosed collision term
     int o = offset_node;
@@ -333,7 +341,7 @@ void optimizedSimulation::run_sub_array(int current_step) {
 
 /**
  * @fn void optimizedSimulation::gladrow_force_run(int current_step)
- * @brief
+ * @brief a forcing run
  * @param current_step
  */
 void optimizedSimulation::gladrow_force_run(int current_step) {
@@ -351,7 +359,6 @@ void optimizedSimulation::gladrow_force_run(int current_step) {
 /**
  * @fn void optimizedSimulation::forcing_run(int current_step)
  * @brief implementation based on first order goa
- *
  * @param current_step
  */
 void optimizedSimulation::forcing_run(int current_step) {

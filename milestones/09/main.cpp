@@ -1,4 +1,4 @@
-#include "one_step_simulation.h"
+#include "simulation.h"
 #include "image_converter.h"
 #include <iostream>
 #include <chrono>
@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
-    int steps = 3000;
+    int steps = 5000;
     // test image setupa
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
@@ -37,9 +37,9 @@ int main(int argc, char *argv[]) {
     // init sim parameters
     simulation_parameters params;
     params.relaxation = 0.5;
-    point_t dk = {50,50};
-    goaForce rot(dk,ic.boundaries->size,-1e-3);
-    optimizedSimulation sim(ic.boundaries,&gen, &rot);
+    point_t dk = {0,0};
+    goaForce rot(dk,ic.boundaries->size,1e-3);
+    forcedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);
     sim.init();
     // run sim
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        sim.forcing_run(i);
+        sim.run(i);
     }
     // write out the data
     sim.get_data(true);
