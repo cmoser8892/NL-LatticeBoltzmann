@@ -9,31 +9,6 @@
 #include "functions.h"
 #include "forces.h"
 
-class simulation {
-  private:
-    simulation_parameters_t parameters;
-    boundaryPointConstructor * boundary_points = nullptr;
-    nodeGenerator* node_generator = nullptr;
-  public:
-    std::vector<node*> nodes;
-    explicit simulation(boundaryPointConstructor* c);
-    ~simulation();
-    simulation(boundaryPointConstructor* c,nodeGenerator* g);
-    void set_simulation_parameters(simulation_parameters_t t);
-    void streaming_step_1();
-    void bounce_back();
-    void streaming_step_2();
-    void collisions();
-    void fused_streaming(node* n);
-    void fused_bounce_back(node* n);
-    void init();
-    void fused_init();
-    void run();
-    void fused_run();
-    void get_data(bool write_to_file, point_t org);
-    void delete_nodes();
-};
-
 class oSimu {
   private:
     simulation_parameters_t parameters;

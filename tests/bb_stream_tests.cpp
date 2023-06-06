@@ -1,5 +1,7 @@
 // Include a library file to make sure proper includes are set
 #include "simulation.h"
+#include "two_step_simulation.h"
+#include "one_step_simulation.h"
 #include "node.h"
 #include "functions.h"
 #include "helper_functions.h"
@@ -17,7 +19,7 @@ TEST(StreamTests, one_D_streaming_channel_one) {
     boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
-    simulation sm(&boundaries);
+    basicSimulation sm(&boundaries);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -50,7 +52,7 @@ TEST(StreamTests, one_D_streaming_channel_three) {
     boundaries.init_structure();
     boundaries.set_point(&start,NO_BOUNDARY);
     boundaries.set_point(&end  ,NO_BOUNDARY);
-    simulation sm(&boundaries);
+    basicSimulation sm(&boundaries);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -93,7 +95,7 @@ TEST(StreamTests, one_D_streaming_channel_two) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -136,7 +138,7 @@ TEST(StreamTests, one_D_streaming_channel_four) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -179,7 +181,7 @@ TEST(StreamTests, one_D_streaming_channel_five) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -222,7 +224,7 @@ TEST(StreamTests, one_D_streaming_channel_seven) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -265,7 +267,7 @@ TEST(StreamTests, one_D_streaming_channel_six) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -308,7 +310,7 @@ TEST(StreamTests, one_D_streaming_channel_eight) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -345,7 +347,7 @@ TEST(StreamTests, combinded_test_boundary_consistent) {
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     // zero the sim space and
     // set specific codes to the corners and observe them
@@ -418,7 +420,7 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     boundaries.set_point(&end  ,BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -460,7 +462,7 @@ TEST(BounceBackTesting, Horizontals_two_four) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -503,7 +505,7 @@ TEST(BounceBackTesting, Oblique_five_seven) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -546,7 +548,7 @@ TEST(BounceBackTesting, Oblique_six_eight) {
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    simulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries,&gen);
     sm.init();
     // zero the data
     for(auto node : sm.nodes) {
@@ -577,7 +579,7 @@ TEST(BounceBackTesting, moving) {
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     double re = 1000;
     double base_length = sim_size - 2;
@@ -615,7 +617,7 @@ TEST(StreamTests, channel_0_persistent) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     // simulation init
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     // parameters
     double re = 1000;
@@ -695,7 +697,7 @@ TEST(StreamTests, fused_streaming_13) {
     /// gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),2);
     // gen.visualize_2D_nodes(4);
-    simulation sm(&boundaries, &gen);
+    basicSimulation sm(&boundaries, &gen);
     sm.fused_init();
     // check sim sizes
     EXPECT_EQ(sm.nodes.size(),2);
@@ -750,7 +752,7 @@ TEST(StreamTests, fused_streaming_24) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     /// gen.visualize_2D_nodes();
-    simulation sm(&boundaries, &gen);
+    basicSimulation sm(&boundaries, &gen);
     sm.fused_init();
     // check sim sizes
     EXPECT_EQ(sm.nodes.size(),2);

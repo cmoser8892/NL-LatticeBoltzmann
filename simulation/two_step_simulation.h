@@ -10,16 +10,16 @@
 #include "forces.h"
 
 // basic sim
-class basic_simulation {
+class basicSimulation {
   private:
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
     nodeGenerator* node_generator = nullptr;
   public:
     std::vector<node*> nodes;
-    explicit basic_simulation(boundaryPointConstructor* c);
-    ~basic_simulation();
-    basic_simulation(boundaryPointConstructor* c,nodeGenerator* g);
+    explicit basicSimulation(boundaryPointConstructor* c);
+    ~basicSimulation();
+    basicSimulation(boundaryPointConstructor* c,nodeGenerator* g);
     void set_simulation_parameters(simulation_parameters_t t);
     void streaming_step_1();
     void bounce_back();

@@ -7,7 +7,7 @@
  * parallelize for equal nodes in a true NL structure
  * add doxygen docu, recheck old projects on a common standard
  */
-#include "simulation.h"
+#include "two_step_simulation.h"
 #include <chrono>
 #include <iostream>
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
-    simulation sim(&boundaries,&gen);
+    basicSimulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.init();
     // run sim

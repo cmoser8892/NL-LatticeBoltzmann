@@ -1,4 +1,5 @@
 #include "simulation.h"
+#include "two_step_simulation.h"
 #include "helper_functions.h"
 #include "functions.h"
 #include "straight.h"
@@ -66,7 +67,7 @@ TEST(InitTests, init_sliding_Lid_simulation) {
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     //  check weather or not the top nodes are flagged as moving
     for(auto n : sim.nodes) {
@@ -84,7 +85,7 @@ TEST(InitTests, sim_init_correct_values) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
     //
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     // get the data info a flow field
     flowfield_t ux;
@@ -118,7 +119,7 @@ TEST(InitTests, boundary_compostion) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     /// sims
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     // check compostion
     int zeros = 0;
@@ -167,7 +168,7 @@ TEST(InitTests,simulation_init_run) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
     //
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     // debug_node(sim.nodes.at(0),true);
     for(int i = 0; i < steps; ++i) {
@@ -186,7 +187,7 @@ TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     //
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     // auxiliary test
     // retest weather or not the top nodes have the right identification
@@ -209,7 +210,7 @@ TEST(InitTests, simulation_link_positions) {
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     //
-    simulation sim(&boundaries);
+    basicSimulation sim(&boundaries);
     sim.init();
     for(auto node : sim.nodes) {
         for(auto link : node->neighbors) {
@@ -408,7 +409,7 @@ TEST(InitTests, init_out_inner_rho_writeout) {
     boundaries.init_sliding_lid_inner({3,5},p,{9,7},k);
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    simulation sim(&boundaries,&gen);
+    basicSimulation sim(&boundaries,&gen);
     sim.init();
     flowfield_t rho;
     rho.resize(size,size);
@@ -572,7 +573,7 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     EXPECT_EQ(counter, sub_size);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    simulation sim(&boundaries,&gen);
+    basicSimulation sim(&boundaries,&gen);
     sim.fused_init();
     // check
     int expected_total_node_number = (p.x()-2)*(p.y()-2) - (k.x()*k.y());

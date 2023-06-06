@@ -1,11 +1,14 @@
 
 #include "two_step_simulation.h"
+#include "functions.h"
+#include "helper_functions.h"
+#include <iostream>
 
 /**
- * @fn void basic_simulation::streaming_step_1()
+ * @fn void basicSimulation::streaming_step_1()
  * @brief streaming is done via two steps first we put info in the copy field in the node
  */
-void basic_simulation::streaming_step_1() {
+void basicSimulation::streaming_step_1() {
     // streaming is only for wet nodes!!!!
     for(auto node : nodes) {
         if(node->node_type == WET) {
@@ -22,10 +25,10 @@ void basic_simulation::streaming_step_1() {
 }
 
 /**
- * @fn void basic_simulation::streaming_step_2()
+ * @fn void basicSimulation::streaming_step_2()
  * @brief we copy the data from copy over to the data field
  */
-void basic_simulation::streaming_step_2() {
+void basicSimulation::streaming_step_2() {
     // basically just copy over data, importantly not channel 0!
     // streaming is only for wet nodes!!!!
     for(auto node : nodes) {
@@ -38,10 +41,10 @@ void basic_simulation::streaming_step_2() {
 }
 
 /**
- * @fn void basic_simulation::bounce_back()
+ * @fn void basicSimulation::bounce_back()
  * @brief does the bounce back for all the dry nodes
  */
-void basic_simulation::bounce_back() {
+void basicSimulation::bounce_back() {
     // aka a streaming step on boundary nodes only
     // when doing a bounce back it is crucical that all (wet) data is already in data and not in copy!!!
     for(auto node : nodes) {
@@ -67,10 +70,10 @@ void basic_simulation::bounce_back() {
 }
 
 /**
- * @fn void basic_simulation::collisions()
+ * @fn void basicSimulation::collisions()
  * @brief collision step
  */
-void basic_simulation::collisions() {
+void basicSimulation::collisions() {
     double relax = parameters.relaxation;
     for(auto node: nodes) {
         /*
@@ -109,11 +112,11 @@ void basic_simulation::collisions() {
     }
 }
 /**
- * @fn void basic_simulation::fused_streaming(node *node)
+ * @fn void basicSimulation::fused_streaming(node *node)
  * @brief streaming step for one node, pushes values
  * @param node
  */
-void basic_simulation::fused_streaming(node *node) {
+void basicSimulation::fused_streaming(node *node) {
     // loop through
     for(int i = 1; i < CHANNELS; ++i) {
         auto link = node->neighbors.at(i-1);
@@ -130,11 +133,11 @@ void basic_simulation::fused_streaming(node *node) {
 }
 
 /**
- * @fn void basic_simulation::fused_bounce_back(node *n)
+ * @fn void basicSimulation::fused_bounce_back(node *n)
  * @brief moving part of the bounce back for sliding lids
  * @param n
  */
-void basic_simulation::fused_bounce_back(node *n) {
+void basicSimulation::fused_bounce_back(node *n) {
     // applies the extra for channels 7 and 8
     // locally so can be done independent of streaming
     // todo sort the nodes to put bounce back moving last or first in the overall arrays analyse first thou
@@ -145,41 +148,41 @@ void basic_simulation::fused_bounce_back(node *n) {
 }
 
 /**
- * @fn basic_simulation::basic_simulation(boundaryPointConstructor *c)
+ * @fn basicSimulation::basicSimulation(boundaryPointConstructor *c)
  * @brief constructor
  * @param c
  */
-basic_simulation::basic_simulation(boundaryPointConstructor *c) {
+basicSimulation::basicSimulation(boundaryPointConstructor *c) {
     boundary_points = c;
 }
 
 /**
- * @fn basic_simulation::basic_simulation(boundaryPointConstructor *c, nodeGenerator *g)
+ * @fn basicSimulation::basicSimulation(boundaryPointConstructor *c, nodeGenerator *g)
  * @brief constructor
  * @param c
  * @param g
  */
-basic_simulation::basic_simulation(boundaryPointConstructor *c, nodeGenerator *g) {
+basicSimulation::basicSimulation(boundaryPointConstructor *c, nodeGenerator *g) {
     boundary_points = c;
     node_generator = g;
 }
 
 /**
- * @fn basic_simulation::~basic_simulation()
+ * @fn basicSimulation::basicSimulation)
  * @brief deconstructor, deletes all the nodes to prevent memory leaks
  */
-basic_simulation::~basic_simulation() {
+basicSimulation::~basicSimulation() {
     delete_nodes();
 }
-void basic_simulation::set_simulation_parameters(const simulation_parameters_t t) {
+void basicSimulation::set_simulation_parameters(const simulation_parameters_t t) {
     parameters = t;
 }
 
 /**
- * @fn void basic_simulation::init()
+ * @fn void basicSimulation::init()
  * @brief initialize the nodes, without the calling this function once sim wont work
  */
-void basic_simulation::init() {
+void basicSimulation::init() {
     // first initialize the node generator with the boundary points
     if(boundary_points == nullptr) {
         throw std::invalid_argument("no Boundary Points given");
@@ -203,10 +206,10 @@ void basic_simulation::init() {
 }
 
 /**
- *  @fn void basic_simulation::fused_init()
+ *  @fn void basicSimulation::fused_init()
  *  @brief fused init
  */
-void basic_simulation::fused_init() {
+void basicSimulation::fused_init() {
     // first initialize the node generator with the boundary points
     if(boundary_points == nullptr) {
         throw std::invalid_argument("no Boundary Points given");
@@ -227,10 +230,10 @@ void basic_simulation::fused_init() {
 }
 
 /**
- * @fn void basic_simulation::run()
+ * @fn void basicSimulation::run()
  * @brief on sim run
  */
-void basic_simulation::run() {
+void basicSimulation::run() {
     // run all substeps
     // moving wall missing i guess
     streaming_step_1();
@@ -248,10 +251,10 @@ void basic_simulation::run() {
 }
 
 /**
- * @fn void basic_simulation::fused_run()
+ * @fn void basicSimulation::fused_run()
  * @brief this is a one step implementation of lb using the already described nodes
  */
-void basic_simulation::fused_run() {
+void basicSimulation::fused_run() {
     for(auto node : nodes) {
         // macro and collision
         fused_macro(node);
@@ -269,11 +272,11 @@ void basic_simulation::fused_run() {
 }
 
 /**
- * @fn void basic_simulation::get_data(bool write_to_file)
+ * @fn void basicSimulation::get_data(bool write_to_file)
  * @brief puts the ux, uy and rho of individual nodes into a flow-field for visualization
  * @param write_to_file write to file or to cout
  */
-void basic_simulation::get_data(bool write_to_file, point_t original_size) {
+void basicSimulation::get_data(bool write_to_file, point_t original_size) {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
@@ -296,10 +299,10 @@ void basic_simulation::get_data(bool write_to_file, point_t original_size) {
 }
 
 /**
- * @fn void basic_simulation::delete_nodes()
+ * @fn void basicSimulation::delete_nodes()
  * @brief deletes the nodes as it says
  */
-void basic_simulation::delete_nodes() {
+void basicSimulation::delete_nodes() {
     for (auto n : nodes) {
         delete n;
     }
