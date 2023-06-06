@@ -797,7 +797,7 @@ TEST(StreamTests, fused_streaming_24) {
 TEST(FunctionalTest, one_step_macro_collison) {
     // test against original
     double relaxation_time = 0.5;
-    oSimu oLuv(nullptr, nullptr);
+    optimizedSimulation oLuv(nullptr, nullptr);
     point_t pos = {0,0};
     node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
     node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
@@ -834,7 +834,7 @@ TEST(StreamTests, oSimu_streaming_13) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     //gen.visualize_2D_nodes(4);
-    oSimu sm(&boundaries, &gen);
+    optimizedSimulation sm(&boundaries, &gen);
     sm.init();
     // check sim sizes
     EXPECT_EQ(sm.nodes.size(),2);
@@ -883,7 +883,7 @@ TEST(StreamTests, oSimu_streaming_24) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     //gen.visualize_2D_nodes(4);
-    oSimu sm(&boundaries, &gen);
+    optimizedSimulation sm(&boundaries, &gen);
     sm.init();
     // check sim sizes
     EXPECT_EQ(sm.nodes.size(),2);
@@ -958,7 +958,7 @@ TEST(StreamTests, oSimu_streaming_57) {
     gen.init_fused(size);
     // gen.visualize_2D_nodes(size);
     // tests
-    oSimu sm(&boundaries, &gen);
+    optimizedSimulation sm(&boundaries, &gen);
     sm.init();
     // check sim sizes
     EXPECT_EQ(sm.nodes.size(),2);
@@ -1033,7 +1033,7 @@ TEST(StreamTests, oSimu_streaming_68) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     // gen.visualize_2D_nodes(size);
-    oSimu sm(&boundaries, &gen);
+    optimizedSimulation sm(&boundaries, &gen);
     sm.init();
     // check sim sizes
     EXPECT_EQ(sm.nodes.size(),2);

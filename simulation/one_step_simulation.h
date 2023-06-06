@@ -9,7 +9,7 @@
 #include "functions.h"
 #include "forces.h"
 
-class oSimu {
+class optimizedSimulation {
   private:
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
@@ -34,9 +34,9 @@ class oSimu {
     std::vector<std::vector<link_pointer>*> neighborhood_list;
     std::vector<boundaryType_t> boundary;
     // methods
-    oSimu(boundaryPointConstructor* c,nodeGenerator* g);
-    oSimu(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
-    ~oSimu();
+    optimizedSimulation(boundaryPointConstructor* c,nodeGenerator* g);
+    optimizedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
+    ~optimizedSimulation();
     void set_simulation_parameters(simulation_parameters_t t);
     // test methods
     void streaming(oNode* n);
@@ -49,7 +49,7 @@ class oSimu {
     void init_sub_array();
     void run(int current_step);
     void run_sub_array(int current_step);
-    void current_run(int current_step);
+    void gladrow_force_run(int current_step);
     void forcing_run(int current_step);
     void get_data(bool write_to_file, point_t org);
     void get_data(bool write_to_file);

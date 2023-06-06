@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     params.relaxation = 0.5;
     point_t dk = {50,50};
     goaForce rot(dk,ic.boundaries->size,-1e-3);
-    oSimu sim(ic.boundaries,&gen, &rot);
+    optimizedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);
     sim.init();
     // run sim

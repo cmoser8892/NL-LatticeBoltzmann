@@ -734,7 +734,7 @@ TEST(InitTests, special_case_wet_boundary) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     EXPECT_EQ(gen.node_infos.size(), 2*4);
-    oSimu sim(&boundaries,&gen);
+    optimizedSimulation sim(&boundaries,&gen);
     sim.run(0);
 }
 

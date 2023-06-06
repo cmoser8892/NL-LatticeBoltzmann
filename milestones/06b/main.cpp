@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
-    oSimu sim(&boundaries,&gen);
+    optimizedSimulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.init();
     sim.init_sub_array();

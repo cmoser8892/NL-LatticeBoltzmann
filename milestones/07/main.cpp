@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     // init sim parameters
     simulation_parameters params;
     params.relaxation = 0.5;
-    oSimu sim(ic.boundaries,&gen);
+    optimizedSimulation sim(ic.boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.init();
     // run sim
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        sim.current_run(i);
+        sim.gladrow_force_run(i);
     }
     // write out the data
     sim.get_data(true);

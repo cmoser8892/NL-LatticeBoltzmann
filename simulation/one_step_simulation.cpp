@@ -5,12 +5,12 @@
 
 /// one step run class
 /**
- * @fn inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a)
+ * @fn inline std::tuple<double, double, double> optimizedSimulation::calculate_macro(array_t *a)
  * @brief function to calculate the rho, ux and uy values (macro values in the equilibrium function)
  * @param a
  * @return
  */
-inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a) {
+inline std::tuple<double, double, double> optimizedSimulation::calculate_macro(array_t *a) {
     // return als a struct
     // calculate rho ux and uy
     int o = offset_node;
@@ -44,13 +44,13 @@ inline std::tuple<double, double, double> oSimu::calculate_macro(array_t *a) {
 }
 
 /**
- * @fn inline void oSimu::forcing_terms(oNode* n,double ux, double uy)
+ * @fn inline void optimizedSimulation::forcing_terms(oNode* n,double ux, double uy)
  * @brief calculates the forcing term
  * @param n
  * @param ux
  * @param uy
  */
-inline void oSimu::forcing_terms(oNode* n,double ux, double uy) {
+inline void optimizedSimulation::forcing_terms(oNode* n,double ux, double uy) {
     // set some shorthands
     int o = offset_node;
     auto p = n->populations.begin() + o;
@@ -65,11 +65,11 @@ inline void oSimu::forcing_terms(oNode* n,double ux, double uy) {
 }
 
 /**
- * @fn inline void oSimu::bounce_back_moving(array_t *a)
+ * @fn inline void optimizedSimulation::bounce_back_moving(array_t *a)
  * @brief simple bb based on the array only
  * @param a
  */
-inline void oSimu::bounce_back_moving(array_t *a) {
+inline void optimizedSimulation::bounce_back_moving(array_t *a) {
     // bb
     auto pointer = a->begin() + offset_sim;
     (pointer + 7).operator*() += -1.0/6 * parameters.u_wall;
@@ -77,12 +77,12 @@ inline void oSimu::bounce_back_moving(array_t *a) {
 }
 
 /**
- * @fn inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list)
+ * @fn inline void optimizedSimulation::streaming(array_t *a, std::vector<link_pointer>* list)
  * @brief just array and linked list based streaming
  * @param a
  * @param list
  */
-inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list) {
+inline void optimizedSimulation::streaming(array_t *a, std::vector<link_pointer>* list) {
     // just the sim
     for(int i = 1; i < CHANNELS; ++i) {
         // pointer magic
@@ -91,7 +91,7 @@ inline void oSimu::streaming(array_t *a, std::vector<link_pointer>* list) {
     }
 }
 
-inline void oSimu::collision(array_t* a, double rho, double ux, double uy) {
+inline void optimizedSimulation::collision(array_t* a, double rho, double ux, double uy) {
     // undrosed collision term
     int o = offset_node;
     double relaxation = parameters.relaxation;
@@ -108,12 +108,12 @@ inline void oSimu::collision(array_t* a, double rho, double ux, double uy) {
 }
 
 /**
- * @fn oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g)
+ * @fn optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g)
  * @brief constructor sets the sub-classes
  * @param c
  * @param g
  */
-oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
+optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g) {
     boundary_points = c;
     node_generator = g;
     // only do if not given 0s
@@ -126,46 +126,46 @@ oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g) {
 
 }
 
-oSimu::oSimu(boundaryPointConstructor *c, nodeGenerator *g, goaForce * f) {
+optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce * f) {
     boundary_points = c;
     node_generator = g;
     rot_force = f;
 }
 
 /**
- * @fn oSimu::~oSimu()
+ * @fn optimizedSimulation::optimizedSimulationizedSimulation()
  * @brief deletes nodes
  */
-oSimu::~oSimu() {
+optimizedSimulation::~optimizedSimulation() {
     delete_nodes();
     delete force;
 }
 
 /**
- * @fn void oSimu::set_simulation_parameters(simulation_parameters_t t)
+ * @fn void optimizedSimulation::set_simulation_parameters(simulation_parameters_t t)
  * @brief sets up the simulation parameters (given as a struct)
  * @param t
  */
-void oSimu::set_simulation_parameters(simulation_parameters_t t) {
+void optimizedSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
 }
 
 /**
- * @fn void oSimu::streaming(oNode *node)
+ * @fn void optimizedSimulation::streaming(oNode *node)
  * @brief stream nodes out and performs the streaming step
  * @param node
  */
-void oSimu::streaming(oNode *node) {
+void optimizedSimulation::streaming(oNode *node) {
     // loop through
     streaming(&node->populations,&node->neighbors);
 }
 
 /**
- * @fn void oSimu::bounce_back_moving(oNode *n)
+ * @fn void optimizedSimulation::bounce_back_moving(oNode *n)
  * @brief performs the bounce back step on the top layer
  * @param n
  */
-void oSimu::bounce_back_moving(oNode *n) {
+void optimizedSimulation::bounce_back_moving(oNode *n) {
     if(n->boundary_type== BOUNCE_BACK_MOVING) {
         auto pointer = n->populations.begin() + offset_sim;
         (pointer + 7).operator*() += -1.0/6 * parameters.u_wall;
@@ -174,11 +174,11 @@ void oSimu::bounce_back_moving(oNode *n) {
 }
 
 /**
- * @fn void oSimu::one_step_macro_collision_forcing(oNode *node)
+ * @fn void optimizedSimulation::one_step_macro_collision_forcing(oNode *node)
  * @brief one stop mactor forcing term
  * @param node
  */
-void oSimu::one_step_macro_collision_forcing(oNode *node) {
+void optimizedSimulation::one_step_macro_collision_forcing(oNode *node) {
     double relaxation = parameters.relaxation;
     int o = offset_node;
     // macro calc
@@ -221,22 +221,22 @@ void oSimu::one_step_macro_collision_forcing(oNode *node) {
 }
 
 /**
- * @fn void oSimu::one_step_macro_collision(oNode* node, double relaxation)
+ * @fn void optimizedSimulation::one_step_macro_collision(oNode* node, double relaxation)
  * @brief one step for all the calculations necessary
  * @param node
  * @param relaxation
  */
-void oSimu::one_step_macro_collision(oNode* node, double relaxation) {
+void optimizedSimulation::one_step_macro_collision(oNode* node, double relaxation) {
     // macro calc
     one_step_macro_collision(&node->populations);
 }
 
 /**
- * @fn inline void oSimu::one_step_macro_collision(array_t *a)
+ * @fn inline void optimizedSimulation::one_step_macro_collision(array_t *a)
  * @brief performs the the macro and collision step in one go
  * @param a
  */
-void oSimu::one_step_macro_collision(array_t *a) {
+void optimizedSimulation::one_step_macro_collision(array_t *a) {
     int o = offset_node;
     double relaxation = parameters.relaxation;
     // macro calc
@@ -248,10 +248,10 @@ void oSimu::one_step_macro_collision(array_t *a) {
 }
 
 /**
- * @fn void oSimu::init()
+ * @fn void optimizedSimulation::init()
  * @brief inits the sim based on info in the node generator
  */
-void oSimu::init() {
+void optimizedSimulation::init() {
     // set up nodes
     for(auto node_info : node_generator->node_infos) {
         auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
@@ -277,10 +277,10 @@ void oSimu::init() {
 }
 
 /**
- * @fn void oSimu::init_sub_array()
+ * @fn void optimizedSimulation::init_sub_array()
  * @brief init the sub arrays too
  */
-void oSimu::init_sub_array() {
+void optimizedSimulation::init_sub_array() {
     // we push the information into the sub arrays
     for(auto n : nodes) {
         arrays_of_the_nodes.push_back(&n->populations);
@@ -290,11 +290,11 @@ void oSimu::init_sub_array() {
 }
 
 /**
- * @fn void oSimu::run(int current_step)
+ * @fn void optimizedSimulation::run(int current_step)
  * @brief run the sim
  * @param current_step
  */
-void oSimu::run(int current_step ) {
+void optimizedSimulation::run(int current_step ) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
@@ -308,11 +308,11 @@ void oSimu::run(int current_step ) {
 }
 
 /**
- * @fn void oSimu::run_sub_array(int current_step)
+ * @fn void optimizedSimulation::run_sub_array(int current_step)
  * @brief
  * @param current_step
  */
-void oSimu::run_sub_array(int current_step) {
+void optimizedSimulation::run_sub_array(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     long range = nodes.size();
@@ -331,8 +331,12 @@ void oSimu::run_sub_array(int current_step) {
     }
 }
 
-
-void oSimu::current_run(int current_step) {
+/**
+ * @fn void optimizedSimulation::gladrow_force_run(int current_step)
+ * @brief
+ * @param current_step
+ */
+void optimizedSimulation::gladrow_force_run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
@@ -344,7 +348,13 @@ void oSimu::current_run(int current_step) {
     }
 }
 
-void oSimu::forcing_run(int current_step) {
+/**
+ * @fn void optimizedSimulation::forcing_run(int current_step)
+ * @brief implementation based on first order goa
+ *
+ * @param current_step
+ */
+void optimizedSimulation::forcing_run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
@@ -361,12 +371,12 @@ void oSimu::forcing_run(int current_step) {
 }
 
 /**
- * @fn void oSimu::get_data(bool write_to_file, point_t orgiginalo)
+ * @fn void optimizedSimulation::get_data(bool write_to_file, point_t orgiginalo)
  * @brief writes data to file or prints it out
  * @param write_to_file
  * @param orgiginalo
  */
-void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
+void optimizedSimulation::get_data(bool write_to_file, point_t orgiginalo) {
     // we create a bunch of big arrays to store our data in
     // to be able to display like an array again
     flowfield_t ux;
@@ -391,19 +401,19 @@ void oSimu::get_data(bool write_to_file, point_t orgiginalo) {
 }
 
 /**
- * @fn void oSimu::get_data(bool write_to_file)
+ * @fn void optimizedSimulation::get_data(bool write_to_file)
  * @brief gets the data and writes it to file
  * @param write_to_file
  */
-void oSimu::get_data(bool write_to_file) {
+void optimizedSimulation::get_data(bool write_to_file) {
     get_data(write_to_file,boundary_points->size);
 }
 
 /**
- * @fn void oSimu::delete_nodes()
+ * @fn void optimizedSimulation::delete_nodes()
  * @brief frees up the memory again
  */
-void oSimu::delete_nodes() {
+void optimizedSimulation::delete_nodes() {
     for (auto n : nodes) {
         delete n;
     }

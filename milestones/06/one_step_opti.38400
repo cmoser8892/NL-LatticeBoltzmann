@@ -16965,12 +16965,12 @@ fe=(198)
 +2 * 41452
 
 fl=(158) /home/christoph/CLionProjects/NL-LatticeBoltzmann/src/simulation.cpp
-fn=(2230) oSimu::~oSimu()
+fn=(2230) optimizedSimulation::optimizedSimulationizedSimulation()
 0x5e00 336 1
 +4 * 1
 +1 * 1
 +3 +1 1
-cfn=(2232) oSimu::delete_nodes()
+cfn=(2232) optimizedSimulation::delete_nodes()
 calls=1 0x5da0 444 
 * * 17202126
 fi=(172)
@@ -17046,7 +17046,7 @@ calls=41452 0x10b690 0
 +1 * 1
 +2 * 1
 
-fn=(1782) oSimu::get_data(bool, Eigen::Matrix<double, 2, 1, 0, 2, 1>)
+fn=(1782) optimizedSimulation::get_data(bool, Eigen::Matrix<double, 2, 1, 0, 2, 1>)
 0x5910 419 1
 +4 * 1
 +2 * 1
@@ -17383,7 +17383,7 @@ fi=(161)
 +3 * 1
 fe=(158)
 
-fn=(1594) oSimu::init()
+fn=(1594) optimizedSimulation::init()
 0x6540 384 1
 +4 * 1
 +2 * 1
@@ -17589,7 +17589,7 @@ calls=17 0x69d0 426
 +5 * 17
 fe=(158)
 
-fn=(1636) oSimu::run(int)
+fn=(1636) optimizedSimulation::run(int)
 0x5890 400 10000
 +4 * 10000
 +2 +1 10000
@@ -17630,7 +17630,7 @@ calls=414510000 0x75a0 138
 +5 +2 414520000
 +3 * 414520000
 +3 * 414520000
-cfn=(1644) oSimu::streaming(oNode*)
+cfn=(1644) optimizedSimulation::streaming(oNode*)
 calls=414520000 0x57e0 -53 
 * * 72955520000
 +5 -32 414520000
@@ -17639,7 +17639,7 @@ calls=414520000 0x57e0 -53
 +3 * 2000000
 +3 * 2000000
 cfi=(161)
-cfn=(1650) oSimu::bounce_back_moving(oNode*) [clone .part.0]
+cfn=(1650) optimizedSimulation::bounce_back_moving(oNode*) [clone .part.0]
 calls=2000000 0x4bd0 143 
 * * 36000000
 +5 +27 414520000
@@ -17652,7 +17652,7 @@ calls=2000000 0x4bd0 143
 +2 * 10000
 +2 * 10000
 
-fn=(1590) oSimu::oSimu(boundaryPointConstructor*, nodeGenerator*)
+fn=(1590) optimizedSimulation::optimizedSimulation(boundaryPointConstructor*, nodeGenerator*)
 0x5790 327 1
 fi=(260) /home/christoph/CLionProjects/NL-LatticeBoltzmann/src/simulation.h
 +4 11 1
@@ -17669,7 +17669,7 @@ fe=(158)
 +4 +1 1
 +4 +1 1
 
-fn=(1592) oSimu::set_simulation_parameters(simulation_parameters)
+fn=(1592) optimizedSimulation::set_simulation_parameters(simulation_parameters)
 0x57d0 345 1
 +4 +1 1
 +4 * 1
