@@ -110,6 +110,7 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
 /**
  * @fn inline double goaForce::truncation_force()
  * @brief non optimized version of the channel force calculation
+ * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @return
  */
 inline double goaForce::truncation_force() {
@@ -127,10 +128,11 @@ inline double goaForce::truncation_force() {
 /**
  * @fn inline array_t goaForce::truncation_force_array()
  * @brief inlined the complicated part of the "channel" dependent force for 2dq9
+ * @attention calculates the terms without the weight!
+ * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @return
  */
 inline array_t goaForce::truncation_force_array() {
-   // zitat reien!! todo
    array_t return_array;
    return_array.resize(9);
    /// channel 0
@@ -178,7 +180,7 @@ void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double 
 * @brief calculates the physical force in the domain
 */
 void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
-   // todo what to do with mass?!
+   // todo what to do with mass?! just one
    // setup the internal variables
    velocity.x() = ux;
    velocity.y() = uy;
@@ -205,7 +207,9 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 
 /**
 * @fn calculates the channel dependent force
-* @brief
+* @brief sets the f_i force terms
+* @ref PHYSICAL REVIEW E, VOLUME 65, 046308
+* @attention does not include the weights!
 */
 void goaForce::calculate_F_i() {
    force_channels = truncation_force_array();
@@ -232,7 +236,7 @@ goaForce::goaForce(point_t o, point_t c, double o1) {
 /**
 * @fn vector_t goaForce::return_force_alpha()
 * @brief returns the alpha force component
-* @return
+* @return f
 */
 vector_t goaForce::return_force_alpha() {
    // useful for testing
