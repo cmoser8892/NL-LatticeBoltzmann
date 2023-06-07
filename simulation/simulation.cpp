@@ -1,5 +1,11 @@
 #include "simulation.h"
-
+/**
+ * @fn inline std::tuple<double, double, double> forcedSimulation::calculate_macro(array_t *a, array_t* previous_force)
+ * @brief
+ * @param a
+ * @param previous_force
+ * @return
+ */
 inline std::tuple<double, double, double> forcedSimulation::calculate_macro(array_t *a,
                                                                             array_t* previous_force) {
     // calculate rho ux and uy
@@ -72,6 +78,12 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
     return {rho, ux, uy};
 }
 
+/**
+ * @fn inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *list)
+ * @brief streaming step
+ * @param a
+ * @param list
+ */
 inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *list) {
     // just the sim
     for(int i = 1; i < CHANNELS; ++i) {
@@ -81,6 +93,14 @@ inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *l
     }
 }
 
+/**
+ * @fn inline void forcedSimulation::collision(array_t *a, double rho, double ux, double uy)
+ * @brief collision term, the forcing is done in a subsequent step
+ * @param a
+ * @param rho
+ * @param ux
+ * @param uy
+ */
 inline void forcedSimulation::collision(array_t *a, double rho, double ux, double uy) {
     // undrosed collision term
     int o = offset_node;
@@ -97,11 +117,20 @@ inline void forcedSimulation::collision(array_t *a, double rho, double ux, doubl
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
+/**
+ * @fn inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double ux, double uy)
+ * @brief forcing terms to calculate and appliy the force
+ * @param n
+ * @param write_to
+ * @param ux
+ * @param uy
+ */
 inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double ux, double uy) {
     // set some shorthands
     int o = offset_node;
     auto p = n->populations.begin() + o;
     rot_force->calculate_F_rotation(ux,uy,&n->position);
+    //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
     rot_force->calculate_F_i();
     double prefactor = 1 - 1/parameters.relaxation;
     for(int i = 0; i < CHANNELS; ++i) {
@@ -113,22 +142,42 @@ inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double 
     }
 }
 
+/**
+ * @fn forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce *f)
+ * @brief constructor
+ * @param c
+ * @param g
+ * @param f
+ */
 forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce *f) {
     boundary_points = c;
     node_generator = g;
     rot_force = f;
 }
 
+/**
+ * @fn forcedSimulation::~forcedSimulation()
+ * @brief
+ */
 forcedSimulation::~forcedSimulation() {
     delete_nodes();
 }
 
+/**
+ * @fn void forcedSimulation::set_simulation_parameters(simulation_parameters_t t)
+ * @brief set the simulation parameters
+ * @param t
+ */
 void forcedSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
     // fix the omega parameter to th new one
     parameters.relaxation = parameters.relaxation + parameters.dt/2;
 }
 
+/**
+ * @fn void forcedSimulation::init()
+ * @brief inits the simulation class and allocates the nodes
+ */
 void forcedSimulation::init() {
     for(auto node_info : node_generator->node_infos) {
         auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
@@ -159,6 +208,11 @@ void forcedSimulation::init() {
     }
 }
 
+/**
+ * @fn void forcedSimulation::run(int current_step)
+ * @brief run function combines all the steps
+ * @param current_step
+ */
 void forcedSimulation::run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
@@ -177,6 +231,11 @@ void forcedSimulation::run(int current_step) {
     }
 }
 
+/**
+ * @fn void forcedSimulation::get_data(bool write_to_file)
+ * @brief write out the node data into something python can plot
+ * @param write_to_file
+ */
 void forcedSimulation::get_data(bool write_to_file) {
     /// flowfields
     flowfield_t ux;
@@ -202,6 +261,10 @@ void forcedSimulation::get_data(bool write_to_file) {
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 
+/**
+ * @fn void forcedSimulation::delete_nodes()
+ * @brief deletes and clears the vector data fields
+ */
 void forcedSimulation::delete_nodes() {
     for (auto n : nodes) {
         delete n;
