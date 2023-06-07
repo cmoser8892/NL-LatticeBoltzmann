@@ -1,7 +1,7 @@
 #include "simulation.h"
 /**
  * @fn inline std::tuple<double, double, double> forcedSimulation::calculate_macro(array_t *a, array_t* previous_force)
- * @brief
+ * @brief calculate the macro values with a force attached to it
  * @param a
  * @param previous_force
  * @return
@@ -225,7 +225,7 @@ void forcedSimulation::run(int current_step) {
         // perform equilibrium step
         collision(&node->populations,rho,ux,uy);
         // add and calculate new force term
-        forcing_terms(node,force,ux,uy);
+        // forcing_terms(node,force,ux,uy);
         // streaming
         streaming(&node->populations,&node->neighbors);
     }

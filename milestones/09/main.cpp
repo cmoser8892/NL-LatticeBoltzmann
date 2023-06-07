@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
     // ic.boundaries->visualize_2D_boundary();
     nodeGenerator gen(ic.boundaries);
     // if the fused init runs this test is considered complete
+    gen.init_fused(ic.return_basic_size());
     // init sim parameters
     simulation_parameters params;
     params.relaxation = 0.5;
