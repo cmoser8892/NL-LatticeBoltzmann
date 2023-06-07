@@ -257,7 +257,9 @@ TEST(FunctionalTest, force_macro_calculation) {
 }
 
 TEST(FunctionalTest, force_macro_calculation_additional) {
-    // todo im here
+    // add up
+    // todo write me
+    EXPECT_TRUE(false);
 }
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // todo try out the guo term also described in viggen 6.14
