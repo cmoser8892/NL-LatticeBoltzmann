@@ -55,5 +55,8 @@ class forcedSimulation {
     // cleanup methods
     void get_data(bool write_to_file);
     void delete_nodes();
+    // test functions
+    std::tuple<double,double,double> test_calcualte_macro(array_t* a, array_t* f);
+
 };
 #endif // MY_LATTICE_BOLTZMANN_H

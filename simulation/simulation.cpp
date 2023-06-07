@@ -23,7 +23,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
         ‾‾‾           ‾‾‾
         i             i
      */
-    double prefactor = parameters.dt/2;
+    double prefactor = dt/2;
     double rho = (p + 0).operator*() +
                  (p + 1).operator*() +
                  (p + 2).operator*() +
@@ -57,8 +57,8 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                        (f+4).operator*() +
                        2 * (f+5).operator*() -
                        2 * (f+7).operator*();
-    ////todo def mistakes here
     force_add *= prefactor;
+    //
     double ux = (((p + 1).operator*() +
                   (p + 5).operator*() +
                   (p + 8).operator*())-
@@ -71,7 +71,6 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  ((p + 4).operator*() +
                   (p + 7).operator*()+
                   (p + 8).operator*()));
-    ////todo def mistakes here
     /// ux and uy through
     ux = (ux+force_add)/rho;
     uy = (uy+force_add)/rho;
@@ -104,7 +103,7 @@ inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *l
 inline void forcedSimulation::collision(array_t *a, double rho, double ux, double uy) {
     // undrosed collision term
     int o = offset_node;
-    double relaxation = parameters.relaxation;
+    double relaxation = 1/parameters.relaxation;
     auto p = a->begin() + o;
     (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
     (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
@@ -132,7 +131,7 @@ inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double 
     rot_force->calculate_F_rotation(ux,uy,&n->position);
     //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
     rot_force->calculate_F_i();
-    double prefactor = 1 - 1/parameters.relaxation;
+    double prefactor = 1 - 1/(2*parameters.relaxation);
     for(int i = 0; i < CHANNELS; ++i) {
         double shorthand = rot_force->force_channels[i] * weights(i);
         // set into the force array
@@ -225,7 +224,7 @@ void forcedSimulation::run(int current_step) {
         // perform equilibrium step
         collision(&node->populations,rho,ux,uy);
         // add and calculate new force term
-        // forcing_terms(node,force,ux,uy);
+        forcing_terms(node,force,ux,uy);
         // streaming
         streaming(&node->populations,&node->neighbors);
     }
@@ -274,4 +273,8 @@ void forcedSimulation::delete_nodes() {
     }
     nodes.clear();
     forces.clear();
+}
+
+std::tuple<double,double,double> forcedSimulation::test_calcualte_macro(array_t *a, array_t *f) {
+    return calculate_macro(a,f);
 }
