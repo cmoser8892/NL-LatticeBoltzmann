@@ -311,6 +311,11 @@ TEST(FunctionalTest, equilibrium_moments) {
     EXPECT_NEAR(second_moment(1)/rho,uy,1e-10);
 }
 
+TEST(FunctionalTest, macro_tests) {
+    EXPECT_TRUE(false);
+    // todo implement me
+}
+
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5
 // todo try out the guo term also described in viggen 6.14
 // main equation is 5.2.9.
