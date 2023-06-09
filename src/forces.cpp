@@ -217,10 +217,12 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 * @attention does not include the weights!
 */
 void goaForce::calculate_F_i() {
+    /*
     for(int i = 0; i <CHANNELS; ++i) {
        truncation_force(i);
     }
-    // force_channels = truncation_force_array();
+     */
+    force_channels = truncation_force_array();
 }
 
 /**
