@@ -272,26 +272,28 @@ int switch_link_dimensions(int link_channel) {
     return return_channel;
 }
 
-std::tuple<double, double ,double> calculate_force_macro_values(array_t a, array_t f) {
+std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array_t f) {
     double rho = 0;
     double ux = 0;
     double uy = 0;
     /// looped version to find errors in the other one
     //rho
     for(int i = 0; i < CHANNELS; ++i) {
-        rho += (a[i] + 0.5*f[i]);
+        rho += (p[i] + 0.5*f[i]);
     }
     // velocity
     vector_t u;
     u.setZero();
     for(int i  = 0; i < CHANNELS; ++i) {
         vector_t v_set = velocity_set.col(i);
-        u += a[i]*v_set;
-        for(int j = 0; j < v_set.size(); ++j) {
-            // u += 0.5*f(j);
-        }
+        u += p[i]*v_set;
     }
-
+    // additional force term
+    // add half of f_alpha, we have to recover that here prob better to just add it in post
+    for(int i = 0; i < CHANNELS; ++i) {
+        vector_t v_set = velocity_set.col(i);
+        u += 1.0/2*f(i)*v_set;
+    }
     return {rho,ux,uy};
 }
 

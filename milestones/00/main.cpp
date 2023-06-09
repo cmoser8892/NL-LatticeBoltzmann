@@ -12,5 +12,5 @@ valgrind --tool=callgrind --dump-instr=yes (p)
 #include "helper_functions.h"
 
 int main() {
-    solve_truncation_force_symbols(7);
+    solve_truncation_force_symbols(5);
 }
