@@ -52,7 +52,12 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
          i                  i
      */
     //
-    vector_t force_add = rot_force->return_force_alpha();
+    vector_t force_add = {0,0};
+    for(int i = 0; i < CHANNELS; ++i) {
+        vector_t velocity_channel = velocity_set.col(i);
+        force_add += velocity_channel*(f+i).operator*();
+    }
+    force_add *= prefactor;
     double ux = (((p + 1).operator*() +
                   (p + 5).operator*() +
                   (p + 8).operator*())-

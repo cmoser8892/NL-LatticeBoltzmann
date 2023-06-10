@@ -244,16 +244,16 @@ TEST(FunctionalTest, force_macro_calculation) {
         forces(3) = 1;
         auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
         EXPECT_EQ(rho,9+3);
-        EXPECT_EQ(ux, 0);
-        EXPECT_EQ(uy, 0);
+        EXPECT_EQ(ux, -1.0/(2*rho));
+        EXPECT_EQ(uy, 1.0/(2*rho));
     }
     {
         forces.setOnes();
         forces(3) = 0;
         auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
         EXPECT_EQ(rho,9+4);
-        EXPECT_EQ(ux, 0.5/rho);
-        EXPECT_EQ(uy, 0.5/rho);
+        EXPECT_EQ(ux, 1/(2*rho));
+        EXPECT_EQ(uy, 0);
     }
 }
 
