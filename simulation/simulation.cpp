@@ -78,7 +78,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
 
 /**
  * @fn inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *list)
- * @brief streaming step
+ * @brief streaming stepf
  * @param a
  * @param list
  */

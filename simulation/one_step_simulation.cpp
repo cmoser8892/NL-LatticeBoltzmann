@@ -134,6 +134,13 @@ optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenera
 
 }
 
+/**
+ * @fn optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce * f)
+ * @brief constructor with a force
+ * @param c
+ * @param g
+ * @param f
+ */
 optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce * f) {
     boundary_points = c;
     node_generator = g;
