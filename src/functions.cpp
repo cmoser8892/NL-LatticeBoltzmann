@@ -272,6 +272,13 @@ int switch_link_dimensions(int link_channel) {
     return return_channel;
 }
 
+/**
+ * @fn std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array_t f)
+ * @brief calculate rho ux uy in one go and returns it as a touple
+ * @param p
+ * @param f
+ * @return
+ */
 std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array_t f) {
     double rho = 0;
     double ux = 0;
@@ -297,6 +304,13 @@ std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array
     return {rho,ux,uy};
 }
 
+/**
+ * @fn std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset)
+ * @brief non inline test version of the macro calculation with an offset
+ * @param a
+ * @param offset
+ * @return
+ */
 std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset) {
     // return als a struct
     // calculate rho ux and uy
@@ -329,6 +343,37 @@ std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset) 
     // return all the values
     return {rho, ux, uy};
 }
+
+std::tuple<double,double,double> calculate_macro_population(array_t* a) {
+    auto p = a->begin();
+    double rho = (p + 0).operator*() +
+                 (p + 1).operator*() +
+                 (p + 2).operator*() +
+                 (p + 3).operator*() +
+                 (p + 4).operator*() +
+                 (p + 5).operator*() +
+                 (p + 6).operator*() +
+                 (p + 7).operator*() +
+                 (p + 8).operator*();
+    // ux + uy
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    ux /= rho;
+    uy /= rho;
+    // return all the values
+    return {rho, ux, uy};
+}
+
 
 // todo implement me
 void pressure_periodic_in(oNode* node, double rho_in) {

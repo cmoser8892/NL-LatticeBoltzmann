@@ -26,6 +26,7 @@ void write_uy(node* node,flowfield_t* ux);
 double calculate_rho(oNode* n, int offset);
 // unified calculate method
 std::tuple<double, double, double> calculate_the_macro(array_t*,int);
+std::tuple<double,double,double> calculate_macro_population(array_t* p);
 // debug method
 void debug_node(node* node, bool printing);
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H

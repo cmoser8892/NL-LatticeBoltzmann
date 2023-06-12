@@ -312,8 +312,56 @@ TEST(FunctionalTest, equilibrium_moments) {
 }
 
 TEST(FunctionalTest, macro_tests) {
-    EXPECT_TRUE(false);
-    // todo implement me
+    // stand in for the populations
+    array_t values;
+    values.resize(CHANNELS);
+    values.setOnes();
+    // sim class setup
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    double omega = 0.00;
+    goaForce test(origin,canvas_size,omega);
+    forcedSimulation fsim(nullptr, nullptr, &test);
+    // force and velocity
+    vector_t f = {0,0};
+    vector_t v = {0,0};
+    // we calculate some values
+    {
+        // we have no effect from the force
+        test.set_force_alpha(f);
+        test.set_velocity(v);
+        test.calculate_F_i();
+        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&test.force_channels);
+        auto [test_rho,test_ux, test_uy] = calculate_macro_population(&values);
+        EXPECT_EQ(rho,test_rho);
+        EXPECT_EQ(ux, test_ux);
+        EXPECT_EQ(uy, test_uy);
+    }
+    {
+        // we have no effect from the force
+        f = {3,0};
+        v = {5,6};
+        test.set_force_alpha(f);
+        test.set_velocity(v);
+        test.calculate_F_i();
+        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&test.force_channels);
+        auto [test_rho,test_ux, test_uy] = calculate_macro_population(&values);
+        // test values
+        double first_moment = 0;
+        vector_t second_moment = {0,0};
+        // 1st
+        for(int i = 0; i < CHANNELS; ++i) {
+            first_moment += test.force_channels[i]* weights(i);
+        }
+        // 2nd
+        for(int i = 0; i < CHANNELS; ++i) {
+            vector_t v_set = velocity_set.col(i);
+            second_moment += v_set * (test.force_channels[i] * weights(i));
+        }
+        EXPECT_EQ(rho,test_rho);
+        EXPECT_EQ(ux, test_ux + 0.5*f.x()/rho);
+        EXPECT_EQ(uy, test_uy + 0.5*f.y()/rho);
+    }
 }
 
 // todo look up book boy Wolf Gladrow on forcing term in LB cap 5

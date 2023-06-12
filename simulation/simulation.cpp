@@ -33,15 +33,15 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  (p + 6).operator*() +
                  (p + 7).operator*() +
                  (p + 8).operator*();
-    double f_term = (f+0).operator*() +
-                    (f+1).operator*() +
-                    (f+2).operator*() +
-                    (f+3).operator*() +
-                    (f+4).operator*() +
-                    (f+5).operator*() +
-                    (f+6).operator*() +
-                    (f+7).operator*() +
-                    (f+8).operator*();
+    double f_term = weights(0) * (f+0).operator*() +
+                    weights(1) * (f+1).operator*() +
+                    weights(2) * (f+2).operator*() +
+                    weights(3) * (f+3).operator*() +
+                    weights(4) * (f+4).operator*() +
+                    weights(5) * (f+5).operator*() +
+                    weights(6) * (f+6).operator*() +
+                    weights(7) * (f+7).operator*() +
+                    weights(8) * (f+8).operator*();
     rho += f_term*prefactor;
     // ux and uy
     /* Equation for the calculation of ux and uy
@@ -55,7 +55,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
     vector_t force_add = {0,0};
     for(int i = 0; i < CHANNELS; ++i) {
         vector_t velocity_channel = velocity_set.col(i);
-        force_add += velocity_channel*(f+i).operator*();
+        force_add += velocity_channel*(f+i).operator*()*weights(i);
     }
     force_add *= prefactor;
     double ux = (((p + 1).operator*() +
