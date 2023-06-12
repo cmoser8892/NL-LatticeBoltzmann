@@ -274,6 +274,13 @@ void forcedSimulation::delete_nodes() {
     forces.clear();
 }
 
+/**
+ * @fn std::tuple<double,double,double> forcedSimulation::test_calcualte_macro(array_t *a, array_t *f)
+ * @brief hook to the inline method
+ * @param a
+ * @param f
+ * @return
+ */
 std::tuple<double,double,double> forcedSimulation::test_calcualte_macro(array_t *a, array_t *f) {
     return calculate_macro(a,f);
 }

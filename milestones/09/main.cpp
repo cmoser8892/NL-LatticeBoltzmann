@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.relaxation = 0.5;
     point_t dk = {0,0};
-    goaForce rot(dk,ic.boundaries->size,6e-3);
+    goaForce rot(dk,ic.boundaries->size,6.5e-3);
     forcedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);
     sim.init();
