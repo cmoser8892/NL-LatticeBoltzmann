@@ -344,6 +344,12 @@ std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset) 
     return {rho, ux, uy};
 }
 
+/**
+ * @fn std::tuple<double,double,double> calculate_macro_population(array_t* a)
+ * @brief calculate the macro values just based on the array (could also use the
+ * @param a
+ * @return
+ */
 std::tuple<double,double,double> calculate_macro_population(array_t* a) {
     auto p = a->begin();
     double rho = (p + 0).operator*() +

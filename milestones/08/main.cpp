@@ -22,18 +22,6 @@ int main(int argc, char *argv[]) {
     nodeGenerator gen(ic.boundaries);
     // if the fused init runs this test is considered complete
     gen.init_fused(ic.return_basic_size());
-    /*
-    int steps = 10000;
-    unsigned int size = 302;
-    unsigned int sub_size = 202;
-    point_t c = {size,size};
-    point_t p = {sub_size,sub_size+20};
-    boundaryPointConstructor boundaries(p);
-    // boundaries.init_sliding_lid_side_chopped({20,10},30);
-    boundaries.init_sliding_lid_inner({10,20},{34,45},{49,52});
-    nodeGenerator gen(&boundaries);
-    gen.init_fused(size);
-     */
     // init sim parameters
     // parameters are near the stability boarder go to 5e-3 -> nonsense
     simulation_parameters params;

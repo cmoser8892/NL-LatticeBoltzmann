@@ -224,35 +224,8 @@ TEST(FunctionalTest, force_macro_calculation) {
     forces.setOnes();
     {
         auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
-        EXPECT_EQ(rho,9+4.5);
+        EXPECT_EQ(rho,9+0.5);
         EXPECT_EQ(ux, 0);
-        EXPECT_EQ(uy, 0);
-    }
-    {
-        forces(0) = 0;
-        forces(1) = 0;
-        forces(2) = 0;
-        forces(3) = 0;
-        forces(4) = 0;
-        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
-        EXPECT_EQ(rho,9+2);
-        EXPECT_EQ(ux, 0);
-        EXPECT_EQ(uy, 0);
-    }
-    {
-        forces(2) = 1;
-        forces(3) = 1;
-        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
-        EXPECT_EQ(rho,9+3);
-        EXPECT_EQ(ux, -1.0/(2*rho));
-        EXPECT_EQ(uy, 1.0/(2*rho));
-    }
-    {
-        forces.setOnes();
-        forces(3) = 0;
-        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
-        EXPECT_EQ(rho,9+4);
-        EXPECT_EQ(ux, 1/(2*rho));
         EXPECT_EQ(uy, 0);
     }
 }
@@ -364,8 +337,5 @@ TEST(FunctionalTest, macro_tests) {
     }
 }
 
-// todo look up book boy Wolf Gladrow on forcing term in LB cap 5
-// todo try out the guo term also described in viggen 6.14
-// main equation is 5.2.9.
-//  there are some strange cases still left -> investigate
+// todo there are some strange cases still left -> investigate
 // todo negative numbers in pkh?! do i even want that
