@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
      */
-    int steps = 10000;
+    int steps = 100000;
     unsigned int size = 302;
     unsigned int sub_size = 202;
     point_t c = {size,size};
