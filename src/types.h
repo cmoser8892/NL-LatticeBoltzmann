@@ -56,6 +56,12 @@ typedef struct toLinks {
     handle_t handle; // form 1 to n -1 for valid handles
 }toLinks_t;
 
+typedef struct simulation_parameters {
+    double relaxation = 0.5;
+    double u_wall = 0;
+    double dt = 1;
+}simulation_parameters_t;
+
 // eigen smart pointer
 using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>;
 using array_pointer = link_pointer;

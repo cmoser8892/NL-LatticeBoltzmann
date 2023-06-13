@@ -31,15 +31,15 @@ TEST(ForceTest, truncation_force) {
     c = {1,0};
     u = {0,0};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),6);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),3);
     c = {1,0};
     u = {1,1};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),9);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),6);
     c = {1,1};
     u = {1,1};
     f = {1,1};
-    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),42);
+    EXPECT_EQ(calculate_truncation_force(&c,&u,&f),36);
 }
 
 TEST(ForceTest, circle_force) {
@@ -156,7 +156,7 @@ TEST(ForceTest, correct_truncation_terms) {
     test.set_velocity(v);
     test.calculate_F_i();
     for(int i = 0; i < CHANNELS; ++i) {
-        std::cout << i << std::endl;
+        // std::cout << i << std::endl;
         vector_t c = velocity_set.col(i);
         double check = calculate_truncation_force(&c,&v,&f);
         EXPECT_NEAR(check,test.force_channels(i),1e-5);
@@ -168,7 +168,7 @@ TEST(ForceTest, correct_truncation_terms) {
     test.set_velocity(v);
     test.calculate_F_i();
     for(int i = 0; i < CHANNELS; ++i) {
-        std::cout << i << std::endl;
+        // std::cout << i << std::endl;
         vector_t c = velocity_set.col(i);
         double check = calculate_truncation_force(&c,&v,&f);
         EXPECT_NEAR(check,test.force_channels(i),1e-5);
@@ -180,7 +180,7 @@ TEST(ForceTest, correct_truncation_terms) {
     test.set_velocity(v);
     test.calculate_F_i();
     for(int i = 0; i < CHANNELS; ++i) {
-        std::cout << i << std::endl;
+        // std::cout << i << std::endl;
         vector_t c = velocity_set.col(i);
         double check = calculate_truncation_force(&c,&v,&f);
         EXPECT_NEAR(check,test.force_channels(i),1e-5);
@@ -202,8 +202,140 @@ TEST(FunctionalTest, angles) {
     EXPECT_NEAR(calculate_angle(&v1, &v2), EIGEN_PI,1e-5);
 }
 
-// todo look up book boy Wolf Gladrow on forcing term in LB cap 5
-// todo try out the guo term also described in viggen 6.14
-// main equation is 5.2.9.
-//  there are some strange cases still left -> investigate
+TEST(FunctionalTest, force_macro_calculation) {
+    // simple value correction
+    // setup arrays
+    array_t forces;
+    forces.resize(CHANNELS);
+    forces.setZero();
+    array_t values;
+    values.resize(CHANNELS);
+    values.setOnes();
+    // sim class setup
+    forcedSimulation fsim(nullptr, nullptr, nullptr);
+    // we calculate some values
+    {
+        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
+        EXPECT_EQ(rho,9);
+        EXPECT_EQ(ux, 0);
+        EXPECT_EQ(uy, 0);
+    }
+    // add a force
+    forces.setOnes();
+    {
+        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&forces);
+        EXPECT_EQ(rho,9+0.5);
+        EXPECT_EQ(ux, 0);
+        EXPECT_EQ(uy, 0);
+    }
+}
+
+TEST(FunctionalTest, force_term_first_second_moment) {
+    // tests out weather or not the velocity moments of the truncation of the force term is calculated
+    // correctly
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    double omega = 0.00;
+    goaForce test(origin,canvas_size,omega);
+    vector_t f = {12,8};
+    vector_t v = {0,0};
+    // test values
+    double first_moment = 0;
+    vector_t second_moment = {0,0};
+    // set force
+    test.set_force_alpha(f);
+    test.set_velocity(v);
+    test.calculate_F_i();
+    // we calculate the 1st and 2nd moment of the force
+    // 1st
+    for(int i = 0; i < CHANNELS; ++i) {
+        first_moment += test.force_channels[i]* weights(i);
+    }
+    // 2nd
+    for(int i = 0; i < CHANNELS; ++i) {
+        vector_t v_set = velocity_set.col(i);
+        second_moment += v_set * (test.force_channels[i] * weights(i));
+    }
+    f = test.return_force_alpha();
+    EXPECT_NEAR(second_moment.x(), f.x(),1e-10);
+    EXPECT_NEAR(second_moment.y(), f.y(),1e-10);
+    // std::cout << second_moment << std::endl;
+    EXPECT_NEAR(first_moment, 0,1e-7);
+}
+
+TEST(FunctionalTest, equilibrium_moments) {
+    double rho = 3;
+    double ux = 5;
+    double uy = 10;
+    array_t f_eq = equilibrium_2d(ux, uy, rho);
+    //
+    double first_moment = 0;
+    for(auto f: f_eq) {
+        first_moment += f;
+    }
+    EXPECT_NEAR(first_moment,rho,1e-10);
+    vector_t second_moment = {0,0};
+    vector_t velocity_channel;
+    for(int i = 0; i < CHANNELS; ++i) {
+        velocity_channel = velocity_set.col(i);
+        second_moment += velocity_channel * f_eq(i);
+    }
+    EXPECT_NEAR(second_moment(0)/rho,ux,1e-10);
+    EXPECT_NEAR(second_moment(1)/rho,uy,1e-10);
+}
+
+TEST(FunctionalTest, macro_tests) {
+    // stand in for the populations
+    array_t values;
+    values.resize(CHANNELS);
+    values.setOnes();
+    // sim class setup
+    point_t origin = {0,0};
+    point_t canvas_size = {50,50};
+    double omega = 0.00;
+    goaForce test(origin,canvas_size,omega);
+    forcedSimulation fsim(nullptr, nullptr, &test);
+    // force and velocity
+    vector_t f = {0,0};
+    vector_t v = {0,0};
+    // we calculate some values
+    {
+        // we have no effect from the force
+        test.set_force_alpha(f);
+        test.set_velocity(v);
+        test.calculate_F_i();
+        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&test.force_channels);
+        auto [test_rho,test_ux, test_uy] = calculate_macro_population(&values);
+        EXPECT_EQ(rho,test_rho);
+        EXPECT_EQ(ux, test_ux);
+        EXPECT_EQ(uy, test_uy);
+    }
+    {
+        // we have no effect from the force
+        f = {3,0};
+        v = {5,6};
+        test.set_force_alpha(f);
+        test.set_velocity(v);
+        test.calculate_F_i();
+        auto [rho,ux,uy] = fsim.test_calcualte_macro(&values,&test.force_channels);
+        auto [test_rho,test_ux, test_uy] = calculate_macro_population(&values);
+        // test values
+        double first_moment = 0;
+        vector_t second_moment = {0,0};
+        // 1st
+        for(int i = 0; i < CHANNELS; ++i) {
+            first_moment += test.force_channels[i]* weights(i);
+        }
+        // 2nd
+        for(int i = 0; i < CHANNELS; ++i) {
+            vector_t v_set = velocity_set.col(i);
+            second_moment += v_set * (test.force_channels[i] * weights(i));
+        }
+        EXPECT_EQ(rho,test_rho);
+        EXPECT_EQ(ux, test_ux + 0.5*f.x()/rho);
+        EXPECT_EQ(uy, test_uy + 0.5*f.y()/rho);
+    }
+}
+
+// todo there are some strange cases still left -> investigate
 // todo negative numbers in pkh?! do i even want that

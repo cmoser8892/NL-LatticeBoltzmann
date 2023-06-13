@@ -1,5 +1,5 @@
 // Include a library file to make sure proper includes are set
-#include "simulation.h"
+#include "one_step_simulation.h"
 #include "node.h"
 #include "functions.h"
 #include "helper_functions.h"
@@ -259,7 +259,7 @@ TEST(FunctionalTest, periodics_full) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     EXPECT_EQ(gen.node_infos.size(), 2*4);
-    oSimu sim(&boundaries, &gen);
+    optimizedSimulation sim(&boundaries, &gen);
     sim.init();
     // zero all the data and set some in the last two rows and observe where it goes
     for(auto node : sim.nodes) {

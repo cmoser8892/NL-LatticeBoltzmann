@@ -22,9 +22,10 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
     double return_value = 0;
     double cs_2 = 1.0/3;
     for(int alpha = 0; alpha < c->size(); ++alpha) {
-       for(int beta = 0; beta < u->size(); ++beta) {
-           return_value += ((c->operator[](alpha)/cs_2) + (((c->operator[](alpha)*c->operator[](beta) - cs_2 * conical_delta(alpha,beta)) *u->operator[](beta)) / (cs_2*cs_2)))*force->operator[](alpha);
-       }
+        return_value += (c->operator[](alpha)/cs_2) *force->operator[](alpha);
+        for(int beta = 0; beta < u->size(); ++beta) {
+            return_value += ((((c->operator[](alpha)*c->operator[](beta) - cs_2 * conical_delta(alpha,beta)) *u->operator[](beta)) / (cs_2*cs_2)))*force->operator[](alpha);
+        }
     }
     // std::cout << std::endl;
     return return_value;
@@ -113,16 +114,20 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
  * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @return
  */
-inline double goaForce::truncation_force() {
+inline void goaForce::truncation_force(int channel) {
    double return_value = 0;
    double cs_2 = 1.0/3;
+   velocity_channel_set =velocity_set.col(channel);
    for(int alpha = 0; alpha < velocity_channel_set.size(); ++alpha) {
+       return_value += (velocity_channel_set(alpha)/cs_2)*force_alpha(alpha);
        for(int beta = 0; beta < velocity.size(); ++beta) {
-           return_value += ((velocity_channel_set(alpha)/cs_2) + (((velocity_channel_set(alpha)*velocity_channel_set(beta) - cs_2 * (alpha == beta)) *velocity(beta)) / (cs_2*cs_2)))*force_alpha(alpha);
+           return_value += ((((velocity_channel_set(alpha)*velocity_channel_set(beta)
+                                 - cs_2 * (alpha == beta)) *velocity(beta)) / (cs_2*cs_2)))
+                           *force_alpha(alpha);
        }
    }
    // std::cout << std::endl;
-   return return_value;
+   force_channels[channel] = return_value;
 }
 
 /**
@@ -138,20 +143,20 @@ inline array_t goaForce::truncation_force_array() {
    /// channel 0
    return_array[0] = -3*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
    /// channel 1 - 4
-   return_array[1] =  6*force_alpha[0] + 6*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
-   return_array[2] = -3*velocity[0]*force_alpha[0] + 6*force_alpha[1]  + 6*velocity[1]*force_alpha[1];
-   return_array[3] = -6*force_alpha[0] + 6*velocity[0]*force_alpha[0]  - 3*velocity[1]*force_alpha[1];
-   return_array[4] = -3*velocity[0]*force_alpha[0] - 6*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   return_array[1] =  3*force_alpha[0] + 6*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+   return_array[2] = -3*velocity[0]*force_alpha[0] + 3*force_alpha[1]  + 6*velocity[1]*force_alpha[1];
+   return_array[3] = -3*force_alpha[0] + 6*velocity[0]*force_alpha[0]  - 3*velocity[1]*force_alpha[1];
+   return_array[4] = -3*velocity[0]*force_alpha[0] - 3*force_alpha[1] + 6*velocity[1]*force_alpha[1];
    /// channel 5 - 6
-   return_array[5] =   6* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
-                     + 6* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
-   return_array[6] = - 6* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
-                     + 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   return_array[5] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                     + 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   return_array[6] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                     + 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
    /// channel 7 - 8
-   return_array[7] = - 6* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
-                     - 6* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
-   return_array[8] =   6* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
-                     - 6* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];;
+   return_array[7] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                     - 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+   return_array[8] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                     - 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];;
    // return the array
    return return_array;
 }
@@ -212,7 +217,12 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 * @attention does not include the weights!
 */
 void goaForce::calculate_F_i() {
-   force_channels = truncation_force_array();
+    /*
+    for(int i = 0; i <CHANNELS; ++i) {
+       truncation_force(i);
+    }
+     */
+    force_channels = truncation_force_array();
 }
 
 /**

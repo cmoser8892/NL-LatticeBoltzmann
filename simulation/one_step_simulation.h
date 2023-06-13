@@ -1,5 +1,5 @@
-#ifndef MY_LATTICE_BOLTZMANN_H
-#define MY_LATTICE_BOLTZMANN_H
+#ifndef NL_LATTICEBOLTZMANN_ONE_STEP_SIMULATION_H
+#define NL_LATTICEBOLTZMANN_ONE_STEP_SIMULATION_H
 
 // includes
 #include "boundary_point_generator.h"
@@ -9,37 +9,14 @@
 #include "functions.h"
 #include "forces.h"
 
-typedef struct simulation_parameters {
-    double relaxation = 0.5;
-    double u_wall = 0;
-}simulation_parameters_t;
+/**
+ * Notes:
+ * The additional array for holding specific values of the sim bring
+ * a performance increase of about 3% they were dropped in favor of a more
+ * generalized structure.
+ */
 
-class simulation {
-  private:
-    simulation_parameters_t parameters;
-    boundaryPointConstructor * boundary_points = nullptr;
-    nodeGenerator* node_generator = nullptr;
-  public:
-    std::vector<node*> nodes;
-    explicit simulation(boundaryPointConstructor* c);
-    ~simulation();
-    simulation(boundaryPointConstructor* c,nodeGenerator* g);
-    void set_simulation_parameters(simulation_parameters_t t);
-    void streaming_step_1();
-    void bounce_back();
-    void streaming_step_2();
-    void collisions();
-    void fused_streaming(node* n);
-    void fused_bounce_back(node* n);
-    void init();
-    void fused_init();
-    void run();
-    void fused_run();
-    void get_data(bool write_to_file, point_t org);
-    void delete_nodes();
-};
-
-class oSimu {
+class optimizedSimulation {
   private:
     simulation_parameters_t parameters;
     boundaryPointConstructor * boundary_points = nullptr;
@@ -64,9 +41,9 @@ class oSimu {
     std::vector<std::vector<link_pointer>*> neighborhood_list;
     std::vector<boundaryType_t> boundary;
     // methods
-    oSimu(boundaryPointConstructor* c,nodeGenerator* g);
-    oSimu(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
-    ~oSimu();
+    optimizedSimulation(boundaryPointConstructor* c,nodeGenerator* g);
+    optimizedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
+    ~optimizedSimulation();
     void set_simulation_parameters(simulation_parameters_t t);
     // test methods
     void streaming(oNode* n);
@@ -79,11 +56,11 @@ class oSimu {
     void init_sub_array();
     void run(int current_step);
     void run_sub_array(int current_step);
-    void current_run(int current_step);
+    void gladrow_force_run(int current_step);
     void forcing_run(int current_step);
     void get_data(bool write_to_file, point_t org);
     void get_data(bool write_to_file);
     void delete_nodes();
 };
 
-#endif // MY_LATTICE_BOLTZMANN_H
+#endif // NL_LATTICEBOLTZMANN_ONE_STEP_SIMULATION_H

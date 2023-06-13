@@ -1,10 +1,13 @@
-#include "simulation.h"
+#include "two_step_simulation.h"
 #include <iostream>
 #include <chrono>
 
-/*
- * vallgrind call
-valgrind --tool=callgrind --dump-instr=yes (p)
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 03 main, similar to the 01 but i combine the steps here
+ * @param argc
+ * @param argv
+ * @return
  */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -24,7 +27,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
-    simulation sim(&boundaries,&gen);
+    basicSimulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.init();
     // run sim

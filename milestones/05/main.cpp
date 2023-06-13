@@ -1,8 +1,14 @@
-#include "simulation.h"
+#include "two_step_simulation.h"
 #include <iostream>
 #include <chrono>
 
-/// fused variant of m3
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 05 main, demonstration of the precursor to the one step algorithm (still two steps)
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;
@@ -21,7 +27,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
-    simulation sim(&boundaries,&gen);
+    basicSimulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.fused_init();
     // run sim

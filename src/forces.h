@@ -36,7 +36,7 @@ class goaForce {
     double angle = 0;
     double omega = 0;
     // functions
-    inline double truncation_force();
+    inline void truncation_force(int channel);
     inline array_t truncation_force_array();
   public:
     array_t force_channels;

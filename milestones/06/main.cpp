@@ -1,8 +1,14 @@
-#include "simulation.h"
+#include "one_step_simulation.h"
 #include <iostream>
 #include <chrono>
 
-
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 06 main, demonstration of a sliding lid with a whole in it
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
@@ -32,7 +38,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
-    oSimu sim(&boundaries,&gen);
+    optimizedSimulation sim(&boundaries,&gen);
     sim.set_simulation_parameters(params);
     sim.init();
     // run sim

@@ -2,4 +2,4 @@
 add_executable(07 main.cpp)
 
 # Linking against everything
-target_link_libraries(07 PUBLIC my_lib)
+target_link_libraries(07 PUBLIC simulation_lib)
