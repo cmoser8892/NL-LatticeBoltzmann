@@ -2,9 +2,12 @@
 #include <iostream>
 #include <chrono>
 
-/*
- * vallgrind call
-valgrind --tool=callgrind --dump-instr=yes (p)
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief basic demonstration of a nl sliding lid with a whole in it (multi-steps non-optimized)
+ * @param argc
+ * @param argv
+ * @return
  */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -32,7 +35,7 @@ int main(int argc, char *argv[]) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        // old manual sim run
+        /// old manual sim run
         sim.streaming_step_1();
         sim.streaming_step_2();
         sim.bounce_back();

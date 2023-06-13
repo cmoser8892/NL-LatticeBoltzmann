@@ -1,17 +1,14 @@
-/**
- * todos:
- * canvas scheme for initialization
- * grouping based on Ns
- * save initialization somewhere just do it once!!
- * incorporate more boundary methods
- * parallelize for equal nodes in a true NL structure
- * add doxygen docu, recheck old projects on a common standard
- */
 #include "two_step_simulation.h"
 #include <chrono>
 #include <iostream>
 
-// standard sliding lid
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief demonstration of a basic sliding lid
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int size = 302;

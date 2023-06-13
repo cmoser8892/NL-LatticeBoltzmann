@@ -3,7 +3,13 @@
 #include <iostream>
 #include <chrono>
 
-
+/**
+ * @fn
+ * @brief 08 main, uses the first order integration to apply the forces
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant

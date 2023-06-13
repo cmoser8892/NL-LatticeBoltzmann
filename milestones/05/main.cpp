@@ -2,7 +2,13 @@
 #include <iostream>
 #include <chrono>
 
-/// fused variant of m3
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 05 main, demonstration of the precursor to the one step algorithm (still two steps)
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;

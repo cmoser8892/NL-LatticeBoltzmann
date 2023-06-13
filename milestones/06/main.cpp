@@ -2,7 +2,13 @@
 #include <iostream>
 #include <chrono>
 
-
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 06 main, demonstration of a sliding lid with a whole in it
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant

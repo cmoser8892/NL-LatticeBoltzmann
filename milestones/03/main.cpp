@@ -2,9 +2,12 @@
 #include <iostream>
 #include <chrono>
 
-/*
- * vallgrind call
-valgrind --tool=callgrind --dump-instr=yes (p)
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 03 main, similar to the 01 but i combine the steps here
+ * @param argc
+ * @param argv
+ * @return
  */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();

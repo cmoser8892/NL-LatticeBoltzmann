@@ -31,7 +31,7 @@ array_t equilibrium(node* node) {
 
 /**
  * @fn array_t equilibrium_general(node* node)
- * @brief original version of the equiliburm function as implemented in lookup
+ * @brief original version of the equilibrium function to test against other functions
  * @param node
  * @return
  */
@@ -305,48 +305,8 @@ std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array
 }
 
 /**
- * @fn std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset)
- * @brief non inline test version of the macro calculation with an offset
- * @param a
- * @param offset
- * @return
- */
-std::tuple<double, double, double>  calculate_the_macro(array_t* a, int offset) {
-    // return als a struct
-    // calculate rho ux and uy
-    int o = offset;
-    auto p = a->begin() + o;
-    double rho = (p + 0).operator*() +
-                 (p + 1).operator*() +
-                 (p + 2).operator*() +
-                 (p + 3).operator*() +
-                 (p + 4).operator*() +
-                 (p + 5).operator*() +
-                 (p + 6).operator*() +
-                 (p + 7).operator*() +
-                 (p + 8).operator*();
-    // ux + uy
-    double ux = (((p + 1).operator*() +
-                  (p + 5).operator*() +
-                  (p + 8).operator*())-
-                 ((p + 3).operator*() +
-                  (p + 6).operator*()+
-                  (p + 7).operator*()));
-    double uy = (((p + 2).operator*() +
-                  (p + 5).operator*() +
-                  (p + 6).operator*())-
-                 ((p + 4).operator*() +
-                  (p + 7).operator*()+
-                  (p + 8).operator*()));
-    ux /= rho;
-    uy /= rho;
-    // return all the values
-    return {rho, ux, uy};
-}
-
-/**
  * @fn std::tuple<double,double,double> calculate_macro_population(array_t* a)
- * @brief calculate the macro values just based on the array (could also use the
+ * @brief calculate the macro values just based on the array
  * @param a
  * @return
  */

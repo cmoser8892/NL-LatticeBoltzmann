@@ -3,8 +3,8 @@
 #include <chrono>
 
 /**
- * @fn
- * @brief special pretest version that doesnt do bb moving to investigate the speedups
+ * @fn int main(int argc, char *argv[])
+ * @brief 06b main,special pretest version that doesnt do bb moving to investigate the speedups of direct array access
  * @param argc
  * @param argv
  * @return

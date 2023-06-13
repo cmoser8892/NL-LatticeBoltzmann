@@ -2,7 +2,13 @@
 #include "image_converter.h"
 #include <iostream>
 #include <chrono>
-
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 09 main, used second order integration to apply the force
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
@@ -25,6 +31,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.relaxation = 0.5;
     point_t dk = {0,0};
+    // max rotation is 7.5e-3
     goaForce rot(dk,ic.boundaries->size,6.5e-3);
     forcedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);

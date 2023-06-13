@@ -2,7 +2,13 @@
 #include <iostream>
 #include <chrono>
 
-/// fused variant of m2
+/**
+ * @fn int main(int argc, char *argv[])
+ * @brief 04 main, sliding lid first optimization iteration
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int steps = 10000;
