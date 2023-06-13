@@ -332,8 +332,9 @@ TEST(FunctionalTest, macro_tests) {
             second_moment += v_set * (test.force_channels[i] * weights(i));
         }
         EXPECT_EQ(rho,test_rho);
-        EXPECT_EQ(ux, test_ux + 0.5*f.x()/rho);
-        EXPECT_EQ(uy, test_uy + 0.5*f.y()/rho);
+        /// in debug i can use eq in rel i have to uses near cause optimization
+        EXPECT_NEAR(ux, test_ux + 0.5*f.x()/rho,1e-15);
+        EXPECT_NEAR(uy, test_uy + 0.5*f.y()/rho,1e-15);
     }
 }
 
