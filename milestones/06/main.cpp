@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     gen.init_fused(size);
     // init sim parameters
     double re = 1000;
-    double base_length = size - 2;
+    double base_length = sub_size + 20 - 2;
     simulation_parameters params;
     params.u_wall = 0.1;
     params.relaxation = (2*re)/(6*base_length*params.u_wall+re);
