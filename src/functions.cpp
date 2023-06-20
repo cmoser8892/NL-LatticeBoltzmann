@@ -359,6 +359,7 @@ void pressure_periodic_out(oNode* node , double rho_out) {
         (p+i).operator*() = 0;
     }
 }
+
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):

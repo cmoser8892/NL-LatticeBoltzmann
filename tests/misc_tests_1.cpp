@@ -247,8 +247,6 @@ TEST(FunctionalTest, right_link_number) {
 }
 
 TEST(FunctionalTest, periodics_full) {
-    // todo implement me
-    // todo pressure periodic = periodic right now
     int step = 0;
     unsigned int size = 4;
     point_t c = {size,size};

@@ -71,7 +71,6 @@ void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
  * @param coordinate
  */
 void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
-    // todo write a test to check the reshuffle
     // min set
     if(coordinate->x < min_coordinate.x) {
         // set to max

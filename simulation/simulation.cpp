@@ -1,4 +1,5 @@
 #include "simulation.h"
+
 /**
  * @fn inline std::tuple<double, double, double> forcedSimulation::calculate_macro(array_t *a, array_t* previous_force)
  * @brief calculate the macro values with a force attached to it
