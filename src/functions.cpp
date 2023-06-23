@@ -283,7 +283,7 @@ std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array
     double rho = 0;
     double ux = 0;
     double uy = 0;
-    /// looped version to find errors in the other one
+    // looped version to find errors in the other one
     //rho
     for(int i = 0; i < CHANNELS; ++i) {
         rho += (p[i] + 0.5*f[i]);
@@ -375,4 +375,5 @@ def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
 equilibrium_out = equilibrium_on_array(rho_out, ux[1, :], uy[1, :])
 # check for correct sizes
     grid[:, -1, :] = equilibrium_out + (grid[:, 1, :] - equilibrium[:, 1, :])
+
                                            */

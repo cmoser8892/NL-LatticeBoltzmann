@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-/// lightweight node used for construction without all the data fields
+//lightweight node used for construction without all the data fields
 typedef struct nodePoint {
     handle_t handle;
     array_t position;
@@ -12,7 +12,7 @@ typedef struct nodePoint {
     boundaryType_t boundary; // ignored if node type is wet
 }nodePoint_t;
 
-/// node class mostly replaced with oNode in actual code, still used for testing
+// node class mostly replaced with oNode in actual code, still used for testing
 class node {
   public:
     handle_t handle;
@@ -33,7 +33,7 @@ class node {
     node(handle_t handle, int dimensions, int channels, array_t pos,boundaryType_t type);
 };
 
-/// reduced and optimized node, used in oSim
+// reduced and optimized node, used in oSim
 class oNode {
   public:
     // handle and boundary

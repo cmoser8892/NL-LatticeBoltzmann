@@ -46,7 +46,7 @@ typedef enum boundaryType {
     OPEN_OUTLET
 }boundaryType_t;
 
-/**
+/*
  * Note on the toLinks_t:
  * used in the naive implementation and used
  * when constructing neighbourhoods

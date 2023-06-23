@@ -15,7 +15,7 @@ typedef struct straight {
 }straight_t;
 
 class straightGenerator {
-    /**
+    /*
      * note: surfaces are the boundary point to the next boundary point
      * connected via a direction vector
      * it is a straight line

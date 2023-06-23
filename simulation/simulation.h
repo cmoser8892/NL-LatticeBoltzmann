@@ -1,7 +1,7 @@
 #ifndef MY_LATTICE_BOLTZMANN_H
 #define MY_LATTICE_BOLTZMANN_H
 
-/**
+/*
  * Simulation classes:
  * The simulation classes are intentionally left at a their
  * final development stage to make it easier to understand the code as a whole.
@@ -25,7 +25,7 @@
 #include "types.h"
 #include "functions.h"
 #include "forces.h"
-
+// classen in gib
 class forcedSimulation {
   private:
     simulation_parameters_t parameters;

@@ -149,7 +149,7 @@ TEST(ForceTest, correct_truncation_terms) {
         double check = calculate_truncation_force(&c,&v,&f);
         EXPECT_EQ(check,test.force_channels(i));
     }
-    /// individual test
+    // individual test
     f = {1,1};
     v = {1,1};
     test.set_force_alpha(f);
@@ -161,7 +161,7 @@ TEST(ForceTest, correct_truncation_terms) {
         double check = calculate_truncation_force(&c,&v,&f);
         EXPECT_NEAR(check,test.force_channels(i),1e-5);
     }
-    /// individual test
+    // individual test
     f = {2,3};
     v = {4,5};
     test.set_force_alpha(f);
@@ -173,7 +173,7 @@ TEST(ForceTest, correct_truncation_terms) {
         double check = calculate_truncation_force(&c,&v,&f);
         EXPECT_NEAR(check,test.force_channels(i),1e-5);
     }
-    /// individual test
+    // individual test
     f = {-1,-1};
     v = {-1,-1};
     test.set_force_alpha(f);
@@ -332,7 +332,7 @@ TEST(FunctionalTest, macro_tests) {
             second_moment += v_set * (test.force_channels[i] * weights(i));
         }
         EXPECT_EQ(rho,test_rho);
-        /// in debug i can use eq in rel i have to uses near cause optimization
+        // in debug i can use eq in rel i have to uses near cause optimization
         EXPECT_NEAR(ux, test_ux + 0.5*f.x()/rho,1e-15);
         EXPECT_NEAR(uy, test_uy + 0.5*f.y()/rho,1e-15);
     }

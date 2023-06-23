@@ -4,7 +4,7 @@
 #include "types.h"
 #include "helper_functions.h"
 #include "helper_classes.h"
-/**
+/*
  * class to generate/hold boundary points from other structures
  * first ingredient to the init
  */

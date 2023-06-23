@@ -10,7 +10,7 @@
 #include "boundary_point_generator.h"
 #include "helper_functions.h"
 
-/// definition of all the different parts of a bmp file
+// definition of all the different parts of a bmp file
 #define WHITE_COLOR_CODE_24_BIT     0xffffff
 #define TARGET_SIZE_WINDOW          4
 

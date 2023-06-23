@@ -1,5 +1,5 @@
 #include "types.h"
-/// common space for globals
+// common space for globals
 // d2q9 velocity set
 matrix_t velocity_set = {{0,1,0,-1,0 ,1,-1,-1, 1},
                          {0,0,1,0 ,-1,1, 1,-1,-1}};

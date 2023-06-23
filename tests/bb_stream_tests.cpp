@@ -370,7 +370,7 @@ TEST(StreamTests, combinded_test_boundary_consistent) {
     index_codes.push_back(code_107);
     index_codes.push_back(code_126);
     index_codes.push_back(code_202);
-    /// zero the nodes and then put the codes in
+    // zero the nodes and then put the codes in
     for(auto node : sim.nodes) {
         if(node->node_type == WET) {
             node->population_even= 0;
@@ -426,7 +426,7 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     for(auto node : sm.nodes) {
         node->population_even.setZero();
         node->population_odd.setZero();
-        /** useful debug fragement
+        /* useful debug fragement
         std::cout << node->handle << std::endl;
         std::cout << node->neighbors.size() << std::endl;
         std::cout << node->position << std::endl;
@@ -468,7 +468,7 @@ TEST(BounceBackTesting, Horizontals_two_four) {
     for(auto node : sm.nodes) {
         node->population_even.setZero();
         node->population_odd.setZero();
-        /** useful debug fragement
+        /* useful debug fragement
         std::cout << node->handle << std::endl;
         std::cout << node->neighbors.size() << std::endl;
         std::cout << node->position << std::endl;
@@ -512,7 +512,7 @@ TEST(BounceBackTesting, Oblique_five_seven) {
         node->population_even.setZero();
         node->population_odd.setZero();
         //useful debug fragement
-        /**
+        /*
         std::cout << node->handle << std::endl;
         std::cout << node->neighbors.size() << std::endl;
         std::cout << node->position << std::endl;
@@ -568,8 +568,8 @@ TEST(BounceBackTesting, Oblique_six_eight) {
 }
 
 TEST(BounceBackTesting, moving) {
-    /// test the actual moving code
-    /// if this still doesnt work out ill do poisioulle flow...
+    // test the actual moving code
+    // if this still doesnt work out ill do poisioulle flow...
     // probable cause leakage into channels that have nothing to do
     // in the corners ?!
     // put a bunch of 1 into the top middle node of a 3x3 simspace
@@ -650,11 +650,11 @@ TEST(FunctionalTest, read_write) {
     point_t p = {size,size};
     boundaryPointConstructor boundaries(p);
     boundaries.init_quader();
-    /// run the first node generator
+    // run the first node generator
     nodeGenerator nodes(&boundaries);
     nodes.set_redo_save(true, true);
     nodes.init();
-    /// run a second one but relay on the result of the first one
+    // run a second one but relay on the result of the first one
     nodeGenerator nodes2(&boundaries);
     nodes2.set_redo_save(false,false);
     nodes2.init();
@@ -691,10 +691,10 @@ TEST(StreamTests, fused_streaming_13) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),2);
     // gen.visualize_2D_nodes(4);
     basicSimulation sm(&boundaries, &gen);
@@ -748,10 +748,10 @@ TEST(StreamTests, fused_streaming_24) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     basicSimulation sm(&boundaries, &gen);
     sm.fused_init();
     // check sim sizes
@@ -952,7 +952,7 @@ TEST(StreamTests, oSimu_streaming_57) {
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {0,1};
     boundaries.set_point(&point,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // node init
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
@@ -1027,7 +1027,7 @@ TEST(StreamTests, oSimu_streaming_68) {
     boundaries.set_point(&point,BOUNCE_BACK);
     // need to reorder nodes!!!!!!!! so that the surface is closed!!
     // new init does this
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // node init
     // first found points seems to be bugged 2.5,2.5
     nodeGenerator gen(&boundaries);

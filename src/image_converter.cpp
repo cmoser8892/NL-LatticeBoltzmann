@@ -1,6 +1,6 @@
 #include "image_converter.h"
 
-/// image converter
+// image converter
 /**
  * @fn void imageConverter::read()
  * @brief reads the bmp image into the internal bmp struct
@@ -44,7 +44,7 @@ void imageConverter::read() {
         bmp_file_input.seekg(bmp.file_header.offset_data, bmp_file_input.beg);
 
         // color header is for transparent images
-        /// note only 24 bit images really work lol
+        // note only 24 bit images really work lol
         if(bmp.info_header.bit_count == 32) {
             bmp.info_header.size = sizeof(BMPInfoHeader_t) + sizeof(BMPColorTable_t);
             bmp.file_header.offset_data = sizeof(BMPFileHeader_t) + sizeof(BMPInfoHeader_t) + sizeof(BMPColorTable_t);
@@ -173,7 +173,7 @@ void imageConverter::translate_reformed_into_structure() {
         array_t short_hand = current->point;
         // we use the velocity set for easy directions
         // we could also predict the direction based on the previous one
-        /// todo not sure if only cardinal directions should be allowed?!
+        // todo not sure if only cardinal directions should be allowed?!
         for(int i = 1; i < CHANNELS; ++i) {
             // eigen can init a point with an array but cant add stuff up...
             point_t p = short_hand + velocity_set.col(i);
@@ -213,7 +213,7 @@ void imageConverter::translate_reformed_into_structure() {
     // go over the reformed nodes and add the nodes into raw_boundary points again
     for(int i = 0; i < delete_control.size(); ++i) {
         // only delete not used elements the others get written into the array
-        /// important: dont loose pointers to the object in this whole ordeal
+        // important: dont loose pointers to the object in this whole ordeal
         if(delete_control[i]) {
             // delete element
             delete raw->reformed_boundary_points[i];

@@ -12,7 +12,7 @@
 
 // watchdog for rho
 class rhoWatchdog {
-    /// just prints out std error msgs
+    // just prints out std error msgs
   private:
     flowfield_t rho;
     double sensitivity = 0.1; // displacement to the previous value

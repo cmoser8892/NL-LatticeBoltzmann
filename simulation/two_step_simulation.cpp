@@ -1,4 +1,3 @@
-
 #include "two_step_simulation.h"
 #include "functions.h"
 #include "helper_functions.h"
@@ -111,6 +110,7 @@ void basicSimulation::collisions() {
         //node->data -= relax * (node->data - equilibrium(node));
     }
 }
+
 /**
  * @fn void basicSimulation::fused_streaming(node *node)
  * @brief streaming step for one node, pushes values

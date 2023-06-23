@@ -6,7 +6,7 @@
  * @brief constructor, sets up min and max coordinate
  */
 neighbourhood::neighbourhood() {
-    /// set the min to max and max to min
+    // set the min to max and max to min
     min_coordinate.x = INT32_MAX;
     min_coordinate.y = INT32_MAX;
     max_coordinate.x = 0;

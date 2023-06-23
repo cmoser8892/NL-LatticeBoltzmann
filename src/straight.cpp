@@ -1,8 +1,9 @@
 #include "straight.h"
 #include <fstream>
 #include <iostream>
-#
-/// private
+
+
+// private
 /**
  * @fn void straightGenerator::calculate_mass_center()
  * @brief calculates the mass center of all the boundary points
@@ -329,7 +330,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
  * @param bs_number
  */
 void straightGenerator::look_for_bumps(int bs_number) {
-    /**
+    /*
      * Note on what this function does:
      * - 1 long straights can be a special case with 2 corner cases associated, this function tries to tackle all of them
      * - the simplest and non corner case is two 1 opposing each other with lots of fluid between, will get ignored
@@ -342,7 +343,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
         if(self == nullptr) {
             continue;
         }
-        /// only do something if we are the length 1
+        // only do something if we are the length 1
         if(self->max_t == 1) {
             // we do an intersection test with all the others
             // if we intersect between 0 and max we have to decide weather this one is necessary
@@ -522,7 +523,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
     }
 }
 
-/// public
+// public
 /**
  * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
  * @brief constructor seed the boundary points pointer
@@ -585,16 +586,16 @@ void straightGenerator::init() {
  * @return number of intersections
  */
 int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
-    /// todo why 3 passes should not 2 be enough
-    /// surface based algorithm to calculate intersections
-    /**
+    // todo why 3 passes should not 2 be enough
+    // surface based algorithm to calculate intersections
+    /*
      * 3 passes have to be made to calculate to calcuate a valid intersection
      *  0 not a boundary point used in construction
      *  1 does the straight hit the surface in the area between the two points that define it
      *  2 how does the straight hit the surface (posetive or negative we only care about posetiv
      *  3 have we already hit an edgepoint
      */
-    /// 0 pass not a boundary point or point on the surface
+    // 0 pass not a boundary point or point on the surface
     int number_of_intersections = 0;
     // check if actually the boundary point, boundary points are excluded in the first pass
     if(full_pkh.key_translation(node_point) > 0) {
@@ -752,7 +753,7 @@ bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *poi
  */
 bool straightGenerator::node_inside_simple(nodePoint_t *point) {
     // even out; odd in
-    /// uses a surface representation to calculate weather nodes are inside or outside
+    // uses a surface representation to calculate weather nodes are inside or outside
     // int value = calculate_intersections(point->position, &mass_center);
     int value = calculate_intersections_redundant(point);
     return ((value%2) == 0);
@@ -765,7 +766,7 @@ bool straightGenerator::node_inside_simple(nodePoint_t *point) {
  * @return
  */
 bool straightGenerator::node_inside_star(nodePoint_t *point) {
-    /**
+    /*
      * this method is truly crap, but the star idea is a good one
      * just not sure on the overall implementation more of a look and see feel
      */
@@ -828,7 +829,7 @@ void straightGenerator::write_out_surface() {
  * @return distance t
  */
 double calculate_intersection(straight_t * ray, straight_t * surface) {
-    /**
+    /*
      * Theory:
      * - An intersection occurs if the equation f(x,y) = f(r(t)) = f(o + t*d) = 0 is satisfied
      * - All points p = (x,y) on a plane
@@ -847,7 +848,7 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
     point_t r = surface->point;
     vector_t n = surface->direction;
     // calculate function
-    /// note return nan if n orthogonal to d
+    // note return nan if n orthogonal to d
     double t = ((r -o).dot(n))/(n.dot(d));
     return t;
 }

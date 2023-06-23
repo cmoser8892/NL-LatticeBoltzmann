@@ -94,7 +94,7 @@ TEST(FunctionalTest,correct_macro) {
 }
 
 TEST(FunctionalTest, equilibrium123) {
-    /// testing the equilbirum function
+    // testing the equilbirum function
     handle_t h = 1;
     double rho = 4;
     double ux = 6;
@@ -108,7 +108,7 @@ TEST(FunctionalTest, equilibrium123) {
     n->rho = rho;
     n->u << ux,uy;
     n->population_even= equilibrium(n);
-    /// expections
+    // exceptions
     EXPECT_EQ(n->population_even(0), rho * 2/9 *(2 - 3* (ux*ux +uy*uy)));
     EXPECT_EQ(n->population_even(1),rho * 1/18 * (2 + 6*ux + 9*ux*ux - 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->population_even(2),rho * 1/18 * (2 + 6*uy + 9*uy*uy - 3*(ux*ux + uy*uy)));
@@ -444,7 +444,7 @@ TEST(FunctionalTest, simple_use_case_straight) {
     // init
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_quader();
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // straight tests
     straightGenerator s(&boundaries);
     s.init();
@@ -487,7 +487,7 @@ TEST(FunctionalTest, straight_inner_missing_57) {
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {0,1};
     boundaries.set_point(&point,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     //
     straightGenerator s(&boundaries);
     s.init();
@@ -549,7 +549,7 @@ TEST(FunctionalTest, straight_inner_missing_68) {
     boundaries.set_point(&point,BOUNCE_BACK);
     // need to reorder nodes!!!!!!!! so that the surface is closed!!
     // new init does this
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     //
     straightGenerator s(&boundaries);
     s.init();
@@ -593,7 +593,7 @@ TEST(FunctionalTest, straight_deletions) {
     setter = {1,7};
     boundaries.set_point(&setter,BOUNCE_BACK);
     EXPECT_EQ(boundaries.total_boundary_nodes(),22);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // manually set up the straight generator to tests out performance
     straightGenerator s(&boundaries);
     s.init();
@@ -629,7 +629,7 @@ TEST(FunctionalTest, straight_deletions) {
     // test out the fully integrated thing in the node generator
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(), 22 + 6 + 4 + 2);
 }
 
@@ -651,8 +651,8 @@ TEST(FunctionalTest, multiple_interruptions) {
     boundaries.steps_direction(2,{-1,1},&setter,BOUNCE_BACK);
     setter = {2,9};
     boundaries.steps_direction(1,{-1,-1},&setter,BOUNCE_BACK);
-    /// visualizer
-    /// boundaries.visualize_2D_boundary();
+    // visualizer
+    // boundaries.visualize_2D_boundary();
     straightGenerator s(&boundaries);
     s.init();
     // control
@@ -682,7 +682,7 @@ TEST(FunctionalTest, multiple_interruptions) {
     // node generator master test
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(), boundaries.total_boundary_nodes() + 8 + 2);
 }
 
@@ -704,7 +704,7 @@ TEST(FunctionalTest, straight_bump) {
     boundaries.set_point(&setter,BOUNCE_BACK);
     setter = {3,2};
     boundaries.set_point(&setter,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // straight test
     straightGenerator s(&boundaries);
     s.init();
@@ -737,7 +737,7 @@ TEST(FunctionalTest, straight_bump) {
     // direct node gen test
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),4 +8);
 }
 
@@ -770,10 +770,10 @@ TEST(FunctionalTest, multiple_bumps) {
     boundaries.set_point(&setter,BOUNCE_BACK);
     setter = {3,6};
     boundaries.set_point(&setter,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
@@ -821,10 +821,10 @@ TEST(FunctionalTest, special_case_little_bump) {
     setter = {3,6};
     setter += shift;
     boundaries.set_point(&setter,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
@@ -836,10 +836,10 @@ TEST(FunctionalTest, one_high_side_walls) {
     boundaries.init_quader();
     point_t setter = {2,1};
     boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    /// gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(),4+3+3+4);
 }
 
@@ -874,7 +874,7 @@ TEST(FunctionalTest, wierd_bump_top) {
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};
     boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // it is always a good idea to look at straight.temporary for a good test
     // test for right surface
     straightGenerator stg(&boundaries);
@@ -955,7 +955,7 @@ TEST(FunctionalTest, wierd_bump_bottom) {
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};
     boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
-    /// boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     // it is always a good idea to look at straight.temporary for a good test
     // test for right surface
     straightGenerator stg(&boundaries);

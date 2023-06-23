@@ -9,7 +9,7 @@
 #include "functions.h"
 #include "forces.h"
 
-/**
+/*
  * Notes:
  * The additional array for holding specific values of the sim bring
  * a performance increase of about 3% they were dropped in favor of a more

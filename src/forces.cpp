@@ -10,7 +10,7 @@
  * @return
  */
 double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
-    /**
+    /*
      * force term for one channel i
                ⎛c    ⎛c  ⋅ c ⎞ ⋅ u ⎞
                ⎜ a   ⎝ a    b⎠    b⎟
@@ -107,7 +107,7 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
    return return_position_y(self_position) + return_position_y(&next);
 }
 
-/// class goa force
+// class goa force
 /**
  * @fn inline double goaForce::truncation_force()
  * @brief non optimized version of the channel force calculation
@@ -140,19 +140,19 @@ inline void goaForce::truncation_force(int channel) {
 inline array_t goaForce::truncation_force_array() {
    array_t return_array;
    return_array.resize(9);
-   /// channel 0
+   // channel 0
    return_array[0] = -3*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
-   /// channel 1 - 4
+   // channel 1 - 4
    return_array[1] =  3*force_alpha[0] + 6*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
    return_array[2] = -3*velocity[0]*force_alpha[0] + 3*force_alpha[1]  + 6*velocity[1]*force_alpha[1];
    return_array[3] = -3*force_alpha[0] + 6*velocity[0]*force_alpha[0]  - 3*velocity[1]*force_alpha[1];
    return_array[4] = -3*velocity[0]*force_alpha[0] - 3*force_alpha[1] + 6*velocity[1]*force_alpha[1];
-   /// channel 5 - 6
+   // channel 5 - 6
    return_array[5] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
                      + 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
    return_array[6] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
                      + 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
-   /// channel 7 - 8
+   // channel 7 - 8
    return_array[7] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
                      - 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
    return_array[8] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]

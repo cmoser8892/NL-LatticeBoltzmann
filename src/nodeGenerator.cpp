@@ -363,7 +363,7 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
     // bumps up the boundary condition
     auto n = node_infos.at(array_position);
     auto boundary = n->boundary;
-    /// might disagree but the fall throughs of switch cases make this a bit more readable
+    // might disagree but the fall throughs of switch cases make this a bit more readable
     // if either bb or moving bb bump up
     // the others get their special treatment too
     switch(b) {
