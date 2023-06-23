@@ -217,7 +217,9 @@ void forcedSimulation::run(int current_step) {
     offset_node = (current_step & 0x1) * 9;
     for(int i = 0; i < nodes.size(); ++i) {
         // shorthands
+        // node structure
         auto node = nodes[i];
+        // force array
         auto force = forces[i];
         // use old force to update macro values
         auto [rho,ux, uy] = calculate_macro(&node->populations,force);
