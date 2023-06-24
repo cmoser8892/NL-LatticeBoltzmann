@@ -194,6 +194,7 @@ SHORT_NAMES            = NO
 # style comments (thus requiring an explicit @brief command for a brief
 # description.)
 # The default value is: NO.
+# todo consider
 
 JAVADOC_AUTOBRIEF      = NO
 
