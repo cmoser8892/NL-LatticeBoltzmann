@@ -119,7 +119,7 @@ void imageConverter::create_raw() {
     // or directly create a 2d struct from the raw bmp data not sure yet
     // create a boundary with the basic sizes can be used in the node generator
     point_t size = {bmp.info_header.width,bmp.info_header.height};
-    raw = new rawBoundaryPoints(size);
+    raw = new rawPoints(size);
     point_t current ={0,0};
     // run through raw bmp data
     uint32_t full_data = 0;

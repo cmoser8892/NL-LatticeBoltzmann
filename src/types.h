@@ -3,28 +3,30 @@
 
 #include <Eigen/Dense>
 
-#define CHANNELS 9
+#define CHANNELS 9 /**< D2Q9 has 9 channels */
 #define CARDINAL_DIRECTIONS 4
-// redefinitions
-using array_t = Eigen::ArrayXd;
-using matrix_t = Eigen::ArrayXXd;
-using flowfield_t = Eigen::ArrayXXd;
 
-using point_t = Eigen::Vector2d;
-using vector_t = Eigen::Vector2d;
+using array_t = Eigen::ArrayXd; /**< Eigen redefinition, a simple array to hold data */
+using matrix_t = Eigen::ArrayXXd; /**< Eigen redefinition, an array with 2 dimensions */
+using flowfield_t = Eigen::ArrayXXd; /**< Eigen redefinition, an array with 2 dimensions */
 
-using vector3d_t = Eigen::Vector3d;
+using point_t = Eigen::Vector2d; /**< 2D vector */
+using vector_t = Eigen::Vector2d; /**< 2d vector */
 
-using handle_t = uint64_t; // counter to denote a node
+using vector3d_t = Eigen::Vector3d; /**< 3d vector */
 
-using colour_t = uint32_t; // placeholder for colour, whatever the right dataformat may be
+using handle_t = uint64_t; /**< counter to a node stored in a vector @attention valid handles start with 1 */
 
-// globals (defined in functions)
-extern matrix_t velocity_set;
-extern matrix_t weights;
-extern matrix_t cardinal_directions;
+using colour_t = uint32_t; /**< placeholder for colour, whatever the right dataformat may be */
 
-// structs
+extern matrix_t velocity_set; /**< is set as a global */
+extern matrix_t weights; /**< is set as a global */
+extern matrix_t cardinal_directions; /**< is set as a global */
+
+/**
+ * @struct coordinate_t
+ * @brief long xy coordinates
+ */
 typedef struct coordinate {
     long x;
     long y;

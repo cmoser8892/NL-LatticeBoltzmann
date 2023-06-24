@@ -4,44 +4,47 @@
 #include "types.h"
 #include "helper_functions.h"
 #include "helper_classes.h"
-/*
- * class to generate/hold boundary points from other structures
- * first ingredient to the init
- */
 
-// definition of a general boundary point
+/**
+ * @struct struct boundaryPoint_t
+ * @brief contains the information of a boundary point (handle, point, dry/wet, boundary type)
+ */
 typedef struct boundaryPoint {
-    handle_t h; // the handle is forgotten when moved to node_infos..., it gets a new on
-    point_t point;
-    nodeIdentifier_t dw;
-    boundaryType_t type;
+    handle_t h; /**< handle to the object, only unique in the boundary point cloud, will get a new one in nodes*/
+    point_t point; /**< position of the boundary point */
+    nodeIdentifier_t dw; /**< dry or wet boundary */
+    boundaryType_t type; /**< boundary type (bounce back, periodic, etc.*/
 }boundaryPoint_t;
 
-// raw unordered point clouds
-class rawBoundaryPoints {
-    // enum return codes for boarder-checker
-    // only visible in the class functions no need otherwise
+/**
+ * @class class rawPoints
+ * @brief holds all possible points that are not part of a fluid, the class reduce those points just to boundary points on the boarder
+ */
+class rawPoints {
+    /**
+     * @enum enum border_return_code_t
+     * @brief description of cases where a point is, inside on the boarder or at a corner
+     */
     typedef enum border_return_code {
-        INSIDE = 0,
-        BOARDER,
-        CORNER
+        INSIDE = 0, /**< inside of the bulk of the raw points, means I have 8 neighbors */
+        BOARDER, /**< at the boarder of the bulk of raw points */
+        CORNER /**< special boarder case of a boundary */
     }border_return_code_t;
   private:
-    // reminder that valid handles start at 1
-    handle_t current_handle = 0;
-    point_t size;
-    point_t limits;
-    pointKeyHash pkh;
+    handle_t current_handle = 0; /**< counter of the currently used handles to be given */
+    point_t size; /**< overall size of the object */
+    point_t limits; /**< size -1 */
+    pointKeyHash pkh; /**< hashing class used to find the immediate neighbors of a point */
     void fill_keys();
     border_return_code_t check_boarder(boundaryPoint_t &b);
     int set_max_neighbors(border_return_code_t b);
     int set_min_neighbors(border_return_code_t b);
     bool judge_add_up_found_velocities_vector(vector_t a);
   public:
-    std::vector<boundaryPoint_t*> raw_boundary_points;
-    std::vector<boundaryPoint_t*> reformed_boundary_points;
-    explicit rawBoundaryPoints(point_t size);
-    ~rawBoundaryPoints();
+    std::vector<boundaryPoint_t*> raw_boundary_points; /**< vector of all boundary points */
+    std::vector<boundaryPoint_t*> reformed_boundary_points; /**< vector of the variable boundary points */
+    explicit rawPoints(point_t size);
+    ~rawPoints();
     void delete_raw_boundary_points();
     void delete_reformed_boundary_points();
     void rewrite_reformed_boundary_handles();
@@ -51,18 +54,22 @@ class rawBoundaryPoints {
     void reduce();
 };
 
-// Description of one closed surface/structure
+/**
+ * @class class boundaryStructure
+ * @brief this class holds a closed amount of boundary points to be used when constructing surfaces
+ */
 class boundaryStructure {
   public:
     ~boundaryStructure();
     void rewrite_reformed_boundary_handles();
-    // data
-    std::vector<boundaryPoint_t*> boundary_points;
+    std::vector<boundaryPoint_t*> boundary_points; /**< data vector holder of boundary points */
 };
-
+/**
+ * @class class boundaryPointConstructor
+ * @brief this class can either construct a boundary with a set of functions or process reduced raw points into a structured boundary point cloud
+ */
 class boundaryPointConstructor {
   private:
-    // reminder valid handles start at 1
     handle_t added_handle = 0;
   public:
     // holds all the boundary points

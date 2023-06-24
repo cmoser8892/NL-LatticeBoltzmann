@@ -74,7 +74,7 @@ class imageConverter {
   public:
     // public vars
     BMP_t bmp;
-    rawBoundaryPoints* raw = nullptr;
+    rawPoints * raw = nullptr;
     boundaryPointConstructor* boundaries = nullptr;
     // functions
     explicit imageConverter(std::filesystem::path p);
