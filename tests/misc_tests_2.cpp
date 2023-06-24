@@ -6,8 +6,11 @@
 #include "neighborhood.h"
 #include "image_converter.h"
 #include <gtest/gtest.h>
-
 // the misc file got to laggy apparently i should stop at 2000 lines
+
+/**
+ * Checks out how ration with eigen work.
+ */
 TEST(ForceTest, rotation_eigen) {
     Eigen::Rotation2D<double> rot;
     rot.angle() = EIGEN_PI/2;
@@ -18,6 +21,10 @@ TEST(ForceTest, rotation_eigen) {
     EXPECT_NEAR(test.x(),0,1e-10);
 }
 
+/**
+ * Tests weather or not the implementation of the truncation force is correct.
+ * @see calculate_truncation_force()
+ */
 TEST(ForceTest, truncation_force) {
     // setup the vectors
     vector_t c = {0,0};
@@ -41,7 +48,10 @@ TEST(ForceTest, truncation_force) {
     f = {1,1};
     EXPECT_EQ(calculate_truncation_force(&c,&u,&f),36);
 }
-
+/**
+ * Tests if the force calculation is correct.
+ * @see goaForce::calculate_F_circle()
+ */
 TEST(ForceTest, circle_force) {
     double force = 0.0035;
     point_t dont_care = {0,0};
@@ -53,6 +63,10 @@ TEST(ForceTest, circle_force) {
     EXPECT_NEAR(f.norm(), force, 1e-5);
 }
 
+/**
+ * Tests if the rotation force is 0 if all the ingredients are 0.
+ * @see goaForce::calculate_F_rotation()
+ */
 TEST(ForceTest, rotation_force_zero) {
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
@@ -66,6 +80,11 @@ TEST(ForceTest, rotation_force_zero) {
     EXPECT_EQ(f.norm(),0);
 }
 
+/**
+ * Tests that the trunication terms are 0 for a force of 0.
+ * @see goaForce::calculate_F_rotation()
+ * @see goaForce::calculate_F_i()
+ */
 TEST(ForceTest, functional_master_test_rotation_zero) {
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
@@ -78,6 +97,10 @@ TEST(ForceTest, functional_master_test_rotation_zero) {
     }
 }
 
+/**
+ * Tests against expected values for the zentrifugal force.
+ * @see goaForce::calculate_F_rotation()
+ */
 TEST(ForceTest, zentrifugal_force) {
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
@@ -104,6 +127,10 @@ TEST(ForceTest, zentrifugal_force) {
     EXPECT_EQ(f.norm(),4*test_point.norm());
 }
 
+/**
+ * Tests weather or not the coriolis force is calculated against expected values.
+ * @see goaForce::calculate_F_rotation()
+ */
 TEST(ForceTest, coriolis_force) {
     point_t origin = {0,0};
     point_t canvas_size = {50,50};
@@ -131,6 +158,10 @@ TEST(ForceTest, coriolis_force) {
     EXPECT_EQ(f.y(),0);
 }
 
+/**
+ * Tests the correct truncation function terms agaist expected values.
+ * @see calculate_truncation_force()
+ */
 TEST(ForceTest, correct_truncation_terms) {
     // test against the c style implementation with the same inputs
     // the c function is assumed to be correct (tested previously)
@@ -187,11 +218,19 @@ TEST(ForceTest, correct_truncation_terms) {
     }
 }
 
+/**
+ * Tests the conical delta function.
+ * @see conical_delta()
+ */
 TEST(FuntionalTest, conical_delta) {
     EXPECT_EQ(conical_delta(2,3),0);
     EXPECT_EQ(conical_delta(1,1),1);
 }
 
+/**
+ * Tests teh calculate_angle function against expected values.
+ * @see calculate_angle()
+ */
 TEST(FunctionalTest, angles) {
     vector_t v1 = {1,0};
     vector_t v2 = {0,1};
@@ -202,6 +241,10 @@ TEST(FunctionalTest, angles) {
     EXPECT_NEAR(calculate_angle(&v1, &v2), EIGEN_PI,1e-5);
 }
 
+/**
+ * Test the force sim method for calculation of macro values against expected values.
+ * @see forcedSimulation::test_calcualte_macro()
+ */
 TEST(FunctionalTest, force_macro_calculation) {
     // simple value correction
     // setup arrays
@@ -230,6 +273,10 @@ TEST(FunctionalTest, force_macro_calculation) {
     }
 }
 
+/**
+ * Checks weather or not the first and second moment of the truncation term of the force are correct.
+ * @see goaForce::calculate_F_i()
+ */
 TEST(FunctionalTest, force_term_first_second_moment) {
     // tests out weather or not the velocity moments of the truncation of the force term is calculated
     // correctly
@@ -263,6 +310,10 @@ TEST(FunctionalTest, force_term_first_second_moment) {
     EXPECT_NEAR(first_moment, 0,1e-7);
 }
 
+/**
+ * Tests weather or not the moments of the equilibrium function are correct.
+ * @see equilibrium_2d()
+ */
 TEST(FunctionalTest, equilibrium_moments) {
     double rho = 3;
     double ux = 5;
@@ -284,6 +335,11 @@ TEST(FunctionalTest, equilibrium_moments) {
     EXPECT_NEAR(second_moment(1)/rho,uy,1e-10);
 }
 
+/**
+ * Tests the modified macro calculation in a force simulation against another way of implementaiton..
+ * @see forcedSimulation::test_calcualte_macro()
+ * @see calculate_macro_population()
+ */
 TEST(FunctionalTest, macro_tests) {
     // stand in for the populations
     array_t values;

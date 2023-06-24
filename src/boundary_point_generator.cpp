@@ -360,8 +360,7 @@ void boundaryPointConstructor::steps_direction(int steps, vector_t dir, point_t 
 }
 
 /**
- * @fn void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, boundaryType_t b)
- * @brief creates a corner
+ * Creates a corner.
  */
 void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, boundaryType_t b) {
     // creation of a corner

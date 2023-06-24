@@ -9,6 +9,11 @@
 #include "image_converter.h"
 #include <gtest/gtest.h>
 
+/**
+ *  Tests the streaming in channel 1.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_one) {
     // for the streaming test the last two points have to be ignored (aka DRY nodes)
     int size = 20;
@@ -42,7 +47,11 @@ TEST(StreamTests, one_D_streaming_channel_one) {
         sm.streaming_step_2();
     }
 }
-
+/**
+ *  Tests the streaming in channel 3.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_three) {
     int size = 20;
     point_t start = {0,0};
@@ -80,6 +89,11 @@ TEST(StreamTests, one_D_streaming_channel_three) {
     }
 }
 
+/**
+ *  Tests the streaming in channel 2.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_two) {
     int size = 20;
     int channel = 2;
@@ -123,6 +137,11 @@ TEST(StreamTests, one_D_streaming_channel_two) {
     }
 }
 
+/**
+ *  Tests the streaming in channel 4.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_four) {
     int size = 20;
     int channel = 4;
@@ -166,6 +185,11 @@ TEST(StreamTests, one_D_streaming_channel_four) {
     }
 }
 
+/**
+ *  Tests the streaming in channel 5.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_five) {
     int size = 20;
     int channel = 5;
@@ -209,6 +233,11 @@ TEST(StreamTests, one_D_streaming_channel_five) {
     }
 }
 
+/**
+ *  Tests the streaming in channel 7.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_seven) {
     int size = 20;
     int channel = 7;
@@ -252,6 +281,11 @@ TEST(StreamTests, one_D_streaming_channel_seven) {
     }
 }
 
+/**
+ *  Tests the streaming in channel 6.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_six) {
     int size = 20;
     int channel = 6;
@@ -295,6 +329,11 @@ TEST(StreamTests, one_D_streaming_channel_six) {
     }
 }
 
+/**
+ *  Tests the streaming in channel 8.
+ *  @see basicSimulation::streaming_step_1()
+ *  @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, one_D_streaming_channel_eight) {
     int size = 20;
     int channel = 8;
@@ -338,6 +377,10 @@ TEST(StreamTests, one_D_streaming_channel_eight) {
     }
 }
 
+/**
+ *  Tests with specific codes weather or not streaming and collision is consistent.
+ *  @see basicSimulation::run()
+ */
 TEST(StreamTests, combinded_test_boundary_consistent) {
     // checks leakages form the boundary nodes
     // setup sim
@@ -406,6 +449,12 @@ TEST(StreamTests, combinded_test_boundary_consistent) {
     }
 }
 
+/**
+ * Tests weather or not bounce back works form channel one to three.
+ * @see basicSimulation::bounce_back()
+ * @see basicSimulation::streaming_step_1()
+ * @see basicSimulation::streaming_step_2()
+ */
 TEST(BounceBackTesting, Horizontals_one_three) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
@@ -445,6 +494,12 @@ TEST(BounceBackTesting, Horizontals_one_three) {
     EXPECT_EQ(sm.nodes.at(0)->population_even(1),1);
 }
 
+/**
+ * Tests weather or not bounce back works form channel two to four.
+ * @see basicSimulation::bounce_back()
+ * @see basicSimulation::streaming_step_1()
+ * @see basicSimulation::streaming_step_2()
+ */
 TEST(BounceBackTesting, Horizontals_two_four) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
@@ -487,7 +542,12 @@ TEST(BounceBackTesting, Horizontals_two_four) {
     EXPECT_EQ(sm.nodes.at(0)->population_even(4),1);
 }
 
-
+/**
+ * Tests weather or not bounce back works form channel five to seven.
+ * @see basicSimulation::bounce_back()
+ * @see basicSimulation::streaming_step_1()
+ * @see basicSimulation::streaming_step_2()
+ */
 TEST(BounceBackTesting, Oblique_five_seven) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
@@ -531,27 +591,33 @@ TEST(BounceBackTesting, Oblique_five_seven) {
     EXPECT_EQ(sm.nodes.at(1)->population_even(7),1);
 }
 
+/**
+ * Tests weather or not bounce back works form channel six to eight.
+ * @see basicSimulation::bounce_back()
+ * @see basicSimulation::streaming_step_1()
+ * @see basicSimulation::streaming_step_2()
+ */
 TEST(BounceBackTesting, Oblique_six_eight) {
     // we need to generate two nodes and only really consider the bb
     // generate two points we have two bounary nodes and one wet node
     // in this case we are interested in channel 1 to 3 bb
     int size = 3;
-    point_t start = {0,size};
-    point_t end = {size,0 };
-    point_t sim_area = {size,size};
+    point_t start = {0, size};
+    point_t end = {size, 0};
+    point_t sim_area = {size, size};
     // need to be able to prime the boundary point construtor
-    vector_t node_generation = {1,-1};
+    vector_t node_generation = {1, -1};
     boundaryPointConstructor boundaries(sim_area);
     boundaries.init_structure();
-    boundaries.set_point(&start,BOUNCE_BACK);
-    boundaries.set_point(&end  ,BOUNCE_BACK);
+    boundaries.set_point(&start, BOUNCE_BACK);
+    boundaries.set_point(&end, BOUNCE_BACK);
     nodeGenerator gen(&boundaries);
     gen.set_discovery_vector(node_generation);
     gen.init();
-    basicSimulation sm(&boundaries,&gen);
+    basicSimulation sm(&boundaries, &gen);
     sm.init();
     // zero the data
-    for(auto node : sm.nodes) {
+    for (auto node : sm.nodes) {
         node->population_even.setZero();
         node->population_odd.setZero();
     }
@@ -563,10 +629,16 @@ TEST(BounceBackTesting, Oblique_six_eight) {
     sm.streaming_step_1();
     sm.streaming_step_2();
     sm.bounce_back();
-    EXPECT_EQ(sm.nodes.at(0)->population_even(8),1);
-    EXPECT_EQ(sm.nodes.at(1)->population_even(6),1);
+    EXPECT_EQ(sm.nodes.at(0)->population_even(8), 1);
+    EXPECT_EQ(sm.nodes.at(1)->population_even(6), 1);
 }
 
+/**
+ * Tests out weather or not a moving bounce back boundary has the right result.
+ * @see basicSimulation::bounce_back()
+ * @see basicSimulation::streaming_step_1()
+ * @see basicSimulation::streaming_step_2()
+ */
 TEST(BounceBackTesting, moving) {
     // test the actual moving code
     // if this still doesnt work out ill do poisioulle flow...
@@ -609,6 +681,11 @@ TEST(BounceBackTesting, moving) {
     }
 }
 
+/**
+ * Tests if the values in channel 0 reamain untouched by streaming.
+ * @see basicSimulation::streaming_step_1()
+ * @see basicSimulation::streaming_step_2()
+ */
 TEST(StreamTests, channel_0_persistent) {
     // test weather or not values in channel 0 persist throu streaming
     int size = 5;
@@ -645,6 +722,12 @@ TEST(StreamTests, channel_0_persistent) {
     }
 }
 
+/**
+ * Generates 2 node generators one that writes to file and the other one not.
+ * Checks weather or not results are the same.
+ * Tests the write and readback.
+ * @see nodeGenerator::set_redo_save()
+ */
 TEST(FunctionalTest, read_write) {
     int size = 5;
     point_t p = {size,size};
@@ -682,6 +765,10 @@ TEST(FunctionalTest, read_write) {
     }
 }
 
+/**
+ * Tests the functionaltiy of one step streaming in channel 1 and 3.
+ * @see basicSimulation::fused_streaming()
+ */
 TEST(StreamTests, fused_streaming_13) {
     // sizes matters
     int size = 4;
@@ -739,6 +826,10 @@ TEST(StreamTests, fused_streaming_13) {
     EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(1), 1);
 }
 
+/**
+ * Tests the functionality of one step streaming in channel 2 and 4.
+ * @see basicSimulation::fused_streaming()
+ */
 TEST(StreamTests, fused_streaming_24) {
     // sizes matters
     int size = 4;
@@ -794,6 +885,14 @@ TEST(StreamTests, fused_streaming_24) {
     EXPECT_EQ(sm.nodes.at(1)->current_population->operator()(2), 1);
 }
 
+/**
+ * Tests the different implementations of macro and collision against each other.
+ * @see macro()
+ * @see fused_macro()
+ * @see collision()
+ * @see fused_collision()
+ * @see optimizedSimulation::one_step_macro_collision()
+ */
 TEST(FunctionalTest, one_step_macro_collison) {
     // test against original
     double relaxation_time = 0.5;
@@ -820,6 +919,10 @@ TEST(FunctionalTest, one_step_macro_collison) {
     }
 }
 
+/**
+ * tests the optimized implementation of the streaming in channel 1 and 3.
+ * @see optimizedSimulation::streaming()
+ */
 TEST(StreamTests, oSimu_streaming_13) {
     // sizes matters
     int step = 0;
@@ -869,6 +972,10 @@ TEST(StreamTests, oSimu_streaming_13) {
     EXPECT_EQ(sm.nodes.at(1)->populations(1 + sm.offset_sim), 1);
 }
 
+/**
+ * tests the optimized implementation of the streaming in channel 2 and 4.
+ * @see optimizedSimulation::streaming()
+ */
 TEST(StreamTests, oSimu_streaming_24) {
     // sizes matters
     int step = 0;
@@ -918,6 +1025,10 @@ TEST(StreamTests, oSimu_streaming_24) {
     EXPECT_EQ(sm.nodes.at(1)->populations(2 + sm.offset_sim), 1);
 }
 
+/**
+ * tests the optimized implementation of the streaming in channel 5 and 7.
+ * @see optimizedSimulation::streaming()
+ */
 TEST(StreamTests, oSimu_streaming_57) {
     // sizes matters
     int step = 0;
@@ -990,6 +1101,10 @@ TEST(StreamTests, oSimu_streaming_57) {
     EXPECT_EQ(sm.nodes.at(1)->populations(5 + sm.offset_sim), 1);
 }
 
+/**
+ * tests the optimized implementation of the streaming in channel 6 and 8.
+ * @see optimizedSimulation::streaming()
+ */
 TEST(StreamTests, oSimu_streaming_68) {
     // sizes matters
     int step = 0;

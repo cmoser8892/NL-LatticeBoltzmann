@@ -3,6 +3,9 @@
 #include <immintrin.h> // intel instructions
 #include <gtest/gtest.h>
 
+/**
+ * Checks if vectorization works and is enabled.
+ */
 TEST(Extra_tests,avx) {
     __m256 A{};
     __m256 B{};
@@ -12,6 +15,9 @@ TEST(Extra_tests,avx) {
     }
 }
 
+/**
+ * Checks weather or not the bmp headers are packed correctly and have the right sizes in memory.
+ */
 TEST(Extra_tests, packed_and_counted_bmp_headers) {
     BMPFileHeader_t t;
     EXPECT_EQ(sizeof(t),14);

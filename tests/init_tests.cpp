@@ -6,6 +6,10 @@
 #include "straight.h"
 #include <gtest/gtest.h>
 
+/**
+ * Tests the init quader method and checks weather or not it has the right amount of nodes.
+ * @see boundaryPointConstructor::init_quader()
+ */
 TEST(InitTests, basicBoundaryPoints) {
     int size = 5;
     point_t p = {size,size};
@@ -15,6 +19,11 @@ TEST(InitTests, basicBoundaryPoints) {
     EXPECT_EQ(boundaries.total_boundary_nodes(), (size-1)*(size-1));
 }
 
+/**
+ * Checks if the nodeGenerator intis the right amount of nodes.
+ * @see boundaryPointConstructor::init()
+ * @see nodeGnerator::init()
+ */
 TEST(InitTests, checkNodeGeneration) {
     int size = 5;
     point_t p = {size,size};
@@ -27,6 +36,11 @@ TEST(InitTests, checkNodeGeneration) {
     EXPECT_EQ(nodes.node_infos.size(),size*size );
 }
 
+/**
+ * Checks the amount of links a node has in relation to it's position.
+ * @see boundaryPointConstructor::init()
+ * @see nodeGnerator::init()
+ */
 TEST(InitTests, basicNeighbors) {
     int size = 5;
     point_t p = {size,size};
@@ -48,6 +62,10 @@ TEST(InitTests, basicNeighbors) {
     }
 }
 
+/**
+ * Checks weather or not sliding lid has the right amount of BOUNCE_BACK_MOVING nodes.
+ * @see boundaryPointConstructor::init_slinding_lid()
+ */
 TEST(InitTests, init_sliding_Lid_boundaries) {
     int size = 5;
     point_t p = {size,size};
@@ -63,6 +81,10 @@ TEST(InitTests, init_sliding_Lid_boundaries) {
     }
 }
 
+/**
+ * Tests weather a sliding lid Simulation is set up with the correct amount of BOUNCE_BACK_MOVING nodes.
+ * @see basicSimulation::init()
+ */
 TEST(InitTests, init_sliding_Lid_simulation) {
     int size = 5;
     point_t p = {size,size};
@@ -79,6 +101,10 @@ TEST(InitTests, init_sliding_Lid_simulation) {
     }
 }
 
+/**
+ * Checks weather the intial values for rho, ux and uy are set correctly.
+ * @see basicSimulation::init()
+ */
 TEST(InitTests, sim_init_correct_values) {
     // when  started velocity should be 0 and rho 1
     int size = 5;
@@ -111,6 +137,10 @@ TEST(InitTests, sim_init_correct_values) {
     }
 }
 
+/**
+ * Tests the links each boundary node has and tests against expected total amount with that meny links.
+ * @see basicSimulation::init()
+ */
 TEST(InitTests, boundary_compostion) {
     // checks how many links boundary nodes have corners have 1 (total of 4)
     // adjacent ones 2 (total of 8)
@@ -158,7 +188,10 @@ TEST(InitTests, boundary_compostion) {
     EXPECT_EQ(threes, 4*(size-1) - 12);
 }
 
-
+/**
+ * Tests weather or not anything crashes in the init to run process.
+ * We just init a quader so nothing actually happens.
+ */
 TEST(InitTests,simulation_init_run) {
     // init the boundary points -> then init the simulation ( and with it the node generator)
     // this is just a run test to see weather or not anything crashes durin 1 run
@@ -182,6 +215,9 @@ TEST(InitTests,simulation_init_run) {
     }
 }
 
+/**
+ * Tests if all the boundary flags are set correctly from the boundaryPointConstructor to simulation.
+ */
 TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
     int size = 12;
     point_t p = {size,size};
@@ -204,6 +240,10 @@ TEST(InitTests,simulation_sliding_lid_recheck_boundary_flags) {
     }
 }
 
+/**
+ * Tests weather or not the neighborhood of each node is established correctly.
+ * @see neighbourhood::determine_neighbors()
+ */
 TEST(InitTests, simulation_link_positions) {
     // check weather or not the links point to the correct node
     int size = 8;
@@ -225,6 +265,10 @@ TEST(InitTests, simulation_link_positions) {
     }
 }
 
+/**
+ * Checks weather the amount of surface created from boundary points is correct.
+ * @see straightGenerator::init()
+ */
 TEST(InitTests, sufaces) {
     unsigned int sub_size = 8;
     point_t p = {sub_size,sub_size};
@@ -244,7 +288,11 @@ TEST(InitTests, sufaces) {
 
 }
 
-TEST(InitTests, reduced_surface) {
+/**
+ * Test the first method that has not straight boundary.
+ * @see boundaryPointConstructor::init_chopped_sliding_lid
+ */
+TEST(InitTests, reduced_size) {
     unsigned int size = 6;
     unsigned int sub_size = 4;
     point_t c = {size, size};
@@ -270,6 +318,10 @@ TEST(InitTests, reduced_surface) {
     }
 }
 
+/**
+ * Tests the chopped boundary function.
+ * @see boundaryPointConstructor::init_chopped_sliding_lid()
+ */
 TEST(InitTests, chopped_boundaries) {
     unsigned int size = 6;
     unsigned int sub_size = 4;
@@ -288,6 +340,10 @@ TEST(InitTests, chopped_boundaries) {
     EXPECT_EQ(gen.node_infos.size(), sub_size*sub_size-1);
 }
 
+/**
+ * Tests the amount of boundary points for a sliding lid with a hole.
+ * @see boundaryPointConstructor::init_sliding_lid_inner()
+ */
 TEST(InitTests, outer_inner_quader) {
     unsigned int size = 10;
     unsigned int outer_size = 7;
@@ -300,11 +356,18 @@ TEST(InitTests, outer_inner_quader) {
     EXPECT_EQ(boundaries.total_boundary_nodes(), ((outer_size-1) + (inner_size-1))*4);
 }
 
+/**
+ * Checks out how and unordered multimap works.
+ */
 TEST(NeighbourhoodTests, hash_keys) {
     std::unordered_multimap<handle_t,char> map = {{1,'a'},{1,'b'},{1,'d'},{2,'b'}};
     EXPECT_EQ(map.size(),4);
 }
 
+/**
+ * Tests the board creation from the nodeGenerator
+ * @see nodeGenerator::board_creation()
+ */
 TEST(InitTests, board_creation) {
     // tests the boards creation in terms of the correct size
     unsigned int size = 10;
@@ -313,6 +376,10 @@ TEST(InitTests, board_creation) {
     EXPECT_EQ(size*size, n.node_infos.size());
 }
 
+/**
+ * Tests against where one node that is also the mass_center of the straghtGenerator gets lost.
+ * @see straightGenerator::calculate_intersections()
+ */
 TEST(InitTests, init_odd_middle) {
     // when initializing with uneven sizes the middle gets lost
     int size = 5;
@@ -324,6 +391,11 @@ TEST(InitTests, init_odd_middle) {
     EXPECT_EQ(size*size,nodeGenerator.node_infos.size());
 }
 
+/**
+ * Tests the fused init method of the nodeGenerator.
+ * @note the boundary points get optimized away
+ * @see nodeGenerator::init_fused()
+ */
 TEST(InitTests, fused_init) {
     int size = 4;
     point_t p = {size,size};
@@ -349,6 +421,12 @@ TEST(InitTests, fused_init) {
     }
 }
 
+/**
+ * There was a bug where some nodes unexpectedly went missing for a inner outer boundary clouds.
+ * Root cause was the connection of boundary points that do not belong to the same structure.
+ * Fixed with the introduction of boundaryStructures.
+ * @see boundaryStructure
+ */
 TEST(InitTests, inner_outer_neighbour_test) {
     // still kinda spooked will try out the write out of the rho field
     unsigned int size = 30;
@@ -398,6 +476,10 @@ TEST(InitTests, inner_outer_neighbour_test) {
     EXPECT_EQ(number_nodes, number_dry_nodes + number_wet_nodes);
 }
 
+/**
+ * Tests against the unclose boundaryStructure bug.
+ * @see boundaryStructure
+ */
 TEST(InitTests, init_out_inner_rho_writeout) {
     // checks number of rho zeros
     unsigned int size = 30;
@@ -440,6 +522,11 @@ TEST(InitTests, init_out_inner_rho_writeout) {
     EXPECT_EQ(errors,0);
 }
 
+/**
+ * Another test against the bug with missing boundary structures.
+ * @note Root causues was the introduction of cross connected boundary structures resulting for just using boundaryPoints.
+ * @see boundaryStructure
+ */
 TEST(InitTests, inner_outer_master_test) {
     unsigned int size = 10;
     unsigned int sub_size = 8;
@@ -499,7 +586,10 @@ TEST(InitTests, inner_outer_master_test) {
     EXPECT_EQ(0,bad_wet_nodes);
 }
 
-
+/**
+ * Checks weather or not the correct boundary labels got set while getting rid of all the bounce back nodes.
+ * @see nodeGenerator::init_fused()
+ */
 TEST(InitTests, fused_init_correct_boundary_lables) {
     unsigned int size = 6;
     point_t c = {size,size};
@@ -532,6 +622,10 @@ TEST(InitTests, fused_init_correct_boundary_lables) {
     EXPECT_EQ(bounce_back_moving,4);
 }
 
+/**
+ * Tests for the correct amount of nodes while using fused init.
+ * @see nodeGenerator::init_fused()
+ */
 TEST(InitTests, fused_inner_outer_init_simple) {
     unsigned int size = 10;
     unsigned int sub_size = 8;
@@ -553,6 +647,10 @@ TEST(InitTests, fused_inner_outer_init_simple) {
     EXPECT_EQ(gen.node_infos.size(),expected_total_node_number);
 }
 
+/**
+ * Tests fused init with an outer and inner structure set onto the canvas.
+ * @see basicSimulation::fused_init()
+ */
 TEST(InitTests, fused_inner_outer_init_shifted) {
     // checks number of rho zeros
     unsigned int size = 30;
@@ -582,6 +680,10 @@ TEST(InitTests, fused_inner_outer_init_shifted) {
     // nessessary to check the boundary nodes too
 }
 
+/**
+ * Checks if the poiseulle flow was set up correctly.
+ * @see boundaryPointConstructor::init_poiseuille_flow(
+ */
 TEST(InitTests, p_flow) {
     unsigned int size = 30;
     point_t s = {size,size-10};
@@ -613,6 +715,10 @@ TEST(InitTests, p_flow) {
     EXPECT_EQ(dry, 30+30);
 }
 
+/**
+ * Tests the individual corner creation function in the boundaryPointConstructor.
+ * @see boundaryPointConstructor::corner_creation()
+ */
 TEST(InitTests, corners) {
     // test all corners if works
     int size = 3;
@@ -652,6 +758,10 @@ TEST(InitTests, corners) {
     EXPECT_EQ(b.total_boundary_nodes(),0);
 }
 
+/**
+ * Tests weather or not the straight generator can handle unordered boundary points.
+ * @see straightGenerator::init()
+ */
 TEST(InitTests, straight_unordered) {
     int step = 0;
     int size = 4;
@@ -701,6 +811,10 @@ TEST(InitTests, straight_unordered) {
     }
 }
 
+/**
+ * When we want to handle dry and wet boundaries they have to be ordered so that the wet nodes come first and dont get lost.
+ * @see boundaryPointConstructor::init_poiseuille_flow()
+ */
 TEST(InitTests, ordering_boundaries) {
     unsigned int size = 4;
     point_t c = {size,size};
@@ -723,6 +837,10 @@ TEST(InitTests, ordering_boundaries) {
     }
 }
 
+/**
+ * Tests weather or not a simulation can be init with wet boundary nodes.
+ * Checks if the sizes are ok.
+ */
 TEST(InitTests, special_case_wet_boundary) {
     // when labeling some boundary nodes as wet we get an error in reduce boundary neighborhood
     unsigned int size = 4;
@@ -737,7 +855,10 @@ TEST(InitTests, special_case_wet_boundary) {
     optimizedSimulation sim(&boundaries,&gen);
     sim.run(0);
 }
-
+/**
+ * Tests weather or not we can create a staircase with the functions.
+ * @see boundaryPointConstructor::steps_direction()
+ */
 TEST(InitTests, staircase_11) {
     unsigned int size = 8;
     point_t c = {size,size};
@@ -751,6 +872,9 @@ TEST(InitTests, staircase_11) {
     EXPECT_EQ(boundaries.boundary_structures[0]->boundary_points.size(), 8 +7 -1);
 }
 
+/**
+ * Test weather or not a specific test boundary point constuction is ok.
+ */
 TEST(InitTests, up_down_boundary) {
     unsigned int size = 10;
     point_t c = {size,size};

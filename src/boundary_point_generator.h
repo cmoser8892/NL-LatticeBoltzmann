@@ -6,8 +6,7 @@
 #include "helper_classes.h"
 
 /**
- * @struct struct boundaryPoint_t
- * @brief contains the information of a boundary point (handle, point, dry/wet, boundary type)
+ * Contains the information of a boundary point (handle, point, dry/wet, boundary type).
  */
 typedef struct boundaryPoint {
     handle_t h; /**< handle to the object, only unique in the boundary point cloud, will get a new one in nodes*/
@@ -17,13 +16,11 @@ typedef struct boundaryPoint {
 }boundaryPoint_t;
 
 /**
- * @class class rawPoints
- * @brief holds all possible points that are not part of a fluid, the class reduce those points just to boundary points on the boarder
+ * Holds all possible points that are not part of a fluid, the class reduce those points just to boundary points on the boarder
  */
 class rawPoints {
     /**
-     * @enum enum border_return_code_t
-     * @brief description of cases where a point is, inside on the boarder or at a corner
+     * Description of cases where a point is, inside on the boarder or at a corner.
      */
     typedef enum border_return_code {
         INSIDE = 0, /**< inside of the bulk of the raw points, means I have 8 neighbors */
@@ -55,8 +52,7 @@ class rawPoints {
 };
 
 /**
- * @class class boundaryStructure
- * @brief this class holds a closed amount of boundary points to be used when constructing surfaces
+ * This class holds a closed amount of boundary points to be used when constructing surfaces.
  */
 class boundaryStructure {
   public:
@@ -65,8 +61,7 @@ class boundaryStructure {
     std::vector<boundaryPoint_t*> boundary_points; /**< data vector holder of boundary points */
 };
 /**
- * @class class boundaryPointConstructor
- * @brief this class can either construct a boundary with a set of functions or process reduced raw points into a structured boundary point cloud
+ * This class can either construct a boundary with a set of functions or process reduced raw points into a structured boundary point cloud.
  */
 class boundaryPointConstructor {
   private:

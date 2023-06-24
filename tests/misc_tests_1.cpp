@@ -7,6 +7,10 @@
 #include "image_converter.h"
 #include <gtest/gtest.h>
 
+/**
+ * Tests the equilbirum function against expected values.
+ * @see equilibrium()
+ */
 TEST(FunctionalTest, correct_equilibrium) {
     // check weather or not the pen and computer agree
     handle_t h = 1;
@@ -58,6 +62,10 @@ TEST(FunctionalTest, correct_equilibrium) {
     EXPECT_NEAR(-2.0/36,n->population_even(8),1e-10);
 }
 
+/**
+ * Tests weather or not the correct macro values (rho, ux, uy) is calculated.
+ * @see macro()
+ */
 TEST(FunctionalTest,correct_macro) {
     // values should just read back
     handle_t h = 1;
@@ -93,6 +101,10 @@ TEST(FunctionalTest,correct_macro) {
     EXPECT_NEAR(n->u(1), 10, 1e-10);
 }
 
+/**
+ * Tests the equilibrium function from another angle.
+ * @see equilibrium()
+ */
 TEST(FunctionalTest, equilibrium123) {
     // testing the equilbirum function
     handle_t h = 1;
@@ -120,6 +132,10 @@ TEST(FunctionalTest, equilibrium123) {
     EXPECT_EQ(n->population_even(8),rho * 1/36 *(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
 }
 
+/**
+ * Tests the macro function from the populations.
+ * @see macro()
+ */
 TEST(FunctionalTest, macro123) {
     handle_t h = 1;
     int dimension = 2;
@@ -135,6 +151,12 @@ TEST(FunctionalTest, macro123) {
     EXPECT_NEAR(-6.0/45,n->u(1), 1e-10);
 }
 
+/**
+ * Tests the bit interleaving functions against expected values.
+ *  @see bit_interleaving_2d()
+ *  @see bit_interleaving_3d()
+ *  @see bit_interleaving()
+ */
 TEST(Orderingtests, bitInterleaving) {
     EXPECT_EQ(bit_interleaving(2,3), 0xE);
     EXPECT_EQ(bit_interleaving_2d(2,3),0xE);
@@ -147,6 +169,14 @@ TEST(Orderingtests, bitInterleaving) {
     EXPECT_EQ(bit_interleaving_3d(0xFFFFFF,0xFFFFFF,0xFFFFFF),0x7FFFFFFFFFFFFFFF);
 }
 
+/**
+ * Tests bit extraleaving and interleaving.
+ * @see bit_extraleaving_3d_x()
+ * @see bit_extraleaving_3d_y()
+ * @see bit_extraleaving_3d_z()
+ * @see bit_extraleaving_2d_x()
+ * @see bit_extraleaving_2d_y()
+ */
 TEST(Orderingtests,bit_in_out) {
     uint32_t x = 2;
     uint32_t y = 5;
@@ -162,6 +192,10 @@ TEST(Orderingtests,bit_in_out) {
     EXPECT_EQ(y, bit_extraleaving_2d_y(o));
 }
 
+/**
+ * Tests the reduce function that gets rid of a sign and manipulates a 2-complement.
+ * @see reduce_32_2()
+ */
 TEST(Orderingtests, sign_reduce) {
     EXPECT_EQ(reduce_32_2(0),0);
     EXPECT_EQ(reduce_32_2(1),1);
@@ -171,6 +205,11 @@ TEST(Orderingtests, sign_reduce) {
     EXPECT_EQ(reduce_32_2(-4),0x2);
 }
 
+/**
+ * Tests the fused collision against collision.
+ * @see collision()
+ * @see fused_collision()
+ */
 TEST(FunctionalTest, fused_collision) {
     // test against original
     double relaxation_time = 0.5;
@@ -185,6 +224,11 @@ TEST(FunctionalTest, fused_collision) {
     }
 }
 
+/**
+ * Tests fused macro against macro to ensure right functionality.
+ * @see macro()
+ * @see fused_macro()
+ */
 TEST(FunctionalTest, fused_macro) {
     // test against original
     double relaxation_time = 0.5;
@@ -203,6 +247,11 @@ TEST(FunctionalTest, fused_macro) {
     EXPECT_EQ(node_original.u(1),node_fused.u(1));
 }
 
+/**
+ * Tests the search key functionality in the pointKeyHash class.
+ * @see pointKeyHash::fill_key()
+ * @see pointKeyHash::key_translation()
+ */
 TEST(FunctionalTest, key_search_functionality) {
     point_t k = {8,8};
     point_t l = {2,3};
@@ -220,6 +269,9 @@ TEST(FunctionalTest, key_search_functionality) {
     EXPECT_EQ(pkh.key_translation(n),0);
 }
 
+/**
+ *
+ */
 TEST(FunctionalTest, right_link_number) {
     int step = 0;
     unsigned int size = 4;
@@ -1065,7 +1117,11 @@ TEST(FunctionalTest,InnerCorner) {
     // as long as the test does not crash it is considered ok
     EXPECT_TRUE(true);
 }
-
+/**
+ * Tests the star intersection tests.
+ * @note Good idea works inferior to the current method of fixing the mass center and so on.
+ * @attention Should not be used
+ */
 TEST(FunctionalTest, StarIntersections) {
     unsigned int size = 20;
     unsigned int sub_size = 9;

@@ -24,8 +24,7 @@ extern matrix_t weights; /**< is set as a global */
 extern matrix_t cardinal_directions; /**< is set as a global */
 
 /**
- * @struct coordinate_t
- * @brief long xy coordinates
+ * xy (long) coordinates as a struct
  */
 typedef struct coordinate {
     long x;
