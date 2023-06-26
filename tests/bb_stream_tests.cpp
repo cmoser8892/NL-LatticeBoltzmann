@@ -973,7 +973,7 @@ TEST(StreamTests, oSimu_streaming_13) {
 }
 
 /**
- * tests the optimized implementation of the streaming in channel 2 and 4.
+ * Tests the optimized implementation of the streaming in channel 2 and 4.
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_24) {
@@ -1026,7 +1026,7 @@ TEST(StreamTests, oSimu_streaming_24) {
 }
 
 /**
- * tests the optimized implementation of the streaming in channel 5 and 7.
+ * Tests the optimized implementation of the streaming in channel 5 and 7.
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_57) {
@@ -1102,7 +1102,7 @@ TEST(StreamTests, oSimu_streaming_57) {
 }
 
 /**
- * tests the optimized implementation of the streaming in channel 6 and 8.
+ * Tests the optimized implementation of the streaming in channel 6 and 8.
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_68) {

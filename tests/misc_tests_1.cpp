@@ -270,7 +270,7 @@ TEST(FunctionalTest, key_search_functionality) {
 }
 
 /**
- *
+ * Tests if a node has teh right link number
  */
 TEST(FunctionalTest, right_link_number) {
     int step = 0;
@@ -298,6 +298,9 @@ TEST(FunctionalTest, right_link_number) {
     }
 }
 
+/**
+ * Tests the right setting of a periodic boundary and if streaming works on it.
+ */
 TEST(FunctionalTest, periodics_full) {
     int step = 0;
     unsigned int size = 4;
@@ -340,11 +343,17 @@ TEST(FunctionalTest, periodics_full) {
     }
 }
 
+/**
+ * Tests if we can get the base path of the module.
+ */
 TEST(FunctionalTest, path_magic) {
     auto b = get_base_path();
     EXPECT_GT(sizeof(b),0);
 }
 
+/**
+ * Tests if we can read 32bit bmp images.
+ */
 TEST(FunctionalTest, bmp_read_32b) {
     // tests general functionality of the bmp image reading compability of the image converter
     auto bmp_32_test_image = get_base_path();
@@ -359,6 +368,9 @@ TEST(FunctionalTest, bmp_read_32b) {
     EXPECT_EQ(ic.return_number_of_colors(),205);
 }
 
+/**
+ * Tests if we can read in 24bit images.
+ */
 TEST(FunctionalTest, bmp_read_24b) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
@@ -371,6 +383,9 @@ TEST(FunctionalTest, bmp_read_24b) {
     EXPECT_GT(ic.return_number_of_colors(),2);
 }
 
+/**
+ * Tests image to raw boundary to nodes.
+ */
 TEST(FunctionalTest, boarder_create_image_raw) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
@@ -415,6 +430,9 @@ TEST(FunctionalTest, boarder_create_image_raw) {
     EXPECT_EQ(gen.node_infos.size(), 8*8);
 }
 
+/**
+ * Tests image to raw boundary interaction.
+ */
 TEST(FunctionalTest, boarder_create_more_than_one) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
@@ -436,6 +454,9 @@ TEST(FunctionalTest, boarder_create_more_than_one) {
     // ic.boundaries->visualize_2D_boundary();
 }
 
+/**
+ * Tests weather or not raw boundaries reduces the sizes to reformed boundaries.
+ */
 TEST(FunctionalTest, raw_reduce_test) {
     // test image setup
     auto bmp_24_test_image = get_base_path();
@@ -453,8 +474,10 @@ TEST(FunctionalTest, raw_reduce_test) {
     EXPECT_FALSE(ic.check_for_white_wet_nodes());
 }
 
+/**
+ * Not a tests. Just a showcase.
+ */
 TEST(FunctionalTest, image_u_image_90_right) {
-    // boundary to image +90 right now a feature
     // also prob smarter to do with an l to determine filp
     EXPECT_TRUE(true);
     // test image setup
@@ -469,6 +492,10 @@ TEST(FunctionalTest, image_u_image_90_right) {
     // ic.boundaries->visualize_2D_boundary();
 }
 
+/**
+ * Tests the function that calculates intersections.
+ * @see caclulate_intersection()
+ */
 TEST(FunctionalTest, intersetion_calculation) {
     // std use case
     straight_t ray;
@@ -486,6 +513,9 @@ TEST(FunctionalTest, intersetion_calculation) {
     EXPECT_TRUE(std::isnan(calculate_intersection(&ray,&surface)));
 }
 
+/**
+ * Tests the basci functionlity of the straight generator.
+ */
 TEST(FunctionalTest, simple_use_case_straight) {
     // simple quader without any special cases for the straight surface generator
     int step = 0;
@@ -506,6 +536,9 @@ TEST(FunctionalTest, simple_use_case_straight) {
     }
 }
 
+/**
+ * Tests a specifc straight structure proved problematic.
+ */
 TEST(FunctionalTest, straight_inner_missing_57) {
     int step = 0;
     int size = 4;
@@ -565,6 +598,9 @@ TEST(FunctionalTest, straight_inner_missing_57) {
     EXPECT_EQ(errors,0);
 }
 
+/**
+ * Tests a specifc straight structure that made problems.
+ */
 TEST(FunctionalTest, straight_inner_missing_68) {
     // sizes matters
     int step = 0;
@@ -599,7 +635,6 @@ TEST(FunctionalTest, straight_inner_missing_68) {
     boundaries.set_point(&point,BOUNCE_BACK);
     point = {1,1};
     boundaries.set_point(&point,BOUNCE_BACK);
-    // need to reorder nodes!!!!!!!! so that the surface is closed!!
     // new init does this
     // boundaries.visualize_2D_boundary();
     //
@@ -628,6 +663,9 @@ TEST(FunctionalTest, straight_inner_missing_68) {
 }
 
 
+/**
+ * Tests weather or not the straightgenerator gets the lowest set of straights to describe a surface.
+ */
 TEST(FunctionalTest, straight_deletions) {
     unsigned int size = 10;
     point_t c = {size,size};
@@ -685,6 +723,9 @@ TEST(FunctionalTest, straight_deletions) {
     EXPECT_EQ(gen.node_infos.size(), 22 + 6 + 4 + 2);
 }
 
+/**
+ * Tests weather or not the straight generator can handle lines at the same level.
+ */
 TEST(FunctionalTest, multiple_interruptions) {
     unsigned int size = 10;
     point_t c = {4,size};
@@ -738,11 +779,18 @@ TEST(FunctionalTest, multiple_interruptions) {
     EXPECT_EQ(gen.node_infos.size(), boundaries.total_boundary_nodes() + 8 + 2);
 }
 
+/**
+ * Tests the compare point function.
+ * @see compare_two_points()
+ */
 TEST(FunctionalTest,comparision) {
     point_t t = {2,1};
     EXPECT_TRUE(compare_two_points(&t,&t));
 }
 
+/**
+ *  Test weather or not the straight generator can handle a bump.
+ */
 TEST(FunctionalTest, straight_bump) {
     unsigned int size = 6;
     point_t c = {size,size};
@@ -793,6 +841,9 @@ TEST(FunctionalTest, straight_bump) {
     EXPECT_EQ(gen.node_infos.size(),4 +8);
 }
 
+/**
+ * Tests weather the straight generator behaves correctly with intermediate bumps of the same heights.
+ */
 TEST(FunctionalTest, multiple_bumps) {
     unsigned int size = 9;
     point_t c = {size,size};
@@ -829,6 +880,9 @@ TEST(FunctionalTest, multiple_bumps) {
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
+/**
+ * Tests weather the straight generator behaves correctly with intermediate bumps of varying heights.
+ */
 TEST(FunctionalTest, special_case_little_bump) {
     unsigned int size = 20;
     unsigned int sub_size = 9;
@@ -880,6 +934,9 @@ TEST(FunctionalTest, special_case_little_bump) {
     EXPECT_EQ(gen.node_infos.size(),7+3+3+7+5+5+7);
 }
 
+/**
+ * Makes sure that a line with length 1 gets full ignored.
+ */
 TEST(FunctionalTest, one_high_side_walls) {
     int size = 6;
     point_t sim_area = {size,size};
@@ -895,6 +952,10 @@ TEST(FunctionalTest, one_high_side_walls) {
     EXPECT_EQ(gen.node_infos.size(),4+3+3+4);
 }
 
+/**
+ * Tests against a 2x2 bump and makes sure the straight generator results it correctly.
+ * @see straightGenerator::init()
+ */
 TEST(FunctionalTest, wierd_bump_top) {
     // init variables
     unsigned int size = 20;
@@ -976,6 +1037,10 @@ TEST(FunctionalTest, wierd_bump_top) {
     EXPECT_EQ(errors,0);
 }
 
+/**
+ * Makes sure that small 2x2 bumps are resulted correctly.
+ * @see straightGenerator::init()
+ */
 TEST(FunctionalTest, wierd_bump_bottom) {
     // init variables
     unsigned int size = 20;
@@ -1057,6 +1122,12 @@ TEST(FunctionalTest, wierd_bump_bottom) {
     EXPECT_EQ(errors,0);
 }
 
+/**
+ * Tests with an image with inner and outer boundaries.
+ * @see imageConverter::init()
+ * @see imageConverter::run()
+ * @see nodeGenerator::init_fused()
+ */
 TEST(FunctionalTest, image_outer_inner) {
     // test image setupa
     auto bmp_24_test_image = get_base_path();
@@ -1076,6 +1147,11 @@ TEST(FunctionalTest, image_outer_inner) {
     EXPECT_TRUE(true);
 }
 
+/**
+ * Tests against on of the special cases that a boundary can have.
+ * Makes sure everything works.
+ * @see nodeGenerator::init_fused()
+ */
 TEST(FunctionalTest,InnerCorner) {
     // make sure that sth like that doesnt crash the node generator
     // init variables
@@ -1119,7 +1195,7 @@ TEST(FunctionalTest,InnerCorner) {
 }
 /**
  * Tests the star intersection tests.
- * @note Good idea works inferior to the current method of fixing the mass center and so on.
+ * @note It is a good idea, but works inferior to the current method of fixing the mass center and so on.
  * @attention Should not be used
  */
 TEST(FunctionalTest, StarIntersections) {

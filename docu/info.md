@@ -1,2 +1,4 @@
-Doxygen Docu foulder: 
-call doxygen config.doxygen inf the main folder, auto generates all. 
+# Doxygen Documentation folder: 
+Call doxygen config.doxygen inf the main folder, auto generates all.
+Do not forget to install it though :)
+(Open index.html in browser to open up the documentation, is in html folder after generation)
