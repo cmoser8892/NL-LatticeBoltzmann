@@ -3,8 +3,7 @@
 #include <chrono>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief 05 main, demonstration of the precursor to the one step algorithm (still two steps)
+ * 05 main, demonstration of the precursor to the one step algorithm (still two steps).
  * @param argc
  * @param argv
  * @return

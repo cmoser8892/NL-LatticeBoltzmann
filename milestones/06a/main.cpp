@@ -3,8 +3,7 @@
 #include <chrono>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief 06a, 302 big sliding lid proof of concept
+ * 06a, 302 big sliding lid proof of concept.
  * @param argc
  * @param argv
  * @return

@@ -5,8 +5,7 @@
 
 // private
 /**
- * @fn void straightGenerator::calculate_mass_center()
- * @brief calculates the mass center of all the boundary points
+ * Calculates the mass center of all the boundary points.
  */
 void straightGenerator::calculate_mass_center() {
     // add all the points up, divide by the number of points
@@ -31,8 +30,7 @@ void straightGenerator::calculate_mass_center() {
 }
 
 /**
- * @fn void straightGenerator::detect_boundary_proximity_main_mass_center()
- * @brief detects and moves away the mass center if it is too close to a boundary
+ * Detects and moves away the mass center if it is too close to a boundary.
  */
 void straightGenerator::detect_boundary_proximity_main_mass_center() {
     // goes over a search field and tries to find boundary nodes in close proximity
@@ -59,8 +57,7 @@ void straightGenerator::detect_boundary_proximity_main_mass_center() {
 }
 
 /**
- * @fn void straightGenerator::calculate_keys()
- * @brief generates keys holdings for all the individual boundary-structures a boundary has
+ * Generates keys holdings for all the individual boundary-structures a boundary has.
  */
 void straightGenerator::calculate_keys() {
     // fills the hash class that mirrors the boundary structures
@@ -75,8 +72,7 @@ void straightGenerator::calculate_keys() {
 }
 
 /**
- * @fn void straightGenerator::calculate_all_straights()
- * @brief calculates the straights between all the boundary points, only works on concave surfaces with no bumps
+ * Calculates the straights between all the boundary points, only works on concave surfaces with no bumps.
  * @attention should not really matter if all the straights are saved in one place as long as different boundary structures exist
  */
 void straightGenerator::calculate_all_straights() {
@@ -136,8 +132,7 @@ void straightGenerator::calculate_all_straights() {
 }
 
 /**
- * @fn void straightGenerator::straight_create(int bs_number)
- * @brief creates all possible
+ * Creates all possible straights form the boundary structures.
  * @param bs_number (which boundary structure based on index)
  */
 void straightGenerator::straight_create(int bs_number) {
@@ -169,9 +164,9 @@ void straightGenerator::straight_create(int bs_number) {
 }
 
 /**
- * @fn void straightGenerator::straight_reduce(int bs)
- * @brief tests all the straights created in straight create and checks weather or not they are valid
- * @param bs
+ * Tests all the straights created in straight create and checks weather or not they are valid.
+ * Combines them into longer ones if possible too.
+ * @param bs of the current boundary structure
  */
 void straightGenerator::straight_reduce(int bs) {
     // main function here is to reduce the number of surfaces
@@ -235,9 +230,8 @@ void straightGenerator::straight_reduce(int bs) {
 }
 
 /**
- * @fn void straightGenerator::find_surface_boundary_points(int bs)
- * @brief we us the key hash table to find all the original boundary points to determine the length of each surface
- * @param bs
+ * We us the key hash table to find all the original boundary points to determine the length of each surface.
+ * @param bs counter to the boundary structure
  */
 void straightGenerator::find_surface_boundary_points(int bs) {
     // we need to check the reduced surfaces for interruptions in between
@@ -325,8 +319,7 @@ void straightGenerator::find_surface_boundary_points(int bs) {
 }
 
 /**
- * @fn void straightGenerator::look_for_bumps(int bs_number)
- * @brief looks for the special case of 1 long straights in the surface and resolves problems related for more details look at the note after the function header
+ * Looks for the special case of 1 long straights in the surface and resolves problems related for more details look at the note after the function header.
  * @param bs_number
  */
 void straightGenerator::look_for_bumps(int bs_number) {
@@ -525,8 +518,7 @@ void straightGenerator::look_for_bumps(int bs_number) {
 
 // public
 /**
- * @fn straightGenerator::straightGenerator(boundaryPointConstructor *p)
- * @brief constructor seed the boundary points pointer
+ * Constructor seed the boundary points pointer.
  * @param p
  */
 straightGenerator::straightGenerator(boundaryPointConstructor *p) {
@@ -534,8 +526,7 @@ straightGenerator::straightGenerator(boundaryPointConstructor *p) {
 }
 
 /**
- * @fn straightGenerator::~straightGenerator()
- * @brief deletes the straights vector
+ * Deletes the straights vector.
  */
 straightGenerator::~straightGenerator() {
     delete_vector();
@@ -543,8 +534,7 @@ straightGenerator::~straightGenerator() {
 }
 
 /**
- * @fn void straightGenerator::init()
- * @brief calculates the mass center and all the straights
+ * Calculates the mass center and all the straights.
  */
 void straightGenerator::init() {
     // calculate main mass center and all the keys to the boundary points
@@ -580,9 +570,9 @@ void straightGenerator::init() {
 }
 
 /**
- * @fn int straightGenerator::calculate_intersections(nodePoint_t* node_point)
- * @brief calculates how many intersections there are between the node point and the mass center
+ * Calculates how many intersections there are between the node point and the mass center.
  * @param node_point
+ * @todo Should be a 2 pass method needs 3 thou
  * @return number of intersections
  */
 int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
@@ -660,8 +650,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
 }
 
 /**
- * @fn int straightGenerator::calculate_intersections_redundant(nodePoint_t *point)
- * @brief supposed to be a more stable alternative for the calculate intersection function
+ * Supposed to be a more stable alternative for the calculate intersection function.
  * @param point
  * @return the number of intersections detected
  */
@@ -710,8 +699,7 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
 }
 
 /**
- * @fn bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *point)
- * @brief this method is a good idea but not really implemented well
+ * This method is a good idea but not really implemented well.
  * @param point
  * @return
  */
@@ -746,8 +734,7 @@ bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *poi
 }
 
 /**
- * @fn bool straightGenerator::node_inside_simple(nodePoint_t *point)
- * @brief number of intersections modulo 2, if it can be divided by two and noting remains the node is inside
+ * Number of intersections modulo 2, if it can be divided by two and noting remains the node is inside
  * @param point
  * @return false if inside true if outside
  */
@@ -760,8 +747,8 @@ bool straightGenerator::node_inside_simple(nodePoint_t *point) {
 }
 
 /**
- * @fn bool straightGenerator::node_inside_star(nodePoint_t *point)
- * @brief node inside variant
+ * Node inside variant.
+ * @attention Dont use, buggy not better then the current one used. Good idea though.
  * @param point
  * @return
  */
@@ -774,8 +761,7 @@ bool straightGenerator::node_inside_star(nodePoint_t *point) {
 }
 
 /**
- * @fn void straightGenerator::delete_vector()
- * @brief deletes the vector infos
+ * Deletes the vector infos
  */
 void straightGenerator::delete_vector() {
     for (auto s: surfaces) {
@@ -784,8 +770,7 @@ void straightGenerator::delete_vector() {
 }
 
 /**
- * @fn void straightGenerator::delete_keys()
- * @brief delete the key classes
+ * Delete the key classes.
  */
 void straightGenerator::delete_keys() {
     for(auto k : pkhv) {
@@ -794,8 +779,7 @@ void straightGenerator::delete_keys() {
 }
 
 /**
- * @fn void straightGenerator::write_out_surface()
- * @brief writes out the points where the surface begins and ends xx yy
+ * Writes out the points where the surface begins and ends xx yy.
  */
 void straightGenerator::write_out_surface() {
     // function to write out the surface for boundary representation in pyplot
@@ -822,8 +806,7 @@ void straightGenerator::write_out_surface() {
 }
 
 /**
- * @fn double calculate_intersection(straight_t * ray, straight_t * surface)
- * @brief calculates the intersection between a ray and a surface, theory is explained in the function body
+ * Calculates the intersection between a ray and a surface, theory is explained in the function body.
  * @param ray
  * @param surface
  * @return distance t
@@ -854,8 +837,7 @@ double calculate_intersection(straight_t * ray, straight_t * surface) {
 }
 
 /**
- * @fn bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a, const std::tuple<double,double,handle_t,straight_t*> &b)
- * @brief compare function to sort tuples of values encountered in look for bumps based on distance
+ * Compare function to sort tuples of values encountered in look for bumps based on distance.
  * @param a
  * @param b
  * @return
@@ -870,8 +852,7 @@ bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
 }
 
 /**
- * @fn bool straight_better_candidate_test(straight_t *candidate, straight *partner)
- * @brief compares the candidate with its partner returns true if the x or y value of the partner is smaller
+ * Compares the candidate with its partner returns true if the x or y value of the partner is smaller.
  * @param candidate
  * @param partner
  * @return

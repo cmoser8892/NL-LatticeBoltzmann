@@ -11,6 +11,7 @@
 
 /**
  *  Tests the streaming in channel 1.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -49,6 +50,7 @@ TEST(StreamTests, one_D_streaming_channel_one) {
 }
 /**
  *  Tests the streaming in channel 3.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -91,6 +93,7 @@ TEST(StreamTests, one_D_streaming_channel_three) {
 
 /**
  *  Tests the streaming in channel 2.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -139,6 +142,7 @@ TEST(StreamTests, one_D_streaming_channel_two) {
 
 /**
  *  Tests the streaming in channel 4.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -187,6 +191,7 @@ TEST(StreamTests, one_D_streaming_channel_four) {
 
 /**
  *  Tests the streaming in channel 5.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -235,6 +240,7 @@ TEST(StreamTests, one_D_streaming_channel_five) {
 
 /**
  *  Tests the streaming in channel 7.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -283,6 +289,7 @@ TEST(StreamTests, one_D_streaming_channel_seven) {
 
 /**
  *  Tests the streaming in channel 6.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -331,6 +338,7 @@ TEST(StreamTests, one_D_streaming_channel_six) {
 
 /**
  *  Tests the streaming in channel 8.
+ *  @test
  *  @see basicSimulation::streaming_step_1()
  *  @see basicSimulation::streaming_step_2()
  */
@@ -379,6 +387,7 @@ TEST(StreamTests, one_D_streaming_channel_eight) {
 
 /**
  *  Tests with specific codes weather or not streaming and collision is consistent.
+ *  @test
  *  @see basicSimulation::run()
  */
 TEST(StreamTests, combinded_test_boundary_consistent) {
@@ -451,6 +460,7 @@ TEST(StreamTests, combinded_test_boundary_consistent) {
 
 /**
  * Tests weather or not bounce back works form channel one to three.
+ * @test
  * @see basicSimulation::bounce_back()
  * @see basicSimulation::streaming_step_1()
  * @see basicSimulation::streaming_step_2()
@@ -496,6 +506,7 @@ TEST(BounceBackTesting, Horizontals_one_three) {
 
 /**
  * Tests weather or not bounce back works form channel two to four.
+ * @test
  * @see basicSimulation::bounce_back()
  * @see basicSimulation::streaming_step_1()
  * @see basicSimulation::streaming_step_2()
@@ -544,6 +555,7 @@ TEST(BounceBackTesting, Horizontals_two_four) {
 
 /**
  * Tests weather or not bounce back works form channel five to seven.
+ * @test
  * @see basicSimulation::bounce_back()
  * @see basicSimulation::streaming_step_1()
  * @see basicSimulation::streaming_step_2()
@@ -593,6 +605,7 @@ TEST(BounceBackTesting, Oblique_five_seven) {
 
 /**
  * Tests weather or not bounce back works form channel six to eight.
+ * @test
  * @see basicSimulation::bounce_back()
  * @see basicSimulation::streaming_step_1()
  * @see basicSimulation::streaming_step_2()
@@ -635,6 +648,7 @@ TEST(BounceBackTesting, Oblique_six_eight) {
 
 /**
  * Tests out weather or not a moving bounce back boundary has the right result.
+ * @test
  * @see basicSimulation::bounce_back()
  * @see basicSimulation::streaming_step_1()
  * @see basicSimulation::streaming_step_2()
@@ -683,6 +697,7 @@ TEST(BounceBackTesting, moving) {
 
 /**
  * Tests if the values in channel 0 reamain untouched by streaming.
+ * @test
  * @see basicSimulation::streaming_step_1()
  * @see basicSimulation::streaming_step_2()
  */
@@ -726,6 +741,7 @@ TEST(StreamTests, channel_0_persistent) {
  * Generates 2 node generators one that writes to file and the other one not.
  * Checks weather or not results are the same.
  * Tests the write and readback.
+ * @test
  * @see nodeGenerator::set_redo_save()
  */
 TEST(FunctionalTest, read_write) {
@@ -767,6 +783,7 @@ TEST(FunctionalTest, read_write) {
 
 /**
  * Tests the functionaltiy of one step streaming in channel 1 and 3.
+ * @test
  * @see basicSimulation::fused_streaming()
  */
 TEST(StreamTests, fused_streaming_13) {
@@ -828,6 +845,7 @@ TEST(StreamTests, fused_streaming_13) {
 
 /**
  * Tests the functionality of one step streaming in channel 2 and 4.
+ * @test
  * @see basicSimulation::fused_streaming()
  */
 TEST(StreamTests, fused_streaming_24) {
@@ -887,6 +905,7 @@ TEST(StreamTests, fused_streaming_24) {
 
 /**
  * Tests the different implementations of macro and collision against each other.
+ * @test
  * @see macro()
  * @see fused_macro()
  * @see collision()
@@ -920,7 +939,8 @@ TEST(FunctionalTest, one_step_macro_collison) {
 }
 
 /**
- * tests the optimized implementation of the streaming in channel 1 and 3.
+ * Tests the optimized implementation of the streaming in channel 1 and 3.
+ * @test
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_13) {
@@ -974,6 +994,7 @@ TEST(StreamTests, oSimu_streaming_13) {
 
 /**
  * Tests the optimized implementation of the streaming in channel 2 and 4.
+ * @test
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_24) {
@@ -1027,6 +1048,7 @@ TEST(StreamTests, oSimu_streaming_24) {
 
 /**
  * Tests the optimized implementation of the streaming in channel 5 and 7.
+ * @test
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_57) {
@@ -1103,6 +1125,7 @@ TEST(StreamTests, oSimu_streaming_57) {
 
 /**
  * Tests the optimized implementation of the streaming in channel 6 and 8.
+ * @test
  * @see optimizedSimulation::streaming()
  */
 TEST(StreamTests, oSimu_streaming_68) {

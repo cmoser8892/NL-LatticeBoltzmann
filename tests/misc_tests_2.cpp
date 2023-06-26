@@ -10,6 +10,7 @@
 
 /**
  * Checks out how ration with eigen work.
+ * @test
  */
 TEST(ForceTest, rotation_eigen) {
     Eigen::Rotation2D<double> rot;
@@ -23,6 +24,7 @@ TEST(ForceTest, rotation_eigen) {
 
 /**
  * Tests weather or not the implementation of the truncation force is correct.
+ * @test
  * @see calculate_truncation_force()
  */
 TEST(ForceTest, truncation_force) {
@@ -50,6 +52,7 @@ TEST(ForceTest, truncation_force) {
 }
 /**
  * Tests if the force calculation is correct.
+ * @test
  * @see goaForce::calculate_F_circle()
  */
 TEST(ForceTest, circle_force) {
@@ -65,6 +68,7 @@ TEST(ForceTest, circle_force) {
 
 /**
  * Tests if the rotation force is 0 if all the ingredients are 0.
+ * @test
  * @see goaForce::calculate_F_rotation()
  */
 TEST(ForceTest, rotation_force_zero) {
@@ -82,6 +86,7 @@ TEST(ForceTest, rotation_force_zero) {
 
 /**
  * Tests that the trunication terms are 0 for a force of 0.
+ * @test
  * @see goaForce::calculate_F_rotation()
  * @see goaForce::calculate_F_i()
  */
@@ -99,6 +104,7 @@ TEST(ForceTest, functional_master_test_rotation_zero) {
 
 /**
  * Tests against expected values for the zentrifugal force.
+ * @test
  * @see goaForce::calculate_F_rotation()
  */
 TEST(ForceTest, zentrifugal_force) {
@@ -129,6 +135,7 @@ TEST(ForceTest, zentrifugal_force) {
 
 /**
  * Tests weather or not the coriolis force is calculated against expected values.
+ * @test
  * @see goaForce::calculate_F_rotation()
  */
 TEST(ForceTest, coriolis_force) {
@@ -160,6 +167,7 @@ TEST(ForceTest, coriolis_force) {
 
 /**
  * Tests the correct truncation function terms agaist expected values.
+ * @test
  * @see calculate_truncation_force()
  */
 TEST(ForceTest, correct_truncation_terms) {
@@ -220,6 +228,7 @@ TEST(ForceTest, correct_truncation_terms) {
 
 /**
  * Tests the conical delta function.
+ * @test
  * @see conical_delta()
  */
 TEST(FuntionalTest, conical_delta) {
@@ -229,6 +238,7 @@ TEST(FuntionalTest, conical_delta) {
 
 /**
  * Tests teh calculate_angle function against expected values.
+ * @test
  * @see calculate_angle()
  */
 TEST(FunctionalTest, angles) {
@@ -243,6 +253,7 @@ TEST(FunctionalTest, angles) {
 
 /**
  * Test the force sim method for calculation of macro values against expected values.
+ * @test
  * @see forcedSimulation::test_calcualte_macro()
  */
 TEST(FunctionalTest, force_macro_calculation) {
@@ -275,6 +286,7 @@ TEST(FunctionalTest, force_macro_calculation) {
 
 /**
  * Checks weather or not the first and second moment of the truncation term of the force are correct.
+ * @test
  * @see goaForce::calculate_F_i()
  */
 TEST(FunctionalTest, force_term_first_second_moment) {
@@ -312,6 +324,7 @@ TEST(FunctionalTest, force_term_first_second_moment) {
 
 /**
  * Tests weather or not the moments of the equilibrium function are correct.
+ * @test
  * @see equilibrium_2d()
  */
 TEST(FunctionalTest, equilibrium_moments) {
@@ -337,6 +350,7 @@ TEST(FunctionalTest, equilibrium_moments) {
 
 /**
  * Tests the modified macro calculation in a force simulation against another way of implementaiton..
+ * @test
  * @see forcedSimulation::test_calcualte_macro()
  * @see calculate_macro_population()
  */

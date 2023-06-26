@@ -5,6 +5,7 @@
 
 /**
  * Checks if vectorization works and is enabled.
+ * @test
  */
 TEST(Extra_tests,avx) {
     __m256 A{};
@@ -17,6 +18,7 @@ TEST(Extra_tests,avx) {
 
 /**
  * Checks weather or not the bmp headers are packed correctly and have the right sizes in memory.
+ * @test
  */
 TEST(Extra_tests, packed_and_counted_bmp_headers) {
     BMPFileHeader_t t;

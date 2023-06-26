@@ -4,8 +4,7 @@
 #include "helper_functions.h"
 
 /**
- * @fn bool node_position_comparison(node* n, array_t* position)
- * @brief compares the nodes postion with an postion in an array
+ * Compares the nodes postion with an postion in an array.
  * @param n
  * @param position
  * @return
@@ -27,8 +26,7 @@ bool node_position_comparison(node* n, array_t* position) {
 }
 
 /**
- * @fn void write_flowfield_data(flowfield_t * field, std::string filename, bool write_to_file)
- * @brief writes the data form a flow-field into a file
+ * Writes the data form a flow-field into a file.
  * @param field
  * @param filename
  * @param write_to_file
@@ -55,8 +53,7 @@ void write_flowfield_data(flowfield_t * field, std::string filename, bool write_
 }
 
 /**
- * @fn bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* limit_upper)
- * @brief checks weather or not a point is inside the limit defined py two points
+ * Checks weather or not a point is inside the limit defined py two points.
  * @param p
  * @param limit_lower
  * @param limit_upper
@@ -74,8 +71,7 @@ bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* 
 }
 
  /**
-  * @fn bool compare_two_points(point_t* p1, point_t* p2 )
-  * @brief compares tow points
+  * Compares tow points.
   * @param p1
   * @param p2
   * @return
@@ -93,8 +89,7 @@ bool compare_two_points(point_t* p1, point_t* p2 ) {
 }
 
 /**
- * @fn std::vector<std::string> split_string (std::string s, std::string delimiter)
- * @brief splits a string
+ * Splits a string.
  * @param s
  * @param delimiter
  * @return string parts in a vector
@@ -115,8 +110,7 @@ std::vector<std::string> split_string (std::string s, std::string delimiter) {
 }
 
 /**
- * @fn uint64_t bit_interleaving(uint32_t x, uint32_t y)
- * @brief classical bit interleaving without x86
+ * Classical bit interleaving without x86.
  * @param x
  * @param y
  * @return interleaved
@@ -129,8 +123,7 @@ uint64_t bit_interleaving(uint32_t x, uint32_t y) {
 }
 
 /**
- * @fn uint64_t bit_interleaving_2d(uint32_t x, uint32_t y)
- * @brief _pdep bit interleaving, specific to x86 thou
+ * _pdep bit interleaving, specific to x86 thou.
  * @param x
  * @param y
  * @return interleaved bits
@@ -140,8 +133,7 @@ uint64_t bit_interleaving_2d(uint32_t x, uint32_t y) {
 }
 
 /**
- * @fn uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z)
- * @brief interleaves 32 bits using the x86 instruction directly
+ * Interleaves 32 bits using the x86 instruction directly.
  * @param x only least significant 21 bits are interleaved
  * @param y only least significant 21 bits are interleaved
  * @param z only least significant 21 bits are interleaved
@@ -160,8 +152,7 @@ uint64_t bit_interleaving_3d(uint32_t x, uint32_t y, uint32_t z) {
 }
 
 /**
- * @fn uint32_t bit_extraleaving_2d_x(uint64_t v)
- * @brief extraleaving function with a specific mask
+ * Extraleaving function with a specific mask.
  * @param v
  * @return
  */
@@ -170,8 +161,7 @@ uint32_t bit_extraleaving_2d_x(uint64_t v) {
 }
 
 /**
- * @fn uint32_t bit_extraleaving_2d_y(uint64_t v)
- * @brief extraleaving function with a specific mask
+ * Extraleaving function with a specific mask.
  * @param v
  * @return
  */
@@ -180,8 +170,7 @@ uint32_t bit_extraleaving_2d_y(uint64_t v) {
 }
 
 /**
- * @fn uint32_t bit_extraleaving_3d_x(uint64_t v)
- * @brief extraleaving function with a specific mask
+ * Extraleaving function with a specific mask.
  * @param v
  * @return
  */
@@ -190,8 +179,7 @@ uint32_t bit_extraleaving_3d_x(uint64_t v) {
 }
 
 /**
- * @fn uint32_t bit_extraleaving_3d_y(uint64_t v)
- * @brief extraleaving function with a specific mask
+ * Extraleaving function with a specific mask.
  * @param v
  * @return
  */
@@ -200,8 +188,7 @@ uint32_t bit_extraleaving_3d_y(uint64_t v) {
 }
 
 /**
- * @fn uint32_t bit_extraleaving_3d_z(uint64_t v)
- * @brief extraleaving function with a specific mask
+ * Extraleaving function with a specific mask.
  * @param v
  * @return
  */
@@ -210,8 +197,7 @@ uint32_t bit_extraleaving_3d_z(uint64_t v) {
 }
 
 /**
- * @fn uint32_t reduce_32_2(uint32_t b)
- * @brief takes the most significant and least significant bits and reduces them  to 2 bits
+ * Takes the most significant and least significant bits and reduces them  to 2 bits.
  * @param b
  * @return 2 bit number
  */
@@ -220,8 +206,7 @@ uint32_t reduce_32_2(uint32_t b) {
 }
 
 /**
- * @fn double calculate_distance(point_t* p1, point_t* p2)
- * @brief calculate the distance between two points
+ * Calculate the distance between two points.
  * @param p1
  * @param p2
  * @return
@@ -232,8 +217,7 @@ double calculate_distance(point_t* p1, point_t* p2) {
 }
 
 /**
- * @fn int conical_delta(int a, int b)
- * @brief returns 1 if a == b otherwise 0
+ * Returns 1 if a == b otherwise 0.
  * @param a
  * @param b
  * @return
@@ -243,8 +227,7 @@ int conical_delta(int a, int b) {
 }
 
 /**
- * @fn double calculate_angle(vector_t* v1, vector_t* v2)
- * @brief calculates the angle between two vectors (hides ulginess)
+ * Calculates the angle between two vectors (hides ulginess).
  * @param v1
  * @param v2
  * @return
@@ -259,8 +242,7 @@ double calculate_angle(vector_t* v1, vector_t* v2) {
 }
 
 /**
- * @fn std::filesystem::path get_base_path()
- * @brief gets the path to the NL-directory
+ * Gets the path to the NL-directory.
  * @return the path to the NL-directory
  */
 std::filesystem::path get_base_path() {
@@ -277,8 +259,7 @@ std::filesystem::path get_base_path() {
 }
 
 /**
- * @fn void solve_truncation_force_symbols(int channel)
- * @brief solves the force term symbolically for a specific velocity set
+ * Solves the force term symbolically for a specific velocity set.
  * @param channel
  */
 void solve_truncation_force_symbols(int channel) {

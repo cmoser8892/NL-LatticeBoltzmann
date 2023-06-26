@@ -3,8 +3,7 @@
 #include <chrono>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief 03 main, similar to the 01 but i combine the steps here
+ * 03 main, similar to the 01 but i combine the steps here.
  * @param argc
  * @param argv
  * @return

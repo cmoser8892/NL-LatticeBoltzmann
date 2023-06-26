@@ -3,8 +3,7 @@
 
 /// implementation is for d2q9
 /**
- * @fn array_t equilibrium(node* node)
- * @brief implementation of the equilibrium function
+ * Implementation of the equilibrium function.
  * @param node
  * @return
  */
@@ -30,8 +29,7 @@ array_t equilibrium(node* node) {
 }
 
 /**
- * @fn array_t equilibrium_general(node* node)
- * @brief original version of the equilibrium function to test against other functions
+ * Original version of the equilibrium function to test against other functions.
  * @param node
  * @return
  */
@@ -51,8 +49,7 @@ array_t equilibrium_general(node* node) {
 }
 
 /**
- * @fn double calculate_later_equilibrium(double cx, double cy, double ux, double uy)
- * @brief calculates the later part of the equilbirum function
+ * Calculates the later part of the equilbirum function.
  * @param cx
  * @param cy
  * @param ux
@@ -64,8 +61,7 @@ double calculate_later_equilibrium(double cx, double cy, double ux, double uy) {
 }
 
 /**
- * @fn array_t equilibrium_2d(double ux, double uy, double rho)
- * @brief calculates the equilibrium function based on macro values
+ * Calculates the equilibrium function based on macro values.
  * @param ux
  * @param uy
  * @param rho
@@ -86,8 +82,7 @@ array_t equilibrium_2d(double ux, double uy, double rho) {
     return return_array;
 }
 /**
- * @fn void collision(node* node, double relaxation)
- * @brief implementation of the collision function
+ * Implementation of the collision function.
  * @param node
  * @param relaxation
  */
@@ -96,8 +91,7 @@ void collision(node* node, double relaxation) {
 }
 
 /**
- * @fn void macro( node* node)
- * @brief calculates the macroscopic values for the equilibrium function
+ * Calculates the macroscopic values for the equilibrium function.
  * @param node
  */
 void macro( node* node) {
@@ -110,8 +104,7 @@ void macro( node* node) {
 }
 
 /**
- * @fn void fused_macro( node* node)
- * @brief calculates the macroscopic values for the equilibrium function for the fused runs
+ * Calculates the macroscopic values for the equilibrium function for the fused runs.
  * @param node
  */
 void fused_macro(node * node) {
@@ -134,8 +127,7 @@ void fused_macro(node * node) {
 }
 
 /**
- * @fn void fused_collision(node* node, double relax)
- * @brief variant of the optimized collision
+ * Variant of the optimized collision.
  * @param node
  * @param relax
  */
@@ -157,8 +149,7 @@ void fused_collision(node* node, double relax) {
 }
 
 /**
- * @fn void write_ux(node* node, flowfield_t* ux)
- * @brief write the ux component of the flowfield
+ * Write the ux component of the flowfield.
  * @param node
  * @param ux
  */
@@ -168,8 +159,7 @@ void write_ux(node* node, flowfield_t* ux) {
 }
 
 /**
- * @fn void write_uy(node* node, flowfield_t * uy)
- * @brief writes the uy_component of a flowfield
+ * Writes the uy_component of a flowfield
  * @param node
  * @param uy
  */
@@ -179,8 +169,7 @@ void write_uy(node* node, flowfield_t * uy) {
 }
 
 /**
- * @fn void write_rho(node* node, flowfield_t * rho)
- * @brief writes the rho component of a flow field
+ * Writes the rho component of a flow field
  * @param node
  * @param rho
  */
@@ -190,8 +179,7 @@ void write_rho(node* node, flowfield_t * rho) {
 }
 
 /**
- * @fn void debug_node(node* node, bool printing)
- * @brief print out stuff dont forget to set printing to true
+ * Print out stuff dont forget to set printing to true
  * @param node
  * @param printing
  */
@@ -208,8 +196,7 @@ void debug_node(node* node, bool printing) {
 }
 
 /**
- * @fn double bb_switch_channel(int from_channel, double uw)
- * @brief applies the moving part of the boundary to a channel
+ * Applies the moving part of the boundary to a channel
  * @param from_channel
  * @param uw
  * @return how much needs to be subtracted for moving boundaries
@@ -232,8 +219,7 @@ double bb_switch_channel(int from_channel, double uw) {
 }
 
 /**
- * @fn int switch_link_dimensions(int link_channel)
- * @brief changes around the channel in a bounce back call
+ * Changes around the channel in a bounce back call
  * @param link_channel
  * @return return the right link channel
  */
@@ -273,8 +259,7 @@ int switch_link_dimensions(int link_channel) {
 }
 
 /**
- * @fn std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array_t f)
- * @brief calculate rho ux uy in one go and returns it as a touple
+ * Calculate rho ux uy in one go and returns it as a touple.
  * @param p
  * @param f
  * @return
@@ -305,8 +290,7 @@ std::tuple<double, double ,double> calculate_force_macro_values(array_t p, array
 }
 
 /**
- * @fn std::tuple<double,double,double> calculate_macro_population(array_t* a)
- * @brief calculate the macro values just based on the array
+ * Calculate the macro values just based on the array.
  * @param a
  * @return
  */

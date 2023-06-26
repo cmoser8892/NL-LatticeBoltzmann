@@ -1,8 +1,7 @@
 #include "simulation.h"
 
 /**
- * @fn inline std::tuple<double, double, double> forcedSimulation::calculate_macro(array_t *a, array_t* previous_force)
- * @brief calculate the macro values with a force attached to it
+ * Calculate the macro values with a force attached to it.
  * @param a
  * @param previous_force
  * @return
@@ -78,8 +77,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
 }
 
 /**
- * @fn inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *list)
- * @brief streaming stepf
+ * Streaming stepf.
  * @param a
  * @param list
  */
@@ -93,8 +91,7 @@ inline void forcedSimulation::streaming(array_t *a, std::vector<link_pointer> *l
 }
 
 /**
- * @fn inline void forcedSimulation::collision(array_t *a, double rho, double ux, double uy)
- * @brief collision term, the forcing is done in a subsequent step
+ * Collision term, the forcing is done in a subsequent step.
  * @param a
  * @param rho
  * @param ux
@@ -117,8 +114,7 @@ inline void forcedSimulation::collision(array_t *a, double rho, double ux, doubl
 }
 
 /**
- * @fn inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double ux, double uy)
- * @brief forcing terms to calculate and appliy the force
+ * Forcing terms to calculate and appliy the force.
  * @param n
  * @param write_to
  * @param ux
@@ -142,8 +138,7 @@ inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double 
 }
 
 /**
- * @fn forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce *f)
- * @brief constructor
+ * Constructor.
  * @param c
  * @param g
  * @param f
@@ -155,16 +150,14 @@ forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g
 }
 
 /**
- * @fn forcedSimulation::~forcedSimulation()
- * @brief
+ * Deconstructor.
  */
 forcedSimulation::~forcedSimulation() {
     delete_nodes();
 }
 
 /**
- * @fn void forcedSimulation::set_simulation_parameters(simulation_parameters_t t)
- * @brief set the simulation parameters
+ * Set the simulation parameters.
  * @param t
  */
 void forcedSimulation::set_simulation_parameters(simulation_parameters_t t) {
@@ -174,8 +167,7 @@ void forcedSimulation::set_simulation_parameters(simulation_parameters_t t) {
 }
 
 /**
- * @fn void forcedSimulation::init()
- * @brief inits the simulation class and allocates the nodes
+ * Inits the simulation class and allocates the nodes.
  */
 void forcedSimulation::init() {
     for(auto node_info : node_generator->node_infos) {
@@ -208,8 +200,7 @@ void forcedSimulation::init() {
 }
 
 /**
- * @fn void forcedSimulation::run(int current_step)
- * @brief run function combines all the steps
+ * Run function combines all the steps.
  * @param current_step
  */
 void forcedSimulation::run(int current_step) {
@@ -233,8 +224,7 @@ void forcedSimulation::run(int current_step) {
 }
 
 /**
- * @fn void forcedSimulation::get_data(bool write_to_file)
- * @brief write out the node data into something python can plot
+ * Write out the node data into something python can plot.
  * @param write_to_file
  */
 void forcedSimulation::get_data(bool write_to_file) {
@@ -263,8 +253,7 @@ void forcedSimulation::get_data(bool write_to_file) {
 }
 
 /**
- * @fn void forcedSimulation::delete_nodes()
- * @brief deletes and clears the vector data fields
+ * Deletes and clears the vector data fields.
  */
 void forcedSimulation::delete_nodes() {
     for (auto n : nodes) {
@@ -278,8 +267,7 @@ void forcedSimulation::delete_nodes() {
 }
 
 /**
- * @fn std::tuple<double,double,double> forcedSimulation::test_calcualte_macro(array_t *a, array_t *f)
- * @brief hook to the inline method
+ * Hook to the inline method.
  * @param a
  * @param f
  * @return

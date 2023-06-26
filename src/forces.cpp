@@ -1,8 +1,7 @@
 #include "forces.h"
 
 /**
- * @fn inline double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force)
- * @brief calculates the ugly part of  th truncation of the forcoe term term (viggen 236)
+ * Calculates the ugly part of  th truncation of the forcoe term term (viggen 236).
  * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @param c veloicty set
  * @param u velocitay
@@ -33,8 +32,7 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
 
 /// helper and sub-classes
 /**
-* @fn double gladrowForce::return_position_x(point_t *self_position)
-* @brief
+* Returns a force.
 * @param self_position
 * @return
 */
@@ -49,8 +47,7 @@ double gladrowForce::return_position_x(point_t *self_position) {
 }
 
 /**
-* @fn double gladrowForce::return_position_y(point_t *self_position)
-* @brief returns the force at a specific point
+* Returns the force at a specific point.
 * @param self_position
 * @return
 */
@@ -65,8 +62,7 @@ double gladrowForce::return_position_y(point_t *self_position) {
 }
 
 /**
-* @fn gladrowForce::gladrowForce(double f, point_t canvas_size)
-* @brief constructor sets the size and middle of the rotating frame, also sets the basic force
+* Constructor sets the size and middle of the rotating frame, also sets the basic force.
 * @param f
 * @param canvas_size
 */
@@ -78,8 +74,7 @@ gladrowForce::gladrowForce(double f, point_t canvas_size) {
 }
 
 /**
-* @fn double gladrowForce::return_current_next_x(point_t *self_position, int channel)
-* @brief function to return the next x foce component
+* Function to return the next x force component.
 * @param self_position
 * @param channel
 * @return
@@ -93,8 +88,7 @@ double gladrowForce::return_current_next_x(point_t *self_position, int channel) 
 }
 
 /**
-* @fn double gladrowForce::return_current_next_y(point_t *self_position, int channel )
-* @brief calculates the y forces
+* Calculates the y forces.
 * @param self_position
 * @param channel
 * @return
@@ -109,8 +103,7 @@ double gladrowForce::return_current_next_y(point_t *self_position, int channel )
 
 // class goa force
 /**
- * @fn inline double goaForce::truncation_force()
- * @brief non optimized version of the channel force calculation
+ * Non optimized version of the channel force calculation.
  * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @return
  */
@@ -131,8 +124,7 @@ inline void goaForce::truncation_force(int channel) {
 }
 
 /**
- * @fn inline array_t goaForce::truncation_force_array()
- * @brief inlined the complicated part of the "channel" dependent force for 2dq9
+ * Inlined the complicated part of the "channel" dependent force for 2dq9.
  * @attention calculates the terms without the weight!
  * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
  * @return
@@ -162,8 +154,7 @@ inline array_t goaForce::truncation_force_array() {
 }
 
 /**
- * @fn void goaForce::calculate_F_circle(point_t* p)
- * @brief circular force field
+ * Circular force field.
  * @param p
  */
 void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double ux, double uy) {
@@ -181,8 +172,7 @@ void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double 
 }
 
 /**
-* @fn void goaForce::calculate_F_rotation()
-* @brief calculates the physical force in the domain
+* Calculates the physical force in the domain
 */
 void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
    // todo what to do with mass?! just one
@@ -211,8 +201,7 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
 }
 
 /**
-* @fn calculates the channel dependent force
-* @brief sets the f_i force terms
+* Sets the f_i force terms.
 * @ref PHYSICAL REVIEW E, VOLUME 65, 046308
 * @attention does not include the weights!
 */
@@ -221,8 +210,7 @@ void goaForce::calculate_F_i() {
 }
 
 /**
-* @fn goaForce::goaForce(point_t o, point_t c, double o1, double o2)
-* @brief construtor does constructor things
+* Construtor does constructor things.
 * @param o
 * @param c
 * @param o1
@@ -239,8 +227,7 @@ goaForce::goaForce(point_t o, point_t c, double o1) {
 }
 
 /**
-* @fn vector_t goaForce::return_force_alpha()
-* @brief returns the alpha force component
+* Returns the alpha force component.
 * @return f
 */
 vector_t goaForce::return_force_alpha() {
@@ -249,8 +236,7 @@ vector_t goaForce::return_force_alpha() {
 }
 
 /**
- * @fn void goaForce::set_force_alpha(vector_t f)
- * @brief sets the force value in the force class (for testing)
+ * Sets the force value in the force class (for testing).
  * @param f
  */
 void goaForce::set_force_alpha(vector_t f) {
@@ -258,8 +244,7 @@ void goaForce::set_force_alpha(vector_t f) {
 }
 
 /**
- * @fn void goaForce::set_velocity(vector_t v)
- * @brief sets tje velocity value in the force class (for testing)
+ * Sets tje velocity value in the force class (for testing).
  * @param v
  */
 void goaForce::set_velocity(vector_t v) {
@@ -267,8 +252,7 @@ void goaForce::set_velocity(vector_t v) {
 }
 
 /**
- * @fn void goaForce::set_omega(double o)
- * @brief sets the omega rotation in plane
+ * Sets the omega rotation in plane.
  * @param o
  */
 void goaForce::set_omega(double o) {

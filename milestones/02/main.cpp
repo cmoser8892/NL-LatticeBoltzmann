@@ -3,8 +3,7 @@
 #include <iostream>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief demonstration of a basic sliding lid
+ * Demonstration of a basic sliding lid.
  * @param argc
  * @param argv
  * @return

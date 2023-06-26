@@ -9,6 +9,7 @@
 
 /**
  * Tests the equilbirum function against expected values.
+ * @test
  * @see equilibrium()
  */
 TEST(FunctionalTest, correct_equilibrium) {
@@ -64,6 +65,7 @@ TEST(FunctionalTest, correct_equilibrium) {
 
 /**
  * Tests weather or not the correct macro values (rho, ux, uy) is calculated.
+ * @test
  * @see macro()
  */
 TEST(FunctionalTest,correct_macro) {
@@ -103,6 +105,7 @@ TEST(FunctionalTest,correct_macro) {
 
 /**
  * Tests the equilibrium function from another angle.
+ * @test
  * @see equilibrium()
  */
 TEST(FunctionalTest, equilibrium123) {
@@ -134,6 +137,7 @@ TEST(FunctionalTest, equilibrium123) {
 
 /**
  * Tests the macro function from the populations.
+ * @test
  * @see macro()
  */
 TEST(FunctionalTest, macro123) {
@@ -153,6 +157,7 @@ TEST(FunctionalTest, macro123) {
 
 /**
  * Tests the bit interleaving functions against expected values.
+ *  @test
  *  @see bit_interleaving_2d()
  *  @see bit_interleaving_3d()
  *  @see bit_interleaving()
@@ -171,6 +176,7 @@ TEST(Orderingtests, bitInterleaving) {
 
 /**
  * Tests bit extraleaving and interleaving.
+ * @test
  * @see bit_extraleaving_3d_x()
  * @see bit_extraleaving_3d_y()
  * @see bit_extraleaving_3d_z()
@@ -194,6 +200,7 @@ TEST(Orderingtests,bit_in_out) {
 
 /**
  * Tests the reduce function that gets rid of a sign and manipulates a 2-complement.
+ * @test
  * @see reduce_32_2()
  */
 TEST(Orderingtests, sign_reduce) {
@@ -207,6 +214,7 @@ TEST(Orderingtests, sign_reduce) {
 
 /**
  * Tests the fused collision against collision.
+ * @test
  * @see collision()
  * @see fused_collision()
  */
@@ -226,6 +234,7 @@ TEST(FunctionalTest, fused_collision) {
 
 /**
  * Tests fused macro against macro to ensure right functionality.
+ * @test
  * @see macro()
  * @see fused_macro()
  */
@@ -249,6 +258,7 @@ TEST(FunctionalTest, fused_macro) {
 
 /**
  * Tests the search key functionality in the pointKeyHash class.
+ * @test
  * @see pointKeyHash::fill_key()
  * @see pointKeyHash::key_translation()
  */
@@ -270,7 +280,8 @@ TEST(FunctionalTest, key_search_functionality) {
 }
 
 /**
- * Tests if a node has teh right link number
+ * Tests if a node has teh right link number.
+ * @test
  */
 TEST(FunctionalTest, right_link_number) {
     int step = 0;
@@ -300,6 +311,7 @@ TEST(FunctionalTest, right_link_number) {
 
 /**
  * Tests the right setting of a periodic boundary and if streaming works on it.
+ * @test
  */
 TEST(FunctionalTest, periodics_full) {
     int step = 0;
@@ -345,6 +357,7 @@ TEST(FunctionalTest, periodics_full) {
 
 /**
  * Tests if we can get the base path of the module.
+ * @test
  */
 TEST(FunctionalTest, path_magic) {
     auto b = get_base_path();
@@ -353,6 +366,7 @@ TEST(FunctionalTest, path_magic) {
 
 /**
  * Tests if we can read 32bit bmp images.
+ * @test
  */
 TEST(FunctionalTest, bmp_read_32b) {
     // tests general functionality of the bmp image reading compability of the image converter
@@ -370,6 +384,7 @@ TEST(FunctionalTest, bmp_read_32b) {
 
 /**
  * Tests if we can read in 24bit images.
+ * @test
  */
 TEST(FunctionalTest, bmp_read_24b) {
     // test image setup
@@ -385,6 +400,7 @@ TEST(FunctionalTest, bmp_read_24b) {
 
 /**
  * Tests image to raw boundary to nodes.
+ * @test
  */
 TEST(FunctionalTest, boarder_create_image_raw) {
     // test image setup
@@ -432,6 +448,7 @@ TEST(FunctionalTest, boarder_create_image_raw) {
 
 /**
  * Tests image to raw boundary interaction.
+ * @test
  */
 TEST(FunctionalTest, boarder_create_more_than_one) {
     // test image setup
@@ -456,6 +473,7 @@ TEST(FunctionalTest, boarder_create_more_than_one) {
 
 /**
  * Tests weather or not raw boundaries reduces the sizes to reformed boundaries.
+ * @test
  */
 TEST(FunctionalTest, raw_reduce_test) {
     // test image setup
@@ -476,6 +494,7 @@ TEST(FunctionalTest, raw_reduce_test) {
 
 /**
  * Not a tests. Just a showcase.
+ * @test
  */
 TEST(FunctionalTest, image_u_image_90_right) {
     // also prob smarter to do with an l to determine filp
@@ -494,6 +513,7 @@ TEST(FunctionalTest, image_u_image_90_right) {
 
 /**
  * Tests the function that calculates intersections.
+ * @test
  * @see caclulate_intersection()
  */
 TEST(FunctionalTest, intersetion_calculation) {
@@ -514,7 +534,8 @@ TEST(FunctionalTest, intersetion_calculation) {
 }
 
 /**
- * Tests the basci functionlity of the straight generator.
+ * Tests the basic functionlity of the straight generator.
+ * @test
  */
 TEST(FunctionalTest, simple_use_case_straight) {
     // simple quader without any special cases for the straight surface generator
@@ -538,6 +559,7 @@ TEST(FunctionalTest, simple_use_case_straight) {
 
 /**
  * Tests a specifc straight structure proved problematic.
+ * @test
  */
 TEST(FunctionalTest, straight_inner_missing_57) {
     int step = 0;
@@ -600,6 +622,7 @@ TEST(FunctionalTest, straight_inner_missing_57) {
 
 /**
  * Tests a specifc straight structure that made problems.
+ * @test
  */
 TEST(FunctionalTest, straight_inner_missing_68) {
     // sizes matters
@@ -665,6 +688,7 @@ TEST(FunctionalTest, straight_inner_missing_68) {
 
 /**
  * Tests weather or not the straightgenerator gets the lowest set of straights to describe a surface.
+ * @test
  */
 TEST(FunctionalTest, straight_deletions) {
     unsigned int size = 10;
@@ -725,6 +749,7 @@ TEST(FunctionalTest, straight_deletions) {
 
 /**
  * Tests weather or not the straight generator can handle lines at the same level.
+ * @test
  */
 TEST(FunctionalTest, multiple_interruptions) {
     unsigned int size = 10;
@@ -781,6 +806,7 @@ TEST(FunctionalTest, multiple_interruptions) {
 
 /**
  * Tests the compare point function.
+ * @test
  * @see compare_two_points()
  */
 TEST(FunctionalTest,comparision) {
@@ -790,6 +816,7 @@ TEST(FunctionalTest,comparision) {
 
 /**
  *  Test weather or not the straight generator can handle a bump.
+ *  @test
  */
 TEST(FunctionalTest, straight_bump) {
     unsigned int size = 6;
@@ -843,6 +870,7 @@ TEST(FunctionalTest, straight_bump) {
 
 /**
  * Tests weather the straight generator behaves correctly with intermediate bumps of the same heights.
+ * @test
  */
 TEST(FunctionalTest, multiple_bumps) {
     unsigned int size = 9;
@@ -882,6 +910,7 @@ TEST(FunctionalTest, multiple_bumps) {
 
 /**
  * Tests weather the straight generator behaves correctly with intermediate bumps of varying heights.
+ * @test
  */
 TEST(FunctionalTest, special_case_little_bump) {
     unsigned int size = 20;
@@ -936,6 +965,7 @@ TEST(FunctionalTest, special_case_little_bump) {
 
 /**
  * Makes sure that a line with length 1 gets full ignored.
+ * @test
  */
 TEST(FunctionalTest, one_high_side_walls) {
     int size = 6;
@@ -954,6 +984,7 @@ TEST(FunctionalTest, one_high_side_walls) {
 
 /**
  * Tests against a 2x2 bump and makes sure the straight generator results it correctly.
+ * @test
  * @see straightGenerator::init()
  */
 TEST(FunctionalTest, wierd_bump_top) {
@@ -1039,6 +1070,7 @@ TEST(FunctionalTest, wierd_bump_top) {
 
 /**
  * Makes sure that small 2x2 bumps are resulted correctly.
+ * @test
  * @see straightGenerator::init()
  */
 TEST(FunctionalTest, wierd_bump_bottom) {
@@ -1124,6 +1156,7 @@ TEST(FunctionalTest, wierd_bump_bottom) {
 
 /**
  * Tests with an image with inner and outer boundaries.
+ * @test
  * @see imageConverter::init()
  * @see imageConverter::run()
  * @see nodeGenerator::init_fused()
@@ -1150,6 +1183,7 @@ TEST(FunctionalTest, image_outer_inner) {
 /**
  * Tests against on of the special cases that a boundary can have.
  * Makes sure everything works.
+ * @test
  * @see nodeGenerator::init_fused()
  */
 TEST(FunctionalTest,InnerCorner) {
@@ -1195,6 +1229,7 @@ TEST(FunctionalTest,InnerCorner) {
 }
 /**
  * Tests the star intersection tests.
+ * @test
  * @note It is a good idea, but works inferior to the current method of fixing the mass center and so on.
  * @attention Should not be used
  */

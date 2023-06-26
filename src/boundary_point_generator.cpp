@@ -2,8 +2,7 @@
 #include "boundary_point_generator.h"
 
 /**
- * @fn rawBoundaryPoints::rawBoundaryPoints(point_t s)
- * @brief  constructor, sets size and limits
+ * Constructor, sets size and limits.
  * @param s
  */
 rawPoints::rawPoints(point_t s) {
@@ -12,8 +11,7 @@ rawPoints::rawPoints(point_t s) {
 }
 
 /**
- * @fn rawBoundaryPoints::~rawBoundaryPoints()
- * @brief deconstruction frees the memory in the vectors
+ * Deconstruction frees the memory in the vectors.
  */
 rawPoints::~rawPoints() {
     delete_raw_boundary_points();
@@ -21,8 +19,7 @@ rawPoints::~rawPoints() {
 }
 
 /**
- * @fn void rawBoundaryPoints::delete_raw_boundary_points()
- * @brief deletes the boundary point structs saved in the raw boundary vector
+ * Deletes the boundary point structs saved in the raw boundary vector.
  * @attention clearing the vector prevents double deletion of dangeling pointers
  */
 void rawPoints::delete_raw_boundary_points() {
@@ -33,8 +30,7 @@ void rawPoints::delete_raw_boundary_points() {
 }
 
 /**
- * @fn void rawBoundaryPoints::delete_reformed_boundary_points()
- * @brief deletes the boundary point structs saved in the reformed boundary vector
+ * Deletes the boundary point structs saved in the reformed boundary vector.
  * @attention clearing the vector prevents double deletion of dangeling pointers
  */
 void rawPoints::delete_reformed_boundary_points() {
@@ -45,8 +41,7 @@ void rawPoints::delete_reformed_boundary_points() {
 }
 
 /**
- * @fn void rawBoundaryPoints::fill_keys()
- * @brief for loop over rbps to fill the pointkeyhash class
+ * For loop over rbps to fill the pointkeyhash class.
  */
 void rawPoints::fill_keys() {
     for(auto rbp : raw_boundary_points) {
@@ -55,8 +50,7 @@ void rawPoints::fill_keys() {
 }
 
 /**
- * @fn void rawBoundaryPoints::visualize_2D_boundary()
- * @brief visualizer of the raw boundaries, call before deletion of the raw boundaries, not combinable with pure run
+ * Visualizer of the raw boundaries, call before deletion of the raw boundaries, not combinable with pure run.
  */
 void rawPoints::visualize_2D_boundary() {
     flowfield_t output;
@@ -69,8 +63,7 @@ void rawPoints::visualize_2D_boundary() {
 }
 
 /**
- * @fn void rawBoundaryPoints::rewrite_reformed_boundary_handles()
- * @brief rewrite reformed handles to be in order again
+ * Rewrite reformed handles to be in order again
  */
 void rawPoints::rewrite_reformed_boundary_handles() {
     handle_t start = 0;
@@ -80,8 +73,7 @@ void rawPoints::rewrite_reformed_boundary_handles() {
 }
 
 /**
- * @fn rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundaryPoint_t &b)
- * @brief function encapsulates the decision logic for the reduction from raw to reformed boundary points
+ * Function encapsulates the decision logic for the reduction from raw to reformed boundary points.
  * @param b
  * @return the correct boarder return code
  */
@@ -119,8 +111,7 @@ rawPoints::border_return_code_t rawPoints::check_boarder(boundaryPoint_t &b) {
 }
 
 /**
- * @fn int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t b)
- * @brief sets the number of neighbors a bn can have based on position in the image
+ * Sets the number of neighbors a bn can have based on position in the image.
  * @param b
  * @return the number of maximum allowed neighbors
  */
@@ -143,8 +134,7 @@ int rawPoints::set_max_neighbors(rawPoints::border_return_code_t b) {
 }
 
 /**
- * @fn int rawBoundaryPoints::set_min_neighbors(rawBoundaryPoints::border_return_code_t b)
- * @brief sets the minimum number of neighbors otherwise rejected
+ * Sets the minimum number of neighbors otherwise rejected.
  * @param b
  * @return
  */
@@ -165,8 +155,7 @@ int rawPoints::set_min_neighbors(rawPoints::border_return_code_t b) {
 }
 
 /**
- * @fn bool rawBoundaryPoints::judge_add_up_found_velocities_vector(vector_t a)
- * @brief function to distinguish between nodes that one should keep and not (corner case)
+ * Function to distinguish between nodes that one should keep and not (corner case).
  * @param a
  * @return
  */
@@ -181,8 +170,7 @@ bool rawPoints::judge_add_up_found_velocities_vector(vector_t a) {
 }
 
 /**
- * @fn void rawBoundaryPoints::read_in_bounce_back(point_t p)
- * @brief point read in
+ * Point read in.
  * @param p
  */
 void rawPoints::read_in_bounce_back(point_t p) {
@@ -193,8 +181,7 @@ void rawPoints::read_in_bounce_back(point_t p) {
 }
 
 /**
- * @fn void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate)
- * @brief coordinate read in
+ * Coordinate read in.
  * @param coordinate
  */
 void rawPoints::read_in_bounce_back(coordinate_t coordinate) {
@@ -211,8 +198,7 @@ void rawPoints::read_in_bounce_back(coordinate_t coordinate) {
 }
 
 /**
- * @fn void rawBoundaryPoints::reduce()
- * @brief function that pushes everything that has not contact to the surface out of the raw data
+ * Function that pushes everything that has not contact to the surface out of the raw data.
  */
 void rawPoints::reduce() {
     /// todo exceptionally similar to determine neighbors in Neighborhood
@@ -275,8 +261,7 @@ void rawPoints::reduce() {
 
 
 /**
- * @fn boundaryStructure::~boundaryStructure()
- * @brief de-construcutur deletes all the boundary points
+ * De-construcutur deletes all the boundary points
  */
 boundaryStructure::~boundaryStructure() {
     for(auto d : boundary_points) {
@@ -287,8 +272,7 @@ boundaryStructure::~boundaryStructure() {
 }
 
 /**
- * @fn void boundaryStructure::rewrite_reformed_boundary_handles()
- * @brief rewrites the reformed boundary handles to be in order again
+ * Rewrites the reformed boundary handles to be in order again.
  */
 void boundaryStructure::rewrite_reformed_boundary_handles() {
     handle_t start = 0;
@@ -298,8 +282,7 @@ void boundaryStructure::rewrite_reformed_boundary_handles() {
 }
 
 /**
- * @fn boundaryPointConstructor::boundaryPointConstructor(point_t s)
- * @brief constructor of the boundary points
+ * Constructor of the boundary points.
  * @param s
  */
 boundaryPointConstructor::boundaryPointConstructor(point_t s) {
@@ -310,16 +293,14 @@ boundaryPointConstructor::boundaryPointConstructor(point_t s) {
 }
 
 /**
- * @fn boundaryPointConstructor::~boundaryPointConstructor()
- * @brief deconstructor, deletes the elements
+ * Deconstructor, deletes the elements.
  */
 boundaryPointConstructor::~boundaryPointConstructor() {
     delete_structures();
 }
 
 /**
- * @fn void boundaryPointConstructor::init_structure()
- * @brief initilizes a boundary structure to better describe disjunct boundariess
+ * Initilizes a boundary structure to better describe disjunct boundaries.
  */
 void boundaryPointConstructor::init_structure() {
     auto bs = new boundaryStructure;
@@ -329,8 +310,7 @@ void boundaryPointConstructor::init_structure() {
 }
 
 /**
- * @fn void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *start, boundaryType_t  b)
- * @brief constructs a number of boundary points into on direction only really good for cardinal directions
+ * Constructs a number of boundary points into on direction only really good for cardinal directions.
  * @param limit
  * @param dir
  * @param start
@@ -345,8 +325,7 @@ void boundaryPointConstructor::one_direction(int limit, vector_t dir, point_t *s
 }
 
 /**
- * @fn void boundaryPointConstructor::steps_direction(int steps, vector_t dir, point_t *start, boundaryType_t b)
- * @brief creates step in one direction (similar to one direction
+ * Creates step in one direction (similar to one direction).
  * @param steps
  * @param dir
  * @param start
@@ -374,8 +353,7 @@ void boundaryPointConstructor::corner_creation(vector_t dir, point_t *start, bou
 }
 
 /**
- * @fn void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b)
- * @brief sets up an individual boundary point
+ * Sets up an individual boundary point.
  * @param p
  * @param b
  */
@@ -384,8 +362,7 @@ void boundaryPointConstructor::set_point(point_t* p, boundaryType_t b) {
 }
 
 /**
- * @fn void boundaryPointConstructor::set_point(handle_t h, point_t *p, boundaryType_t b)
- * @brief adds a point into the current boundary structure
+ * Adds a point into the current boundary structure.
  * @param h  handle
  * @param p  postion
  * @param b  type of boundary
@@ -405,8 +382,7 @@ void boundaryPointConstructor::set_point(handle_t h, point_t *p, boundaryType_t 
 }
 
 /**
- * @fn void boundaryPointConstructor::rewrite_handles()
- * @brief rewrites handles to be in order
+ * Rewrites handles to be in order.
  */
 void boundaryPointConstructor::rewrite_handles() {
     for(auto bs : boundary_structures) {
@@ -417,8 +393,7 @@ void boundaryPointConstructor::rewrite_handles() {
     }
 }
 /**
- * @fn void boundaryPointConstructor::init_quader()
- * @brief sets up a quader of boundary points
+ * Sets up a quader of boundary points.
  */
 void boundaryPointConstructor::init_quader() {
     point_t current;
@@ -427,8 +402,7 @@ void boundaryPointConstructor::init_quader() {
 }
 
 /**
- * @fn void boundaryPointConstructor::init_chopped_quader(point_t point, int devider)
- * @brief sets up a quader where are are part was chopped off
+ * Sets up a quader where are are part was chopped off
  * @param point
  * @param devider
  */
@@ -467,8 +441,7 @@ void boundaryPointConstructor::init_chopped_quader(point_t point, point_t size, 
 }
 
 /**
- * @fn void boundaryPointConstructor::init_quader(point_t p,vector_t size)
- * @brief sets up a quader with a specific size
+ * Sets up a quader with a specific size.
  * @param p
  * @param s
  */
@@ -495,8 +468,7 @@ void boundaryPointConstructor::init_quader(point_t p,vector_t s) {
 }
 
 /**
- * @fn void boundaryPointConstructor::init_sliding_lid()
- * @brief sets up a sliding lid
+ * Sets up a sliding lid.
  */
 void boundaryPointConstructor::init_sliding_lid() {
     // greate a slinding lid container with the given sizes
@@ -513,8 +485,7 @@ void boundaryPointConstructor::init_sliding_lid() {
 }
 
 /**
- * @fn void boundaryPointConstructor::init_chopped_sliding_lid(point_t start, int chopfactor)
- * @brief sets up a sliding lid where a part is missing
+ * Sets up a sliding lid where a part is missing.
  * @param start
  * @param chopfactor
  */
@@ -531,8 +502,7 @@ void boundaryPointConstructor::init_chopped_sliding_lid(point_t start,point_t si
 }
 
 /**
- * @fn void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chopsize)
- * @brief quader with part missing can be anywhere
+ * Quader with part missing can be anywhere.
  * @param start
  * @param chopsize
  */
@@ -574,8 +544,7 @@ void boundaryPointConstructor::init_quader_side_chopped(point_t start, int chops
 }
 
 /**
- * @fn void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int chopsize)
- * @brief choped of sliding lid
+ * Choped of sliding lid.
  * @param start
  * @param chopsize
  */
@@ -590,8 +559,7 @@ void boundaryPointConstructor::init_sliding_lid_side_chopped(point_t start, int 
 }
 
 /**
- * @fn void boundaryPointConstructor::init_sliding_lid_inner(point_t start, point_t continues, vector_t inner_size)
- * @brief sliding lid with an quadratic object in it
+ * Sliding lid with an quadratic object in it.
  * @param start
  * @param continues
  * @param inner_size
@@ -608,8 +576,7 @@ void boundaryPointConstructor::init_sliding_lid_inner(point_t start,vector_t out
 }
 
 /**
- * @fn void boundaryPointConstructor::delete_structures()
- * @brief deletes the structures
+ * Deletes the structures.
  */
 void boundaryPointConstructor::delete_structures() {
     for(auto bs: boundary_structures) {
@@ -620,8 +587,7 @@ void boundaryPointConstructor::delete_structures() {
 }
 
 /**
- * @fn void boundaryPointConstructor::visualize_2D_boundary(int size)
- * @brief simple visualizer for boundaries
+ * Simple visualizer for boundaries.
  * @param size
  */
 void boundaryPointConstructor::visualize_2D_boundary() {
@@ -637,8 +603,7 @@ void boundaryPointConstructor::visualize_2D_boundary() {
 }
 
 /**
- * @fn long boundaryPointConstructor::total_boundary_nodes()
- * @brief sums up all the boundary points
+ * Sums up all the boundary points.
  * @return sum of all the boundary points, indipendent of the individual stuctures formed
  */
 long boundaryPointConstructor::total_boundary_nodes() {
@@ -650,8 +615,7 @@ long boundaryPointConstructor::total_boundary_nodes() {
 }
 
 /**
- * @fn void boundaryPointConstructor::init_poiseuille_flow()
- * @brief standard p flow constructor
+ * Standard p flow constructor.
  */
 void boundaryPointConstructor::init_poiseuille_flow() {
     // init a quader and relable the sides
@@ -730,8 +694,7 @@ void boundaryPointConstructor::pressure_inlet() {
 }
 
 /**
- * @fn bool sorter_wet_dry_boundaries(boundaryPoint_t * p1, boundaryPoint_t * p2)
- * @brief function that compares the wet and dry state of a node, wet -> 2, dry -> 1
+ * Function that compares the wet and dry state of a node, wet -> 2, dry -> 1.
  * @param p1
  * @param p2
  * @return true/false

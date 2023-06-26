@@ -3,8 +3,7 @@
 #include <chrono>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief basic demonstration of a nl sliding lid with a whole in it (multi-steps non-optimized)
+ * Basic demonstration of a nl sliding lid with a whole in it (multi-steps non-optimized).
  * @param argc
  * @param argv
  * @return

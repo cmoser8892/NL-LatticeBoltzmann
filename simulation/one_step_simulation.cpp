@@ -5,8 +5,7 @@
 
 /// one step run class
 /**
- * @fn inline std::tuple<double, double, double> optimizedSimulation::calculate_macro(array_t *a)
- * @brief function to calculate the rho, ux and uy values (macro values in the equilibrium function)
+ * Function to calculate the rho, ux and uy values (macro values in the equilibrium function).
  * @param a
  * @return
  */
@@ -44,8 +43,7 @@ inline std::tuple<double, double, double> optimizedSimulation::calculate_macro(a
 }
 
 /**
- * @fn inline void optimizedSimulation::forcing_terms(oNode* n,double ux, double uy)
- * @brief calculates the forcing term
+ * Calculates the forcing term.
  * @param n
  * @param ux
  * @param uy
@@ -65,8 +63,7 @@ inline void optimizedSimulation::forcing_terms(oNode* n,double ux, double uy) {
 }
 
 /**
- * @fn inline void optimizedSimulation::bounce_back_moving(array_t *a)
- * @brief simple bb based on the array only
+ * Simple bb based on the array only.
  * @param a
  */
 inline void optimizedSimulation::bounce_back_moving(array_t *a) {
@@ -77,8 +74,7 @@ inline void optimizedSimulation::bounce_back_moving(array_t *a) {
 }
 
 /**
- * @fn inline void optimizedSimulation::streaming(array_t *a, std::vector<link_pointer>* list)
- * @brief just array and linked list based streaming
+ * Just array and linked list based streaming.
  * @param a
  * @param list
  */
@@ -92,8 +88,7 @@ inline void optimizedSimulation::streaming(array_t *a, std::vector<link_pointer>
 }
 
 /**
- * @fn inline void optimizedSimulation::collision(array_t* a, double rho, double ux, double uy)
- * @brief optimized collision step
+ * Optimized collision step.
  * @param a
  * @param rho
  * @param ux
@@ -116,8 +111,7 @@ inline void optimizedSimulation::collision(array_t* a, double rho, double ux, do
 }
 
 /**
- * @fn optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g)
- * @brief constructor sets the sub-classes
+ * Constructor sets the sub-classes.
  * @param c
  * @param g
  */
@@ -135,8 +129,7 @@ optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenera
 }
 
 /**
- * @fn optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenerator *g, goaForce * f)
- * @brief constructor with a force
+ * Constructor with a force.
  * @param c
  * @param g
  * @param f
@@ -148,8 +141,7 @@ optimizedSimulation::optimizedSimulation(boundaryPointConstructor *c, nodeGenera
 }
 
 /**
- * @fn optimizedSimulation::optimizedSimulationizedSimulation()
- * @brief deletes nodes
+ * Deletes nodes.
  */
 optimizedSimulation::~optimizedSimulation() {
     delete_nodes();
@@ -157,8 +149,7 @@ optimizedSimulation::~optimizedSimulation() {
 }
 
 /**
- * @fn void optimizedSimulation::set_simulation_parameters(simulation_parameters_t t)
- * @brief sets up the simulation parameters (given as a struct)
+ * Sets up the simulation parameters (given as a struct).
  * @param t
  */
 void optimizedSimulation::set_simulation_parameters(simulation_parameters_t t) {
@@ -166,8 +157,7 @@ void optimizedSimulation::set_simulation_parameters(simulation_parameters_t t) {
 }
 
 /**
- * @fn void optimizedSimulation::streaming(oNode *node)
- * @brief stream nodes out and performs the streaming step
+ * Stream nodes out and performs the streaming step.
  * @param node
  */
 void optimizedSimulation::streaming(oNode *node) {
@@ -176,8 +166,7 @@ void optimizedSimulation::streaming(oNode *node) {
 }
 
 /**
- * @fn void optimizedSimulation::bounce_back_moving(oNode *n)
- * @brief performs the bounce back step on the top layer
+ * Performs the bounce back step on the top layer.
  * @param n
  */
 void optimizedSimulation::bounce_back_moving(oNode *n) {
@@ -189,8 +178,7 @@ void optimizedSimulation::bounce_back_moving(oNode *n) {
 }
 
 /**
- * @fn void optimizedSimulation::one_step_macro_collision_forcing(oNode *node)
- * @brief one stop mactor forcing term
+ * One stop macro forcing term.
  * @param node
  */
 void optimizedSimulation::one_step_macro_collision_forcing(oNode *node) {
@@ -236,8 +224,7 @@ void optimizedSimulation::one_step_macro_collision_forcing(oNode *node) {
 }
 
 /**
- * @fn void optimizedSimulation::one_step_macro_collision(oNode* node, double relaxation)
- * @brief one step for all the calculations necessary
+ * One step for all the calculations necessary.
  * @param node
  * @param relaxation
  */
@@ -247,8 +234,7 @@ void optimizedSimulation::one_step_macro_collision(oNode* node, double relaxatio
 }
 
 /**
- * @fn inline void optimizedSimulation::one_step_macro_collision(array_t *a)
- * @brief performs the the macro and collision step in one go
+ * Performs the the macro and collision step in one go.
  * @param a
  */
 void optimizedSimulation::one_step_macro_collision(array_t *a) {
@@ -263,8 +249,7 @@ void optimizedSimulation::one_step_macro_collision(array_t *a) {
 }
 
 /**
- * @fn void optimizedSimulation::init()
- * @brief inits the sim based on info in the node generator
+ * Inits the sim based on info in the node generator.
  */
 void optimizedSimulation::init() {
     // set up nodes
@@ -292,8 +277,7 @@ void optimizedSimulation::init() {
 }
 
 /**
- * @fn void optimizedSimulation::init_sub_array()
- * @brief init the sub arrays too
+ * Init the sub arrays too.
  */
 void optimizedSimulation::init_sub_array() {
     // we push the information into the sub arrays
@@ -305,8 +289,7 @@ void optimizedSimulation::init_sub_array() {
 }
 
 /**
- * @fn void optimizedSimulation::run(int current_step)
- * @brief run the sim
+ * Run the sim.
  * @param current_step
  */
 void optimizedSimulation::run(int current_step ) {
@@ -323,8 +306,8 @@ void optimizedSimulation::run(int current_step ) {
 }
 
 /**
- * @fn void optimizedSimulation::run_sub_array(int current_step)
- * @brief
+ * Tests weather or not it makes sense to rip apart oNode (not really 3% improvement though)
+ * @note Optimal if combined with a esoteric twist algorithm
  * @param current_step
  */
 void optimizedSimulation::run_sub_array(int current_step) {
@@ -347,8 +330,7 @@ void optimizedSimulation::run_sub_array(int current_step) {
 }
 
 /**
- * @fn void optimizedSimulation::gladrow_force_run(int current_step)
- * @brief a forcing run
+ * A forcing run.
  * @param current_step
  */
 void optimizedSimulation::gladrow_force_run(int current_step) {
@@ -364,8 +346,7 @@ void optimizedSimulation::gladrow_force_run(int current_step) {
 }
 
 /**
- * @fn void optimizedSimulation::forcing_run(int current_step)
- * @brief implementation based on first order goa
+ * Implementation based on first order goa.
  * @param current_step
  */
 void optimizedSimulation::forcing_run(int current_step) {
@@ -385,8 +366,7 @@ void optimizedSimulation::forcing_run(int current_step) {
 }
 
 /**
- * @fn void optimizedSimulation::get_data(bool write_to_file, point_t orgiginalo)
- * @brief writes data to file or prints it out
+ * Writes data to file or prints it out.
  * @param write_to_file
  * @param orgiginalo
  */
@@ -415,8 +395,7 @@ void optimizedSimulation::get_data(bool write_to_file, point_t orgiginalo) {
 }
 
 /**
- * @fn void optimizedSimulation::get_data(bool write_to_file)
- * @brief gets the data and writes it to file
+ * Gets the data and writes it to file.
  * @param write_to_file
  */
 void optimizedSimulation::get_data(bool write_to_file) {
@@ -424,8 +403,7 @@ void optimizedSimulation::get_data(bool write_to_file) {
 }
 
 /**
- * @fn void optimizedSimulation::delete_nodes()
- * @brief frees up the memory again
+ * Frees up the memory again.
  */
 void optimizedSimulation::delete_nodes() {
     for (auto n : nodes) {

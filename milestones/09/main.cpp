@@ -3,8 +3,7 @@
 #include <iostream>
 #include <chrono>
 /**
- * @fn int main(int argc, char *argv[])
- * @brief 09 main, used second order integration to apply the force
+ * 09 main, used second order integration to apply the force.
  * @param argc
  * @param argv
  * @return

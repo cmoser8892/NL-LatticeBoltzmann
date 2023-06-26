@@ -2,8 +2,7 @@
 
 // image converter
 /**
- * @fn void imageConverter::read()
- * @brief reads the bmp image into the internal bmp struct
+ * Reads the bmp image into the internal bmp struct.
  */
 void imageConverter::read() {
     std::filesystem::path file{path};
@@ -85,8 +84,7 @@ void imageConverter::read() {
 }
 
 /**
- * @fn void imageConverter::detect_colors()
- * @brief goes through the image and lists the colors, not really necessary, more done for statistics
+ * Goes through the image and lists the colors, not really necessary, more done for statistics.
  */
 void imageConverter::detect_colors() {
     // how many datums do we have to combine to get a full input
@@ -111,8 +109,7 @@ void imageConverter::detect_colors() {
 }
 
 /**
- * @fn void imageConverter::create_raw()
- * @brief creates the raw boundary points as given by the image, everything not white (0xfffff) is considered boundary
+ * Creates the raw boundary points as given by the image, everything not white (0xfffff) is considered boundary.
  */
 void imageConverter::create_raw() {
     // order the bmp image into a more accessible 2d structure
@@ -148,8 +145,7 @@ void imageConverter::create_raw() {
 }
 
 /**
- * @fn void imageConverter::translate_reformed_into_structure()
- * @brief translates the the reformed raw data into an boundary struct
+ * Translates the the reformed raw data into an boundary struct.
  */
 void imageConverter::translate_reformed_into_structure() {
     // create a new structure
@@ -231,8 +227,7 @@ void imageConverter::translate_reformed_into_structure() {
 }
 
 /**
- * @fn uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row_stride)
- * @brief removed padding bytes in the raw bmp image
+ * Removed padding bytes in the raw bmp image.
  * @param align_stride
  * @param row_stride
  * @return
@@ -246,8 +241,7 @@ uint32_t imageConverter::make_stride_aligned(uint32_t align_stride, uint32_t row
 }
 
 /**
- * @fn point_t imageConverter::update_position(point_t p)
- * @brief updates the position of the piece of data
+ * Updates the position of the piece of data.
  * @param p
  * @return
  */
@@ -265,10 +259,8 @@ point_t imageConverter::update_position(point_t p) {
     return p;
 }
 
-/// public
 /**
- * @fn imageConverter::imageConverter(std::filesystem::path p)
- * @brief constructor of the image converter
+ * Constructor of the image converter.
  * @param p
  */
 imageConverter::imageConverter(std::filesystem::path p) {
@@ -280,9 +272,9 @@ imageConverter::~imageConverter() {
     delete raw;
     delete boundaries;
 }
+
 /**
- * @fn void imageConverter::init()
- * @brief reads in a bmp image
+ * Reads in a bmp image.
  */
 void imageConverter::init() {
     read();
@@ -290,8 +282,7 @@ void imageConverter::init() {
 }
 
 /**
- * @fn void imageConverter::run()
- * @brief run function will setup everything
+ * Run function will setup everything.
  */
 void imageConverter::run() {
     raw_run();
@@ -299,8 +290,7 @@ void imageConverter::run() {
 }
 
 /**
- * @fn void imageConverter::raw_run()
- * @brief partial run, used for testing
+ * Partial run, used for testing.
  */
 void imageConverter::raw_run() {
     // read in the raw data and reduce the set of boundaries considered
@@ -312,8 +302,7 @@ void imageConverter::raw_run() {
 }
 
 /**
- * @fn void imageConverter::raw_cleanup()
- * @brief main function to translate
+ * Main function to translate.
  */
 void imageConverter::raw_cleanup() {
     // delete the temporary raw points work with the reformed points
@@ -334,8 +323,7 @@ void imageConverter::raw_cleanup() {
 }
 
 /**
- * @fn int imageConverter::return_number_of_colors()
- * @brief return the total number of colors in the bmp image, used for testing
+ * Return the total number of colors in the bmp image, used for testing.
  * @return the number of colors
  */
 int imageConverter::return_number_of_colors() {
@@ -343,8 +331,7 @@ int imageConverter::return_number_of_colors() {
 }
 
 /**
- * @fn bool imageConverter::check_for_white_wet_nodes()
- * @brief check if white is in the image, white is the considered as a wet node
+ * Check if white is in the image, white is the considered as a wet node.
  * @return yes no white there
  */
 bool imageConverter::check_for_white_wet_nodes() {
@@ -352,8 +339,7 @@ bool imageConverter::check_for_white_wet_nodes() {
 }
 
 /**
- * @fn unsigned long imageConverter::return_basic_size()
- * @brief return either width or height depending which one is bigger
+ * Return either width or height depending which one is bigger.
  * @return returns a long number
  */
 unsigned long imageConverter::return_basic_size() {

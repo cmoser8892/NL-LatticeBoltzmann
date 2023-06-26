@@ -1,8 +1,7 @@
 #include "helper_classes.h"
 
 /**
- * @fn rhoWatchdog::rhoWatchdog(double s,point_t size
- * @brief constructor for the rho_watchdog
+ * Constructor for the rho_watchdog.
  * @param s
  * @param size
  */
@@ -11,8 +10,7 @@ rhoWatchdog::rhoWatchdog(double s,point_t size) :sensitivity(s) {
 }
 
 /**
- * @fn bool rhoWatchdog::check(node *n,int step)
- * @brief performs a watchdog check of the history of the rho value, aka compares it to the previous one
+ * Performs a watchdog check of the history of the rho value, aka compares it to the previous one.
  * @param n
  * @param step
  * @return
@@ -35,8 +33,7 @@ bool rhoWatchdog::check(node *n,int step) {
 }
 
 /**
- * @fn void pointKeyHash::fill_key(handle_t positions_handle, point_t pos)
- * @brief put a position in the key table, floors the double value
+ * Put a position in the key table, floors the double value.
  * @param positions_handle
  * @param pos
  */
@@ -59,8 +56,7 @@ void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
 }
 
 /**
- * @fn handle_t pointKeyHash::key_translation(point_t pos)
- * @brief finds the key or does not in this case returns 0
+ * Finds the key or does not in this case returns 0.
  * @param pos a point
  * @return
  */
@@ -74,8 +70,7 @@ handle_t pointKeyHash::key_translation(point_t pos) {
 }
 
 /**
- * @fn handle_t pointKeyHash::key_translation(coordinate_t coord)
- * @brief coordinate based key translation
+ * Coordinate based key translation.
  * @param coord
  * @return
  */
@@ -91,16 +86,14 @@ handle_t pointKeyHash::key_translation(coordinate_t coord) {
 }
 
 /**
- * @fn void pointKeyHash::clear()
- * @brief clears the pkh key table
+ * Clears the pkh key table.
  */
 void pointKeyHash::clear() {
     keys.clear();
 }
 
 /**
- * @fn windowedHandles::windowedHandles(unsigned long s)
- * @brief constructor set up the list with the wished for size
+ * Constructor set up the list with the wished for size.
  * @param s
  */
 windowedHandles::windowedHandles(unsigned long s) {
@@ -113,8 +106,7 @@ windowedHandles::windowedHandles(unsigned long s) {
 }
 
 /**
- * @fn unsigned long windowedHandles::size()
- * @brief returns the size of the list data-structure
+ * Returns the size of the list data-structure.
  * @return size of the list data-structure
  */
 unsigned long windowedHandles::size() {
@@ -122,8 +114,7 @@ unsigned long windowedHandles::size() {
 }
 
 /**
- * @fn void windowedHandles::add(handle_t h)
- * @brief adds a new element into the list pops the oldest one
+ * Adds a new element into the list pops the oldest one.
  * @param h
  */
 void windowedHandles::add(handle_t h) {
@@ -133,8 +124,7 @@ void windowedHandles::add(handle_t h) {
 }
 
 /**
- * @fn bool windowedHandles::check(handle_t h)
- * @brief checks if the given handle h is in the buffer
+ * Checks if the given handle h is in the buffer.
  * @param h
  * @return returns true if the handle h is in the buffer
  */

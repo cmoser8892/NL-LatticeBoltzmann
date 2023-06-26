@@ -1,8 +1,7 @@
 #include "node.h"
 
 /**
- * @fn node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t type )
- * @brief constructor sets all the variables
+ * Constructor sets all the variables.
  * @param h
  * @param dimensions
  * @param channels
@@ -30,8 +29,7 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
 }
 
 /**
- * @fn oNode::oNode(handle_t h, int channels, boundaryType_t type)
- * @brief oNode improvements
+ * oNode improvements.
  * @param h
  * @param channels
  * @param type

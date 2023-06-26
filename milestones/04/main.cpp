@@ -3,8 +3,7 @@
 #include <chrono>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief 04 main, sliding lid first optimization iteration
+ * 04 main, sliding lid first optimization iteration.
  * @param argc
  * @param argv
  * @return

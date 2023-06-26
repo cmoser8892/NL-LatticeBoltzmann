@@ -7,8 +7,7 @@
 #include <filesystem>
 
 /**
- * @fn nodeGenerator::nodeGenerator(boundaryPointConstructor *p)
- * @brief constructor, sets points
+ * Constructor, sets points.
  * @param p
  */
 nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
@@ -16,8 +15,7 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
 }
 
 /**
- * @fn nodeGenerator::~nodeGenerator()
- * @brief deletes all the info about the nodes
+ * Deletes all the info about the nodes.
  */
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
@@ -25,8 +23,7 @@ nodeGenerator::~nodeGenerator() {
 }
 
 /**
- * @fn void nodeGenerator::linear_generation()
- * @brief generates nodes until it hits a boundary useful to make simple 1d tests
+ * Generates nodes until it hits a boundary useful to make simple 1d tests.
  */
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
@@ -54,8 +51,7 @@ void nodeGenerator::linear_generation() {
 }
 
 /**
- * @fn bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_point)
- * @brief checks if the next point would be a boundary or outside
+ * Checks if the next point would be a boundary or outside.
  * @param p
  * @param check_point
  * @return true or false based if boundary/not also checks if still inside bounds
@@ -84,8 +80,7 @@ bool nodeGenerator::check_other_boundary_hit(boundaryPoint_t* p,point_t &check_p
 
 
 /**
- * @fn void nodeGenerator::determine_neighbors()
- * @brief hull for the neighbourhood class with its determine_neighbors call
+ * Hull for the neighbourhood class with its determine_neighbors call.
  */
 void nodeGenerator::determine_neighbors() {
     neighbourhood neighbourhood;
@@ -93,8 +88,7 @@ void nodeGenerator::determine_neighbors() {
 }
 
 /**
- * @fn void nodeGenerator::determine_neighbors()
- * @brief does what it says, no real checking and correcting thou !!
+ * Does what it says, no real checking and correcting thou.
  * @return returns false if a file does not exist
  */
 bool nodeGenerator::read_data_from_file() {
@@ -130,8 +124,7 @@ bool nodeGenerator::read_data_from_file() {
 }
 
 /**
- * @fn void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBack_t* chop)
- * @brief function to translate data on files to data for the class
+ * Function to translate data on files to data for the class.
  * @param n
  * @param s
  * @param chop
@@ -184,8 +177,7 @@ void nodeGenerator::read_back_switch_case(nodePoint_t* n, std::string& s, readBa
 }
 
 /**
- * @fn void nodeGenerator::write_data_to_file(bool write)
- * @brief does what it says check if params are set correctlly
+ * Does what it says check if params are set correctly.
  * @param write
  */
 void nodeGenerator::write_data_to_file(bool write) {
@@ -229,8 +221,7 @@ void nodeGenerator::write_data_to_file(bool write) {
 }
 
 /**
- * @fn void nodeGenerator::board_creation(unsigned int size)
- * @brief create a board based on sizes given
+ * Create a board based on sizes given.
  */
 void nodeGenerator::board_creation(unsigned int size) {
     // make the interleaved positions
@@ -261,8 +252,7 @@ void nodeGenerator::board_creation(unsigned int size) {
 }
 
 /**
- * @fn void nodeGenerator::check_nodes(handle_t* current)
- * @brief check if the node is inside the canvas defined by the straights and deletes the rest
+ * Check if the node is inside the canvas defined by the straights and deletes the rest.
  * @param current
  */
 void nodeGenerator::check_nodes(handle_t* current) {
@@ -287,8 +277,7 @@ void nodeGenerator::check_nodes(handle_t* current) {
 }
 
 /**
- * @fn void nodeGenerator::add_boundary_nodes(handle_t* current)
- * @brief does what it says after sorting out everything we still have to add the boundary nodes
+ * Does what it says after sorting out everything we still have to add the boundary nodes.
  * @param current
  */
 void nodeGenerator::add_boundary_nodes(handle_t* current) {
@@ -310,8 +299,7 @@ void nodeGenerator::add_boundary_nodes(handle_t* current) {
 }
 
 /**
- * @fn void nodeGenerator::reduce_boundary_neighborhood()
- * @brief function to delete the boundary nodes and write it directly in the bounce-back
+ * Function to delete the boundary nodes and write it directly in the bounce-back.
  */
 void nodeGenerator::reduce_boundary_neighborhood() {
     // otherwise it just crashes
@@ -354,8 +342,7 @@ void nodeGenerator::reduce_boundary_neighborhood() {
 }
 
 /**
- * @fn void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b)
- * @brief bumps up the the boundary condition of a wet node to represent the boundary
+ * Bumps up the the boundary condition of a wet node to represent the boundary.
  * @param array_position
  * @param b
  */
@@ -410,16 +397,14 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
 
 /// public
 /**
- * @fn void nodeGenerator::set_discovery_vector(vector_t set)
- * @brief set the 2D discovery vector, the function linear generation will use that vector during node discovery
+ * Set the 2D discovery vector, the function linear generation will use that vector during node discovery.
  * @param set the discovery vector
  */
 void nodeGenerator::set_discovery_vector(vector_t set) {
     discovery_vector = set;
 }
 /**
- * @fn void nodeGenerator::set_redo_save(bool r, bool s)
- * @brief
+ * Sets the redo save, weather or not we save to text or not.
  * @param r redo
  * @param s safe
  */
@@ -429,8 +414,7 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
 }
 
 /**
- * @fn void nodeGenerator::init()
- * @brief initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that
+ * Initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that.
  * old legacy method
  */
 void nodeGenerator::init() {
@@ -442,8 +426,7 @@ void nodeGenerator::init() {
 }
 
 /**
- * @fn void nodeGenerator::init(unsigned int size)
- * @brief init
+ * Init.
  * @param size
  */
 void nodeGenerator::init(unsigned int size) {
@@ -458,8 +441,7 @@ void nodeGenerator::init(unsigned int size) {
 }
 
 /**
- * @fn void nodeGenerator::init_fused(unsigned int size)
- * @brief fused init, also reduces total nodes by removing boundaries
+ * Fused init, also reduces total nodes by removing boundaries.
  * @param size canvas size
  */
 void nodeGenerator::init_fused(unsigned int size) {
@@ -475,8 +457,7 @@ void nodeGenerator::init_fused(unsigned int size) {
 }
 
 /**
- * @fn void nodeGenerator::delete_node_infos()
- * @brief deletes the content of the node_infos vector
+ * Deletes the content of the node_infos vector.
  */
 void nodeGenerator::delete_node_infos() {
     // delete node info
@@ -488,8 +469,7 @@ void nodeGenerator::delete_node_infos() {
 }
 
 /**
- * @fn void nodeGenerator::visualize_2D_nodes(int size)
- * @brief simple visualizer node points
+ * Simple visualizer node points.
  * @param size
  */
 void nodeGenerator::visualize_2D_nodes() {

@@ -2,8 +2,7 @@
 #include "helper_functions.h"
 
 /**
- * @fn neighbourhood::neighbourhood()
- * @brief constructor, sets up min and max coordinate
+ * Constructor, sets up min and max coordinate.
  */
 neighbourhood::neighbourhood() {
     // set the min to max and max to min
@@ -14,8 +13,7 @@ neighbourhood::neighbourhood() {
 }
 
 /**
- * @fn void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes)
- * @brief fills the keys map based on the z-order of the position making a hash map
+ * Fills the keys map based on the z-order of the position making a hash map
  * @param nodes
  */
 void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
@@ -36,8 +34,7 @@ void neighbourhood::fill_keys(std::vector<nodePoint_t*> &nodes) {
 }
 
 /**
- * @fn void neighbourhood::snoop_min_coordinate(coordinate_t coordinate)
- * @brief snoops the min coorodinates and sets that accoridnglly
+ * Snoops the min coordinates and sets that accordingly.
  * @param coordinate
  */
 void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
@@ -51,8 +48,7 @@ void neighbourhood::snoop_min_coordinate(coordinate_t coordinate) {
 }
 
 /**
- * @fn void neighbourhood::snoop_max_coordinate(coordinate_t coordinate)
- * @brief snoops the max coordiante and sets that
+ * Snoops the max coordinate and sets that.
  * @param coordinate
  */
 void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
@@ -66,8 +62,7 @@ void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
 }
 
 /**
- * @fn void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate)
- * @brief used to setup links for periodic wet boundaries
+ * Used to setup links for periodic wet boundaries.
  * @param coordinate
  */
 void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
@@ -92,8 +87,7 @@ void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
 }
 
 /**
- * @fn void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes)
- * @brief calculates the z-order of the position of the neighbours and looks for them in the hash table
+ * Calculates the z-order of the position of the neighbours and looks for them in the hash table.
  * @param nodes
  */
 void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
@@ -146,8 +140,7 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
 }
 
 /**
- * @fn void neighbourhood::check_wet_nodes(std::vector<nodePoint_t *> &nodes)
- * @brief checks wet nodes channels, aka are all boundaries there
+ * Checks wet nodes channels, aka are all boundaries there.
  * @param nodes
  */
 void neighbourhood::check_wet_nodes(std::vector<nodePoint_t *> &nodes) {

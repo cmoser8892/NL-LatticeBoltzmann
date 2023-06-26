@@ -4,8 +4,7 @@
 #include <chrono>
 
 /**
- * @fn int main(int argc, char *argv[])
- * @brief 07 main, uses the gladrow two step term and just used a circular force
+ * 07 main, uses the gladrow two step term and just used a circular force.
  * @param argc
  * @param argv
  * @return
