@@ -3,7 +3,7 @@
 
 /*
  * Simulation classes:
- * The simulation classes are intentionally left at a their
+ * The simulation classes are intentionally left at at their
  * final development stage to make it easier to understand the code as a whole.
  * Normally i would not do this as it produces more spaghetti code but I think it is reasonable to
  * do here.
@@ -25,13 +25,15 @@
 #include "types.h"
 #include "functions.h"
 #include "forces.h"
-// classen in gib
+/**
+ * Currently worked on simulation class that supports forcing and is optimized for that.
+ */
 class forcedSimulation {
   private:
-    simulation_parameters_t parameters;
-    boundaryPointConstructor * boundary_points = nullptr;
-    nodeGenerator* node_generator = nullptr;
-    goaForce * rot_force = nullptr;
+    simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
+    boundaryPointConstructor * boundary_points = nullptr; /**<  pointer to the previously constructed boundary point cloud */
+    nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
+    goaForce * rot_force = nullptr; /**<  pointer to the rotation force calculation class */
     // inlined core methods
     inline std::tuple<double, double, double> calculate_macro(array_t* a, array_t* previous_force);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
@@ -39,11 +41,11 @@ class forcedSimulation {
     inline void forcing_terms(oNode* n,array_t * w, double ux, double uy);
   public:
     // public main variables
-    int offset_sim = 1;
-    int offset_node = 0;
+    int offset_sim = 1; /**< offset 1 or 0 depending on the step */
+    int offset_node = 0; /**<  offset 1 or 0 depending on the step (opposite to offset_sim) */
     // holding of the general nodes
-    std::vector<oNode*> nodes;
-    std::vector<array_t*> forces;
+    std::vector<oNode*> nodes; /**< optimized nodes stored in a vector */
+    std::vector<array_t*> forces; /**<  force terms stored in a vector */
     // constructors
     forcedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
     ~forcedSimulation();

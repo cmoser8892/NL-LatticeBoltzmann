@@ -15,15 +15,17 @@
  * a performance increase of about 3% they were dropped in favor of a more
  * generalized structure.
  */
-
+/**
+ * Optimized version of the original basic Simulation class.
+ * @note The additional array for holding specific values of the sim bring a performance increase of about 3% they were dropped in favor of a more generalized structure.
+ */
 class optimizedSimulation {
   private:
-    simulation_parameters_t parameters;
-    boundaryPointConstructor * boundary_points = nullptr;
-    nodeGenerator* node_generator = nullptr;
-    // todo need to combine the different force at some point
-    gladrowForce * force = nullptr;
-    goaForce * rot_force = nullptr;
+    simulation_parameters_t parameters; /**< simulation parameters, wall velocity and relaxation */
+    boundaryPointConstructor * boundary_points = nullptr; /**< pointer to the previously constructed boundary point cloud */
+    nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
+    gladrowForce * force = nullptr; /**<  pointer to the rotation force calculation class */
+    goaForce * rot_force = nullptr; /**<  pointer to the rotation force calculation class */
     // inlined core methods
     inline std::tuple<double, double, double> calculate_macro(array_t* a);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
@@ -31,15 +33,15 @@ class optimizedSimulation {
     inline void forcing_terms(oNode* n, double ux, double uy);
     inline void bounce_back_moving(array_t* a);
   public:
-    int offset_sim = 1;
-    int offset_node = 0;
+    int offset_sim = 1; /**< offset 1 or 0 depending on the step */
+    int offset_node = 0; /**<  offset 1 or 0 depending on the step (opposite to offset_sim) */
     // holding of the general nodes
-    std::vector<oNode*> nodes;
+    std::vector<oNode*> nodes; /**<  optimized nodes stored in a vector */
     // indirect pointers to the arrays
-    std::vector<array_t*> arrays_of_the_nodes;
+    std::vector<array_t*> arrays_of_the_nodes; /**<  pointers to the populations */
     // indirect pointers to the nl structure
-    std::vector<std::vector<link_pointer>*> neighborhood_list;
-    std::vector<boundaryType_t> boundary;
+    std::vector<std::vector<link_pointer>*> neighborhood_list; /**<  pointers to the neighborhood lists */
+    std::vector<boundaryType_t> boundary; /**<  pointers to the type of boundaries */
     // methods
     optimizedSimulation(boundaryPointConstructor* c,nodeGenerator* g);
     optimizedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);

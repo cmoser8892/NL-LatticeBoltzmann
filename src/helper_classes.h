@@ -10,35 +10,43 @@
 #include <list>
 #include <filesystem>
 
-// watchdog for rho
+/**
+ * Rho watchdog that makes sure rho values do not run away.
+ */
 class rhoWatchdog {
     // just prints out std error msgs
   private:
-    flowfield_t rho;
-    double sensitivity = 0.1; // displacement to the previous value
+    flowfield_t rho; /**< Previous values */
+    double sensitivity = 0.1; /**<  maximum displacement to the previous value */
   public:
     rhoWatchdog(double s,point_t size);
     bool check(node* n,int step);
 };
 
-// works with bit interleaving floors points to a full point on the gird!
+/**
+ * Hashes points to be found in a neighborhood list.
+ * @note works with bit interleaving floors points to a full point on the gird!
+ * @details works by reducing the position to a normal number and interleaving those number to create a classifier for that handle
+ */
 class pointKeyHash {
   private:
-    std::unordered_multimap<handle_t,handle_t> keys;
-  public:
+    std::unordered_multimap<handle_t,handle_t> keys; /**< handle handle parings */
+   public:
     void fill_key(handle_t positions_handle, point_t pos);
     void clear();
     handle_t key_translation(point_t pos);
     handle_t key_translation(coordinate_t cord);
 };
 
-// basic stash that holds items for a number of iterations
-// a window with a conveyor belt behind it, specifically for handles
+/**
+ * Basic stash that holds items for a number of iterations.
+ * A window with a conveyor belt behind it, specifically for handles.
+*/
 class windowedHandles{
     // dont make this to big
   private:
-    unsigned long target_size;
-    std::list<handle_t> previous;
+    unsigned long target_size; /**<  size of the window that holds the handles */
+    std::list<handle_t> previous; /**< vector that holds that past handles */
   public:
     // functions
     windowedHandles(unsigned long size);

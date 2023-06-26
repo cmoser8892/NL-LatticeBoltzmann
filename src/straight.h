@@ -6,32 +6,33 @@
 #include "boundary_point_generator.h"
 #include "helper_functions.h"
 
+/**
+ * Straight definition.
+ */
 typedef struct straight {
     // s = p + t*d
-    point_t point;
-    vector_t direction;
+    point_t point; /**<  Origin of the straight */
+    vector_t direction; /**<  Direction of the straight line */
     // validity of the straight
-    double max_t = 0;
+    double max_t = 0; /**<  Length of that line */
 }straight_t;
 
+/**
+ * Straight generator that connects the surface.
+ */
 class straightGenerator {
-    /*
-     * note: surfaces are the boundary point to the next boundary point
-     * connected via a direction vector
-     * it is a straight line
-     */
   private:
     // boundary points and pkh of the boundary points
-    boundaryPointConstructor* points;
-    pointKeyHash full_pkh;
-    std::vector<pointKeyHash*> pkhv;
+    boundaryPointConstructor* points; /**< Pointer to the Boundary point */
+    pointKeyHash full_pkh; /**<  Hash table of all the boundary points */
+    std::vector<pointKeyHash*> pkhv; /**<  Hash table of each boundary structure */
     // global and individual mass centers
-    point_t mass_center;
-    std::vector<point_t> individual_mass_centers;
+    point_t mass_center; /**<  mass_center of the boundary points to calculate intersection later */
+    std::vector<point_t> individual_mass_centers; /**<  Individual mass centers of the boundary structures */
     // temporary object storages
-    std::vector<straight_t *> temporary_creation;
-    std::vector<straight_t *> temporary_valid;
-    std::vector<straight_t *> temporary;
+    std::vector<straight_t *> temporary_creation; /**< temp 1 */
+    std::vector<straight_t *> temporary_valid; /**<  temp 2 */
+    std::vector<straight_t *> temporary; /**<  temp 3, yes we need 3 temporary storages to reform straight lines */
     // functions
     void calculate_mass_center();
     void detect_boundary_proximity_main_mass_center();
@@ -47,7 +48,7 @@ class straightGenerator {
     void look_for_bumps(int bs);
   public:
     // suface defined as middle point between two boundary points and a normal vector
-    std::vector<straight_t *> surfaces;
+    std::vector<straight_t *> surfaces; /**<  surfaces in a vector */
     explicit straightGenerator(boundaryPointConstructor* p);
     ~straightGenerator();
     void init();

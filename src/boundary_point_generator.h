@@ -65,14 +65,14 @@ class boundaryStructure {
  */
 class boundaryPointConstructor {
   private:
-    handle_t added_handle = 0;
+    handle_t added_handle = 0; /**<  handle counter */
   public:
     // holds all the boundary points
-    long current_structure = -1;
-    std::vector<boundaryStructure *> boundary_structures;
+    long current_structure = -1; /**<  current structure that boundary points get ordered into */
+    std::vector<boundaryStructure *> boundary_structures; /**<  pointers to the boundary structures */
     // sizes and limits of the construction field
-    point_t size;
-    point_t limits;
+    point_t size; /**< size for example 80x80 */
+    point_t limits; /**< size starting with 0 not with one 80x80 -> 79x79 */
     // functions
     explicit boundaryPointConstructor(point_t s);
     ~boundaryPointConstructor();

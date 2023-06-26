@@ -11,12 +11,14 @@
  * but may safe the day later if the node coordinates are not perfectly on int positions
  * for subdividing
  */
-// order nodes into the cells
+/**
+ * Order nodes into the cells.
+ */
 class neighbourhood {
   private:
-    pointKeyHash pkh;
-    coordinate_t min_coordinate;
-    coordinate_t max_coordinate;
+    pointKeyHash pkh; /**<  Used to formulate the hashcodes for holding points */
+    coordinate_t min_coordinate; /**<  min coordinate */
+    coordinate_t max_coordinate; /**<  max coordinate */
     void fill_keys(std::vector<nodePoint_t*> &nodes);
     void snoop_min_coordinate(coordinate_t coordinate);
     void snoop_max_coordinate(coordinate_t coordinate);

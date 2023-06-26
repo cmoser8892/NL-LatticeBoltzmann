@@ -27,43 +27,52 @@ extern matrix_t cardinal_directions; /**< is set as a global */
  * xy (long) coordinates as a struct
  */
 typedef struct coordinate {
-    long x;
-    long y;
+    long x; /**<  well x */
+    long y; /**<  y well */
 }coordinate_t;
 
+/**
+ * Dry Wet enum identifier of nodes
+ */
 typedef enum nodeIdentifier {
-    UNKNOWN = 0,
-    DRY,
+    UNKNOWN = 0, /**< Neither wet nor dry (undifined) */
+    DRY, ///
     WET
 }nodeIdentifier_t;
 
+/**
+ * Type of Boundary
+ * @note the existence of a tag does not guaranty that there is actual an implementation
+ */
 typedef enum boundaryType {
-    NO_BOUNDARY = 0, // doesnt do anything equal to an error
-    BOUNCE_BACK,
-    BOUNCE_BACK_MOVING,
-    PERIODIC,
-    PRESSURE_PERIODIC,
+    NO_BOUNDARY = 0, /**<  Most likely an error or not set */
+    BOUNCE_BACK, /**< Bounce back type boundary */
+    BOUNCE_BACK_MOVING, /**<  Moving bounce back type boundary */
+    PERIODIC, /**<  periodic type boundary */
+    PRESSURE_PERIODIC, /**<  pressure periodic tag */
     OPEN_INLET,
     OPEN_OUTLET
 }boundaryType_t;
 
-/*
- * Note on the toLinks_t:
- * used in the naive implementation and used
- * when constructing neighbourhoods
+/**
+ * Link to other neighboring nodes
+ * @note on the toLinks_t: used in the naive implementation and used when constructing neighbourhoods
  */
 typedef struct toLinks {
-    int channel;
-    handle_t handle; // form 1 to n -1 for valid handles
+    int channel; /**<  channel to be streamed to */
+    handle_t handle; /**<  form 1 to n -1 for valid handles */
 }toLinks_t;
 
+/**
+ * Simulation parameter struct.
+ */
 typedef struct simulation_parameters {
-    double relaxation = 0.5;
-    double u_wall = 0;
-    double dt = 1;
+    double relaxation = 0.5; /**<  current relaxation */
+    double u_wall = 0; /**<  u wall */
+    double dt = 1; /**<  just leave it a 1, simulation will crash and burn otherwise */
 }simulation_parameters_t;
 
 // eigen smart pointer
-using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>;
-using array_pointer = link_pointer;
+using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>; /// link pointer directly to an array
+using array_pointer = link_pointer; /// redefine to be more inline of what it actually does
 #endif // MY_GENERAL_CODE_TYPES_H

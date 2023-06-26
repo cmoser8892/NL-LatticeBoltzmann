@@ -9,14 +9,19 @@
 #include "functions.h"
 #include "forces.h"
 
-// basic sim
+/**
+ * Original Working Implementation of the Simulation.
+ * Uses a two step streaming algorithm.
+ * Fully considered to be legacy code.
+ * @see node
+ */
 class basicSimulation {
   private:
-    simulation_parameters_t parameters;
-    boundaryPointConstructor * boundary_points = nullptr;
-    nodeGenerator* node_generator = nullptr;
+    simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
+    boundaryPointConstructor * boundary_points = nullptr; /**<  pointer to the previously constructed boundary point cloud */
+    nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
   public:
-    std::vector<node*> nodes;
+    std::vector<node*> nodes; /**< storage of nodes (pointers) */
     explicit basicSimulation(boundaryPointConstructor* c);
     ~basicSimulation();
     basicSimulation(boundaryPointConstructor* c,nodeGenerator* g);
@@ -34,4 +39,5 @@ class basicSimulation {
     void get_data(bool write_to_file, point_t org);
     void delete_nodes();
 };
+
 #endif // NL_LATTICEBOLTZMANN_TWO_STEP_SIMULATION_H

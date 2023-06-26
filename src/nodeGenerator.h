@@ -10,14 +10,16 @@
 #include "node.h"
 #include "boundary_point_generator.h"
 #include "straight.h"
-
+/**
+ * Read back enum, to handle the lines.
+ */
 typedef enum readBack {
-    HANDLE = 0,
-    TYPE,
-    BOUNDARY,
-    POSITION,
-    LINKS,
-    ERROR = 255
+    HANDLE = 0, /**<  Handle first */
+    TYPE, /**<  Dry Wet type */
+    BOUNDARY, /**< Boundary type (Bounce Back, Moving, etc. ) */
+    POSITION, /**<  Position of the node */
+    LINKS, /**<   links to the node */
+    ERROR = 255 /**< error is max uint8_t or char */
 }readBack_t;
 
 /**
@@ -26,12 +28,11 @@ typedef enum readBack {
  */
 class nodeGenerator {
   private:
-    boundaryPointConstructor* points = nullptr;
-    std::string file_name = "stored_nodes_file";
-    bool redo = true;
-    bool save = false;
-    bool no_ordering = false;
-    vector_t discovery_vector = {1, 0}; // only relevant for linear creation
+    boundaryPointConstructor* points = nullptr; /**<  Boundary point cloud pointer */
+    std::string file_name = "stored_nodes_file"; /**< String to the name of the nodes */
+    bool redo = true; /**<  Should we redo the node generator */
+    bool save = false; /**<  Should we save */
+    vector_t discovery_vector = {1, 0}; /**< Only relevant for linear creation */
     //
     void write_data_to_file(bool write);
     bool read_data_from_file();
@@ -44,8 +45,8 @@ class nodeGenerator {
     void reduce_boundary_neighborhood();
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
   public:
-    std::vector<nodePoint_t*> node_infos;
-    straightGenerator* straight_surfaces = nullptr;
+    std::vector<nodePoint_t*> node_infos; /**<  Node point link */
+    straightGenerator* straight_surfaces = nullptr; /**< Straight surface pointer */
     explicit nodeGenerator(boundaryPointConstructor* p);
     ~nodeGenerator();
     void set_discovery_vector(vector_t set);
