@@ -28,10 +28,10 @@ int main(int argc, char *argv[]) {
     gen.init_fused(ic.return_basic_size());
     // init sim parameters
     simulation_parameters params;
-    params.relaxation = 0.5;
+    params.relaxation = 0.8;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
-    goaForce rot(dk,ic.boundaries->size,6.5e-3);
+    goaForce rot(dk,ic.boundaries->size,6e-3);
     forcedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);
     sim.init();
