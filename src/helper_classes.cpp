@@ -38,9 +38,7 @@ bool rhoWatchdog::check(node *n,int step) {
  * @param pos
  */
 void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
-    coordinate_t coordinate;
-    coordinate.x = std::floor(pos.x());
-    coordinate.y = std::floor(pos.y());
+    coordinate_t coordinate = floor_position(pos);
     handle_t key = bit_interleaving_2d(coordinate.x,coordinate.y);
     if(coordinate.x >= pow(2,22)) {
         throw std::invalid_argument("Overflow while bit-interleaving, not able to generate key");
@@ -63,9 +61,7 @@ void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
  */
 handle_t pointKeyHash::key_translation(point_t pos) {
     // translate into a coordinate
-    coordinate_t coordinate;
-    coordinate.x = std::floor(pos.x());
-    coordinate.y = std::floor(pos.y());
+    coordinate_t coordinate = floor_position(pos);
     return key_translation(coordinate);
 }
 
@@ -93,9 +89,7 @@ handle_t pointKeyHash::key_translation(coordinate_t coord) {
  */
 std::vector<handle_t> pointKeyHash::multi_key_translation(point_t pos) {
     // translate into a coordinate
-    coordinate_t coordinate;
-    coordinate.x = std::floor(pos.x());
-    coordinate.y = std::floor(pos.y());
+    coordinate_t coordinate = floor_position(pos);
     return multi_key_translation(coordinate);
 }
 
@@ -116,6 +110,27 @@ std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
     return returns;
 }
 
+std::vector<handle_t> pointKeyHash::ranging_key_translation(point_t pos, double range) {
+    // translate into a coordinate
+    coordinate_t coordinate = floor_position(pos);
+    return ranging_key_translation(coordinate,range);
+}
+
+std::vector<handle_t> pointKeyHash::ranging_key_translation(coordinate_t coord, double range) {
+    std::vector<handle_t> returns;
+    // coordinate manipulation
+    vector_t mover = {range,range};
+    point_t center = {coord.x,coord.y};
+    // this might seem unintuitive but we have to floor in both cases
+    point_t lower = center - mover;
+    point_t higher = center + mover;
+    // the direction we move in
+    vector_t x_direction = {1,0};
+    vector_t y_direction = {0,1};
+    //
+    return returns;
+}
+
 /**
  * Clears the pkh key table.
  */
@@ -123,6 +138,10 @@ void pointKeyHash::clear() {
     keys.clear();
 }
 
+/**
+ * Well it returns the size of the key map.
+ * @return
+ */
 long pointKeyHash::map_size() {
     return (long)keys.size();
 }

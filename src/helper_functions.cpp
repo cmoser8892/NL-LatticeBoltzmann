@@ -276,3 +276,15 @@ void solve_truncation_force_symbols(int channel) {
         std::cout << std::endl;
     }
 }
+
+/**
+ * Floors a position into a coordinate.
+ * @param position
+ * @return
+ */
+coordinate_t floor_position(point_t position) {
+    coordinate_t coordinate;
+    coordinate.x = std::floor(position.x());
+    coordinate.y = std::floor(position.y());
+    return coordinate;
+}

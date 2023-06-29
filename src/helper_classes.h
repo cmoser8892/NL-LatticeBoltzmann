@@ -39,6 +39,8 @@ class pointKeyHash {
     handle_t key_translation(coordinate_t cord);
     std::vector<handle_t> multi_key_translation(point_t pos);
     std::vector<handle_t> multi_key_translation(coordinate_t cord);
+    std::vector<handle_t> ranging_key_translation(point_t pos, double range);
+    std::vector<handle_t> ranging_key_translation(coordinate_t coord, double range);
 };
 
 /**

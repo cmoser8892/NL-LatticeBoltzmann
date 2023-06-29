@@ -29,6 +29,7 @@ uint32_t reduce_32_2(uint32_t);
 double calculate_distance(point_t* p1, point_t* p2);
 int conical_delta(int a, int b);
 double calculate_angle(vector_t* v1, vector_t* v2);
+coordinate_t floor_position(point_t position);
 // base path
 std::filesystem::path get_base_path();
 // solve

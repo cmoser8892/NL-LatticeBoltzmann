@@ -409,7 +409,10 @@ TEST(FunctionalTest, macro_tests) {
 }
 
 /**
- *
+ * Tests the function to find multiple keys in case there are more.
+ * @note there are two variants with a coordinate and a point (its just the same function with some boilerplate)
+ * @test
+ * @see pointKeyHash::multi_key_translation()
  */
 TEST(FunctionalTest, multiple_pkh_entries) {
     pointKeyHash pkh;
@@ -424,6 +427,7 @@ TEST(FunctionalTest, multiple_pkh_entries) {
         pkh.fill_key(i,p);
         storage_points.push_back(p);
     }
+    // test function in its intended use
     for(int i = 0; i < number; ++i) {
         std::vector<handle_t> handles = pkh.multi_key_translation(storage_points[i]);
         int counter = 0;
@@ -439,8 +443,20 @@ TEST(FunctionalTest, multiple_pkh_entries) {
 /**
  *
  */
-TEST(FunctionalTest, handle_ranges) {
-
+TEST(FunctionalTest, handle_ranges_basic) {
+    pointKeyHash pkh;
+    int number = 10;
+    double var = 0.1; // how much the points are appart
+    // create a vector of points
+    std::vector<point_t> storage_points;
+    point_t p = {0,0};
+    vector_t v = {1,1};
+    for(int i = 0; i < number; ++i) {
+        p += i*var*v;
+        pkh.fill_key(i,p);
+        storage_points.push_back(p);
+    }
+    /// test w
 }
 
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
