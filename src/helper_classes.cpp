@@ -43,10 +43,10 @@ void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
     coordinate.y = std::floor(pos.y());
     handle_t key = bit_interleaving_2d(coordinate.x,coordinate.y);
     if(coordinate.x >= pow(2,22)) {
-        throw std::invalid_argument("Overflow while bit-interleaving");
+        throw std::invalid_argument("Overflow while bit-interleaving, not able to generate key");
     }
     if(coordinate.y >= pow(2,22)) {
-        throw std::invalid_argument("Overflow while bit-interleaving");
+        throw std::invalid_argument("Overflow while bit-interleaving, not able to generate key");
     }
     if(coordinate.x < 0 || coordinate.y < 0) {
         // if there is negative number in the hash table we get two entries which we can not handle
@@ -58,11 +58,11 @@ void pointKeyHash::fill_key(handle_t positions_handle, point_t pos) {
 /**
  * Finds the key or does not in this case returns 0.
  * @param pos a point
+ * @attention the assumption is that only 1 position is in each cell
  * @return
  */
 handle_t pointKeyHash::key_translation(point_t pos) {
-    handle_t return_key = 0;
-    // generate the search key
+    // translate into a coordinate
     coordinate_t coordinate;
     coordinate.x = std::floor(pos.x());
     coordinate.y = std::floor(pos.y());
@@ -72,11 +72,11 @@ handle_t pointKeyHash::key_translation(point_t pos) {
 /**
  * Coordinate based key translation.
  * @param coord
+ * @attention the assumption is that only 1 position is in each cell
  * @return
  */
 handle_t pointKeyHash::key_translation(coordinate_t coord) {
     handle_t return_key = 0;
-    // todo no handling if there is more than one result found
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
     if(auto found_iter = keys.find(search_key); found_iter != keys.end()) {
         // does not do the translation into an array position
@@ -86,10 +86,45 @@ handle_t pointKeyHash::key_translation(coordinate_t coord) {
 }
 
 /**
+ * Returns all the handles in that cell at that position, position variant.
+ * @param pos
+ * @note still gota find the right one yourself
+ * @return
+ */
+std::vector<handle_t> pointKeyHash::multi_key_translation(point_t pos) {
+    // translate into a coordinate
+    coordinate_t coordinate;
+    coordinate.x = std::floor(pos.x());
+    coordinate.y = std::floor(pos.y());
+    return multi_key_translation(coordinate);
+}
+
+/**
+ * Returns all the handles in that cell at that position, coordinate variant.
+ * @param coord
+ * @note still gota find the right one yourself
+ * @return
+ */
+std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
+    std::vector<handle_t> returns;
+    handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
+    auto found = keys.equal_range(search_key);
+    for(auto f  = found.first; f != found.second; ++f ) {
+        // we dont care about the key we only care about the elements
+        returns.push_back(f->second);
+    }
+    return returns;
+}
+
+/**
  * Clears the pkh key table.
  */
 void pointKeyHash::clear() {
     keys.clear();
+}
+
+long pointKeyHash::map_size() {
+    return (long)keys.size();
 }
 
 /**

@@ -34,8 +34,11 @@ class pointKeyHash {
    public:
     void fill_key(handle_t positions_handle, point_t pos);
     void clear();
+    long map_size();
     handle_t key_translation(point_t pos);
     handle_t key_translation(coordinate_t cord);
+    std::vector<handle_t> multi_key_translation(point_t pos);
+    std::vector<handle_t> multi_key_translation(coordinate_t cord);
 };
 
 /**

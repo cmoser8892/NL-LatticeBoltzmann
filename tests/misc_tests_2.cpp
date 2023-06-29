@@ -408,6 +408,41 @@ TEST(FunctionalTest, macro_tests) {
     }
 }
 
+/**
+ *
+ */
+TEST(FunctionalTest, multiple_pkh_entries) {
+    pointKeyHash pkh;
+    int number = 10;
+    double var = 0.1; // how much the points are appart
+    // create a vector of points
+    std::vector<point_t> storage_points;
+    point_t p = {0,0};
+    vector_t v = {1,1};
+    for(int i = 0; i < number; ++i) {
+        p += i*var*v;
+        pkh.fill_key(i,p);
+        storage_points.push_back(p);
+    }
+    for(int i = 0; i < number; ++i) {
+        std::vector<handle_t> handles = pkh.multi_key_translation(storage_points[i]);
+        int counter = 0;
+        for(auto h : handles) {
+            if(storage_points[i] == storage_points[h]) {
+                counter++;
+            }
+        }
+        EXPECT_EQ(counter,1);
+    }
+}
+
+/**
+ *
+ */
+TEST(FunctionalTest, handle_ranges) {
+
+}
+
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
 // todo there are some strange cases still left -> investigate
 // todo negative numbers in pkh?! do i even want that
