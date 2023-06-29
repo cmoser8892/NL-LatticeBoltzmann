@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
-    int steps = 20000;
+    int steps = 7500;
     // test image setupa
     auto bmp_24_test_image = get_base_path();
     bmp_24_test_image.append("tests");
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     params.relaxation = 0.8;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
-    goaForce rot(dk,ic.boundaries->size,6e-3);
+    goaForce rot(dk,ic.boundaries->size,8e-3);
     forcedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);
     sim.init();
