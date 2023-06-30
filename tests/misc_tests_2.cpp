@@ -466,7 +466,9 @@ TEST(FunctionalTest, handle_ranges_basic) {
 }
 
 /**
- *
+ * Tests with more cells filled.
+ * @test
+ * @see pointKeyHash::ranging_key_translation()
  */
 TEST(FunctionalTest, every_cell_filled) {
     pointKeyHash pkh;
@@ -493,7 +495,30 @@ TEST(FunctionalTest, every_cell_filled) {
     }
     std::vector<handle_t> test;
     test = pkh.ranging_key_translation(middle,1);
-    EXPECT_EQ(test.size(),number*2);
+    EXPECT_EQ(test.size(),number*2-1); // first one is not part
+}
+
+/**
+ * Tests the correct composition of cells (weather or not all get actually touched).
+ * @test
+ * @see pointKeyHash::ranging_key_translation()
+ */
+TEST(FunctionalTest, one_point_in_cell) {
+    pointKeyHash pkh;
+    int number = 9;
+    point_t middle = {1.5,1.5};
+    // go over vector
+    std::vector<point_t> storage_points;
+    for(int i = 0; i < number; ++i) {
+        vector_t vel_set = velocity_set.col(i);
+        point_t c = middle + vel_set;
+        pkh.fill_key(i,c);
+        storage_points.push_back(c);
+    }
+    // find the guys
+    std::vector<handle_t> test;
+    test = pkh.ranging_key_translation(middle,1);
+    EXPECT_EQ(number,test.size());
 }
 
 /**

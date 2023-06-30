@@ -141,10 +141,10 @@ std::vector<handle_t> pointKeyHash::ranging_key_translation(coordinate_t coord, 
     // loop over the coordinates
     coordinate_t current_cell = lower_coord;
     // loops
-    for(long x = lower_coord.x; x < higher_coord.x; ++x) {
-        for(long y = lower_coord.y; y < higher_coord.y; ++y) {
+    for(long x = lower_coord.x; x <= higher_coord.x; ++x) {
+        for(long y = lower_coord.y; y <= higher_coord.y; ++y) {
             coordinate_t next = {x,y};
-            current_cell = add_coordinates(next,current_cell);
+            current_cell = add_coordinates(next,lower_coord);
             std::vector<handle_t> temp = multi_key_translation(current_cell);
             for(auto t : temp) {
                 returns.push_back(t);
