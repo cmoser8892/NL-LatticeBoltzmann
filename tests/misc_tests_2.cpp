@@ -441,23 +441,78 @@ TEST(FunctionalTest, multiple_pkh_entries) {
 }
 
 /**
- *
+ * Tests the ranging functions basic functionality
+ * @test
+ * @see pointKeyHash::ranging_key_translation()
  */
 TEST(FunctionalTest, handle_ranges_basic) {
     pointKeyHash pkh;
-    int number = 10;
+    int number = 30;
     double var = 0.1; // how much the points are appart
+    point_t middle = {1.5,1.5};
     // create a vector of points
     std::vector<point_t> storage_points;
     point_t p = {0,0};
     vector_t v = {1,1};
     for(int i = 0; i < number; ++i) {
-        p += i*var*v;
         pkh.fill_key(i,p);
         storage_points.push_back(p);
+        p += var*v;
     }
     /// test w
+    std::vector<handle_t> test;
+    test = pkh.ranging_key_translation(middle,1);
+    EXPECT_EQ(test.size(),number);
 }
+
+/**
+ *
+ */
+TEST(FunctionalTest, every_cell_filled) {
+    pointKeyHash pkh;
+    int number = 30;
+    double var = 0.1; // how much the points are appart
+    point_t middle = {1.5,1.5};
+    // create a vector of points
+    std::vector<point_t> storage_points;
+    point_t p = {0,0};
+    vector_t v = {1,1};
+    for(int i = 0; i < number; ++i) {
+        std::cout << p << std::endl;
+        pkh.fill_key(i,p);
+        storage_points.push_back(p);
+        p += var*v;
+    }
+    p = {0,3};
+    v = {1,-1};
+    for(int i = 30; i < number*2; ++i) {
+        std::cout << p << std::endl;
+        pkh.fill_key(i,p);
+        storage_points.push_back(p);
+        p += var*v;
+    }
+    std::vector<handle_t> test;
+    test = pkh.ranging_key_translation(middle,1);
+    EXPECT_EQ(test.size(),number*2);
+}
+
+/**
+ * Just a check weather or not adding coordinates works.
+ * @test
+ * @see add_coordinates()
+ */
+TEST(FunctionalTest, coord_add) {
+    coordinate_t a;
+    coordinate_t b;
+    a.x = 2;
+    a.y = 3;
+    b.x = 4;
+    b.y = 5;
+    coordinate_t c = add_coordinates(a,b);
+    EXPECT_EQ(c.x, 6);
+    EXPECT_EQ(c.y, 8);
+}
+
 
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
 // todo there are some strange cases still left -> investigate

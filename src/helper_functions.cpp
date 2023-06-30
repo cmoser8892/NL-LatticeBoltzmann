@@ -288,3 +288,10 @@ coordinate_t floor_position(point_t position) {
     coordinate.y = std::floor(position.y());
     return coordinate;
 }
+
+coordinate_t add_coordinates(coordinate_t &a, coordinate &b) {
+    coordinate_t coord;
+    coord.x = a.x + b.x;
+    coord.y = a.y + b.y;
+    return coord;
+}

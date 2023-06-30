@@ -110,12 +110,24 @@ std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
     return returns;
 }
 
+/**
+ *
+ * @param pos
+ * @param range
+ * @return
+ */
 std::vector<handle_t> pointKeyHash::ranging_key_translation(point_t pos, double range) {
     // translate into a coordinate
     coordinate_t coordinate = floor_position(pos);
     return ranging_key_translation(coordinate,range);
 }
 
+/**
+ *
+ * @param coord
+ * @param range
+ * @return
+ */
 std::vector<handle_t> pointKeyHash::ranging_key_translation(coordinate_t coord, double range) {
     std::vector<handle_t> returns;
     // coordinate manipulation
@@ -124,10 +136,21 @@ std::vector<handle_t> pointKeyHash::ranging_key_translation(coordinate_t coord, 
     // this might seem unintuitive but we have to floor in both cases
     point_t lower = center - mover;
     point_t higher = center + mover;
-    // the direction we move in
-    vector_t x_direction = {1,0};
-    vector_t y_direction = {0,1};
-    //
+    coordinate_t lower_coord = floor_position(lower);
+    coordinate_t higher_coord = floor_position(higher);
+    // loop over the coordinates
+    coordinate_t current_cell = lower_coord;
+    // loops
+    for(long x = lower_coord.x; x < higher_coord.x; ++x) {
+        for(long y = lower_coord.y; y < higher_coord.y; ++y) {
+            coordinate_t next = {x,y};
+            current_cell = add_coordinates(next,current_cell);
+            std::vector<handle_t> temp = multi_key_translation(current_cell);
+            for(auto t : temp) {
+                returns.push_back(t);
+            }
+        }
+    }
     return returns;
 }
 
