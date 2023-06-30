@@ -480,7 +480,7 @@ TEST(FunctionalTest, every_cell_filled) {
     point_t p = {0,0};
     vector_t v = {1,1};
     for(int i = 0; i < number; ++i) {
-        std::cout << p << std::endl;
+        // std::cout << p << std::endl;
         pkh.fill_key(i,p);
         storage_points.push_back(p);
         p += var*v;
@@ -488,7 +488,7 @@ TEST(FunctionalTest, every_cell_filled) {
     p = {0,3};
     v = {1,-1};
     for(int i = 30; i < number*2; ++i) {
-        std::cout << p << std::endl;
+        // std::cout << p << std::endl;
         pkh.fill_key(i,p);
         storage_points.push_back(p);
         p += var*v;
@@ -506,7 +506,7 @@ TEST(FunctionalTest, every_cell_filled) {
 TEST(FunctionalTest, one_point_in_cell) {
     pointKeyHash pkh;
     int number = 9;
-    point_t middle = {1.5,1.5};
+    point_t middle = {12.5,12.5};
     // go over vector
     std::vector<point_t> storage_points;
     for(int i = 0; i < number; ++i) {
@@ -514,6 +514,58 @@ TEST(FunctionalTest, one_point_in_cell) {
         point_t c = middle + vel_set;
         pkh.fill_key(i,c);
         storage_points.push_back(c);
+    }
+    // find the guys
+    std::vector<handle_t> test;
+    test = pkh.ranging_key_translation(middle,1);
+    EXPECT_EQ(number,test.size());
+}
+
+/**
+ * Tests the ranging pkh functionality over a bigger range.
+ * @test
+ * @see pointKeyHash::ranging_key_translation()
+ */
+TEST(FunctionalTest, bigger_pkh_ranging) {
+    pointKeyHash pkh;
+    int number = 49;
+    point_t middle = {3.5,3.5};
+    // go over vector
+    std::vector<point_t> storage_points;
+    int i = 1;
+    for(int x = 0; x < 7; ++x) {
+        for(int y = 0; y < 7; ++y) {
+            point_t c = {x,y};
+            pkh.fill_key(i,c);
+            storage_points.push_back(c);
+            ++i;
+        }
+    }
+    // find the guys
+    std::vector<handle_t> test;
+    test = pkh.ranging_key_translation(middle,3);
+    EXPECT_EQ(number,test.size());
+}
+
+/**
+ * Tests the right functionality of a ranging scan over a boarder.
+ * @note Pkh expects only positive values
+ * @see pointKeyHash::ranging_key_translation()
+ */
+TEST(FunctionalTest, over_pkh_zero_limit) {
+    pointKeyHash pkh;
+    int number = 4;
+    point_t middle = {0.5,0.5};
+    // go over vector
+    std::vector<point_t> storage_points;
+    int i = 1;
+    for(int x = 0; x < 2; ++x) {
+        for(int y = 0; y < 2; ++y) {
+            point_t c = {x,y};
+            pkh.fill_key(i,c);
+            storage_points.push_back(c);
+            ++i;
+        }
     }
     // find the guys
     std::vector<handle_t> test;
