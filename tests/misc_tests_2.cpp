@@ -596,7 +596,6 @@ TEST(FunctionalTest, lagragian_use_case) {
     point_t lagragian_point = {12.2,13.2};
     int range = 2;
     std::vector<handle_t> test = pkh.ranging_key_translation(lagragian_point, range);
-    std::cout << test.size() << std::endl;
     EXPECT_EQ(test.size(),25);
 }
 
@@ -623,6 +622,31 @@ TEST(FunctionalTest, zero_ranging_pgk) {
     std::vector<handle_t> test = pkh.ranging_key_translation(middle, 0);
     // we should find one (we search the origin cell)
     EXPECT_EQ(test.size(),1);
+}
+
+TEST(FunctionalTest, simple_lagra_use_case) {
+    rangingPointKeyHash rpkh;
+    // go over vector
+    std::vector<point_t> storage_points;
+    int i = 1;
+    for(int x = 0; x < 5; ++x) {
+        for(int y = 0; y < 5; ++y) {
+            point_t c = {x,y};
+            std::cout << c << std::endl;
+            rpkh.fill_key(i,c);
+            storage_points.push_back(c);
+            ++i;
+        }
+    }
+    // we search in a standard 2 wide search (for one of the kernel functions)
+    point_t lagragian_point = {2.5,2.5};
+    std::cout << std::endl;
+    int range = 2;
+    std::vector<handle_t> test = rpkh.ranging_key_translation(lagragian_point, range);
+    EXPECT_EQ(16,test.size());
+    for(auto t : test) {
+        std::cout << storage_points[t-1] <<std::endl;
+    }
 }
 
 /**

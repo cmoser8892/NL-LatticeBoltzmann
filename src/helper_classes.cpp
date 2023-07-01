@@ -102,7 +102,7 @@ std::vector<handle_t> pointKeyHash::multi_key_translation(point_t pos) {
 std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
     std::vector<handle_t> returns;
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
-        auto found = keys.equal_range(search_key);
+    auto found = keys.equal_range(search_key);
     for(auto f  = found.first; f != found.second; ++f ) {
         // we dont care about the key we only care about the elements
         returns.push_back(f->second);
@@ -181,7 +181,8 @@ void rangingPointKeyHash::set_position_save(bool set) {
 }
 
 /**
- * Fills the keys and the postions.
+ * Fills the keys and the positions.
+ * @note right now if the position handle is given out of order it will not work
  * @param position_handle
  * @param position
  */
@@ -220,7 +221,13 @@ std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, 
     vector_t difference;
     for(auto c : candidates) {
         // test if actually in the search range
-        // todo will not work need to think a bit handle is for global point need a connection to local ones
+        handle_t handle = c - 1;
+        point_t temp = points[handle];
+        difference = temp - pos;
+        // i am drawing a circle here it should be a quader
+        if(difference.norm() <= range) {
+            returns.push_back(c);
+        }
     }
     return returns;
 }
