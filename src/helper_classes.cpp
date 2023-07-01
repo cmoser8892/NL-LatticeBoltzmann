@@ -102,7 +102,7 @@ std::vector<handle_t> pointKeyHash::multi_key_translation(point_t pos) {
 std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
     std::vector<handle_t> returns;
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
-    auto found = keys.equal_range(search_key);
+        auto found = keys.equal_range(search_key);
     for(auto f  = found.first; f != found.second; ++f ) {
         // we dont care about the key we only care about the elements
         returns.push_back(f->second);
@@ -111,7 +111,7 @@ std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
 }
 
 /**
- *
+ * Ranging Search functionality, look at the coordinate variant for more info.
  * @param pos
  * @param range
  * @return
@@ -123,9 +123,10 @@ std::vector<handle_t> pointKeyHash::ranging_key_translation(point_t pos, double 
 }
 
 /**
- *
+ * Ranging Search function, looks for possible neighbors over a search range.
+ * @note range can be interpreted as the radius of a circle but for a square
  * @param coord
- * @param range
+ * @param range For range=0 will search the cell that fits the coordinate
  * @return
  */
 std::vector<handle_t> pointKeyHash::ranging_key_translation(coordinate_t coord, double range) {

@@ -574,6 +574,58 @@ TEST(FunctionalTest, over_pkh_zero_limit) {
 }
 
 /**
+ * The standard langragian use case where we have a number of points and an lagragin point searching.
+ * @test
+ * @see pointKeyHash::ranging_key_translation
+ */
+TEST(FunctionalTest, lagragian_use_case) {
+    pointKeyHash pkh;
+    int number = 40;
+    // go over vector
+    std::vector<point_t> storage_points;
+    int i = 1;
+    for(int x = 0; x < 40; ++x) {
+        for(int y = 0; y < 40; ++y) {
+            point_t c = {x,y};
+            pkh.fill_key(i,c);
+            storage_points.push_back(c);
+            ++i;
+        }
+    }
+    // we search in a standard 2 wide search (for one of the kernel functions)
+    point_t lagragian_point = {12.2,13.2};
+    int range = 2;
+    std::vector<handle_t> test = pkh.ranging_key_translation(lagragian_point, range);
+    std::cout << test.size() << std::endl;
+    EXPECT_EQ(test.size(),25);
+}
+
+/**
+ * Tests what happens with a ranging search for a zero search length.
+ * @test
+ * @see pointKeyHash::ranging_key_translation
+ */
+TEST(FunctionalTest, zero_ranging_pgk) {
+    pointKeyHash pkh;
+    int number = 4;
+    point_t middle = {0.5,0.5};
+    // go over vector
+    std::vector<point_t> storage_points;
+    int i = 1;
+    for(int x = 0; x < number; ++x) {
+        for(int y = 0; y < number; ++y) {
+            point_t c = {x,y};
+            pkh.fill_key(i,c);
+            storage_points.push_back(c);
+            ++i;
+        }
+    }
+    std::vector<handle_t> test = pkh.ranging_key_translation(middle, 0);
+    // we should find one (we search the origin cell)
+    EXPECT_EQ(test.size(),1);
+}
+
+/**
  * Just a check weather or not adding coordinates works.
  * @test
  * @see add_coordinates()
@@ -592,5 +644,5 @@ TEST(FunctionalTest, coord_add) {
 
 
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
-// todo there are some strange cases still left -> investigate
+// todo there are some strange cases still left -> in vestigate
 // todo negative numbers in pkh?! do i even want that
