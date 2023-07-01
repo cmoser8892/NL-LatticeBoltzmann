@@ -632,7 +632,6 @@ TEST(FunctionalTest, simple_lagra_use_case) {
     for(int x = 0; x < 5; ++x) {
         for(int y = 0; y < 5; ++y) {
             point_t c = {x,y};
-            std::cout << c << std::endl;
             rpkh.fill_key(i,c);
             storage_points.push_back(c);
             ++i;
@@ -640,13 +639,9 @@ TEST(FunctionalTest, simple_lagra_use_case) {
     }
     // we search in a standard 2 wide search (for one of the kernel functions)
     point_t lagragian_point = {2.5,2.5};
-    std::cout << std::endl;
     int range = 2;
     std::vector<handle_t> test = rpkh.ranging_key_translation(lagragian_point, range);
     EXPECT_EQ(16,test.size());
-    for(auto t : test) {
-        std::cout << storage_points[t-1] <<std::endl;
-    }
 }
 
 /**

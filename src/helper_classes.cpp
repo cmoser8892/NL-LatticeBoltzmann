@@ -218,14 +218,23 @@ std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, 
         std::cout << "Function can not do ranging without points" << std::endl;
         return candidates;
     }
-    vector_t difference;
+    vector_t mover = {range,range};
+    point_t lower = pos - mover;
+    point_t higher = pos + mover;
     for(auto c : candidates) {
         // test if actually in the search range
         handle_t handle = c - 1;
         point_t temp = points[handle];
-        difference = temp - pos;
+        bool add_me = true;
         // i am drawing a circle here it should be a quader
-        if(difference.norm() <= range) {
+        point_t current = points[handle];
+        if((current.x() <  lower.x()) || (current.y() < lower.y())) {
+            add_me = false;
+        }
+        if((current.x() >  higher.x()) || (current.y() > higher.y())) {
+            add_me = false;
+        }
+        if(add_me) {
             returns.push_back(c);
         }
     }
