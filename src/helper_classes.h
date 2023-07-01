@@ -44,6 +44,26 @@ class pointKeyHash {
 };
 
 /**
+ * Boilerplate toe hide some of the ranging functionality of ranging points.
+ * Not like the pgk this class only returns the valid point handles that are in range, that we search in.
+ * @note not part of the pointKeyHash by choice, we do not want that in there
+ * @todo gradual support for all the different type of nodes/points for false save mode
+ * @attention main difference to pkh is that there is a guaranty that only handles in the range get returned
+ */
+class rangingPointKeyHash {
+  private:
+    pointKeyHash pkh;
+    std::vector<point_t> points;
+    bool safe_position_yes_no = true;
+  public:
+    void set_position_save(bool set);
+    void fill_key(handle_t position_handle, point_t position);
+    void clear();
+    long size();
+    std::vector<handle_t> ranging_key_translation(point_t pos, double range);
+};
+
+/**
  * Basic stash that holds items for a number of iterations.
  * A window with a conveyor belt behind it, specifically for handles.
 */

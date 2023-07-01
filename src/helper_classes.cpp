@@ -173,6 +173,59 @@ long pointKeyHash::map_size() {
 }
 
 /**
+ * Sets weather or not the position is saved.
+ * @param set true => posiiton saved, false => not saved
+ */
+void rangingPointKeyHash::set_position_save(bool set) {
+    safe_position_yes_no = set;
+}
+
+/**
+ * Fills the keys and the postions.
+ * @param position_handle
+ * @param position
+ */
+void rangingPointKeyHash::fill_key(handle_t position_handle, point_t position) {
+    // add to the pkh and the point save
+    pkh.fill_key(position_handle,position);
+    if(safe_position_yes_no) {
+        points.push_back(position);
+    }
+}
+
+/**
+ * Clears the data saves.
+ */
+void rangingPointKeyHash::clear() {
+    pkh.clear();
+    points.clear();
+}
+
+/**
+ * Returns the size of the pkh map.
+ * @return
+ */
+long rangingPointKeyHash::size() {
+    return pkh.map_size();
+}
+
+std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, double range) {
+    std::vector<handle_t> returns;
+    std::vector<handle_t> candidates = pkh.ranging_key_translation(pos, range);
+    //
+    if(!safe_position_yes_no) {
+        std::cout << "Function can not do ranging without points" << std::endl;
+        return candidates;
+    }
+    vector_t difference;
+    for(auto c : candidates) {
+        // test if actually in the search range
+        // todo will not work need to think a bit handle is for global point need a connection to local ones
+    }
+    return returns;
+}
+
+/**
  * Constructor set up the list with the wished for size.
  * @param s
  */
