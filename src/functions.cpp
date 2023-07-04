@@ -347,7 +347,7 @@ void pressure_periodic_out(oNode* node , double rho_out) {
 double kernel_1(double range, double delta_range) {
     double returns = 0;
     double abs_range = abs(range);
-    if(0 <= abs_range <= delta_range) {
+    if((abs_range >= 0) && (abs_range <= delta_range)) {
         returns = 1 - abs_range;
     }
     return returns;
@@ -356,10 +356,10 @@ double kernel_1(double range, double delta_range) {
 double kernel_2(double range, double delta_range) {
     double returns = 0;
     double abs_range = abs(range);
-    if(0 <= abs_range < 0.5*delta_range) {
+    if((abs_range >= 0) &&  (abs_range< 0.5*delta_range)) {
         returns = 1.0/3 * ( 1 +  sqrt(1 - 3*abs_range*abs_range));
     }
-    if( 0.5*delta_range <= abs_range <= 1.5*delta_range) {
+    else if((abs_range >= 0.5*delta_range) && (abs_range <= 1.5*delta_range)) {
         returns = 1.0/6 * ( 5 - 3*abs_range - sqrt(-2 + 6*abs_range -3*abs_range*abs_range));
     }
     return returns;
@@ -368,10 +368,10 @@ double kernel_2(double range, double delta_range) {
 double kernel_3(double range, double delta_range) {
     double returns = 0;
     double abs_range = abs(range);
-    if(0 <= abs_range < 1*delta_range) {
+    if((abs_range >= 0) &&  (abs_range < 1*delta_range)) {
         returns = 1.0/8 * (3 - 2*abs_range + sqrt(1 + 4*abs_range - 4*abs_range*abs_range));
     }
-    if(1*delta_range <= abs_range <= 2*delta_range) {
+    else if((abs_range >= 1*delta_range) && (abs_range <= 2*delta_range)) {
         returns = 1.0/8 *(5 - 2*abs_range - sqrt(-7 + 12* abs_range - 4*abs_range*abs_range));
     }
     return returns;
