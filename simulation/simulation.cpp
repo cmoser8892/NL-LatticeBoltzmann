@@ -2,6 +2,7 @@
 
 /**
  * Calculate the macro values with a force attached to it.
+ * @todo macro integration force relation
  * @param a
  * @param previous_force
  * @return
@@ -34,6 +35,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  (p + 6).operator*() +
                  (p + 7).operator*() +
                  (p + 8).operator*();
+    /*
     double f_term = weights(0) * (f+0).operator*() +
                     weights(1) * (f+1).operator*() +
                     weights(2) * (f+2).operator*() +
@@ -43,7 +45,8 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                     weights(6) * (f+6).operator*() +
                     weights(7) * (f+7).operator*() +
                     weights(8) * (f+8).operator*();
-    f_term = 0;
+    */
+    double f_term = 0;
     rho += f_term*prefactor;
     // ux and uy
     /* Equation for the calculation of ux and uy
@@ -54,12 +57,14 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
          i                  i
      */
     //
+    /*
     vector_t force_add = {0,0};
     for(int i = 0; i < CHANNELS; ++i) {
         vector_t velocity_channel = velocity_set.col(i);
         force_add += velocity_channel*(f+i).operator*()*weights(i);
     }
     force_add *= prefactor;
+     */
     double ux = (((p + 1).operator*() +
                   (p + 5).operator*() +
                   (p + 8).operator*())-
@@ -81,7 +86,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
 }
 
 /**
- * Streaming stepf.
+ * Streaming stepfunction .
  * @param a
  * @param list
  */
@@ -119,6 +124,7 @@ inline void forcedSimulation::collision(array_t *a, double rho, double ux, doubl
 
 /**
  * Forcing terms to calculate and appliy the force.
+ * @todo alpha vs channel force relationship
  * @param n
  * @param write_to
  * @param ux
