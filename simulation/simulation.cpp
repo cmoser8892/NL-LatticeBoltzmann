@@ -7,7 +7,8 @@
  * @return
  */
 inline std::tuple<double, double, double> forcedSimulation::calculate_macro(array_t *a,
-                                                                            array_t* previous_force) {
+                                                                            array_t* previous_force,
+                                                                            vector_t force) {
     // calculate rho ux and uy
     // shorthands
     int o = offset_node;
@@ -42,6 +43,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                     weights(6) * (f+6).operator*() +
                     weights(7) * (f+7).operator*() +
                     weights(8) * (f+8).operator*();
+    f_term = 0;
     rho += f_term*prefactor;
     // ux and uy
     /* Equation for the calculation of ux and uy
@@ -70,9 +72,11 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  ((p + 4).operator*() +
                   (p + 7).operator*()+
                   (p + 8).operator*()));
-    /// ux and uy through
-    ux = (ux+force_add.x())/rho;
-    uy = (uy+force_add.y())/rho;
+    // ux and uy through
+    // ux = (ux+force_add.x())/rho;
+    // uy = (uy+force_add.y())/rho;
+    ux = (ux + force.x())/rho;
+    uy = (uy + force.y())/rho;
     return {rho, ux, uy};
 }
 
@@ -120,13 +124,17 @@ inline void forcedSimulation::collision(array_t *a, double rho, double ux, doubl
  * @param ux
  * @param uy
  */
-inline void forcedSimulation::forcing_terms(oNode *n, array_t* write_to, double ux, double uy) {
+inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
     // set some shorthands
     int o = offset_node;
+    auto n = nodes[pos];
+    auto write_to = forces[pos];
+    auto force_a = force_alpha[pos];
     auto p = n->populations.begin() + o;
     rot_force->calculate_F_rotation(ux,uy,&n->position);
     //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
     rot_force->calculate_F_i();
+    force_a = rot_force->return_force_alpha();
     double prefactor = 1 - 1/(2*parameters.relaxation);
     for(int i = 0; i < CHANNELS; ++i) {
         double shorthand = rot_force->force_channels[i] * weights(i);
@@ -196,6 +204,7 @@ void forcedSimulation::init() {
         a->resize(CHANNELS);
         a->setZero();
         forces.push_back(a);
+        force_alpha.push_back({0,0});
     }
 }
 
@@ -206,18 +215,19 @@ void forcedSimulation::init() {
 void forcedSimulation::run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
-    for(int i = 0; i < nodes.size(); ++i) {
+    for(long i = 0; i < nodes.size(); ++i) {
         // shorthands
         // node structure
         auto node = nodes[i];
         // force array
         auto force = forces[i];
+        auto f_a = force_alpha[i];
         // use old force to update macro values
-        auto [rho,ux, uy] = calculate_macro(&node->populations,force);
+        auto [rho,ux, uy] = calculate_macro(&node->populations,force,f_a);
         // perform equilibrium step
         collision(&node->populations,rho,ux,uy);
         // add and calculate new force term
-        forcing_terms(node,force,ux,uy);
+        forcing_terms(i,ux,uy);
         // streaming
         streaming(&node->populations,&node->neighbors);
     }
@@ -241,7 +251,8 @@ void forcedSimulation::get_data(bool write_to_file) {
     for(int i = 0; i < nodes.size(); ++i) {
         auto node = nodes[i];
         auto force = forces[i];
-        auto [rho_local,ux_local, uy_local] = calculate_macro(&node->populations,force);
+        auto f_a = force_alpha[i];
+        auto [rho_local,ux_local, uy_local] = calculate_macro(&node->populations,force,f_a);
         ux(int(node->position(0)),int(node->position(1))) = ux_local;
         uy(int(node->position(0)),int(node->position(1))) = uy_local;
         rho(int(node->position(0)),int(node->position(1))) = rho_local;
@@ -273,5 +284,6 @@ void forcedSimulation::delete_nodes() {
  * @return
  */
 std::tuple<double,double,double> forcedSimulation::test_calcualte_macro(array_t *a, array_t *f) {
-    return calculate_macro(a,f);
+    vector_t t = {0,0};
+    return calculate_macro(a,f,t);
 }

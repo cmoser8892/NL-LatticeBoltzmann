@@ -35,10 +35,10 @@ class forcedSimulation {
     nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
     goaForce * rot_force = nullptr; /**<  pointer to the rotation force calculation class */
     // inlined core methods
-    inline std::tuple<double, double, double> calculate_macro(array_t* a, array_t* previous_force);
+    inline std::tuple<double, double, double> calculate_macro(array_t* a, array_t* previous_force,vector_t f);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
     inline void collision(array_t* a, double rho,double ux, double uy);
-    inline void forcing_terms(oNode* n,array_t * w, double ux, double uy);
+    inline void forcing_terms(long pos, double ux, double uy);
   public:
     // public main variables
     int offset_sim = 1; /**< offset 1 or 0 depending on the step */
@@ -46,6 +46,7 @@ class forcedSimulation {
     // holding of the general nodes
     std::vector<oNode*> nodes; /**< optimized nodes stored in a vector */
     std::vector<array_t*> forces; /**<  force terms stored in a vector */
+    std::vector<vector_t> force_alpha;
     // constructors
     forcedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
     ~forcedSimulation();
