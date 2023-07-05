@@ -1,4 +1,5 @@
 #include "straight.h"
+#include "functions.h"
 #include <fstream>
 #include <iostream>
 
@@ -33,28 +34,22 @@ void straightGenerator::calculate_mass_center() {
  * Detects and moves away the mass center if it is too close to a boundary.
  */
 void straightGenerator::detect_boundary_proximity_main_mass_center() {
-    // todo rework total rubbish
-    // goes over a search field and tries to find boundary nodes in close proximity
-    // we search in the full pkh for near boundaries in a 7x7 area around th point and
-    // move the center based on the proximity of the found bp
-    // floor the mc, we have to keep in mind to move the actual mass_center instead of floored on
-    array_t floored_mc;
-    floored_mc.resize(2);
-    floored_mc << std::floor(mass_center.x()),std::floor(mass_center.y());
-    for(int i = 1; i < 4; ++i) {
-        // we move the mc based on the proximity
-        int move = 4-i;
-        for(int j = 1; j < CHANNELS;++j) {
-            point_t current = floored_mc + i*velocity_set.col(j);
-            handle_t found_handle = full_pkh.key_translation(current);
-            if(found_handle > 0) {
-                // we found sth now move the actual mass center int the opposite direction of the found point
-                vector_t mover = -1*move*velocity_set.col(j);
-                mass_center += mover;
-            }
-        }
-
+    // checks if near a surface makes sure it is a right angle
+    point_t new_mass_center = mass_center;
+    for(auto surface: surfaces) {
+        vector_t base = surface->point - mass_center;
+        vector_t an = surface->direction;
+        vector_t normal = {an.y(), - an.x()};
+        double distance = base.dot(normal)/normal.norm();
+        // we make use of the kernel 1 function here other kernels can be used too i guess
+        double factor = kernel_1(distance,CRITICAL_RANGE);
+        // we need the vector to actually move
+        double mover = sqrt(base.norm()*base.norm() - distance*distance);
+        point_t move_point = surface->point + an*mover;
+        vector_t mover_vector = mass_center - move_point;
+        new_mass_center += mover_vector*factor;
     }
+    mass_center = new_mass_center;
 }
 
 /**
@@ -568,6 +563,7 @@ void straightGenerator::init() {
     }
     // old legacy method
     // calculate_all_straights();
+    detect_boundary_proximity_main_mass_center();
 }
 
 /**
