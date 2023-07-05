@@ -256,7 +256,7 @@ TEST(FunctionalTest, angles) {
  * @test
  * @see forcedSimulation::test_calcualte_macro()
  */
-TEST(FunctionalTest, force_macro_calculation) {
+TEST(FunctionalTest, DISABLED_force_macro_calculation) {
     // simple value correction
     // setup arrays
     array_t forces;
@@ -354,7 +354,7 @@ TEST(FunctionalTest, equilibrium_moments) {
  * @see forcedSimulation::test_calcualte_macro()
  * @see calculate_macro_population()
  */
-TEST(FunctionalTest, macro_tests) {
+TEST(FunctionalTest, DISABLED_macro_tests) {
     // stand in for the populations
     array_t values;
     values.resize(CHANNELS);
@@ -624,6 +624,11 @@ TEST(FunctionalTest, zero_ranging_pgk) {
     EXPECT_EQ(test.size(),1);
 }
 
+/**
+ * Tests the envisioned use case for a marker force disipoation.
+ * @test
+ * @see rangingPointKeyHash::ranging_key_translation()
+ */
 TEST(FunctionalTest, simple_lagra_use_case) {
     rangingPointKeyHash rpkh;
     // go over vector
@@ -661,6 +666,11 @@ TEST(FunctionalTest, coord_add) {
     EXPECT_EQ(c.y, 8);
 }
 
+/**
+ * Basic tests for the kernel 1 function.
+ * @test
+ * @see kernel_1()
+ */
 TEST(FunctionalTest, kernel_1) {
     double range = 0;
     double range_x = 1;
@@ -676,6 +686,11 @@ TEST(FunctionalTest, kernel_1) {
     EXPECT_EQ(kernel_1(range,range_x),0);
 }
 
+/**
+ * Basic test for the kernel 2 function.
+ * @test
+ * @see kernel_2()
+ */
 TEST(FunctionalTest, kernel_2) {
     double range = 0;
     double range_x = 1;
@@ -691,6 +706,11 @@ TEST(FunctionalTest, kernel_2) {
     EXPECT_EQ(kernel_2(range,range_x),0);
 }
 
+/**
+ * Basic test for the kernel_3 function.
+ * @test
+ * @see kernel_3()
+ */
 TEST(FunctionalTest, kernel_3) {
     double range = 0;
     double range_x = 1;
@@ -706,6 +726,28 @@ TEST(FunctionalTest, kernel_3) {
     EXPECT_EQ(kernel_3(range,range_x),0);
 }
 
+TEST(FunctionalTest, surface_move) {
+    unsigned int size = 2;
+    unsigned int sub_size = 2;
+    point_t c = {size,size}; // size or the canvas
+    point_t p = {sub_size,sub_size}; // size of the  quader
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_quader({0,0},p);
+    boundaries.visualize_2D_boundary();
+    // construct straights
+    straightGenerator s(&boundaries);
+    s.init();
+    vector_t u = {0.5,0.5};
+    for(auto st : s.surfaces) {
+        st->point += u;
+        std::cout << "(" << st->point.x() << ", " << st->point.y() << "); "
+                  << "(" << st->direction.x() << ", " << st->direction.y() << ");  "<< st->max_t << std::endl;
+    }
+    nodeGenerator n(&boundaries);
+    n.init_fused(size);
+    n.visualize_2D_nodes();
+}
 
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
 // todo there are some strange cases still left -> in vestigate

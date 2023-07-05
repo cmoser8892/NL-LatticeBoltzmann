@@ -290,6 +290,6 @@ void forcedSimulation::delete_nodes() {
  * @return
  */
 std::tuple<double,double,double> forcedSimulation::test_calcualte_macro(array_t *a, array_t *f) {
-    vector_t t = {0,0};
+    vector_t t = {1,1};
     return calculate_macro(a,f,t);
 }

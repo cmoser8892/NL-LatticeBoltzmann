@@ -320,6 +320,7 @@ TEST(FunctionalTest, periodics_full) {
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_poiseuille_flow();
+    // boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
@@ -770,7 +771,7 @@ TEST(FunctionalTest, multiple_interruptions) {
     setter = {2,9};
     boundaries.steps_direction(1,{-1,-1},&setter,BOUNCE_BACK);
     // visualizer
-    // boundaries.visualize_2D_boundary();
+    boundaries.visualize_2D_boundary();
     straightGenerator s(&boundaries);
     s.init();
     // control
@@ -799,8 +800,8 @@ TEST(FunctionalTest, multiple_interruptions) {
     EXPECT_EQ(s.surfaces.size(),12);
     // node generator master test
     nodeGenerator gen(&boundaries);
-    gen.init(size);
-    // gen.visualize_2D_nodes();
+    gen.init_fused(size);
+    gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(), boundaries.total_boundary_nodes() + 8 + 2);
 }
 

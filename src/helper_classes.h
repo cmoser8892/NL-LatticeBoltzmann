@@ -26,6 +26,7 @@ class rhoWatchdog {
 /**
  * Hashes points to be found in a neighborhood list.
  * @note works with bit interleaving floors points to a full point on the gird!
+ * @attention For bigger problems this is the hard bottleneck in the init, cells of size 1 are not ideal here.
  * @details works by reducing the position to a normal number and interleaving those number to create a classifier for that handle
  */
 class pointKeyHash {

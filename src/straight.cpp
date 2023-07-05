@@ -33,6 +33,7 @@ void straightGenerator::calculate_mass_center() {
  * Detects and moves away the mass center if it is too close to a boundary.
  */
 void straightGenerator::detect_boundary_proximity_main_mass_center() {
+    // todo rework total rubbish
     // goes over a search field and tries to find boundary nodes in close proximity
     // we search in the full pkh for near boundaries in a 7x7 area around th point and
     // move the center based on the proximity of the found bp
@@ -542,7 +543,7 @@ void straightGenerator::init() {
     // calculates hash keys for all the boundary structures
     calculate_keys();
     // see weather or not moving the mass center away from the boundaries makes sense
-    detect_boundary_proximity_main_mass_center();
+    // detect_boundary_proximity_main_mass_center();
     // loop over the boundary structures to create the straights
     for(int i = 0; i < points->boundary_structures.size(); ++i) {
         // we 1st create all possible straights in north and west direction
@@ -572,26 +573,18 @@ void straightGenerator::init() {
 /**
  * Calculates how many intersections there are between the node point and the mass center.
  * @param node_point
- * @todo Should be a 2 pass method needs 3 thou
  * @return number of intersections
  */
 int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
-    // todo why 3 passes should not 2 be enough
     // surface based algorithm to calculate intersections
     /*
      * 3 passes have to be made to calculate to calcuate a valid intersection
-     *  0 not a boundary point used in construction
      *  1 does the straight hit the surface in the area between the two points that define it
      *  2 how does the straight hit the surface (posetive or negative we only care about posetiv
      *  3 have we already hit an edgepoint
      */
     // 0 pass not a boundary point or point on the surface
     int number_of_intersections = 0;
-    // check if actually the boundary point, boundary points are excluded in the first pass
-    if(full_pkh.key_translation(node_point) > 0) {
-        // todo still not ideal
-        return 0;
-    }
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point; // => r
@@ -617,7 +610,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
         first_pass_surface.point = straight.point;
         first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};
         double t = calculate_intersection(surface, &first_pass_surface);
-        /// 1 pass
+        // 1 pass
         if((t >= 0) && (t <= surface->max_t)) {
             // check if direction of the finding is positive in
             // the direction of the vector outgoing from the center
@@ -625,13 +618,13 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
             second_pass_surface.point = surface->point;
             second_pass_surface.direction = {surface->direction.y(),-surface->direction.x()};
             double s = calculate_intersection(&straight,&second_pass_surface);
-            /// 2 pass
+            // 2 pass
             if(s >= 0) {
                 // compare and check if we already got the same point previously
                 // in case we intersect a node point directly ( no double counting )
                 point_t point = straight.point + s*straight.direction;
                 bool add = true;
-                /// 3 pass
+                // 3 pass
                 for (auto&  ps : already_found) {
                     if(ps == point) {
                         add = false;
@@ -661,10 +654,10 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
                         {0, 2,-2}};
     point_t individual_mc = mass_center;
     // 7 as a magic number
-    double mover_distance = points->size.x()/7;
+    double mover_distance = points->size.x()/107;
     std::vector<int> intersections;
     // calculate the intersections 3 times redundant
-    for(int i = 0; i < 3; ++i) {
+    for(int i = 0; i < 1; ++i) {
         individual_mc += mover_distance * (vector_t)movers.col(i);
         intersections.push_back(calculate_intersections(point->position,&individual_mc));
     }
