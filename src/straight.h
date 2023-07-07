@@ -24,7 +24,7 @@ typedef struct straight {
 class straightGenerator {
   private:
     // boundary points and pkh of the boundary points
-    boundaryPointConstructor* points; /**< Pointer to the Boundary point */
+    boundaryPointConstructor* points = nullptr; /**< Pointer to the Boundary point */
     pointKeyHash full_pkh; /**<  Hash table of all the boundary points */
     std::vector<pointKeyHash*> pkhv; /**<  Hash table of each boundary structure */
     // global and individual mass centers
@@ -51,6 +51,7 @@ class straightGenerator {
     // suface defined as middle point between two boundary points and a normal vector
     std::vector<straight_t *> surfaces; /**<  surfaces in a vector */
     explicit straightGenerator(boundaryPointConstructor* p);
+    explicit straightGenerator() = default;
     ~straightGenerator();
     void init();
     bool node_inside_simple(nodePoint_t *point);
@@ -58,6 +59,8 @@ class straightGenerator {
     void delete_vector();
     void delete_keys();
     void write_out_surface();
+    void add_surface(straight_t s);
+    void surface_mass_center();
 };
 
 bool straight_better_candidate_test(straight_t* candidate, straight* partner);

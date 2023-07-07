@@ -50,6 +50,7 @@ typedef enum boundaryType {
     BOUNCE_BACK_MOVING, /**<  Moving bounce back type boundary */
     PERIODIC, /**<  periodic type boundary */
     PRESSURE_PERIODIC, /**<  pressure periodic tag */
+    IBM,            /**< Immersed Boundary Method tag */
     OPEN_INLET,
     OPEN_OUTLET
 }boundaryType_t;

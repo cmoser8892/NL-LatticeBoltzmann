@@ -387,7 +387,8 @@ TEST(NeighbourhoodTests, hash_keys) {
 TEST(InitTests, board_creation) {
     // tests the boards creation in terms of the correct size
     unsigned int size = 10;
-    nodeGenerator n(nullptr);
+    boundaryPointConstructor* bs = nullptr;
+    nodeGenerator n(bs);
     n.board_creation(size);
     EXPECT_EQ(size*size, n.node_infos.size());
 }
@@ -923,6 +924,41 @@ TEST(InitTests, up_down_boundary) {
     boundaries.set_point(&setter,BOUNCE_BACK);
     // boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),22);
+}
+
+/**
+ * Test/showcase of the surface variant of the boundary construction used for IBM boundaries.
+ * @test
+ * @todo
+ */
+TEST(InitTests, basic_surface_test) {
+    straight_t input;
+    long canvas_size = 10;
+    straightGenerator sg;
+    // we put in a quader
+    input.point = {1,1};
+    input.direction = {0,1};
+    input.max_t = 5;
+    sg.add_surface(input);
+    input.point = {1,6};
+    input.direction = {1,0};
+    input.max_t = 5;
+    sg.add_surface(input);
+    input.point = {6,6};
+    input.direction = {0,-1};
+    input.max_t = 5;
+    sg.add_surface(input);
+    input.point = {6,1};
+    input.direction = {-1,0};
+    input.max_t = 5;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    EXPECT_EQ(sg.surfaces.size(),4);
+    // node generator stuff
+    nodeGenerator ng(&sg);
+    ng.init_surface(canvas_size);
+    ng.visualize_2D_nodes();
+    EXPECT_EQ(ng.node_infos.size(),16);
 }
 
 /*

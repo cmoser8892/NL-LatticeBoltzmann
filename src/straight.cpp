@@ -535,6 +535,10 @@ straightGenerator::~straightGenerator() {
  * Calculates the mass center and all the straights.
  */
 void straightGenerator::init() {
+    if(points == nullptr) {
+        std::cerr << "Unintended straight generator usage" << std::endl;
+        return;
+    }
     // calculate main mass center and all the keys to the boundary points
     calculate_mass_center();
     // calculates hash keys for all the boundary structures
@@ -655,8 +659,7 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     matrix_t movers = { {2,-1,-1},
                         {0, 2,-2}};
     point_t individual_mc = mass_center;
-    // 7 as a magic number
-    double mover_distance = points->size.x()/107;
+    double mover_distance = 0;
     std::vector<int> intersections;
     // calculate the intersections 3 times redundant
     for(int i = 0; i < 1; ++i) {
@@ -798,6 +801,37 @@ void straightGenerator::write_out_surface() {
     else {
         throw std::runtime_error("Open file has failed");
     }
+}
+
+/**
+ * Adds a surface to the surface description.
+ * @attention You should KNOW what you are doing here, no post checks exist for a surface
+ * @param start
+ * @param direction
+ * @param length
+ */
+void straightGenerator::add_surface(straight_t s) {
+    auto temp = new straight_t;
+    temp->point = s.point;
+    temp->direction = s.direction;
+    temp->max_t = s.max_t;
+    surfaces.push_back(temp);
+}
+
+/**
+ * Calculates the mass_center of a given surface structure (if we add them via add_surface).
+ */
+void straightGenerator::surface_mass_center() {
+    double point_number = 0;
+    for(auto s : surfaces) {
+        point_t current = s->point;
+        for(int i = 0; i< s->max_t; ++i) {
+            current += i*s->direction;
+            mass_center += current;
+            ++point_number;
+        }
+    }
+    mass_center /= point_number;
 }
 
 /**

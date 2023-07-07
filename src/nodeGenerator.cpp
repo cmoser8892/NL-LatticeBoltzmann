@@ -12,6 +12,19 @@
  */
 nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
+    if(p != nullptr) {
+        straight_surfaces = new straightGenerator(points);
+        straight_surfaces->init();
+    }
+}
+
+/**
+ * Constructor, sets a surface.
+ * @param s
+ */
+nodeGenerator::nodeGenerator(straightGenerator *s) {
+    straight_surfaces = s;
+    create_straight = false;
 }
 
 /**
@@ -19,7 +32,8 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
  */
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
-    delete straight_surfaces;
+    if(create_straight)
+        delete straight_surfaces;
 }
 
 /**
@@ -27,7 +41,7 @@ nodeGenerator::~nodeGenerator() {
  */
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
-    // go throu the boundary points starting at a b point and go throu while still discovering new ones
+    // go through the boundary points starting at a b point and go throu while still discovering new ones
     for(auto bs : points->boundary_structures) {
         for(auto p : bs->boundary_points) {
             point_t current = p->point + discovery_vector;
@@ -224,6 +238,7 @@ void nodeGenerator::write_data_to_file(bool write) {
  * Create a board based on sizes given.
  */
 void nodeGenerator::board_creation(unsigned int size) {
+    size_canvas = size;
     // make the interleaved positions
     std::vector<uint64_t> interleaved_positions;
     for(uint32_t i = 0; i < size; ++i) {
@@ -256,8 +271,6 @@ void nodeGenerator::board_creation(unsigned int size) {
  * @param current
  */
 void nodeGenerator::check_nodes(handle_t* current) {
-    straight_surfaces = new straightGenerator(points);
-    straight_surfaces->init();
     std::vector<nodePoint_t*> reformed_nodes;
     for(auto n : node_infos) {
         bool c = straight_surfaces->node_inside_simple(n);
@@ -416,6 +429,7 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
 /**
  * Initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that.
  * old legacy method
+ * @note used for liniar structures
  */
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
@@ -427,6 +441,7 @@ void nodeGenerator::init() {
 
 /**
  * Init.
+ * @note Inits a bounce back structure and leaves the boundary bb nodes in.
  * @param size
  */
 void nodeGenerator::init(unsigned int size) {
@@ -442,6 +457,7 @@ void nodeGenerator::init(unsigned int size) {
 
 /**
  * Fused init, also reduces total nodes by removing boundaries.
+ * @note Same as init(), but the bounce back nodes are optimized away.
  * @param size canvas size
  */
 void nodeGenerator::init_fused(unsigned int size) {
@@ -452,6 +468,15 @@ void nodeGenerator::init_fused(unsigned int size) {
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
         reduce_boundary_neighborhood();
+        write_data_to_file(save);
+    }
+}
+
+void nodeGenerator::init_surface(unsigned int size) {
+    if(!read_data_from_file()) {
+        board_creation(size);
+        handle_t handle_counter = 1;
+        check_nodes(&handle_counter);
         write_data_to_file(save);
     }
 }
@@ -469,12 +494,15 @@ void nodeGenerator::delete_node_infos() {
 }
 
 /**
- * Simple visualizer node points.
+ * Simple visualizer node points, if points where given uses that.
  * @param size
  */
 void nodeGenerator::visualize_2D_nodes() {
     flowfield_t output;
-    output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    if(points != nullptr)
+        output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    else
+        output.setZero(size_canvas,size_canvas);
     for(auto b : node_infos) {
         ++output(int(b->position.x()),int(b->position.y()));
     }
