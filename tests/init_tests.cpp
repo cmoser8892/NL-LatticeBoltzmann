@@ -957,7 +957,7 @@ TEST(InitTests, basic_surface_test) {
     // node generator stuff
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size);
-    ng.visualize_2D_nodes();
+    // ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),16);
 }
 

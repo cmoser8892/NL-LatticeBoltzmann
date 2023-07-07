@@ -650,6 +650,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
 
 /**
  * Supposed to be a more stable alternative for the calculate intersection function.
+ * @attention the current implementation has a intermediate fix on top where the mass center is moved around the actual mass center (seems to run more stable)
  * @param point
  * @return the number of intersections detected
  */
@@ -659,10 +660,10 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     matrix_t movers = { {2,-1,-1},
                         {0, 2,-2}};
     point_t individual_mc = mass_center;
-    double mover_distance = 0;
+    double mover_distance = 42.0/107; // todo magic number
     std::vector<int> intersections;
     // calculate the intersections 3 times redundant
-    for(int i = 0; i < 1; ++i) {
+    for(int i = 0; i < 3; ++i) {
         individual_mc += mover_distance * (vector_t)movers.col(i);
         intersections.push_back(calculate_intersections(point->position,&individual_mc));
     }
