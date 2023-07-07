@@ -929,7 +929,6 @@ TEST(InitTests, up_down_boundary) {
 /**
  * Test/showcase of the surface variant of the boundary construction used for IBM boundaries.
  * @test
- * @todo
  */
 TEST(InitTests, basic_surface_test) {
     straight_t input;
@@ -958,6 +957,40 @@ TEST(InitTests, basic_surface_test) {
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size);
     // ng.visualize_2D_nodes();
+    EXPECT_EQ(ng.node_infos.size(),16);
+}
+
+/**
+ * Similar to basic_surface_test but the surface got moved.
+ * @note this can be seen with a more tighly fit basic_surface_test
+ * @test
+ */
+TEST(InitTests, basic_moved_surface) {
+    straight_t input;
+    long canvas_size = 10;
+    straightGenerator sg;
+    // we put in a quader
+    input.point = {1.5,1.5};
+    input.direction = {0,1};
+    input.max_t = 4;
+    sg.add_surface(input);
+    input.point = {1.5,5.5};
+    input.direction = {1,0};
+    input.max_t = 4;
+    sg.add_surface(input);
+    input.point = {5.5,5.5};
+    input.direction = {0,-1};
+    input.max_t = 4;
+    sg.add_surface(input);
+    input.point = {5.5,1.5};
+    input.direction = {-1,0};
+    input.max_t = 4;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    EXPECT_EQ(sg.surfaces.size(),4);
+    // node generator stuff
+    nodeGenerator ng(&sg);
+    ng.init_surface(canvas_size);
     EXPECT_EQ(ng.node_infos.size(),16);
 }
 
