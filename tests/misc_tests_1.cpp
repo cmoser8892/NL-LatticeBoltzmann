@@ -1214,9 +1214,9 @@ TEST(FunctionalTest,InnerCorner) {
     setter = {7,8};
     boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
     setter = {7,9};
-    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);
     // setter = {10,9};
-    // boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    // boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);
     setter = {10,8};
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};
@@ -1228,6 +1228,7 @@ TEST(FunctionalTest,InnerCorner) {
     // as long as the test does not crash it is considered ok
     EXPECT_TRUE(true);
 }
+
 /**
  * Tests the star intersection tests.
  * @test
