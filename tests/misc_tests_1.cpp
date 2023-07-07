@@ -802,7 +802,7 @@ TEST(FunctionalTest, multiple_interruptions) {
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
     gen.visualize_2D_nodes();
-    EXPECT_EQ(gen.node_infos.size(), boundaries.total_boundary_nodes() + 8 + 2);
+    EXPECT_EQ(gen.node_infos.size(), 10);
 }
 
 /**

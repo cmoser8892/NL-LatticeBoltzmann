@@ -47,7 +47,9 @@ void straightGenerator::detect_boundary_proximity_main_mass_center() {
         double mover = sqrt(base.norm()*base.norm() - distance*distance);
         point_t move_point = surface->point + an*mover;
         vector_t mover_vector = mass_center - move_point;
+        // std::cout << mover_vector << std::endl;
         new_mass_center += mover_vector*factor;
+        // std::cout << new_mass_center << std::endl;
     }
     mass_center = new_mass_center;
 }
@@ -563,7 +565,7 @@ void straightGenerator::init() {
     }
     // old legacy method
     // calculate_all_straights();
-    detect_boundary_proximity_main_mass_center();
+    // detect_boundary_proximity_main_mass_center();
 }
 
 /**
@@ -615,7 +617,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
             second_pass_surface.direction = {surface->direction.y(),-surface->direction.x()};
             double s = calculate_intersection(&straight,&second_pass_surface);
             // 2 pass
-            if(s >= 0) {
+            if(s > 0) {
                 // compare and check if we already got the same point previously
                 // in case we intersect a node point directly ( no double counting )
                 point_t point = straight.point + s*straight.direction;
@@ -632,6 +634,10 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
                 if(add) {
                     number_of_intersections++;
                 }
+            }
+            // exception the point is on the surface -> ignore/outside
+            if(s == 0) {
+                return 0;
             }
         }
     }

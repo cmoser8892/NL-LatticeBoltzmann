@@ -13,5 +13,6 @@ int main(int argc, char *argv[]) {
      * Basic idea would be to shift a quader a bit and use that for the init of immersed boundaries
      * Add all the other forces then optimize from there
      */
+    std::cout << 0%2 << std::endl;
     return 0;
 }

@@ -344,6 +344,13 @@ void pressure_periodic_out(oNode* node , double rho_out) {
     }
 }
 
+/**
+ * A kernel fucntion.
+ * @ref Viggen LBM book p.468f
+ * @param range
+ * @param delta_range
+ * @return
+ */
 double kernel_1(double range, double delta_range) {
     double returns = 0;
     double abs_range = abs(range);
@@ -352,7 +359,13 @@ double kernel_1(double range, double delta_range) {
     }
     return returns;
 }
-
+/**
+ * A kernel function.
+ * @ref Viggen LBM book p.468f
+ * @param range
+ * @param delta_range
+ * @return
+ */
 double kernel_2(double range, double delta_range) {
     double returns = 0;
     double abs_range = abs(range);
@@ -365,6 +378,13 @@ double kernel_2(double range, double delta_range) {
     return returns;
 }
 
+/**
+ * A kernel function.
+ * @ref Viggen LBM book p.468f
+ * @param range
+ * @param delta_range
+ * @return
+ */
 double kernel_3(double range, double delta_range) {
     double returns = 0;
     double abs_range = abs(range);

@@ -5,7 +5,7 @@
 #include "node.h"
 #include "boundary_point_generator.h"
 #include "helper_functions.h"
-#define CRITICAL_RANGE 4 /**< The boundary intersection tests struggle when the mass center is near one */
+#define CRITICAL_RANGE 0 /**< The boundary intersection tests struggle when the mass center is near one */
 
 /**
  * Straight definition.
