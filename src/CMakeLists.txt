@@ -11,6 +11,7 @@ set(MY_HEADERS
         neighborhood.h
         node.h
         image_converter.h
+        marker.h
         )
 
 # List of implementation files
@@ -26,6 +27,7 @@ set(MY_CPP
         straight.cpp
         neighborhood.cpp
         image_converter.cpp
+        marker.cpp
         )
 
 # Create a static library
