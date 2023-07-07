@@ -771,7 +771,7 @@ TEST(FunctionalTest, multiple_interruptions) {
     setter = {2,9};
     boundaries.steps_direction(1,{-1,-1},&setter,BOUNCE_BACK);
     // visualizer
-    boundaries.visualize_2D_boundary();
+    // boundaries.visualize_2D_boundary();
     straightGenerator s(&boundaries);
     s.init();
     // control
@@ -801,7 +801,7 @@ TEST(FunctionalTest, multiple_interruptions) {
     // node generator master test
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
-    gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     EXPECT_EQ(gen.node_infos.size(), 10);
 }
 

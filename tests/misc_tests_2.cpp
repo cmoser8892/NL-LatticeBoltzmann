@@ -726,7 +726,12 @@ TEST(FunctionalTest, kernel_3) {
     EXPECT_EQ(kernel_3(range,range_x),0);
 }
 
-TEST(FunctionalTest, surface_move) {
+/**
+ * Follow up test where there is no actual fluid node and everything is quite close.
+ * @test
+ * @note no fluid notes are actually found
+ */
+TEST(FunctionalTest, no_fluid_boundary) {
     unsigned int size = 2;
     unsigned int sub_size = 2;
     point_t c = {size,size}; // size or the canvas
@@ -734,19 +739,12 @@ TEST(FunctionalTest, surface_move) {
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_quader({0,0},p);
-    boundaries.visualize_2D_boundary();
     // construct straights
     straightGenerator s(&boundaries);
     s.init();
-    vector_t u = {0.5,0.5};
-    for(auto st : s.surfaces) {
-        st->point += u;
-        std::cout << "(" << st->point.x() << ", " << st->point.y() << "); "
-                  << "(" << st->direction.x() << ", " << st->direction.y() << ");  "<< st->max_t << std::endl;
-    }
     nodeGenerator n(&boundaries);
     n.init_fused(size);
-    n.visualize_2D_nodes();
+    EXPECT_EQ(n.node_infos.size(), 0);
 }
 
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
