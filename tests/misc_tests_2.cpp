@@ -5,6 +5,7 @@
 #include "helper_functions.h"
 #include "neighborhood.h"
 #include "image_converter.h"
+#include "marker.h"
 #include <gtest/gtest.h>
 // the misc file got to laggy apparently i should stop at 2000 lines
 
@@ -729,7 +730,7 @@ TEST(FunctionalTest, kernel_3) {
 /**
  * Follow up test where there is no actual fluid node and everything is quite close.
  * @test
- * @note no fluid notes are actually found
+ * @note no fluid notes are actually found bit of a blind test
  */
 TEST(FunctionalTest, no_fluid_boundary) {
     unsigned int size = 2;
@@ -746,6 +747,63 @@ TEST(FunctionalTest, no_fluid_boundary) {
     n.init_fused(size);
     EXPECT_EQ(n.node_infos.size(), 0);
 }
+
+/**
+ * We have on straight on which we distribute markers.
+ * @test
+ * @see markerIBM::distribute_markers()
+ */
+TEST(FunctionalTest, distribute_markers_base) {
+    straight_t input;
+    straightGenerator sg;
+    // we put in a quader
+    input.point = {1,1};
+    input.direction = {0,1};
+    input.max_t = 6;
+    sg.add_surface(input);
+    markerIBM m(&sg);
+    m.distribute_markers();
+    EXPECT_EQ(m.marker_points.size(),6);
+    for( int i = 0; i < 180 ; ++i) {
+        std::cout << i << " ," << double (i) / 0.75 << std::endl;
+    }
+}
+
+
+TEST(FunctionalTest, distribute_markers_quader) {
+    double marker_dist = 0.75;
+    point_t starter = {1.4,1.4};
+    for(int i = 96; i < 120; ++i) {
+        straightGenerator sg;
+        if(((double) i /marker_dist) == 0) {
+            // side length
+            double side_length = (double) i / 4;
+            double expected_value = i / marker_dist;
+            straight_t input;
+            // we put in a quader
+            input.point = starter;
+            input.direction = {0,1};
+            input.max_t = side_length;
+            sg.add_surface(input);
+            input.point += input.direction * side_length;
+            input.direction = {1,0};
+            input.max_t = side_length;
+            sg.add_surface(input);
+            input.point += input.direction * side_length;
+            input.direction = {0,-1};
+            input.max_t = side_length;
+            sg.add_surface(input);
+            input.point += input.direction * side_length;
+            input.direction = {-1,0};
+            input.max_t = side_length;
+            // init the markers
+            markerIBM mibm(&sg);
+            mibm.distribute_markers();
+            EXPECT_EQ(mibm.marker_points.size(),expected_value);
+        }
+    }
+}
+
 
 // todo investiagate the odd 0 pass in the intersection tests write out a full test for that
 // todo there are some strange cases still left -> in vestigate

@@ -48,6 +48,7 @@ class nodeGenerator {
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
   public:
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
+    std::vector<bool> to_be_removed; /**< Master control remove the node or not */
     straightGenerator* straight_surfaces = nullptr; /**< Straight surface pointer */
     explicit nodeGenerator(boundaryPointConstructor* p);
     explicit nodeGenerator(straightGenerator * s);
