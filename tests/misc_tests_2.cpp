@@ -763,22 +763,26 @@ TEST(FunctionalTest, distribute_markers_base) {
     sg.add_surface(input);
     markerIBM m(&sg);
     m.distribute_markers();
-    EXPECT_EQ(m.marker_points.size(),6);
-    for( int i = 0; i < 180 ; ++i) {
-        std::cout << i << " ," << double (i) / 0.75 << std::endl;
-    }
+    EXPECT_EQ(m.marker_points.size(),8);
 }
 
-
+/**
+ * We make some quaders and test weather or not the code does what it should.
+ * @test
+ * @see markerIBM::distribute_markers()
+ */
 TEST(FunctionalTest, distribute_markers_quader) {
     double marker_dist = 0.75;
     point_t starter = {1.4,1.4};
     for(int i = 96; i < 120; ++i) {
         straightGenerator sg;
-        if(((double) i /marker_dist) == 0) {
+        // we want sth without any residual and % only works on int
+        double fit_in = (double) i / marker_dist;
+        double floored_fit_in = std::floor(fit_in);
+        if(std::fmod(fit_in,floored_fit_in) == 0) {
             // side length
             double side_length = (double) i / 4;
-            double expected_value = i / marker_dist;
+            double expected_value = i;
             straight_t input;
             // we put in a quader
             input.point = starter;
@@ -804,7 +808,83 @@ TEST(FunctionalTest, distribute_markers_quader) {
     }
 }
 
+TEST(FunctionalTest, odd_quader) {
+    point_t starter = {1,1};
+    straight_t input;
+    straightGenerator sg;
+    double side_length = 5;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    // tests how many will get generatored
+    markerIBM mibm(&sg);
+    mibm.distribute_markers();
+    EXPECT_EQ(mibm.marker_points.size(),26);
+    std::cout << mibm.return_marker_distance() << std::endl;
+}
 
-// todo investiagate the odd 0 pass in the intersection tests write out a full test for that
-// todo there are some strange cases still left -> in vestigate
-// todo negative numbers in pkh?! do i even want that
+/**
+ * Point on straight test.
+ * @test
+ * @attention negatives are not tested cause they dont appear in the code
+ * @see point_on_straight()
+ */
+TEST(FunctionalTest, points_on_straights) {
+    straight_t test;
+    test.point = {0,0};
+    test.direction = {1,1};
+    test.max_t = 5;
+    // positives
+    double dk = 0;
+    point_t test_point = {0,0};
+    EXPECT_TRUE(point_on_straight(&test,&test_point, &dk));
+    test_point = {3,3};
+    EXPECT_TRUE(point_on_straight(&test,&test_point, &dk));
+    test_point = {5,5};
+    EXPECT_TRUE(point_on_straight(&test,&test_point, &dk));
+    // negatives
+    test_point = {6,6};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point, &dk));
+    EXPECT_EQ(dk, 1);
+    test_point = {2,3};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point, &dk));
+    EXPECT_EQ(dk, 1);
+    test_point = {0,3};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point, &dk));
+    EXPECT_EQ(dk, 1);
+    // different straight
+    test.direction = {2,1};
+    test.direction.normalize();
+    test_point = {2,1};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    test_point = {4,2};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    test_point = {6,3};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point,&dk));
+    test.direction = {0,1};
+    test_point = {0,2};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    test_point = {1,2};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point,&dk));
+    test.direction = {1,0};
+    test_point = {2,0};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    // understand norm in eigen
+    vector_t n = test.direction.normalized();
+    EXPECT_NEAR(n.norm(),1,1e-8);
+}
+
+// todo there are some strange cases still left -> investigate

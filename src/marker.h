@@ -18,10 +18,12 @@ class markerIBM {
     straightGenerator *sg = nullptr;
 
   public:
-    markerIBM(straightGenerator *s = nullptr, int kd = 2, double md = 0.75);
     std::vector<point_t *> marker_points;
+    explicit markerIBM(straightGenerator *s = nullptr, int kd = 2, double md = 0.75);
+    ~markerIBM();
     void find_neighborhood();
     void distribute_markers();
+    double return_marker_distance();
 };
 
 #endif // NL_LATTICEBOLTZMANN_MARKER_H

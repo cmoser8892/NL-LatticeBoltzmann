@@ -1224,7 +1224,7 @@ TEST(FunctionalTest,InnerCorner) {
     // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
     gen.init(size);
-    gen.visualize_2D_nodes();
+    // gen.visualize_2D_nodes();
     // as long as the test does not crash it is considered ok
     EXPECT_TRUE(true);
 }

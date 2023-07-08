@@ -73,6 +73,17 @@ typedef struct simulation_parameters {
     double dt = 1; /**<  just leave it a 1, simulation will crash and burn otherwise */
 }simulation_parameters_t;
 
+/**
+ * Straight definition.
+ */
+typedef struct straight {
+    // s = p + t*d
+    point_t point; /**<  Origin of the straight */
+    vector_t direction; /**<  Direction of the straight line */
+    // validity of the straight
+    double max_t = 0; /**<  Length of that line */
+}straight_t;
+
 // eigen smart pointer
 using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>; /// link pointer directly to an array
 using array_pointer = link_pointer; /// redefine to be more inline of what it actually does

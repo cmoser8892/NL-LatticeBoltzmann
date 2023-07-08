@@ -30,6 +30,7 @@ std::tuple<double,double,double> calculate_macro_population(array_t* p);
 double kernel_1(double range, double delta_x);
 double kernel_2(double range, double delta_x);
 double kernel_3(double range, double delta_x);
+bool point_on_straight(straight_t * s, point_t *p, double* overshot);
 // debug method
 void debug_node(node* node, bool printing);
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H

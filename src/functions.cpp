@@ -396,6 +396,44 @@ double kernel_3(double range, double delta_range) {
     }
     return returns;
 }
+
+/**
+ * Checks weather or not a point is on a straight.
+ * @param s
+ * @param p
+ * @param overshot
+ * @return true if on false if not
+ */
+bool point_on_straight(straight_t *s, point_t * p,double* overshot) {
+    // we solve some straight equations
+    std::vector<double> m;
+    bool returns = false;
+    for(int i = 0; i < p->size(); ++i) {
+        double temp = (p->operator[](i)- s->point[i])/s->direction[i];
+        m.push_back(temp);
+    }
+    // check for nans
+    for(int i = 0; i < p->size(); ++i) {
+        if(std::isnan(m[i])) {
+            if(p->operator[](i) == s->point[i]) {
+                m[i] = m[(i+1)%2];
+            }
+        }
+    }
+    // checks
+    if(m[0] == m[1]) {
+        // both agree
+        if(m[0] <= s->max_t) {
+            // still inside max
+            returns = true;
+        }
+        else {
+            *overshot = m[0]-s->max_t;
+        }
+    }
+    return returns;
+}
+
 /*
 // python stuff
 def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):

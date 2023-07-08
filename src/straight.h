@@ -5,18 +5,7 @@
 #include "node.h"
 #include "boundary_point_generator.h"
 #include "helper_functions.h"
-#define CRITICAL_RANGE 0 /**< The boundary intersection tests struggle when the mass center is near one */
-
-/**
- * Straight definition.
- */
-typedef struct straight {
-    // s = p + t*d
-    point_t point; /**<  Origin of the straight */
-    vector_t direction; /**<  Direction of the straight line */
-    // validity of the straight
-    double max_t = 0; /**<  Length of that line */
-}straight_t;
+#define CRITICAL_RANGE 0 /**< The boundary intersection tests struggle when the mass center is near one, not used right now */
 
 /**
  * Straight generator that connects the surface.
