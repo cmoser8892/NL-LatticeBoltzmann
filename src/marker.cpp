@@ -1,11 +1,20 @@
 #include "marker.h"
 
+/**
+ * Constructor with lots of optional fields.
+ * @param s
+ * @param kd
+ * @param md
+ */
 markerIBM::markerIBM(straightGenerator *s, int kd, double md) {
     sg = s;
     kernel_length = kd;
     marker_distance = md;
 }
 
+/**
+ * De-constructor gets rid of the points.
+ */
 markerIBM::~markerIBM() {
     // delete all the info in the vector
     for(auto p : marker_points) {
@@ -13,6 +22,10 @@ markerIBM::~markerIBM() {
     }
 }
 
+/**
+ * Marker distributor, main goal is too evenly distribute the markers on the surface.
+ * @attention surface is blind of its own inner structure
+ */
 void markerIBM::distribute_markers() {
     // start at the first surface and look
     // todo do i need to know which is the direction towards the fluid?!
@@ -67,6 +80,10 @@ void markerIBM::find_neighborhood() {
 
 }
 
+/**
+ * Gives out the actual marker distance used.
+ * @return
+ */
 double markerIBM::return_marker_distance() {
     return marker_distance;
 }
