@@ -829,6 +829,7 @@ TEST(FunctionalTest, odd_quader) {
     input.point += input.direction * side_length;
     input.direction = {-1,0};
     input.max_t = side_length;
+    sg.add_surface(input);
     // tests how many will get generatored
     markerIBM mibm(&sg);
     mibm.distribute_markers();

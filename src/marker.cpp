@@ -29,8 +29,7 @@ void markerIBM::distribute_markers() {
         // check weather or not we have to equalize so that everything is equally spaced
         // watch out for low marker numbers
         double add_on = std::fmod(total_surface,marker_distance);
-        marker_distance += add_on;
-
+        marker_distance += add_on/markers_fit_in;
         // we now step through the surface again
         // setup walk distance initial
         double walk_distance = marker_distance;
@@ -42,6 +41,7 @@ void markerIBM::distribute_markers() {
             double overshoot = 0;
             // go through the individual surface
             while(!end) {
+                walker = s->direction.normalized() * walk_distance;
                 marker += walker;
                 // still on
                 if(point_on_straight(s,&marker,&overshoot)) {
