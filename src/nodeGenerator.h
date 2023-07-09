@@ -10,6 +10,7 @@
 #include "node.h"
 #include "boundary_point_generator.h"
 #include "straight.h"
+
 /**
  * Read back enum, to handle the lines.
  */

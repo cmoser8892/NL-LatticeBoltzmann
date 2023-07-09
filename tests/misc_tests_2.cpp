@@ -807,7 +807,10 @@ TEST(FunctionalTest, distribute_markers_quader) {
         }
     }
 }
-
+/**
+ * We construct a quader that can not fit the 0.75 standard distance.
+ * @test
+ */
 TEST(FunctionalTest, odd_quader) {
     point_t starter = {1,1};
     straight_t input;
@@ -834,6 +837,61 @@ TEST(FunctionalTest, odd_quader) {
     markerIBM mibm(&sg);
     mibm.distribute_markers();
     EXPECT_EQ(mibm.marker_points.size(),26);
+    EXPECT_GT(mibm.return_marker_distance(),0.75);
+}
+
+/**
+ * Tests/Explores the functionality when we actually have two structures.
+ * @test
+ */
+TEST(FunctionalTest, two_structure) {
+    point_t starter = {1,1};
+    straight_t input;
+    straightGenerator sg;
+    double side_length = 15; // with a distance of 0.75 we should get 80 markers
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    // another one
+    starter = {4,4};
+    side_length = 5;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    // main thing i do not want to see is a whole when we change the surface
+    // easiest way for this to work is to set up a ranging pkh and look for the markers
+    // number of different cases still but should be doable
+    markerIBM mibm(&sg);
+    mibm.distribute_markers();
+    EXPECT_EQ(mibm.marker_points.size(),80+26); // we got the right amount
     std::cout << mibm.return_marker_distance() << std::endl;
 }
 
@@ -889,3 +947,4 @@ TEST(FunctionalTest, points_on_straights) {
 }
 
 // todo there are some strange cases still left -> investigate
+// todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool here
