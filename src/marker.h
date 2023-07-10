@@ -15,7 +15,7 @@ class markerIBM {
   private:
     int kernel_length = 2;         /**< search space of the kernel */
     double marker_distance = 0.75; /**< distance between markers on the surface */
-    straightGenerator *sg = nullptr;
+    straightGenerator *sg = nullptr; /**< straights used for generation of the marker points */
 
   public:
     std::vector<point_t *> marker_points;
