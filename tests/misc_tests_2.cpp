@@ -843,6 +843,8 @@ TEST(FunctionalTest, odd_quader) {
 /**
  * Tests/Explores the functionality when we actually have two structures.
  * @test
+ * @attention based on the result of this test one can assume that surfaces can be structure blind.
+ * @note still have to be in order otherwise results wont work (it might still be a good idea to partition thou -> parrallel)
  */
 TEST(FunctionalTest, two_structure) {
     point_t starter = {1,1};
@@ -892,7 +894,38 @@ TEST(FunctionalTest, two_structure) {
     markerIBM mibm(&sg);
     mibm.distribute_markers();
     EXPECT_EQ(mibm.marker_points.size(),80+26); // we got the right amount
-    std::cout << mibm.return_marker_distance() << std::endl;
+    array_t on_surface;
+    on_surface.resize(sg.surfaces.size());
+    on_surface.setZero();
+    double dk;
+    std::vector<int> surface_structure_1;
+    std::vector<int> surface_structure_2;
+    for(int i = 0; i < mibm.marker_points.size(); ++i) {
+        auto m = mibm.marker_points[i];
+        for(int i = 0; i < sg.surfaces.size(); ++i) {
+            auto s = sg.surfaces[i];
+            if(point_on_straight(s,m,&dk)) {
+                on_surface[i]++;
+                if(i < 4) {
+                    surface_structure_1.push_back(i);
+                }
+                else {
+                    surface_structure_2.push_back(i);
+                }
+            }
+        }
+    }
+    // check out the spacing on each individual surface
+    for(auto n : surface_structure_1) {
+        int next = (n+1) % (int)surface_structure_1.size();
+        double distance = (*mibm.marker_points[n] - *mibm.marker_points[next]).norm();
+        EXPECT_NEAR(mibm.return_marker_distance(), distance,1e-8);
+    }
+    for(auto n : surface_structure_2) {
+        int next = (n+1) % (int)surface_structure_2.size();
+        double distance = (*mibm.marker_points[n] - *mibm.marker_points[next]).norm();
+        EXPECT_NEAR(mibm.return_marker_distance(), distance,1e-8);
+    }
 }
 
 /**

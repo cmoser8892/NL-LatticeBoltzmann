@@ -36,7 +36,6 @@ void markerIBM::distribute_markers() {
         }
         // the markers should be equally space over the total surface
         // we dont want any rest we just want equal spacing
-        // todo prob bad that surface is structure blind
         // determine the number of markers in a surface
         double markers_fit_in= std::floor(total_surface/marker_distance);
         // check weather or not we have to equalize so that everything is equally spaced
@@ -74,10 +73,6 @@ void markerIBM::distribute_markers() {
             }
         }
     }
-}
-
-void markerIBM::find_neighborhood() {
-
 }
 
 /**
