@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size);
+    ng.init_surface(canvas_size,2);
     ng.visualize_2D_nodes();
     std::cout << ng.node_infos.size();
     return 0;

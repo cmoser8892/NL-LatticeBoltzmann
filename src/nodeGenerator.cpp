@@ -521,7 +521,12 @@ void nodeGenerator::init_fused(unsigned int size) {
     }
 }
 
-void nodeGenerator::init_surface(unsigned int size) {
+/**
+ * Inits the simulation based on a given surface.
+ * @param size
+ * @param range
+ */
+void nodeGenerator::init_surface(unsigned int size, double range) {
     if(!read_data_from_file()) {
         // create the drawing canvas
         board_creation(size);
@@ -533,7 +538,7 @@ void nodeGenerator::init_surface(unsigned int size) {
         }
         // check and reform nodes
         check_nodes_inside();
-        check_nodes_ibm(1);
+        check_nodes_ibm(range);
         remove_unwanted_nodes(&handle_counter);
         write_data_to_file(save);
     }

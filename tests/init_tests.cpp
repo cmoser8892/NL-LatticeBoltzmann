@@ -955,7 +955,7 @@ TEST(InitTests, basic_surface_test) {
     EXPECT_EQ(sg.surfaces.size(),4);
     // node generator stuff
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size);
+    ng.init_surface(canvas_size,0);
     // ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),16);
 }
@@ -992,9 +992,95 @@ TEST(InitTests, basic_moved_surface) {
     EXPECT_EQ(sg.surfaces.size(),4);
     // node generator stuff
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size);
+    ng.init_surface(canvas_size,1);
     // ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),16 + 20);
+}
+
+/**
+ * We check on site ibm flagging.
+ * @test
+ */
+TEST(InitTests, ibm_flagging) {
+    point_t starter = {3.1,3.1};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 15;
+    double side_length = 6; // with a distance of 0.75 we should get 80 markers
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    EXPECT_EQ(sg.surfaces.size(),4);
+    // node generator stuff
+    nodeGenerator ng(&sg);
+    ng.init_surface(canvas_size,1);
+    ng.visualize_2D_nodes();
+    // check amount of ibm flagged nodes (not really necessary they can also be flagged as no boundary the markers hold all the boundary info
+    int ibm_count = 0;
+    for(auto node : ng.node_infos) {
+        if(node->boundary == IBM) {
+            ++ibm_count;
+        }
+    }
+    EXPECT_EQ(4*(5+7),ibm_count);
+}
+
+/**
+ * We check that when we are on the surface we get an extetended marking.
+ * @test
+ */
+TEST(InitTests, on_point_surface) {
+    point_t starter = {3,3};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 15;
+    double side_length = 6; // with a distance of 0.75 we should get 80 markers
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    EXPECT_EQ(sg.surfaces.size(),4);
+    // node generator stuff
+    nodeGenerator ng(&sg);
+    ng.init_surface(canvas_size,1);
+    ng.visualize_2D_nodes();
+    // check amount of ibm flagged nodes (not really necessary they can also be flagged as no boundary the markers hold all the boundary info
+    int ibm_count = 0;
+    for(auto node : ng.node_infos) {
+        if(node->boundary == IBM) {
+            ++ibm_count;
+        }
+    }
+    EXPECT_EQ(4*(4+6+8),ibm_count);
 }
 
 /*
