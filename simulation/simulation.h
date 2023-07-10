@@ -34,11 +34,15 @@ class forcedSimulation {
     boundaryPointConstructor * boundary_points = nullptr; /**<  pointer to the previously constructed boundary point cloud */
     nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
     goaForce * rot_force = nullptr; /**<  pointer to the rotation force calculation class */
+    std::vector<point_t*> lagrangian_markers;
+    rangingPointKeyHash all_nodes;
     // inlined core methods
     inline std::tuple<double, double, double> calculate_macro(array_t* a, array_t* previous_force,vector_t f);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
     inline void collision(array_t* a, double rho,double ux, double uy);
     inline void forcing_terms(long pos, double ux, double uy);
+    void compute_spread_lagrangian_force();
+    void interpolate_forward_lagrangian_force();
   public:
     // public main variables
     int offset_sim = 1; /**< offset 1 or 0 depending on the step */
@@ -46,7 +50,7 @@ class forcedSimulation {
     // holding of the general nodes
     std::vector<oNode*> nodes; /**< optimized nodes stored in a vector */
     std::vector<array_t*> forces; /**<  force terms stored in a vector */
-    std::vector<vector_t> force_alpha;
+    std::vector<vector_t> force_alpha; /**< container of the force */
     // constructors
     forcedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
     ~forcedSimulation();
@@ -55,10 +59,12 @@ class forcedSimulation {
     // run methods
     void init();
     void run(int current_step);
+    void run_ibm(int current_step);
     // cleanup methods
     void get_data(bool write_to_file);
     void delete_nodes();
     // test functions
     std::tuple<double,double,double> test_calcualte_macro(array_t* a, array_t* f);
 };
+
 #endif // MY_LATTICE_BOLTZMANN_H

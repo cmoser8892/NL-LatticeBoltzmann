@@ -397,6 +397,10 @@ double kernel_3(double range, double delta_range) {
     return returns;
 }
 
+vector_t compute_lagrangian_force() {
+    return {0,0};
+}
+
 /**
  * Checks weather or not a point is on a straight.
  * @param s

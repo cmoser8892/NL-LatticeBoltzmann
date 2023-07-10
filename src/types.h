@@ -71,6 +71,8 @@ typedef struct simulation_parameters {
     double relaxation = 0.5; /**<  current relaxation */
     double u_wall = 0; /**<  u wall */
     double dt = 1; /**<  just leave it a 1, simulation will crash and burn otherwise */
+    double ibm_range = 2.0; /**< ibm_range */
+    double lattice_length = 1.0;
 }simulation_parameters_t;
 
 /**

@@ -152,6 +152,39 @@ inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
 }
 
 /**
+ * Computes and spreads the lagrangian force over the channels.
+ */
+void forcedSimulation::compute_spread_lagrangian_force() {
+    for(auto lm : lagrangian_markers) {
+        // compute force
+        vector_t force = compute_lagrangian_force();
+        // spread force
+        std::vector<handle_t> affected_nodes = all_nodes.ranging_key_translation(*lm,parameters.ibm_range);
+        for(auto h : affected_nodes) {
+            // influence the force
+            h -= 1;
+            double distance = (nodes[h]->position - *lm).norm();
+            force_alpha[h] = kernel_3(distance,parameters.lattice_length) * force;
+        }
+    }
+}
+
+/**
+ * Interpolates the lagrangian node position and forwards it in time.
+ */
+void forcedSimulation::interpolate_forward_lagrangian_force() {
+    for(auto lm : lagrangian_markers) {
+        vector_t u;
+        std::vector<handle_t> affected_nodes = all_nodes.ranging_key_translation(*lm,parameters.ibm_range);
+        for(auto h: affected_nodes) {
+            vector_t expt = {1.201,12};
+            h -= 1;
+            double distance = (nodes[h]->position - *lm).norm();
+            u = kernel_3(distance, parameters.lattice_length) * expt;
+        }
+    }
+}
+/**
  * Constructor.
  * @param c
  * @param g
