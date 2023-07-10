@@ -1029,7 +1029,7 @@ TEST(InitTests, ibm_flagging) {
     // node generator stuff
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,1);
-    ng.visualize_2D_nodes();
+    // ng.visualize_2D_nodes();
     // check amount of ibm flagged nodes (not really necessary they can also be flagged as no boundary the markers hold all the boundary info
     int ibm_count = 0;
     for(auto node : ng.node_infos) {
@@ -1072,7 +1072,7 @@ TEST(InitTests, on_point_surface) {
     // node generator stuff
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,1);
-    ng.visualize_2D_nodes();
+    // ng.visualize_2D_nodes();
     // check amount of ibm flagged nodes (not really necessary they can also be flagged as no boundary the markers hold all the boundary info
     int ibm_count = 0;
     for(auto node : ng.node_infos) {
