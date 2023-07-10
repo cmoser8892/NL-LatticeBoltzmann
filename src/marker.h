@@ -9,7 +9,6 @@
 /**
  * The marker class holds and distributes the markers on a surface for the IBM method.
  * @note not sure yet how to handle finer grids prob fully dynamic ?!
- * @todo not yet sure on the dual role of the markers
  */
 class markerIBM {
   private:
