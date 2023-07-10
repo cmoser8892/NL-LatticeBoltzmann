@@ -10,6 +10,7 @@
 #include "node.h"
 #include "boundary_point_generator.h"
 #include "straight.h"
+#include "marker.h"
 
 /**
  * Read back enum, to handle the lines.
@@ -43,7 +44,9 @@ class nodeGenerator {
     void determine_neighbors();
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
-    void check_nodes(handle_t* current);
+    void check_nodes_inside();
+    void check_nodes_ibm(double range);
+    void remove_unwanted_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
     void reduce_boundary_neighborhood();
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
@@ -51,6 +54,7 @@ class nodeGenerator {
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
     std::vector<bool> to_be_removed; /**< Master control remove the node or not */
     straightGenerator* straight_surfaces = nullptr; /**< Straight surface pointer */
+    markerIBM* markers = nullptr; /**< markers */
     explicit nodeGenerator(boundaryPointConstructor* p);
     explicit nodeGenerator(straightGenerator * s);
     ~nodeGenerator();

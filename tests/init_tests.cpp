@@ -966,31 +966,34 @@ TEST(InitTests, basic_surface_test) {
  * @test
  */
 TEST(InitTests, basic_moved_surface) {
+    point_t starter = {2.4,2.4};
     straight_t input;
-    long canvas_size = 10;
     straightGenerator sg;
+    long canvas_size = 10;
+    double side_length = 4; // with a distance of 0.75 we should get 80 markers
     // we put in a quader
-    input.point = {1.5,1.5};
+    input.point = starter;
     input.direction = {0,1};
-    input.max_t = 4;
+    input.max_t = side_length;
     sg.add_surface(input);
-    input.point = {1.5,5.5};
+    input.point += input.direction * side_length;
     input.direction = {1,0};
-    input.max_t = 4;
+    input.max_t = side_length;
     sg.add_surface(input);
-    input.point = {5.5,5.5};
+    input.point += input.direction * side_length;
     input.direction = {0,-1};
-    input.max_t = 4;
+    input.max_t = side_length;
     sg.add_surface(input);
-    input.point = {5.5,1.5};
+    input.point += input.direction * side_length;
     input.direction = {-1,0};
-    input.max_t = 4;
+    input.max_t = side_length;
     sg.add_surface(input);
     sg.surface_mass_center();
     EXPECT_EQ(sg.surfaces.size(),4);
     // node generator stuff
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size);
+    ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),16);
 }
 

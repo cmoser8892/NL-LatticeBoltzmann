@@ -34,6 +34,8 @@ nodeGenerator::~nodeGenerator() {
     delete_node_infos();
     if(create_straight)
         delete straight_surfaces;
+    //
+    delete markers;
 }
 
 /**
@@ -262,30 +264,75 @@ void nodeGenerator::board_creation(unsigned int size) {
         n->boundary = NO_BOUNDARY;
         // dont forget to increase the handle counter each time
         handle_counter++;
+        // container updates
         node_infos.push_back(n);
+        // add/setup the to be removed control
+        to_be_removed.push_back(true);
     }
 }
 
 /**
- * Check if the node is inside the canvas defined by the straights and deletes the rest.
- * @param current
+ * Check if the node is inside the canvas defined by the straights and sets those to not be deleted.
  */
-void nodeGenerator::check_nodes(handle_t* current) {
-    std::vector<nodePoint_t*> reformed_nodes;
-    for(auto n : node_infos) {
-        bool c = straight_surfaces->node_inside_simple(n);
-        if(!c) {
-            n->handle = *current;
+void nodeGenerator::check_nodes_inside() {
+    for(int i = 0; i < node_infos.size(); ++i) {
+        auto n = node_infos[i];
+        bool not_outside = straight_surfaces->node_inside_simple(n);
+        if(!not_outside) {
             n->boundary = NO_BOUNDARY;
-            n->type = WET;
-            reformed_nodes.push_back(n);
-            (*current)++;
-        }
-        else {
-            // also delete element if not inside
-            delete n;
+            // should not be removed after all
+            to_be_removed[i] = false;
         }
     }
+}
+
+/**
+ * Checks the ibm relationship and flags the nodes.
+ * @param range
+ */
+void nodeGenerator::check_nodes_ibm(double range) {
+    // go over the markers and perform a range check
+    rangingPointKeyHash rpkh;
+    handle_t current = 1;
+    for(auto node : node_infos) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    // look through the markers and
+    for(auto mark : markers->marker_points) {
+        std::vector<handle_t> affected = rpkh.ranging_key_translation(*mark,range);
+        for(auto handle : affected) {
+            handle = handle - 1; // handle to the guy
+            node_infos[handle]->boundary = IBM;
+            to_be_removed[handle] = false;
+        }
+    }
+}
+
+/**
+ * Removes all the nodes that were not wanted in an abortion like process.
+ * @param current
+ */
+void nodeGenerator::remove_unwanted_nodes(handle_t *current) {
+    std::vector<nodePoint_t*> reformed_nodes;
+    for(int i = 0; i < to_be_removed.size(); ++i) {
+        auto control = to_be_removed[i];
+        auto node = node_infos[i];
+        // remove
+        if(control) {
+            delete node;
+        }
+        // keep
+        else {
+            // add to the reformed nodes
+            node->handle = *current;
+            node->type = WET;
+            reformed_nodes.push_back(node);
+            // increment
+            ++(*current);
+        }
+    }
+    // overwrite
     node_infos = reformed_nodes;
 }
 
@@ -448,7 +495,8 @@ void nodeGenerator::init(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
         handle_t handle_counter = 1;
-        check_nodes(&handle_counter);
+        check_nodes_inside();
+        remove_unwanted_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
         write_data_to_file(save);
@@ -464,7 +512,8 @@ void nodeGenerator::init_fused(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
         handle_t handle_counter = 1;
-        check_nodes(&handle_counter);
+        check_nodes_inside();
+        remove_unwanted_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
         reduce_boundary_neighborhood();
@@ -474,9 +523,18 @@ void nodeGenerator::init_fused(unsigned int size) {
 
 void nodeGenerator::init_surface(unsigned int size) {
     if(!read_data_from_file()) {
+        // create the drawing canvas
         board_creation(size);
         handle_t handle_counter = 1;
-        check_nodes(&handle_counter);
+        // generate the markers
+        if(markers == nullptr) {
+            markers = new markerIBM(straight_surfaces);
+            markers->distribute_markers();
+        }
+        // check and reform nodes
+        check_nodes_inside();
+        check_nodes_ibm(1);
+        remove_unwanted_nodes(&handle_counter);
         write_data_to_file(save);
     }
 }

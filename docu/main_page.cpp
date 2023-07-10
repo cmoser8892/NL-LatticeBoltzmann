@@ -14,7 +14,7 @@
  * great if you want a simple algorithm but bad for high node counts. \n
  * Only positive coordinates will work for any kind of structure.
  * (The hashes in the nl must not be negative (64 bit hashes, constructed from the interleaved floored position, negative numbers are unaccounted for)).\n
- *
+ * Handles are start at 1.
  *
 */
 

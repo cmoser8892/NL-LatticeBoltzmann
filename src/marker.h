@@ -4,7 +4,6 @@
 #include "types.h"
 #include "straight.h"
 #include "functions.h"
-#include "nodeGenerator.h"
 
 /**
  * The marker class holds and distributes the markers on a surface for the IBM method.
