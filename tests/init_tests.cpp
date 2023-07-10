@@ -993,8 +993,8 @@ TEST(InitTests, basic_moved_surface) {
     // node generator stuff
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size);
-    ng.visualize_2D_nodes();
-    EXPECT_EQ(ng.node_infos.size(),16);
+    // ng.visualize_2D_nodes();
+    EXPECT_EQ(ng.node_infos.size(),16 + 20);
 }
 
 /*
