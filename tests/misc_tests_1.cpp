@@ -61,6 +61,7 @@ TEST(FunctionalTest, correct_equilibrium) {
     EXPECT_NEAR(-2.0/36,n->population_even(6),1e-10);
     EXPECT_NEAR(22.0/36,n->population_even(7),1e-10);
     EXPECT_NEAR(-2.0/36,n->population_even(8),1e-10);
+    delete n;
 }
 
 /**
@@ -101,6 +102,7 @@ TEST(FunctionalTest,correct_macro) {
     EXPECT_NEAR(n->rho, 1, 1e-10);
     EXPECT_NEAR(n->u(0), 10, 1e-10);
     EXPECT_NEAR(n->u(1), 10, 1e-10);
+    delete n;
 }
 
 /**
@@ -133,6 +135,7 @@ TEST(FunctionalTest, equilibrium123) {
     EXPECT_EQ(n->population_even(6),rho * 1/36 *(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->population_even(7),rho * 1/36 *(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->population_even(8),rho * 1/36 *(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+    delete n;
 }
 
 /**
@@ -153,6 +156,7 @@ TEST(FunctionalTest, macro123) {
     EXPECT_EQ(45, n->rho);
     EXPECT_NEAR(-2.0/45,n->u(0),1e-10);
     EXPECT_NEAR(-6.0/45,n->u(1), 1e-10);
+    delete n;
 }
 
 /**

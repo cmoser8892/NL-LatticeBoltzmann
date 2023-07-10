@@ -20,6 +20,7 @@ class basicSimulation {
     simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
     boundaryPointConstructor * boundary_points = nullptr; /**<  pointer to the previously constructed boundary point cloud */
     nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
+    bool self_node_generator = false; /** delete control for the node generator */
   public:
     std::vector<node*> nodes; /**< storage of nodes (pointers) */
     explicit basicSimulation(boundaryPointConstructor* c);
