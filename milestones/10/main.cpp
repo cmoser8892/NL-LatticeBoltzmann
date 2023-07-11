@@ -9,10 +9,10 @@
  * @return
  */
 int main(int argc, char *argv[]) {
-    point_t starter = {3.5,3.5};
+    point_t starter = {13.5,13.5};
     straight_t input;
     straightGenerator sg;
-    int steps = 50;
+    int steps = 100;
     long canvas_size = 100;
     double side_length = 69; // with a distance of 0.75 we should get 80 markers
     // we put in a quader

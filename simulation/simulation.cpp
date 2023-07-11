@@ -131,6 +131,7 @@ inline void forcedSimulation::collision(array_t *a, double rho, double ux, doubl
  * @param uy
  */
 inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
+    // todo forcing term is the problem for ibm not done correctly does not take the ibm into account
     // set some shorthands
     int o = offset_node;
     auto n = nodes[pos];
@@ -139,7 +140,7 @@ inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
     rot_force->calculate_F_rotation(ux,uy,&n->position);
     //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
     rot_force->calculate_F_i();
-    force_alpha[pos] += rot_force->return_force_alpha();
+    force_alpha[pos] = rot_force->return_force_alpha();
     double prefactor = 1 - 1/(2*parameters.relaxation);
     for(int i = 0; i < CHANNELS; ++i) {
         double shorthand = rot_force->force_channels[i] * weights(i);
