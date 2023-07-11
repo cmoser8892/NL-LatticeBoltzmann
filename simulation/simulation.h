@@ -34,8 +34,10 @@ class forcedSimulation {
     boundaryPointConstructor * boundary_points = nullptr; /**<  pointer to the previously constructed boundary point cloud */
     nodeGenerator* node_generator = nullptr; /**<  pointer to the to be used nodes */
     goaForce * rot_force = nullptr; /**<  pointer to the rotation force calculation class */
+    markerIBM* original_markers;
     std::vector<point_t*> lagrangian_markers;
     rangingPointKeyHash all_nodes;
+    coordinate_t size;
     // inlined core methods
     inline std::tuple<double, double, double> calculate_macro(array_t* a, array_t* previous_force,vector_t f);
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
@@ -53,6 +55,7 @@ class forcedSimulation {
     std::vector<vector_t> force_alpha; /**< container of the force */
     // constructors
     forcedSimulation(boundaryPointConstructor* c,nodeGenerator* g, goaForce * f);
+    forcedSimulation(nodeGenerator*g, goaForce*f, markerIBM* m, vector_t size);
     ~forcedSimulation();
     // setters
     void set_simulation_parameters(simulation_parameters_t t);

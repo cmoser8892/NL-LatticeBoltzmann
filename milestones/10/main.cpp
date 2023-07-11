@@ -9,7 +9,7 @@
  * @return
  */
 int main(int argc, char *argv[]) {
-    point_t starter = {3.1,3.1};
+    point_t starter = {3.5,3.5};
     straight_t input;
     straightGenerator sg;
     long canvas_size = 100;
@@ -36,5 +36,14 @@ int main(int argc, char *argv[]) {
     ng.init_surface(canvas_size,2);
     ng.visualize_2D_nodes();
     std::cout << ng.node_infos.size();
+    simulation_parameters params;
+    params.relaxation = 0.8;
+    point_t dk = {0,0};
+    // max rotation is 7.5e-3
+    vector_t sizes = {canvas_size,canvas_size};
+    goaForce rot(dk,sizes,8e-3);
+    forcedSimulation sim(&ng, &rot,ng.markers,sizes);;
+    sim.init();
+    sim.run_ibm(0);
     return 0;
 }

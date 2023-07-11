@@ -540,6 +540,7 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
         check_nodes_inside();
         check_nodes_ibm(range);
         remove_unwanted_nodes(&handle_counter);
+        determine_neighbors();
         write_data_to_file(save);
     }
 }

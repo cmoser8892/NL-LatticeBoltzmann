@@ -176,12 +176,16 @@ void forcedSimulation::interpolate_forward_lagrangian_force() {
     for(auto lm : lagrangian_markers) {
         vector_t u;
         std::vector<handle_t> affected_nodes = all_nodes.ranging_key_translation(*lm,parameters.ibm_range);
+        // interpolate the velocity of the affected node
         for(auto h: affected_nodes) {
+            // todo how to get the velocities
             vector_t expt = {1.201,12};
             h -= 1;
             double distance = (nodes[h]->position - *lm).norm();
             u = kernel_3(distance, parameters.lattice_length) * expt;
         }
+        // forward in time -> simple euler
+        *lm += u*parameters.dt;
     }
 }
 /**
@@ -194,6 +198,24 @@ forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g
     boundary_points = c;
     node_generator = g;
     rot_force = f;
+    long size_x = long(round(boundary_points->size.x()));
+    long size_y = long(round(boundary_points->size.y()));
+    size.x = size_x;
+    size.y = size_y;
+}
+
+forcedSimulation::forcedSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t sizes) {
+    node_generator = g;
+    rot_force = f;
+    size.x = long(round(sizes.x()));
+    size.y = long(round(sizes.y()));
+    original_markers = m;
+    for(auto p : original_markers->marker_points) {
+        // copy into the markers
+        auto new_point = new point_t;
+        *new_point = *p;
+        lagrangian_markers.push_back(new_point);
+    }
 }
 
 /**
@@ -230,6 +252,7 @@ void forcedSimulation::init() {
         auto node_info = node_generator->node_infos[i];
         auto node = nodes[i];
         //
+        assert(node_info->links.size() > 1);
         for(auto link : node_info->links) {
             handle_t partner_handle = link.handle;
             int channel = link.channel;
@@ -272,6 +295,32 @@ void forcedSimulation::run(int current_step) {
     }
 }
 
+void forcedSimulation::run_ibm(int current_step) {
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    offset_node = (current_step & 0x1) * 9;
+    // lagrangian part
+    compute_spread_lagrangian_force();
+    // standard lbm
+    for(long i = 0; i < nodes.size(); ++i) {
+        // shorthands
+        // node structure
+        auto node = nodes[i];
+        // force array
+        auto force = forces[i];
+        auto f_a = force_alpha[i];
+        // use old force to update macro values
+        auto [rho,ux, uy] = calculate_macro(&node->populations,force,f_a);
+        // perform equilibrium step
+        collision(&node->populations,rho,ux,uy);
+        // add and calculate new force term
+        forcing_terms(i,ux,uy);
+        // streaming
+        streaming(&node->populations,&node->neighbors);
+    }
+    // second lagrangian part
+    interpolate_forward_lagrangian_force();
+}
+
 /**
  * Write out the node data into something python can plot.
  * @param write_to_file
@@ -281,8 +330,8 @@ void forcedSimulation::get_data(bool write_to_file) {
     flowfield_t ux;
     flowfield_t uy;
     flowfield_t rho;
-    long size_x = long(round(boundary_points->size.x()));
-    long size_y = long(round(boundary_points->size.y()));
+    long size_x = size.x;
+    long size_y = size.y;
     ux.resize(size_x,size_y);
     uy.resize(size_x,size_y);
     rho.resize(size_x,size_y);
@@ -312,8 +361,12 @@ void forcedSimulation::delete_nodes() {
     for (auto a : forces) {
         delete a;
     }
+    for (auto p : lagrangian_markers) {
+        delete p;
+    }
     nodes.clear();
     forces.clear();
+    lagrangian_markers.clear();
 }
 
 /**

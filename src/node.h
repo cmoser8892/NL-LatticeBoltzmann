@@ -46,6 +46,7 @@ class oNode {
     // handle and boundary
     handle_t handle; /**< Handle to the node */
     point_t position; /**< Position of the node */
+    vector_t velocity; /**< Velocity */
     boundaryType_t boundary_type; /**< Type of boundary (Bounce back, Moving, etc.) */
     // 2xChannels
     array_t populations; /**< 2x9 population */
