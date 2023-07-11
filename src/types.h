@@ -73,6 +73,8 @@ typedef struct simulation_parameters {
     double dt = 1; /**<  just leave it a 1, simulation will crash and burn otherwise */
     double ibm_range = 2.0; /**< ibm_range */
     double lattice_length = 1.0;
+    double k = 1;
+    double mean_marker_distance = 0.75;
 }simulation_parameters_t;
 
 /**

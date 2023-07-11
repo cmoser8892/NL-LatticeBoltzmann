@@ -86,7 +86,7 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
 }
 
 /**
- * Streaming stepfunction .
+ * Streaming step function .
  * @param a
  * @param list
  */
@@ -135,12 +135,11 @@ inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
     int o = offset_node;
     auto n = nodes[pos];
     auto write_to = forces[pos];
-    auto force_a = force_alpha[pos];
     auto p = n->populations.begin() + o;
     rot_force->calculate_F_rotation(ux,uy,&n->position);
     //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
     rot_force->calculate_F_i();
-    force_a = rot_force->return_force_alpha();
+    force_alpha[pos] += rot_force->return_force_alpha();
     double prefactor = 1 - 1/(2*parameters.relaxation);
     for(int i = 0; i < CHANNELS; ++i) {
         double shorthand = rot_force->force_channels[i] * weights(i);
@@ -155,16 +154,19 @@ inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
  * Computes and spreads the lagrangian force over the channels.
  */
 void forcedSimulation::compute_spread_lagrangian_force() {
-    for(auto lm : lagrangian_markers) {
+    for(int i = 0; i < lagrangian_markers.size(); ++i) {
+        auto lm = lagrangian_markers[i];
+        auto om = original_markers->marker_points[i];
+        vector_t r = (*lm - *om);
         // compute force
-        vector_t force = compute_lagrangian_force();
+        vector_t force = -parameters.k * (parameters.mean_marker_distance/parameters.lattice_length) * r;
         // spread force
         std::vector<handle_t> affected_nodes = all_nodes.ranging_key_translation(*lm,parameters.ibm_range);
         for(auto h : affected_nodes) {
             // influence the force
             h -= 1;
             double distance = (nodes[h]->position - *lm).norm();
-            force_alpha[h] = kernel_3(distance,parameters.lattice_length) * force;
+            force_alpha[h] += kernel_3(distance,parameters.lattice_length) * force;
         }
     }
 }
@@ -178,9 +180,8 @@ void forcedSimulation::interpolate_forward_lagrangian_force() {
         std::vector<handle_t> affected_nodes = all_nodes.ranging_key_translation(*lm,parameters.ibm_range);
         // interpolate the velocity of the affected node
         for(auto h: affected_nodes) {
-            // todo how to get the velocities
-            vector_t expt = {1.201,12};
             h -= 1;
+            vector_t expt = nodes[h]->velocity;
             double distance = (nodes[h]->position - *lm).norm();
             u = kernel_3(distance, parameters.lattice_length) * expt;
         }
@@ -188,6 +189,7 @@ void forcedSimulation::interpolate_forward_lagrangian_force() {
         *lm += u*parameters.dt;
     }
 }
+
 /**
  * Constructor.
  * @param c
@@ -237,12 +239,14 @@ void forcedSimulation::set_simulation_parameters(simulation_parameters_t t) {
 
 /**
  * Inits the simulation class and allocates the nodes.
+ * @note fixes the linked lists in case one entrance is missing, and sets to self
  */
 void forcedSimulation::init() {
     for(auto node_info : node_generator->node_infos) {
         auto n = new oNode(node_info->handle,velocity_set.cols(),node_info->boundary);
         // n->neighbors = node_info->links; // should copy everything not quite sure thou
         n->position = node_info->position;
+        all_nodes.fill_key(node_info->handle,node_info->position);
         n->populations << equilibrium_2d(0,0,1) , equilibrium_2d(0,0,1);
         nodes.push_back(n);
     }
@@ -253,12 +257,24 @@ void forcedSimulation::init() {
         auto node = nodes[i];
         //
         assert(node_info->links.size() > 1);
-        for(auto link : node_info->links) {
-            handle_t partner_handle = link.handle;
+        int position = 0;
+        for(int j = 1;  j < CHANNELS; ++j) {
+            auto link = node_info->links[position];
             int channel = link.channel;
-            long array_position = long(partner_handle) - 1;
-            auto link_p = nodes[array_position]->populations.begin() + channel;
-            node->neighbors.push_back(link_p);
+            handle_t partner_handle = link.handle;
+            // actual partner
+            if(channel == j) {
+                long array_position = long(partner_handle) - 1;
+                auto link_p = nodes[array_position]->populations.begin() + channel;
+                node->neighbors.push_back(link_p);
+                ++position;
+            }
+            // set to self
+            else {
+                channel = j;
+                auto link_p = nodes[i]->populations.begin() + channel;
+                node->neighbors.push_back(link_p);
+            }
         }
     }
     for(auto n: nodes) {
@@ -268,6 +284,8 @@ void forcedSimulation::init() {
         forces.push_back(a);
         force_alpha.push_back({0,0});
     }
+    // setup
+    parameters.mean_marker_distance = original_markers->return_marker_distance();
 }
 
 /**
@@ -316,6 +334,7 @@ void forcedSimulation::run_ibm(int current_step) {
         forcing_terms(i,ux,uy);
         // streaming
         streaming(&node->populations,&node->neighbors);
+        f_a.setZero();
     }
     // second lagrangian part
     interpolate_forward_lagrangian_force();

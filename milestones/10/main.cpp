@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
     point_t starter = {3.5,3.5};
     straight_t input;
     straightGenerator sg;
+    int steps = 50;
     long canvas_size = 100;
     double side_length = 69; // with a distance of 0.75 we should get 80 markers
     // we put in a quader
@@ -35,15 +36,23 @@ int main(int argc, char *argv[]) {
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,2);
     ng.visualize_2D_nodes();
-    std::cout << ng.node_infos.size();
+    std::cout << ng.node_infos.size() << std::endl;
     simulation_parameters params;
     params.relaxation = 0.8;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
     vector_t sizes = {canvas_size,canvas_size};
     goaForce rot(dk,sizes,8e-3);
-    forcedSimulation sim(&ng, &rot,ng.markers,sizes);;
+     forcedSimulation sim(&ng, &rot,ng.markers,sizes);;
     sim.init();
-    sim.run_ibm(0);
+    for(int i = 0; i < steps; ++i) {
+        if (i % 1000 == 0) {
+            std::cout << "Step: " << i << std::endl;
+        }
+        sim.run_ibm(i);
+    }
+    sim.get_data(true);
+    if(ng.straight_surfaces != nullptr)
+        ng.straight_surfaces->write_out_surface();
     return 0;
 }
