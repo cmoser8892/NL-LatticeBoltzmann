@@ -78,7 +78,7 @@ class marker {
     point_t position; /**< Location of the marker*/
     vector_t force; /**< Force affecting the marker */
     point_t original_position; /**< Original location of the marker */
-    marker(point_t pos);
+    explicit marker(point_t pos);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODE_H
