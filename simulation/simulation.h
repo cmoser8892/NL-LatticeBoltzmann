@@ -43,6 +43,7 @@ class forcedSimulation {
     inline void streaming(array_t* a, std::vector<link_pointer> * list);
     inline void collision(array_t* a, double rho,double ux, double uy);
     inline void forcing_terms(long pos, double ux, double uy);
+    inline void forcing_term_add(long pos, double ux, double uy, vector_t fa);
     void compute_spread_lagrangian_force();
     void interpolate_forward_lagrangian_force();
   public:

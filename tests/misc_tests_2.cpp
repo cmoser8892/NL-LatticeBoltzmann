@@ -257,7 +257,7 @@ TEST(FunctionalTest, angles) {
  * @test
  * @see forcedSimulation::test_calcualte_macro()
  */
-TEST(FunctionalTest, DISABLED_force_macro_calculation) {
+TEST(FunctionalTest, force_macro_calculation) {
     // simple value correction
     // setup arrays
     array_t forces;
@@ -355,7 +355,7 @@ TEST(FunctionalTest, equilibrium_moments) {
  * @see forcedSimulation::test_calcualte_macro()
  * @see calculate_macro_population()
  */
-TEST(FunctionalTest, DISABLED_macro_tests) {
+TEST(FunctionalTest, macro_tests) {
     // stand in for the populations
     array_t values;
     values.resize(CHANNELS);
@@ -977,6 +977,17 @@ TEST(FunctionalTest, points_on_straights) {
     // understand norm in eigen
     vector_t n = test.direction.normalized();
     EXPECT_NEAR(n.norm(),1,1e-8);
+}
+
+TEST(FunctionalTest, SpringForces) {
+    double k = 0.01;
+    double d = 0.75;
+    double dx = 1;
+    point_t original_point = {0,0};
+    point_t current_point = {-1,-1};
+    vector_t norm = current_point - original_point;
+    vector_t force = -k * d/dx * norm;
+    std::cout << force << std::endl;
 }
 
 // todo there are some strange cases still left -> investigate

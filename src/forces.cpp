@@ -200,6 +200,11 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
     force_alpha.y() += result.y();
 }
 
+void goaForce::calculate_F_rotation_add(double ux, double uy, point_t *p, vector_t *f) {
+    calculate_F_rotation(ux,uy,p);
+    force_alpha += *f;
+}
+
 /**
 * Sets the f_i force terms.
 * @ref PHYSICAL REVIEW E, VOLUME 65, 046308

@@ -35,7 +35,6 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                  (p + 6).operator*() +
                  (p + 7).operator*() +
                  (p + 8).operator*();
-    /*
     double f_term = weights(0) * (f+0).operator*() +
                     weights(1) * (f+1).operator*() +
                     weights(2) * (f+2).operator*() +
@@ -45,8 +44,6 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                     weights(6) * (f+6).operator*() +
                     weights(7) * (f+7).operator*() +
                     weights(8) * (f+8).operator*();
-    */
-    double f_term = 0;
     rho += f_term*prefactor;
     // ux and uy
     /* Equation for the calculation of ux and uy
@@ -57,14 +54,12 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
          i                  i
      */
     //
-    /*
     vector_t force_add = {0,0};
     for(int i = 0; i < CHANNELS; ++i) {
         vector_t velocity_channel = velocity_set.col(i);
         force_add += velocity_channel*(f+i).operator*()*weights(i);
     }
     force_add *= prefactor;
-     */
     double ux = (((p + 1).operator*() +
                   (p + 5).operator*() +
                   (p + 8).operator*())-
@@ -78,10 +73,10 @@ inline std::tuple<double, double, double> forcedSimulation::calculate_macro(arra
                   (p + 7).operator*()+
                   (p + 8).operator*()));
     // ux and uy through
-    // ux = (ux+force_add.x())/rho;
-    // uy = (uy+force_add.y())/rho;
-    ux = (ux + force.x())/rho;
-    uy = (uy + force.y())/rho;
+    ux = (ux+force_add.x())/rho;
+    uy = (uy+force_add.y())/rho;
+    // ux = (ux + force.x())/rho;
+    // uy = (uy + force.y())/rho;
     return {rho, ux, uy};
 }
 
@@ -151,6 +146,26 @@ inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
     }
 }
 
+inline void forcedSimulation::forcing_term_add(long pos, double ux, double uy, vector_t fa) {
+    // set some shorthands
+    int o = offset_node;
+    auto n = nodes[pos];
+    auto write_to = forces[pos];
+    auto p = n->populations.begin() + o;
+    rot_force->calculate_F_rotation_add(ux,uy,&n->position,&fa);
+    //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
+    rot_force->calculate_F_i();
+    force_alpha[pos] = rot_force->return_force_alpha();
+    double prefactor = 1 - 1/(2*parameters.relaxation);
+    for(int i = 0; i < CHANNELS; ++i) {
+        double shorthand = rot_force->force_channels[i] * weights(i);
+        // set into the force array
+        write_to->operator[](i) = shorthand;
+        // perform forcing step
+        (p + i).operator*() += prefactor*shorthand;
+    }
+}
+
 /**
  * Computes and spreads the lagrangian force over the channels.
  */
@@ -184,7 +199,7 @@ void forcedSimulation::interpolate_forward_lagrangian_force() {
             h -= 1;
             vector_t expt = nodes[h]->velocity;
             double distance = (nodes[h]->position - *lm).norm();
-            u = kernel_3(distance, parameters.lattice_length) * expt;
+            u += kernel_3(distance, parameters.lattice_length) * expt;
         }
         // forward in time -> simple euler
         *lm += u*parameters.dt;
@@ -201,10 +216,12 @@ forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g
     boundary_points = c;
     node_generator = g;
     rot_force = f;
-    long size_x = long(round(boundary_points->size.x()));
-    long size_y = long(round(boundary_points->size.y()));
-    size.x = size_x;
-    size.y = size_y;
+    if(boundary_points != nullptr) {
+        long size_x = long(round(boundary_points->size.x()));
+        long size_y = long(round(boundary_points->size.y()));
+        size.x = size_x;
+        size.y = size_y;
+    }
 }
 
 forcedSimulation::forcedSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t sizes) {
@@ -222,7 +239,7 @@ forcedSimulation::forcedSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, 
 }
 
 /**
- * Deconstructor.
+ * De constructor.
  */
 forcedSimulation::~forcedSimulation() {
     delete_nodes();
@@ -329,13 +346,13 @@ void forcedSimulation::run_ibm(int current_step) {
         auto f_a = force_alpha[i];
         // use old force to update macro values
         auto [rho,ux, uy] = calculate_macro(&node->populations,force,f_a);
+        node->velocity = {ux,uy};
         // perform equilibrium step
         collision(&node->populations,rho,ux,uy);
         // add and calculate new force term
-        forcing_terms(i,ux,uy);
+        forcing_term_add(i,ux,uy,f_a);
         // streaming
         streaming(&node->populations,&node->neighbors);
-        f_a.setZero();
     }
     // second lagrangian part
     interpolate_forward_lagrangian_force();

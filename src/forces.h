@@ -50,6 +50,7 @@ class goaForce {
     goaForce(point_t origin, point_t canvas_size, double omega);
     void calculate_F_circle(point_t* p, double max_force_magnitude, double ux, double uy);
     void calculate_F_rotation(double ux, double uy, point_t * p);
+    void calculate_F_rotation_add(double ux, double uy, point_t* p, vector_t* f);
     void calculate_F_i();
     vector_t return_force_alpha();
     void set_force_alpha(vector_t f);
