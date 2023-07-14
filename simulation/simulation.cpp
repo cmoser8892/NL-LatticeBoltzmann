@@ -152,7 +152,14 @@ inline void forcedSimulation::forcing_term_add(long pos, double ux, double uy, v
     auto n = nodes[pos];
     auto write_to = forces[pos];
     auto p = n->populations.begin() + o;
-    rot_force->calculate_F_rotation_add(ux,uy,&n->position,&fa);
+    rot_force->calculate_F_rotation(ux,uy,&n->position);
+    // rot_force->calculate_F_circle(&n->position,0.00001,ux, uy);
+    vector_t f = rot_force->return_force_alpha();
+    if(n->boundary_type == IBM) {
+        f = {0,0};
+    }
+    f += fa;
+    rot_force->set_force_alpha(f);
     //rot_force->calculate_F_circle(&n->position,0.0035,ux,uy);
     rot_force->calculate_F_i();
     force_alpha[pos] = rot_force->return_force_alpha();
@@ -192,7 +199,7 @@ void forcedSimulation::compute_spread_lagrangian_force() {
  */
 void forcedSimulation::interpolate_forward_lagrangian_force() {
     for(auto lm : lagrangian_markers) {
-        vector_t u;
+        vector_t u = {0,0};
         std::vector<handle_t> affected_nodes = all_nodes.ranging_key_translation(*lm,parameters.ibm_range);
         // interpolate the velocity of the affected node
         for(auto h: affected_nodes) {
