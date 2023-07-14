@@ -19,7 +19,7 @@ class ibmSimulation {
     // local access arrays
     inline std::tuple<double, double, double>  calcualte_macro(array_t* a, array_t* previous);
     inline void streaming(array_t* a, std::vector<link_pointer> *list);
-    inline void collidion(array_t* a, double rho);
+    inline void collision(array_t* a, double rho);
     inline void forcing_term();
     inline void lbm_interpolate_forward_compute();
   public:
