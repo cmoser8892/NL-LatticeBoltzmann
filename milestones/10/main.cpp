@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     point_t starter = {13.5,13.5};
     straight_t input;
     straightGenerator sg;
-    int steps = 25;
+    int steps = 80;
     long canvas_size = 100;
     double side_length = 69; // with a distance of 0.75 we should get 80 markers
     // we put in a quader
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     point_t dk = {0,0};
     // max rotation is 7.5e-3
     vector_t sizes = {canvas_size,canvas_size};
-    goaForce rot(dk,sizes,1e-4);
+    goaForce rot(dk,sizes,1e-5);
     forcedSimulation sim(&ng, &rot,ng.markers,sizes);;
     sim.init();
     for(int i = 0; i < steps; ++i) {

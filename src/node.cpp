@@ -39,3 +39,15 @@ oNode::oNode(handle_t h, int channels, boundaryType_t type) {
     boundary_type = type;
     populations.setZero(2*channels);
 }
+
+/**
+ * fNode constructor.
+ * @param h
+ * @param channels
+ * @param type
+ */
+fNode::fNode(handle_t h, int channels, boundaryType_t type) {
+    handle = h;
+    boundary_type = type;
+    populations.setZero(2*channels);
+}
