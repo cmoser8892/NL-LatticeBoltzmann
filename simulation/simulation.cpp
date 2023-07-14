@@ -152,8 +152,8 @@ inline void forcedSimulation::forcing_term_add(long pos, double ux, double uy, v
     auto n = nodes[pos];
     auto write_to = forces[pos];
     auto p = n->populations.begin() + o;
-    rot_force->calculate_F_rotation(ux,uy,&n->position);
-    // rot_force->calculate_F_circle(&n->position,0.00001,ux, uy);
+    // rot_force->calculate_F_rotation(ux,uy,&n->position);
+    rot_force->calculate_F_circle(&n->position,0.000001,ux, uy);
     vector_t f = rot_force->return_force_alpha();
     if(n->boundary_type == IBM) {
         f = {0,0};
