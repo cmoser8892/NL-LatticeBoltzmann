@@ -52,6 +52,7 @@ fNode::fNode(handle_t h, int channels, boundaryType_t type) {
     boundary_type = type;
     velocity = {0,0};
     populations.setZero(2*channels);
+    forces.setZero(channels);
 }
 
 /**

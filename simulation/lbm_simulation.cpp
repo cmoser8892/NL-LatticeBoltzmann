@@ -90,27 +90,100 @@ void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
     (p + 7).operator*() -= relaxation * ((p + 7).operator*() - weights.col(7).x()*rho*(1- 3*ux- 3*uy+ 9*ux*uy+ 3*(ux*ux +uy*uy)));
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
+
 void ibmSimulation::forcing_term() {
+
 }
+
 void ibmSimulation::lbm_interpolate_forward_compute() {
+
 }
-ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t size) {
+
+ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t s) {
+    node_generator = g;
+    rot_force = f;
+    original_markers = m;
+    size.x = s.x();
+    size.y = s.y();
 }
+
 ibmSimulation::~ibmSimulation() {
     delete_containers();
 }
 void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
+    parameters = t;
+    // fix the omega parameter to th new one
+    parameters.relaxation = parameters.relaxation + parameters.dt/2;
 }
 void ibmSimulation::init() {
     // setup the basic nodes
+    for(auto node_info : node_generator->node_infos) {
+        auto n = new fNode(node_info->handle,velocity_set.cols(),node_info->boundary);
+        // n->neighbors = node_info->links; // should copy everything not quite sure thou
+        n->position = node_info->position;
+        n->populations << equilibrium_2d(0,0,1) , equilibrium_2d(0,0,1);
+        nodes.push_back(n);
+    }
     // setup the links
-    // setup the markers
-
+    for(int i = 0; i < node_generator->node_infos.size(); ++i) {
+        // get them both in here
+        auto node_info = node_generator->node_infos[i];
+        auto node = nodes[i];
+        //
+        assert(node_info->links.size() > 1);
+        int position = 0;
+        for(int j = 1;  j < CHANNELS; ++j) {
+            auto link = node_info->links[position];
+            int channel = link.channel;
+            handle_t partner_handle = link.handle;
+            // actual partner
+            if(channel == j) {
+                long array_position = long(partner_handle) - 1;
+                auto link_p = nodes[array_position]->populations.begin() + channel;
+                node->neighbors.push_back(link_p);
+                ++position;
+            }
+            // set to self
+            else {
+                channel = j;
+                auto link_p = nodes[i]->populations.begin() + channel;
+                node->neighbors.push_back(link_p);
+            }
+        }
+    }
+    // set up the markers
+    for (auto m : node_generator->markers->marker_points) {
+        auto n = new marker(*m);
+        markers.push_back(n);
+    }
+    // set up sim parameters
+    parameters.mean_marker_distance = original_markers->return_marker_distance();
 
 }
 void ibmSimulation::run(int current_step) {
 }
 void ibmSimulation::get_data(bool write_to_file) {
+    /// flowfields
+    flowfield_t ux;
+    flowfield_t uy;
+    flowfield_t rho;
+    long size_x = size.x;
+    long size_y = size.y;
+    ux.resize(size_x,size_y);
+    uy.resize(size_x,size_y);
+    rho.resize(size_x,size_y);
+    // make sure to get the correct one
+    for(int i = 0; i < nodes.size(); ++i) {
+        auto node = nodes[i];
+        auto [rho_local,ux_local, uy_local] = calculate_macro(&node->populations,&node->forces);
+        ux(int(node->position(0)),int(node->position(1))) = ux_local;
+        uy(int(node->position(0)),int(node->position(1))) = uy_local;
+        rho(int(node->position(0)),int(node->position(1))) = rho_local;
+    }
+    // write to a file otherwise useless
+    write_flowfield_data(&ux, "ux_data_file",write_to_file);
+    write_flowfield_data(&uy, "uy_data_file",write_to_file);
+    write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 void ibmSimulation::delete_containers() {
     for(auto n : nodes) {

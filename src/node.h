@@ -76,6 +76,7 @@ class fNode {
  * ibm marker
  */
 class marker {
+  public:
     point_t position; /**< Location of the marker*/
     vector_t force; /**< Force affecting the marker */
     point_t original_position; /**< Original location of the marker */

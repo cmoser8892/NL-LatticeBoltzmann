@@ -15,8 +15,9 @@ class ibmSimulation {
     simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
     coordinate_t size;
     nodeGenerator* node_generator = nullptr;
-    rangingPointKeyHash markers_pkh;
     goaForce* rot_force = nullptr;
+    markerIBM* original_markers = nullptr;
+    rangingPointKeyHash markers_pkh;
     // local access arrays
     inline std::tuple<double, double, double>  calculate_macro(array_t* a, array_t* previous);
     inline void streaming(array_t* a, std::vector<link_pointer> *list);
