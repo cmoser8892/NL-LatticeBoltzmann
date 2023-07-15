@@ -1,6 +1,35 @@
 # include "lbm_simulation.h"
 
-std::tuple<double, double, double> ibmSimulation::calculate_macro(array_t *a, array_t *previous_force) {
+std::tuple<double, double, double> ibmSimulation::calculate_macro(array_t* a) {
+    int o = offset_node;
+    auto p = a->begin() + o;
+    double rho = (p + 0).operator*() +
+                 (p + 1).operator*() +
+                 (p + 2).operator*() +
+                 (p + 3).operator*() +
+                 (p + 4).operator*() +
+                 (p + 5).operator*() +
+                 (p + 6).operator*() +
+                 (p + 7).operator*() +
+                 (p + 8).operator*();
+    double ux = (((p + 1).operator*() +
+                  (p + 5).operator*() +
+                  (p + 8).operator*())-
+                 ((p + 3).operator*() +
+                  (p + 6).operator*()+
+                  (p + 7).operator*()));
+    double uy = (((p + 2).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*())-
+                 ((p + 4).operator*() +
+                  (p + 7).operator*()+
+                  (p + 8).operator*()));
+    ux = ux/rho;
+    uy = uy/rho;
+    return {rho, ux, uy};
+}
+
+std::tuple<double, double, double> ibmSimulation::calculate_macro_force(array_t *a, array_t *previous_force) {
     // calculate rho ux and uy
     // shorthands
     int o = offset_node;
@@ -92,11 +121,29 @@ void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
 }
 
 void ibmSimulation::forcing_term() {
-
+    // calculate the forcing term and use add the aggreate boundary force
+    // calculate fi and correct the original collision term
 }
 
-void ibmSimulation::lbm_interpolate_forward_compute() {
+void ibmSimulation::aggregate_force() {
+    // we look for markers in the vicinity of our node and add up the total force
+}
 
+void ibmSimulation::distribute_velocity() {
+    // we distribute and put the velocity back into the our maker
+}
+
+void ibmSimulation::propagate_calculate_force_marker() {
+    // we do this after dealing with the force markers
+    for(auto m : markers) {
+        // update the position
+        m->position += m->velocity*parameters.dt;
+        // calculate a new force based on the orginal position and so on
+        vector_t delta_r = m->position - m->original_position;
+        m->force = -parameters.k * (parameters.mean_marker_distance/parameters.lattice_length) * delta_r;
+        // set the velocity back to 0
+        m->velocity.setZero();
+    }
 }
 
 ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t s) {
@@ -161,6 +208,14 @@ void ibmSimulation::init() {
 
 }
 void ibmSimulation::run(int current_step) {
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    offset_node = (current_step & 0x1) * 9;
+    for(auto i = 0; i <nodes.size(); ++i) {
+        // ibm contribution to the force
+        //
+    }
+    // we propagate the markers forward and calculate the new forces based on the position of the marker
+    propagate_calculate_force_marker();
 }
 void ibmSimulation::get_data(bool write_to_file) {
     /// flowfields
@@ -175,7 +230,7 @@ void ibmSimulation::get_data(bool write_to_file) {
     // make sure to get the correct one
     for(int i = 0; i < nodes.size(); ++i) {
         auto node = nodes[i];
-        auto [rho_local,ux_local, uy_local] = calculate_macro(&node->populations,&node->forces);
+        auto [rho_local,ux_local, uy_local] = calculate_macro_force(&node->populations,&node->forces);
         ux(int(node->position(0)),int(node->position(1))) = ux_local;
         uy(int(node->position(0)),int(node->position(1))) = uy_local;
         rho(int(node->position(0)),int(node->position(1))) = rho_local;
@@ -185,6 +240,7 @@ void ibmSimulation::get_data(bool write_to_file) {
     write_flowfield_data(&uy, "uy_data_file",write_to_file);
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
+
 void ibmSimulation::delete_containers() {
     for(auto n : nodes) {
         delete n;

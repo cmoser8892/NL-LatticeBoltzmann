@@ -79,6 +79,7 @@ class marker {
   public:
     point_t position; /**< Location of the marker*/
     vector_t force; /**< Force affecting the marker */
+    vector_t velocity; // not sure
     point_t original_position; /**< Original location of the marker */
     explicit marker(point_t pos);
 };

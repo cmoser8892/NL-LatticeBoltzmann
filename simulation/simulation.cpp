@@ -146,6 +146,9 @@ inline void forcedSimulation::forcing_terms(long pos, double ux, double uy) {
     }
 }
 
+/**
+ *
+ */
 inline void forcedSimulation::forcing_term_add(long pos, double ux, double uy, vector_t fa) {
     // set some shorthands
     int o = offset_node;
@@ -231,6 +234,9 @@ forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g
     }
 }
 
+/**
+ * Alternative Constructor.
+ */
 forcedSimulation::forcedSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t sizes) {
     node_generator = g;
     rot_force = f;
@@ -338,6 +344,10 @@ void forcedSimulation::run(int current_step) {
     }
 }
 
+/**
+ * Run ibm method, just kinda bolted on.
+ * @param current_step
+ */
 void forcedSimulation::run_ibm(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;

@@ -19,11 +19,14 @@ class ibmSimulation {
     markerIBM* original_markers = nullptr;
     rangingPointKeyHash markers_pkh;
     // local access arrays
-    inline std::tuple<double, double, double>  calculate_macro(array_t* a, array_t* previous);
+    inline std::tuple<double, double, double> calculate_macro(array_t * a);
+    inline std::tuple<double, double, double>  calculate_macro_force(array_t* a, array_t* previous);
     inline void streaming(array_t* a, std::vector<link_pointer> *list);
     inline void collision(array_t* a, double rho, double ux, double uy);
     inline void forcing_term();
-    inline void lbm_interpolate_forward_compute();
+    void aggregate_force();
+    void distribute_velocity();
+    void propagate_calculate_force_marker();
   public:
     // public main variables
     int offset_sim = 1; /**< offset 1 or 0 depending on the step */
