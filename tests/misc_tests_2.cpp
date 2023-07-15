@@ -6,6 +6,7 @@
 #include "neighborhood.h"
 #include "image_converter.h"
 #include "marker.h"
+#include "forces.h"
 #include <gtest/gtest.h>
 // the misc file got to laggy apparently i should stop at 2000 lines
 
@@ -980,7 +981,7 @@ TEST(FunctionalTest, points_on_straights) {
 }
 
 /**
- * Not really a tests just
+ * Not really a tests just a
  * @test
  */
 TEST(FunctionalTest, SpringForces) {
@@ -994,7 +995,22 @@ TEST(FunctionalTest, SpringForces) {
     EXPECT_TRUE(true);
 }
 
-
-
+/**
+ * tests the truncation force.
+ * @test
+ */
+TEST(FunctionalTest, trunication_force) {
+    vector_t f = {3,5};
+    vector_t u = {2,9};
+    point_t dk = {0,0};
+    goaForce g(dk,dk,0);
+    g.set_force_alpha(f);
+    g.set_velocity(u);
+    g.calculate_F_i();
+    array_t test = calculate_truncation_array(&f,&u);
+    for(int i = 0; i < test.size(); ++i) {
+        test[i] = g.force_channels[i];
+    }
+}
 // todo there are some strange cases still left -> investigate
 // todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool here

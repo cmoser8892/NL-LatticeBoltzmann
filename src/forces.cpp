@@ -30,7 +30,13 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
     return return_value;
 }
 
-inline array_t calculate_truncation_array(vector_t * f, vector_t * v) {
+/**
+ * Calculate truncation array.
+ * @param f
+ * @param v
+ * @return
+ */
+array_t calculate_truncation_array(vector_t * f, vector_t * v) {
     array_t return_array;
     return_array.resize(9);
     vector_t velocity = *v;
