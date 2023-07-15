@@ -7,6 +7,8 @@
 
 // create circular force
 double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force);
+inline array_t calculate_truncation_array(vector_t * f, vector_t * v);
+
 /**
  * Class the implements a circular force after Gladrow.
  * @ref DOI:10.1007/b72010

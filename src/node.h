@@ -66,6 +66,7 @@ class fNode {
     boundaryType_t boundary_type; /**< Type of boundary (Bounce back, Moving, etc.) */
     //
     array_t populations;                 /**< 2x9 population */
+    array_t forces;
     std::vector<link_pointer> neighbors; /**< The neighbors of the node */
     // constructor
     fNode(handle_t, int channels, boundaryType_t type);

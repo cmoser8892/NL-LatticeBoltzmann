@@ -979,6 +979,10 @@ TEST(FunctionalTest, points_on_straights) {
     EXPECT_NEAR(n.norm(),1,1e-8);
 }
 
+/**
+ * Not really a tests just
+ * @test
+ */
 TEST(FunctionalTest, SpringForces) {
     double k = 0.01;
     double d = 0.75;
@@ -987,8 +991,10 @@ TEST(FunctionalTest, SpringForces) {
     point_t current_point = {-1,-1};
     vector_t norm = current_point - original_point;
     vector_t force = -k * d/dx * norm;
-    std::cout << force << std::endl;
+    EXPECT_TRUE(true);
 }
+
+
 
 // todo there are some strange cases still left -> investigate
 // todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool here

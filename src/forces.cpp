@@ -30,6 +30,32 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
     return return_value;
 }
 
+inline array_t calculate_truncation_array(vector_t * f, vector_t * v) {
+    array_t return_array;
+    return_array.resize(9);
+    vector_t velocity = *v;
+    vector_t force_alpha = *f;
+    // channel 0
+    return_array[0] = -3*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+    // channel 1 - 4
+    return_array[1] =  3*force_alpha[0] + 6*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+    return_array[2] = -3*velocity[0]*force_alpha[0] + 3*force_alpha[1]  + 6*velocity[1]*force_alpha[1];
+    return_array[3] = -3*force_alpha[0] + 6*velocity[0]*force_alpha[0]  - 3*velocity[1]*force_alpha[1];
+    return_array[4] = -3*velocity[0]*force_alpha[0] - 3*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    // channel 5 - 6
+    return_array[5] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                      + 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    return_array[6] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                      + 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    // channel 7 - 8
+    return_array[7] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                      - 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    return_array[8] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                      - 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];;
+    // return the array
+    return return_array;
+}
+
 /// helper and sub-classes
 /**
 * Returns a force.
