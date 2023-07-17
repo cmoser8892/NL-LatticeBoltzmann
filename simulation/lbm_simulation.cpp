@@ -120,17 +120,50 @@ void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
-void ibmSimulation::forcing_term() {
-    // calculate the forcing term and use add the aggreate boundary force
+vector_t ibmSimulation::calculate_rotation_force(point_t* pos, vector_t *velocity) {
+    rot_force->calculate_F_rotation(velocity->x(),velocity->y(),pos);
+    return rot_force->return_force_alpha();
+}
+
+void ibmSimulation::forcing_term(fNode* n,vector_t* force) {
+    // calculate the forcing term and use add the aggregate boundary force
     // calculate fi and correct the original collision term
+    // array_t force_i = calculate_truncation_array()
+    int o = offset_node;
+    auto p = n->populations.begin() + o;
+    double prefactor = 1 - 1/(2*parameters.relaxation);
+    // calculate the terms
+    array_t f = calculate_truncation_array(force,&n->velocity);
+    // apply to the post collision terms
+    for(int i = 0; i < CHANNELS; ++i) {
+        double shorthand = rot_force->force_channels[i] * weights(i);
+        // put it in the save array
+        n->forces[i] = shorthand;
+        // perform forcing step
+        (p + i).operator*() += prefactor*shorthand;
+    }
 }
 
-void ibmSimulation::aggregate_force() {
+vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t* pos) {
+    vector_t returns ={0,0};
     // we look for markers in the vicinity of our node and add up the total force
+    for(auto h : *handles) {
+        h-= 1;
+        auto marker = markers[h];
+        double distance = (*pos - marker->position).norm();
+        returns += kernel_3(distance,parameters.lattice_length) * marker->force;
+    }
+    return returns;
 }
 
-void ibmSimulation::distribute_velocity() {
-    // we distribute and put the velocity back into the our maker
+void ibmSimulation::distribute_velocity(std::vector<handle_t> *handles,  point_t* pos, vector_t * v) {
+    // we distribute and put the velocity back into the makers
+    for(auto h : *handles) {
+        h-= 1;
+        auto marker = markers[h];
+        double distance = (*pos - marker->position).norm();
+        marker->velocity += kernel_3(distance, parameters.lattice_length) * (*v);
+    }
 }
 
 void ibmSimulation::propagate_calculate_force_marker() {
@@ -141,7 +174,7 @@ void ibmSimulation::propagate_calculate_force_marker() {
         // calculate a new force based on the orginal position and so on
         vector_t delta_r = m->position - m->original_position;
         m->force = -parameters.k * (parameters.mean_marker_distance/parameters.lattice_length) * delta_r;
-        // set the velocity back to 0
+        // set the velocity back to 0 so that we can add back up
         m->velocity.setZero();
     }
 }
@@ -199,24 +232,57 @@ void ibmSimulation::init() {
         }
     }
     // set up the markers
+    handle_t maker_handles = 0;
     for (auto m : node_generator->markers->marker_points) {
-        auto n = new marker(*m);
+        auto n = new marker(++maker_handles,*m);
         markers.push_back(n);
+    }
+    // set up marker pkh
+    for(auto m : markers) {
+        markers_pkh.fill_key(m->handle,m->position);
     }
     // set up sim parameters
     parameters.mean_marker_distance = original_markers->return_marker_distance();
 
 }
+
 void ibmSimulation::run(int current_step) {
+    // offset control
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
-    for(auto i = 0; i <nodes.size(); ++i) {
-        // ibm contribution to the force
-        //
+    for(auto n : nodes) {
+        // todo where does the force actually come into the picture?!
+        // shorthands
+        auto force = n->forces;
+        vector_t f = {0,0};
+        std::vector<handle_t> markers_in_vicinity;
+        auto population = n->populations;
+        if(n->boundary_type == IBM) {
+            // find the markers in the vicinity
+            markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
+            // ibm contribution to the force
+            f = aggregate_force(&markers_in_vicinity,&n->position);
+        }
+        // calculate the macro values and do all the lbm stuff
+        // macro
+        auto [rho, ux, uy]  = calculate_macro_force(&population,&force);
+        n->velocity = {ux, uy};
+        // collision
+        collision(&population,rho,ux,uy);
+        // frogging
+        f += calculate_rotation_force(&n->position,&n->velocity);
+        forcing_term(n,&f);
+        // streaming
+        streaming(&population,&n->neighbors);
+        // distribute the new velocity to the markers
+        if(n->boundary_type == IBM) {
+            distribute_velocity(&markers_in_vicinity,&n->position,&n->velocity);
+        }
     }
     // we propagate the markers forward and calculate the new forces based on the position of the marker
     propagate_calculate_force_marker();
 }
+
 void ibmSimulation::get_data(bool write_to_file) {
     /// flowfields
     flowfield_t ux;

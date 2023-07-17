@@ -58,8 +58,10 @@ fNode::fNode(handle_t h, int channels, boundaryType_t type) {
 /**
  * marker constructor.
  * @param pos
+ * @param h
  */
-marker::marker(point_t pos) {
+marker::marker(handle_t h, point_t pos) {
+    handle = h;
     position = pos;
     force = {0,0};
     original_position = pos;

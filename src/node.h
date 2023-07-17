@@ -77,11 +77,12 @@ class fNode {
  */
 class marker {
   public:
+    handle_t handle; /**< Handle of the node */
     point_t position; /**< Location of the marker*/
     vector_t force; /**< Force affecting the marker */
     vector_t velocity; // not sure
     point_t original_position; /**< Original location of the marker */
-    explicit marker(point_t pos);
+    explicit marker(handle_t h, point_t pos);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODE_H

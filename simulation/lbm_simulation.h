@@ -23,9 +23,10 @@ class ibmSimulation {
     inline std::tuple<double, double, double>  calculate_macro_force(array_t* a, array_t* previous);
     inline void streaming(array_t* a, std::vector<link_pointer> *list);
     inline void collision(array_t* a, double rho, double ux, double uy);
-    inline void forcing_term();
-    void aggregate_force();
-    void distribute_velocity();
+    vector_t calculate_rotation_force(point_t* pos, vector_t* velocity);
+    inline void forcing_term(fNode* n, vector_t* force);
+    vector_t aggregate_force(std::vector<handle_t> *handles, point_t* pos);
+    void distribute_velocity(std::vector<handle_t> *handles, point_t* pos, vector_t * v);
     void propagate_calculate_force_marker();
   public:
     // public main variables

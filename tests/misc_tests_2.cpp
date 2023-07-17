@@ -1061,6 +1061,10 @@ TEST(FunctionalTest, init_ibm) {
         }
     }
     // EXPECT_EQ(ibm_numbers, 4*(8+6+4+2)); // only the center is not set
+    handle_t mh = 0;
+    for(auto m : sim.markers) {
+        EXPECT_EQ(++mh,m->handle);
+    }
 }
 
 // todo there are some strange cases still left -> investigate
