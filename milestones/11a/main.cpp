@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        sim.run(i);
+        sim.forcing_run(i);
     }
     sim.get_data(true);
     if(ng.straight_surfaces != nullptr)

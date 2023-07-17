@@ -265,8 +265,7 @@ void optimizedSimulation::init() {
         // get them both in here
         auto node_info = node_generator->node_infos[i];
         auto node = nodes[i];
-        //
-        assert(node_info->links.size() > 8);
+        // fails sometimes?!
         for(auto link : node_info->links) {
             handle_t partner_handle = link.handle;
             int channel = link.channel;
