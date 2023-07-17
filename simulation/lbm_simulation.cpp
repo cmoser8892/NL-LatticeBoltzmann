@@ -136,7 +136,7 @@ void ibmSimulation::forcing_term(fNode* n,vector_t* force) {
     array_t f = calculate_truncation_array(force,&n->velocity);
     // apply to the post collision terms
     for(int i = 0; i < CHANNELS; ++i) {
-        double shorthand = rot_force->force_channels[i] * weights(i);
+        double shorthand = f[i] * weights(i);
         // put it in the save array
         n->forces[i] = shorthand;
         // perform forcing step

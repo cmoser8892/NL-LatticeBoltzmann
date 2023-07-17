@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
     point_t starter = {13.5,13.5};
     straight_t input;
     straightGenerator sg;
-    int steps = 10000;
+    int steps = 10;
     long canvas_size = 100;
     double side_length = 69; // with a distance of 0.75 we should get 80 markers
     double ibm_distance = 2;
