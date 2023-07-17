@@ -3,7 +3,7 @@
 #include "lbm_simulation.h"
 
 int main(int argc, char *argv[]) {
-    point_t starter = {13.5,13.5};
+    point_t starter = {13,13};
     straight_t input;
     straightGenerator sg;
     int steps = 300;

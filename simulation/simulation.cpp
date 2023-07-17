@@ -287,25 +287,13 @@ void forcedSimulation::init() {
         auto node_info = node_generator->node_infos[i];
         auto node = nodes[i];
         //
-        assert(node_info->links.size() > 1);
-        int position = 0;
-        for(int j = 1;  j < CHANNELS; ++j) {
-            auto link = node_info->links[position];
-            int channel = link.channel;
+        assert(node_info->links.size() > 8);
+        for(auto link : node_info->links) {
             handle_t partner_handle = link.handle;
-            // actual partner
-            if(channel == j) {
-                long array_position = long(partner_handle) - 1;
-                auto link_p = nodes[array_position]->populations.begin() + channel;
-                node->neighbors.push_back(link_p);
-                ++position;
-            }
-            // set to self
-            else {
-                channel = j;
-                auto link_p = nodes[i]->populations.begin() + channel;
-                node->neighbors.push_back(link_p);
-            }
+            int channel = link.channel;
+            long array_position = long(partner_handle) - 1;
+            auto link_p = nodes[array_position]->populations.begin() + channel;
+            node->neighbors.push_back(link_p);
         }
     }
     for(auto n: nodes) {
