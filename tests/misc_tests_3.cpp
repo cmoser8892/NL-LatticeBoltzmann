@@ -243,16 +243,31 @@ TEST(IbmTest, marker_movement_individual_set) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
+    // ng.visualize_2D_nodes();
     simulation_parameters params;
     params.ibm_range = 2;
-    params.k = 0.000000001;
+    params.k = 10;
     point_t dk = {0,0};
     vector_t sizes = {canvas_size,canvas_size};
     goaForce rot(dk,sizes,1e-3);
     ibmSimulation sim(&ng, &rot,ng.markers,sizes);
     sim.init();
     // note we abuse the init here just to get markers and i want to test the integration of
+    vector_t velocity = {1,1};
+    for(auto m : sim.markers) {
+        m->velocity = velocity;
+    }
+    sim.test_propagate_markers();
+    for(auto m : sim.markers) {
+        EXPECT_EQ(velocity+m->original_position,m->position);
+    }
+    for(auto m : sim.markers) {
+        m->velocity = velocity;
+    }
+    sim.test_propagate_markers();
+    for(auto m : sim.markers) {
+        EXPECT_EQ(2*velocity+m->original_position,m->position);
+    }
 }
 
 TEST(IbmTest, self_stream) {

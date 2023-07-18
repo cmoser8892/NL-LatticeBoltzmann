@@ -46,7 +46,7 @@ class ibmSimulation {
     void get_data(bool write_to_file);
     void delete_containers();
     // test functions
-
+    void test_propagate_markers();
 };
 
 #endif // NL_LATTICEBOLTZMANN_LBM_SIMULATION_H

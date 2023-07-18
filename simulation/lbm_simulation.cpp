@@ -319,3 +319,7 @@ void ibmSimulation::delete_containers() {
     nodes.clear();
     markers.clear();
 }
+
+void ibmSimulation::test_propagate_markers() {
+    propagate_calculate_force_marker();
+}
