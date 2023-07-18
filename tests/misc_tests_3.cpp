@@ -231,6 +231,10 @@ TEST(IbmTest, marker_movement_around) {
     }
 }
 
+/**
+ * Tests the individual movement of a marker.
+ * @test
+ */
 TEST(IbmTest, marker_movement_individual_set) {
     // init a structure
     point_t starter = {3,3};
@@ -286,6 +290,10 @@ TEST(IbmTest, marker_movement_individual_set) {
     }
 }
 
+/**
+ * Tests correct kernel function and calcualtes the integral under the function.
+ * @test
+ */
 TEST(IbmTest, kernels) {
     double kernel_stencil = 1;
     point_t origin = {1,1};
@@ -297,6 +305,34 @@ TEST(IbmTest, kernels) {
     EXPECT_NE(un_factorised_kernel,factorised_kernel);
     double func = d_kernel_32(&r,kernel_stencil);
     EXPECT_EQ(func, factorised_kernel);
+    // integration test
+    // set up x and y
+    int total = 240;
+    double begin = -2.5;
+    double end = 2.5;
+    double range = end - begin;
+    double step = range/total;
+    array_t x;
+    x.resize(total);
+    array_t y;
+    y.resize(total);
+    for(int i = 0; i < total; ++i) {
+        x[i] = begin;
+        y[i] = begin;
+        begin += step;
+    }
+    // calculate z
+    double integral = 0;
+    flowfield_t z;
+    z.resize(total,total);
+    for(int i = 0; i < total; ++i) {
+        for(int j = 0; j < total; ++j) {
+            vector_t dr = {x(i),y(j)};
+            z(i,j) =  d_kernel_32(&dr,kernel_stencil);
+            integral += z(i,j) * step * step;
+        }
+    }
+    EXPECT_NEAR(integral, 1,1e-5);
 }
 
 TEST(IbmTest, self_stream) {
