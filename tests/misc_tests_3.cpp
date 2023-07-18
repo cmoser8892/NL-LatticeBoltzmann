@@ -333,6 +333,17 @@ TEST(IbmTest, kernels) {
         }
     }
     EXPECT_NEAR(integral, 1,1e-5);
+    // check that the other one is not working
+    integral = 0;
+    z.setZero();
+    for(int i = 0; i < total; ++i) {
+        for(int j = 0; j < total; ++j) {
+            vector_t dr = {x(i),y(j)};
+            z(i,j) = kernel_3(dr.norm(),kernel_stencil);
+            integral += z(i,j) * step * step;
+        }
+    }
+    EXPECT_NE(1,integral); // about 1.87 so complete nonsense
 }
 
 TEST(IbmTest, self_stream) {
