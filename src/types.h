@@ -5,6 +5,7 @@
 
 #define CHANNELS 9 /**< D2Q9 has 9 channels */
 #define CARDINAL_DIRECTIONS 4
+#define KERNEL_3_FACTOR 2 /**< When we give a range for IBM we have to multiply with 2 to get the correct cutoff */
 
 using array_t = Eigen::ArrayXd; /**< Eigen redefinition, a simple array to hold data */
 using matrix_t = Eigen::ArrayXXd; /**< Eigen redefinition, an array with 2 dimensions */

@@ -527,6 +527,7 @@ void nodeGenerator::init_fused(unsigned int size) {
  * @param range
  */
 void nodeGenerator::init_surface(unsigned int size, double range) {
+    // correct the range to
     if(!read_data_from_file()) {
         // create the drawing canvas
         board_creation(size);

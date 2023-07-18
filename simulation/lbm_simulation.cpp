@@ -150,8 +150,8 @@ vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t*
     for(auto h : *handles) {
         h-= 1;
         auto marker = markers[h];
-        double distance = (*pos - marker->position).norm();
-        returns += kernel_3(distance,parameters.lattice_length) * marker->force;
+        vector_t r = (*pos - marker->position);
+        returns += d_kernel_32(&r, parameters.lattice_length)* marker->force;
     }
     return returns;
 }
@@ -161,8 +161,8 @@ void ibmSimulation::distribute_velocity(std::vector<handle_t> *handles,  point_t
     for(auto h : *handles) {
         h-= 1;
         auto marker = markers[h];
-        double distance = (*pos - marker->position).norm();
-        marker->velocity += kernel_3(distance, parameters.lattice_length) * (*v);
+        vector_t r = (*pos - marker->position);
+        marker->velocity += d_kernel_32(&r, parameters.lattice_length) * (*v)*pow(parameters.lattice_length,3);
     }
 }
 
@@ -196,6 +196,8 @@ void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
     // fix the omega parameter to th new one
     parameters.relaxation = parameters.relaxation + parameters.dt/2;
+    //
+    parameters.lattice_length = parameters.ibm_range/4;
 }
 void ibmSimulation::init() {
     // setup the basic nodes

@@ -33,13 +33,14 @@ int main(int argc, char *argv[]) {
     ng.visualize_2D_nodes();
     simulation_parameters params;
     params.relaxation = 0.5;
-    params.ibm_range = 2;
-    params.k = 0.01;
+    params.ibm_range = ibm_distance;
+    params.k = 1;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
     vector_t sizes = {canvas_size,canvas_size};
     goaForce rot(dk,sizes,1e-3);
     ibmSimulation sim(&ng, &rot,ng.markers,sizes);
+    sim.set_simulation_parameters(params);
     sim.init();
     for(int i = 0; i < steps; ++i) {
         if(i % 1000 == 0) {

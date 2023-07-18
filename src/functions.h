@@ -30,6 +30,7 @@ std::tuple<double,double,double> calculate_macro_population(array_t* p);
 double kernel_1(double range, double delta_x);
 double kernel_2(double range, double delta_x);
 double kernel_3(double range, double delta_x);
+double d_kernel_32(point_t* p, double delta_x);
 bool point_on_straight(straight_t * s, point_t *p, double* overshot);
 vector_t compute_lagrangian_force();
 // debug method

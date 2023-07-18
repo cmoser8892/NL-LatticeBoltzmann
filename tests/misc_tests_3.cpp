@@ -21,6 +21,7 @@ TEST(IbmTest, init_ibm) {
     straight_t input;
     long canvas_size = 13;
     double side_length = 5; // with a distance of 0.75 we should get 80 markers
+    double ibm_distance = 2;
     // we put in a quader
     input.point = starter;
     input.direction = {0,1};
@@ -41,7 +42,7 @@ TEST(IbmTest, init_ibm) {
     sg.surface_mass_center();
     // generator
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size,2);
+    ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),81);
     // force
@@ -102,7 +103,7 @@ TEST(IbmTest, nodes_placement_links) {
     ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
     simulation_parameters params;
-    params.ibm_range = 2;
+    params.ibm_range = ibm_distance;
     point_t dk = {0,0};
     vector_t sizes = {canvas_size,canvas_size};
     goaForce rot(dk,sizes,1e-3);
@@ -156,7 +157,6 @@ TEST(IbmTest, nodes_placement_links) {
     EXPECT_EQ(link_sizes(6),0);
     EXPECT_EQ(link_sizes(7),0);
     EXPECT_EQ(link_sizes(8),ng.node_infos.size()-40);
-
 }
 
 /**
@@ -194,7 +194,7 @@ TEST(IbmTest, marker_movement_around) {
     ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
     simulation_parameters params;
-    params.ibm_range = 2;
+    params.ibm_range = ibm_distance; // has to be corrected
     params.k = 1;
     point_t dk = {0,0};
     vector_t sizes = {canvas_size,canvas_size};
@@ -245,7 +245,7 @@ TEST(IbmTest, marker_movement_individual_set) {
     ng.init_surface(canvas_size,ibm_distance);
     // ng.visualize_2D_nodes();
     simulation_parameters params;
-    params.ibm_range = 2;
+    params.ibm_range = ibm_distance;
     params.k = 10;
     point_t dk = {0,0};
     vector_t sizes = {canvas_size,canvas_size};
@@ -268,6 +268,19 @@ TEST(IbmTest, marker_movement_individual_set) {
     for(auto m : sim.markers) {
         EXPECT_EQ(2*velocity+m->original_position,m->position);
     }
+}
+
+TEST(IbmTest, kernels) {
+    double kernel_stencil = 1;
+    point_t origin = {1,1};
+    point_t next = {0,0};
+    vector_t r = next - origin;
+    //
+    double factorised_kernel = (kernel_3(r.x(),kernel_stencil)*kernel_3(r.y(),kernel_stencil))/(kernel_stencil*kernel_stencil);
+    double un_factorised_kernel = kernel_3(r.norm(),kernel_stencil);
+    EXPECT_NE(un_factorised_kernel,factorised_kernel);
+    double func = d_kernel_32(&r,kernel_stencil);
+    EXPECT_EQ(func, factorised_kernel);
 }
 
 TEST(IbmTest, self_stream) {

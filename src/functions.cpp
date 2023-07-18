@@ -397,6 +397,19 @@ double kernel_3(double range, double delta_range) {
     return returns;
 }
 
+/**
+ * Kernel 3 made ready for points aka 2D, I know the name is wierd.
+ * @ref Viggen LBM book p.468f
+ * @note Between the description of the kernels the is a section, easily missable that talks about the need to modify them for 2D and 3D (roughly the middle of the page).
+ * @param p < We need the vector between the original marker and the current on
+ * @param delta_x
+ * @return
+ */
+double d_kernel_32(vector_t* p, double delta_x) {
+    double returns = (kernel_3(p->x(),delta_x)*kernel_3(p->y(),delta_x))/(delta_x*delta_x);
+    return returns;
+}
+
 vector_t compute_lagrangian_force() {
     return {0,0};
 }
