@@ -67,6 +67,11 @@ TEST(IbmTest, init_ibm) {
     }
 }
 
+/**
+ * Tests if all the nodes have the correct amount of links
+ * @test
+ * @attention sim nodes got to have 8 links, links that have less in the node info get self pointers to the node
+ */
 TEST(IbmTest, nodes_placement_links) {
     // init a structure
     point_t starter = {3,3};
@@ -154,6 +159,11 @@ TEST(IbmTest, nodes_placement_links) {
 
 }
 
+/**
+ * Tests the marker movement while doing simulation.
+ * @test
+ * @note current indication here is that some where a bug is happening
+ */
 TEST(IbmTest, marker_movement_around) {
     // init a structure
     point_t starter = {3,3};
@@ -185,13 +195,13 @@ TEST(IbmTest, marker_movement_around) {
     ng.visualize_2D_nodes();
     simulation_parameters params;
     params.ibm_range = 2;
-    params.k = 0.000000001;
+    params.k = 1;
     point_t dk = {0,0};
     vector_t sizes = {canvas_size,canvas_size};
     goaForce rot(dk,sizes,1e-3);
     ibmSimulation sim(&ng, &rot,ng.markers,sizes);
     sim.init();
-    int steps = 10;
+    int steps = 100;
     for(int i = 0; i < steps; ++i) {
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
@@ -246,11 +256,11 @@ TEST(IbmTest, marker_movement_individual_set) {
 }
 
 TEST(IbmTest, self_stream) {
-
+    // tests the self stream in nodes that have less than 8 links
 }
 
 TEST(IbmTest, force_strength) {
-
+    // tests for correct values in the force implementation
 }
 
 
