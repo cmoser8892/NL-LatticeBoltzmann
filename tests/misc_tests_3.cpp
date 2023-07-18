@@ -162,7 +162,7 @@ TEST(IbmTest, nodes_placement_links) {
 /**
  * Tests the marker movement while doing simulation.
  * @test
- * @note current indication here is that some where a bug is happening
+ * @note bug somewhere seems to emit from the lower left corner
  */
 TEST(IbmTest, marker_movement_around) {
     // init a structure
@@ -201,15 +201,31 @@ TEST(IbmTest, marker_movement_around) {
     goaForce rot(dk,sizes,1e-3);
     ibmSimulation sim(&ng, &rot,ng.markers,sizes);
     sim.init();
-    int steps = 100;
-    for(int i = 0; i < steps; ++i) {
-        if(i % 1000 == 0) {
-            std::cout << "Step: " << i << std::endl;
+    // check right init
+    int ibm_nodes = 0;
+    int pure_nodes = 0;
+    int undefined = 0;
+    for(auto n : sim.nodes) {
+        if(n->boundary_type == IBM) {
+            ibm_nodes++;
         }
-        sim.run(i);
+        else if(n->boundary_type == NO_BOUNDARY) {
+            pure_nodes++;
+        }
+        else {
+            undefined++;
+        }
     }
+    // note for equal on point it is times 5 otherwise not really lol
+    EXPECT_EQ(ibm_nodes,4*(side_length*5));
+    EXPECT_EQ(pure_nodes, sim.nodes.size() - ibm_nodes);
+    EXPECT_EQ(undefined, 0);
+    // check for the right marker movement
+    int steps = 0;
+    sim.run(0);
     // check where the markers are
     for(auto m : sim.markers) {
+        std::cout << m->original_position.x() << " ," << m->original_position.y() << std::endl;
         EXPECT_NEAR(m->original_position.x(), m->position.x(), 1e-1);
         EXPECT_NEAR(m->original_position.y(), m->position.y(), 1e-1);
     }
