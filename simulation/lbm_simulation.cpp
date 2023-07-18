@@ -174,6 +174,8 @@ void ibmSimulation::propagate_calculate_force_marker() {
         // calculate a new force based on the orginal position and so on
         vector_t delta_r = m->position - m->original_position;
         m->force = -parameters.k * (parameters.mean_marker_distance/parameters.lattice_length) * delta_r;
+        // rot_force->calculate_F_rotation(m->velocity.x(),m->velocity.y(),&m->position);
+        // m->force += rot_force->return_force_alpha();
         // set the velocity back to 0 so that we can add back up
         m->velocity.setZero();
     }
@@ -270,8 +272,7 @@ void ibmSimulation::run(int current_step) {
         // collision
         collision(&population,rho,ux,uy);
         // frogging
-        if(n->boundary_type == NO_BOUNDARY)
-            f += calculate_rotation_force(&n->position,&n->velocity);
+        f += calculate_rotation_force(&n->position,&n->velocity);
         forcing_term(n,&f);
         // streaming
         streaming(&population,&n->neighbors);

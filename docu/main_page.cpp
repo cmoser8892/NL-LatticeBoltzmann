@@ -9,7 +9,7 @@
  * \subsection Dependencies
  * Eigen 3.10. \n
  * C++ Standard Libraries \n
- * Doxygen version 1.8.17
+ * Doxygen version 1.8.17 (It looks different if you use a different version duh)
  * \subsection Limitations
  * The Neighborhood list sorts every node into its own cell,
  * great if you want a simple algorithm but bad for high node counts. \n
@@ -24,6 +24,8 @@
  *  and not the other way around, making everything fully node controlled and based on the ns algorithm.
  *  Using a pre ibm node as a marker and checking weather or not one of the pre markers is actually a valid population that has to created. \n
  *  Would be also cool to try out an extreme ns based approach, right now i build the list and use a static link list in the nodes
- *
+ *  \subsection Particularities
+ *  Tests are messy and not really organized in files but in the Test suits (that is why there is a number of misc-tests, I only partition them when the file gets too big)
+ *  Critique on programming is very welcome :)
 */
 

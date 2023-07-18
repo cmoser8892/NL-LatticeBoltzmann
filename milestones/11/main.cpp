@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
     straightGenerator sg;
     int steps = 300;
     long canvas_size = 100;
-    double side_length = 69; // with a distance of 0.75 we should get 80 markers
+    double side_length = 61; // with a distance of 0.75 we should get 80 markers
     double ibm_distance = 2;
     // we put in a quader
     input.point = starter;
@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = 2;
+    params.k = 0.01;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
     vector_t sizes = {canvas_size,canvas_size};
