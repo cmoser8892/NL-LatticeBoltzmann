@@ -192,7 +192,7 @@ void forcedSimulation::compute_spread_lagrangian_force() {
             // influence the force
             h -= 1;
             double distance = (nodes[h]->position - *lm).norm();
-            force_alpha[h] += kernel_3(distance,parameters.lattice_length) * force;
+            force_alpha[h] += kernel_3(distance) * force;
         }
     }
 }
@@ -209,7 +209,7 @@ void forcedSimulation::interpolate_forward_lagrangian_force() {
             h -= 1;
             vector_t expt = nodes[h]->velocity;
             double distance = (nodes[h]->position - *lm).norm();
-            u += kernel_3(distance, parameters.lattice_length) * expt;
+            u += kernel_3(distance) * expt;
         }
         // forward in time -> simple euler
         *lm += u*parameters.dt;

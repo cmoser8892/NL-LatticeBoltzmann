@@ -678,15 +678,15 @@ TEST(FunctionalTest, kernel_1) {
     double range = 0;
     double range_x = 1;
     range = 0;
-    EXPECT_EQ(kernel_1(range,range_x),1);
+    EXPECT_EQ(kernel_1(range),1);
     range = 1;
-    EXPECT_EQ(kernel_1(range,range_x),0);
+    EXPECT_EQ(kernel_1(range),0);
     range = -1;
-    EXPECT_EQ(kernel_1(range,range_x),0);
+    EXPECT_EQ(kernel_1(range),0);
     range = 3;
-    EXPECT_EQ(kernel_1(range,range_x),0);
+    EXPECT_EQ(kernel_1(range),0);
     range = -4;
-    EXPECT_EQ(kernel_1(range,range_x),0);
+    EXPECT_EQ(kernel_1(range),0);
 }
 
 /**
@@ -698,15 +698,15 @@ TEST(FunctionalTest, kernel_2) {
     double range = 0;
     double range_x = 1;
     range = 0;
-    EXPECT_EQ(kernel_2(range,range_x),2.0/3);
+    EXPECT_EQ(kernel_2(range),2.0/3);
     range = -1.5;
-    EXPECT_EQ(kernel_2(range,range_x),0);
+    EXPECT_EQ(kernel_2(range),0);
     range = 1.5;
-    EXPECT_EQ(kernel_2(range,range_x),0);
+    EXPECT_EQ(kernel_2(range),0);
     range = -3;
-    EXPECT_EQ(kernel_2(range,range_x),0);
+    EXPECT_EQ(kernel_2(range),0);
     range = 3;
-    EXPECT_EQ(kernel_2(range,range_x),0);
+    EXPECT_EQ(kernel_2(range),0);
 }
 
 /**
@@ -718,15 +718,15 @@ TEST(FunctionalTest, kernel_3) {
     double range = 0;
     double range_x = 1;
     range = 0;
-    EXPECT_EQ(kernel_3(range,range_x),4.0/8);
+    EXPECT_EQ(kernel_3(range),4.0/8);
     range = 2;
-    EXPECT_EQ(kernel_3(range,range_x),0);
+    EXPECT_EQ(kernel_3(range),0);
     range = -2;
-    EXPECT_EQ(kernel_3(range,range_x),0);
+    EXPECT_EQ(kernel_3(range),0);
     range = 5;
-    EXPECT_EQ(kernel_3(range,range_x),0);
+    EXPECT_EQ(kernel_3(range),0);
     range = -5;
-    EXPECT_EQ(kernel_3(range,range_x),0);
+    EXPECT_EQ(kernel_3(range),0);
 }
 
 /**

@@ -151,7 +151,7 @@ vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t*
         h-= 1;
         auto marker = markers[h];
         vector_t r = (*pos - marker->position);
-        returns += d_kernel_32(&r, parameters.lattice_length)* marker->force;
+        returns += kernel_3_2d(&r)* marker->force;
     }
     return returns;
 }
@@ -162,7 +162,8 @@ void ibmSimulation::distribute_velocity(std::vector<handle_t> *handles,  point_t
         h-= 1;
         auto marker = markers[h];
         vector_t r = (*pos - marker->position);
-        marker->velocity += d_kernel_32(&r, parameters.lattice_length) * (*v)*pow(parameters.lattice_length,3);
+        marker->velocity +=
+            kernel_3_2d(&r) * (*v)*pow(parameters.lattice_length,3);
     }
 }
 

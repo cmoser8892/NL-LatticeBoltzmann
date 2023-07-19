@@ -231,6 +231,14 @@ TEST(IbmTest, marker_movement_around) {
     }
 }
 
+TEST(IbmTest, kernel_2d_test) {
+    // cause it returns nonsense
+    point_t p = {-0.75,-2};
+    double returns = kernel_3_2d(&p);
+    double t2 = kernel_3(-0.75);
+    std::cout << t2;
+}
+
 /**
  * Tests the individual movement of a marker.
  * @test
@@ -300,10 +308,10 @@ TEST(IbmTest, kernels) {
     point_t next = {0,0};
     vector_t r = next - origin;
     //
-    double factorised_kernel = (kernel_3(r.x(),kernel_stencil)*kernel_3(r.y(),kernel_stencil))/(kernel_stencil*kernel_stencil);
-    double un_factorised_kernel = kernel_3(r.norm(),kernel_stencil);
+    double factorised_kernel = (kernel_3(r.x())*kernel_3(r.y()));
+    double un_factorised_kernel = kernel_3(r.norm());
     EXPECT_NE(un_factorised_kernel,factorised_kernel);
-    double func = d_kernel_32(&r,kernel_stencil);
+    double func = kernel_3_2d(&r);
     EXPECT_EQ(func, factorised_kernel);
     // integration test
     // set up x and y
@@ -328,7 +336,7 @@ TEST(IbmTest, kernels) {
     for(int i = 0; i < total; ++i) {
         for(int j = 0; j < total; ++j) {
             vector_t dr = {x(i),y(j)};
-            z(i,j) =  d_kernel_32(&dr,kernel_stencil);
+            z(i,j) = kernel_3_2d(&dr);
             integral += z(i,j) * step * step;
         }
     }
@@ -339,7 +347,7 @@ TEST(IbmTest, kernels) {
     for(int i = 0; i < total; ++i) {
         for(int j = 0; j < total; ++j) {
             vector_t dr = {x(i),y(j)};
-            z(i,j) = kernel_3(dr.norm(),kernel_stencil);
+            z(i,j) = kernel_3(dr.norm());
             integral += z(i,j) * step * step;
         }
     }

@@ -31,30 +31,6 @@ void straightGenerator::calculate_mass_center() {
 }
 
 /**
- * Detects and moves away the mass center if it is too close to a boundary.
- */
-void straightGenerator::detect_boundary_proximity_main_mass_center() {
-    // checks if near a surface makes sure it is a right angle
-    point_t new_mass_center = mass_center;
-    for(auto surface: surfaces) {
-        vector_t base = surface->point - mass_center;
-        vector_t an = surface->direction;
-        vector_t normal = {an.y(), - an.x()};
-        double distance = base.dot(normal)/normal.norm();
-        // we make use of the kernel 1 function here other kernels can be used too i guess
-        double factor = kernel_1(distance,CRITICAL_RANGE);
-        // we need the vector to actually move
-        double mover = sqrt(base.norm()*base.norm() - distance*distance);
-        point_t move_point = surface->point + an*mover;
-        vector_t mover_vector = mass_center - move_point;
-        // std::cout << mover_vector << std::endl;
-        new_mass_center += mover_vector*factor;
-        // std::cout << new_mass_center << std::endl;
-    }
-    mass_center = new_mass_center;
-}
-
-/**
  * Generates keys holdings for all the individual boundary-structures a boundary has.
  */
 void straightGenerator::calculate_keys() {

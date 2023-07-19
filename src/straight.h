@@ -25,7 +25,6 @@ class straightGenerator {
     std::vector<straight_t *> temporary; /**<  temp 3, yes we need 3 temporary storages to reform straight lines */
     // functions
     void calculate_mass_center();
-    void detect_boundary_proximity_main_mass_center();
     void calculate_keys();
     void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
     int calculate_intersections(point_t node_point, point_t *individual_mc);

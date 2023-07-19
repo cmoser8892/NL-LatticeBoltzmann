@@ -348,13 +348,13 @@ void pressure_periodic_out(oNode* node , double rho_out) {
  * A kernel fucntion.
  * @ref Viggen LBM book p.468f
  * @param range
- * @param delta_range
+ * @note we need to lattice sites for this one to work, at 1 is our second lattice site in that direction.
  * @return
  */
-double kernel_1(double range, double delta_range) {
+double kernel_1(double range) {
     double returns = 0;
     double abs_range = abs(range);
-    if((abs_range >= 0) && (abs_range <= delta_range)) {
+    if((abs_range >= 0) && (abs_range <= 1)) {
         returns = 1 - abs_range;
     }
     return returns;
@@ -363,16 +363,16 @@ double kernel_1(double range, double delta_range) {
  * A kernel function.
  * @ref Viggen LBM book p.468f
  * @param range
- * @param delta_range
+ * @note We need 3 lattice sites (in on direction) form 0 for this one to work max is at 1.5
  * @return
  */
-double kernel_2(double range, double delta_range) {
+double kernel_2(double range) {
     double returns = 0;
     double abs_range = abs(range);
-    if((abs_range >= 0) &&  (abs_range< 0.5*delta_range)) {
+    if((abs_range >= 0) &&  (abs_range< 0.5)) {
         returns = 1.0/3 * ( 1 +  sqrt(1 - 3*abs_range*abs_range));
     }
-    else if((abs_range >= 0.5*delta_range) && (abs_range <= 1.5*delta_range)) {
+    else if((abs_range >= 0.5) && (abs_range <= 1.5)) {
         returns = 1.0/6 * ( 5 - 3*abs_range - sqrt(-2 + 6*abs_range -3*abs_range*abs_range));
     }
     return returns;
@@ -382,18 +382,28 @@ double kernel_2(double range, double delta_range) {
  * A kernel function.
  * @ref Viggen LBM book p.468f
  * @param range
- * @param delta_range
+ * @note
  * @return
  */
-double kernel_3(double range, double delta_range) {
+double kernel_3(double range) {
     double returns = 0;
     double abs_range = abs(range);
-    if((abs_range >= 0) &&  (abs_range < 1*delta_range)) {
+    if((abs_range >= 0) &&  (abs_range < 1)) {
         returns = 1.0/8 * (3 - 2*abs_range + sqrt(1 + 4*abs_range - 4*abs_range*abs_range));
     }
-    else if((abs_range >= 1*delta_range) && (abs_range <= 2*delta_range)) {
-        returns = 1.0/8 *(5 - 2*abs_range - sqrt(-7 + 12* abs_range - 4*abs_range*abs_range));
+    else if((abs_range >= 1) && (abs_range <= 2)) {
+        returns = 1.0 / 8 * (5 - 2 * abs_range - sqrt(-7 + 12 * abs_range - 4 * abs_range * abs_range));
     }
+    return returns;
+}
+
+double kernel_1_2d(vector_t* p) {
+    double returns = (kernel_1(p->x())*kernel_1(p->y()));
+    return returns;
+}
+
+double kernel_2_2d(vector_t* p) {
+    double returns = (kernel_2(p->x())*kernel_2(p->y()));
     return returns;
 }
 
@@ -401,12 +411,13 @@ double kernel_3(double range, double delta_range) {
  * Kernel 3 made ready for points aka 2D, I know the name is wierd.
  * @ref Viggen LBM book p.468f
  * @note Between the description of the kernels the is a section, easily missable that talks about the need to modify them for 2D and 3D (roughly the middle of the page).
+ * @note We need 4 lattice sites in on direction for this to work look at the reference
  * @param p < We need the vector between the original marker and the current on
  * @param delta_x
  * @return
  */
-double d_kernel_32(vector_t* p, double delta_x) {
-    double returns = (kernel_3(p->x(),delta_x)*kernel_3(p->y(),delta_x))/(delta_x*delta_x);
+double kernel_3_2d(vector_t *p) {
+    double returns = (kernel_3(p->x())*kernel_3(p->y()));
     return returns;
 }
 
