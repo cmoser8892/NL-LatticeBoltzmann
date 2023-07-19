@@ -56,7 +56,7 @@ fNode::fNode(handle_t h, int channels, boundaryType_t type) {
 }
 
 /**
- * marker constructor.
+ * Marker constructor.
  * @param pos
  * @param h
  */
