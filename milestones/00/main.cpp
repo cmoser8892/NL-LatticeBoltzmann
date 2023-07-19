@@ -19,6 +19,6 @@ int main(int argc, char *argv[]) {
         range = std::stod(argv[1]);
         delta_range = std::stod(argv[2]);
     }
-    std::cout << kernel_3(range);
+    std::cout << kernel_C(range);
     return 0;
 }

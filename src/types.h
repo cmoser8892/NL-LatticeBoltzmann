@@ -57,6 +57,16 @@ typedef enum boundaryType {
 }boundaryType_t;
 
 /**
+ * Kernel identifiers used for LBM boundaries.
+ * @ref Viggen P.469
+ */
+typedef enum kernelType {
+    KERNEL_A = 0, /**< Phi_2(x) -> we need look 2 lattice sites around the marker */
+    KERNEL_B,     /**< Phi_3(x) -> we need look 3 lattice sites around the marker */
+    KERNEL_C      /**< Phi_4(x) -> we need look 4 lattice sites around the marker */
+}kernelType_t;
+
+/**
  * Link to other neighboring nodes
  * @note on the toLinks_t: used in the naive implementation and used when constructing neighbourhoods
  */

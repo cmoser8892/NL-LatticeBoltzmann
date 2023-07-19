@@ -351,7 +351,7 @@ void pressure_periodic_out(oNode* node , double rho_out) {
  * @note we need to lattice sites for this one to work, at 1 is our second lattice site in that direction.
  * @return
  */
-double kernel_1(double range) {
+double kernel_A(double range) {
     double returns = 0;
     double abs_range = abs(range);
     if((abs_range >= 0) && (abs_range <= 1)) {
@@ -366,7 +366,7 @@ double kernel_1(double range) {
  * @note We need 3 lattice sites (in on direction) form 0 for this one to work max is at 1.5
  * @return
  */
-double kernel_2(double range) {
+double kernel_B(double range) {
     double returns = 0;
     double abs_range = abs(range);
     if((abs_range >= 0) &&  (abs_range< 0.5)) {
@@ -385,7 +385,7 @@ double kernel_2(double range) {
  * @note
  * @return
  */
-double kernel_3(double range) {
+double kernel_C(double range) {
     double returns = 0;
     double abs_range = abs(range);
     if((abs_range >= 0) &&  (abs_range < 1)) {
@@ -397,13 +397,13 @@ double kernel_3(double range) {
     return returns;
 }
 
-double kernel_1_2d(vector_t* p) {
-    double returns = (kernel_1(p->x())*kernel_1(p->y()));
+double kernel_A_2d(vector_t* p) {
+    double returns = (kernel_A(p->x())* kernel_A(p->y()));
     return returns;
 }
 
-double kernel_2_2d(vector_t* p) {
-    double returns = (kernel_2(p->x())*kernel_2(p->y()));
+double kernel_B_2d(vector_t* p) {
+    double returns = (kernel_B(p->x())* kernel_B(p->y()));
     return returns;
 }
 
@@ -416,8 +416,37 @@ double kernel_2_2d(vector_t* p) {
  * @param delta_x
  * @return
  */
-double kernel_3_2d(vector_t *p) {
-    double returns = (kernel_3(p->x())*kernel_3(p->y()));
+double kernel_C_2d(vector_t *p) {
+    double returns = (kernel_C(p->x())* kernel_C(p->y()));
+    return returns;
+}
+
+/**
+ * This function seems to be overkill, but the person that has to figure out how to incorporate sub grids might be thankful
+ * @note
+ * @param t
+ * @return
+ */
+double kernel_id_to_lattice_search(kernelType_t t) {
+    double returns = 0;
+    switch (t){
+    case KERNEL_A: {
+        returns = 2;
+        break;
+    }
+    case KERNEL_B: {
+        returns  = 3;
+        break;
+    }
+    case KERNEL_C: {
+        returns = 4;
+        break;
+    }
+    default:
+        returns = 138;
+        std::cerr << "Unknown kernel Type (IBM)" << std::endl;
+        break;
+    }
     return returns;
 }
 

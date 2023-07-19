@@ -672,61 +672,61 @@ TEST(FunctionalTest, coord_add) {
 /**
  * Basic tests for the kernel 1 function.
  * @test
- * @see kernel_1()
+ * @see kernel_A()
  */
-TEST(FunctionalTest, kernel_1) {
+TEST(FunctionalTest, kernel_A) {
     double range = 0;
     double range_x = 1;
     range = 0;
-    EXPECT_EQ(kernel_1(range),1);
+    EXPECT_EQ(kernel_A(range),1);
     range = 1;
-    EXPECT_EQ(kernel_1(range),0);
+    EXPECT_EQ(kernel_A(range),0);
     range = -1;
-    EXPECT_EQ(kernel_1(range),0);
+    EXPECT_EQ(kernel_A(range),0);
     range = 3;
-    EXPECT_EQ(kernel_1(range),0);
+    EXPECT_EQ(kernel_A(range),0);
     range = -4;
-    EXPECT_EQ(kernel_1(range),0);
+    EXPECT_EQ(kernel_A(range),0);
 }
 
 /**
  * Basic test for the kernel 2 function.
  * @test
- * @see kernel_2()
+ * @see kernel_B()
  */
-TEST(FunctionalTest, kernel_2) {
+TEST(FunctionalTest, kernel_B) {
     double range = 0;
     double range_x = 1;
     range = 0;
-    EXPECT_EQ(kernel_2(range),2.0/3);
+    EXPECT_EQ(kernel_B(range),2.0/3);
     range = -1.5;
-    EXPECT_EQ(kernel_2(range),0);
+    EXPECT_EQ(kernel_B(range),0);
     range = 1.5;
-    EXPECT_EQ(kernel_2(range),0);
+    EXPECT_EQ(kernel_B(range),0);
     range = -3;
-    EXPECT_EQ(kernel_2(range),0);
+    EXPECT_EQ(kernel_B(range),0);
     range = 3;
-    EXPECT_EQ(kernel_2(range),0);
+    EXPECT_EQ(kernel_B(range),0);
 }
 
 /**
- * Basic test for the kernel_3 function.
+ * Basic test for the kernel_C function.
  * @test
- * @see kernel_3()
+ * @see kernel_C()
  */
-TEST(FunctionalTest, kernel_3) {
+TEST(FunctionalTest, kernel_C) {
     double range = 0;
     double range_x = 1;
     range = 0;
-    EXPECT_EQ(kernel_3(range),4.0/8);
+    EXPECT_EQ(kernel_C(range),4.0/8);
     range = 2;
-    EXPECT_EQ(kernel_3(range),0);
+    EXPECT_EQ(kernel_C(range),0);
     range = -2;
-    EXPECT_EQ(kernel_3(range),0);
+    EXPECT_EQ(kernel_C(range),0);
     range = 5;
-    EXPECT_EQ(kernel_3(range),0);
+    EXPECT_EQ(kernel_C(range),0);
     range = -5;
-    EXPECT_EQ(kernel_3(range),0);
+    EXPECT_EQ(kernel_C(range),0);
 }
 
 /**
