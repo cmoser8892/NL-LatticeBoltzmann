@@ -397,18 +397,28 @@ double kernel_C(double range) {
     return returns;
 }
 
+/**
+ * Kernel A version in 2D.
+ * @param p
+ * @return
+ */
 double kernel_A_2d(vector_t* p) {
     double returns = (kernel_A(p->x())* kernel_A(p->y()));
     return returns;
 }
 
+/**
+ * Kernel B version in 2D.
+ * @param p
+ * @return
+ */
 double kernel_B_2d(vector_t* p) {
     double returns = (kernel_B(p->x())* kernel_B(p->y()));
     return returns;
 }
 
 /**
- * Kernel 3 made ready for points aka 2D, I know the name is wierd.
+ * Kernel 3 made ready for points aka 2D.
  * @ref Viggen LBM book p.468f
  * @note Between the description of the kernels the is a section, easily missable that talks about the need to modify them for 2D and 3D (roughly the middle of the page).
  * @note We need 4 lattice sites in on direction for this to work look at the reference

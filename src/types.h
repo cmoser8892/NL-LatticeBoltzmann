@@ -86,6 +86,7 @@ typedef struct simulation_parameters {
     double lattice_length = 1.0;
     double k = 1;
     double mean_marker_distance = 0.75;
+    kernelType_t kernel_in_use;
 }simulation_parameters_t;
 
 /**

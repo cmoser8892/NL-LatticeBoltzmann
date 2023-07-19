@@ -231,14 +231,6 @@ TEST(IbmTest, marker_movement_around) {
     }
 }
 
-TEST(IbmTest, kernel_2d_test) {
-    // cause it returns nonsense
-    point_t p = {-0.75,-2};
-    double returns = kernel_C_2d(&p);
-    double t2 = kernel_C(-0.75);
-    std::cout << t2;
-}
-
 /**
  * Tests the individual movement of a marker.
  * @test
@@ -299,6 +291,91 @@ TEST(IbmTest, marker_movement_individual_set) {
 }
 
 /**
+ * Tests the integrals of the normal 1d kernels to be 1.
+ * @test
+ */
+TEST(IBMTest, kernels_1d) {
+    // we just integrate the kernels
+    int total = 640;
+    double begin = -4.5;
+    double end = 4.5;
+    double range = end - begin;
+    double step = range/total;
+    array_t x;
+    x.resize(total);
+    for(int i = 0; i < total; ++i) {
+        x[i] = begin;
+        begin += step;
+    }
+    // kernel A phi_2
+    double integral = 0;
+    for(int i = 0; i < total; ++i) {
+        integral += kernel_A(x[i])*step;
+    }
+    EXPECT_NEAR(integral, 1, 1e-1); // integration is not as accurate here
+    // kernel B phi_3
+    integral = 0;
+    for(int i = 0; i < total; ++i) {
+        integral += kernel_B(x[i])*step;
+    }
+    EXPECT_NEAR(integral, 1, 1e-5);
+    // kernel C phi_4
+    integral = 0;
+    for(int i = 0; i < total; ++i) {
+        integral += kernel_C(x[i])*step;
+    }
+    EXPECT_NEAR(integral, 1, 1e-5);
+}
+
+/**
+ * Tests the integrals of the  2d kernels to be 1.
+ * @test
+ */
+TEST(IBMTest, kernels_2d) {
+    int total = 640;
+    double begin = -4.5;
+    double end = 4.5;
+    double range = end - begin;
+    double step = range/total;
+    array_t x;
+    x.resize(total);
+    array_t y;
+    y.resize(total);
+    for(int i = 0; i < total; ++i) {
+        x[i] = begin;
+        y[i] = begin;
+        begin += step;
+    }
+    // kernel a
+    double integral = 0;
+    for(int i = 0; i < total; ++i) {
+        for(int j = 0; j <total; ++j) {
+            vector_t dk = {x(i),y(j)};
+            integral += kernel_A_2d(&dk) * step*step;
+        }
+    }
+    EXPECT_NEAR(integral, 1, 1e-3);
+    // kernel b
+    integral = 0;
+    for(int i = 0; i < total; ++i) {
+        for(int j = 0; j <total; ++j) {
+            vector_t dk = {x(i),y(j)};
+            integral += kernel_B_2d(&dk) * step*step;
+        }
+    }
+    EXPECT_NEAR(integral, 1, 1e-5);
+    // kernel c
+    integral = 0;
+    for(int i = 0; i < total; ++i) {
+        for(int j = 0; j <total; ++j) {
+            vector_t dk = {x(i),y(j)};
+            integral += kernel_C_2d(&dk) * step*step;
+        }
+    }
+    EXPECT_NEAR(integral, 1, 1e-5);
+}
+
+/**
  * Tests correct kernel function and calcualtes the integral under the function.
  * @test
  */
@@ -310,14 +387,14 @@ TEST(IbmTest, kernels) {
     //
     double factorised_kernel = (kernel_C(r.x())* kernel_C(r.y()));
     double un_factorised_kernel = kernel_C(r.norm());
+    double frac = kernel_C_2d(&r);
+    EXPECT_EQ(factorised_kernel,frac);
     EXPECT_NE(un_factorised_kernel,factorised_kernel);
-    double func = kernel_C_2d(&r);
-    EXPECT_EQ(func, factorised_kernel);
     // integration test
     // set up x and y
-    int total = 240;
-    double begin = -2.5;
-    double end = 2.5;
+    int total = 640;
+    double begin = -4.5;
+    double end = 4.5;
     double range = end - begin;
     double step = range/total;
     array_t x;
@@ -337,10 +414,10 @@ TEST(IbmTest, kernels) {
         for(int j = 0; j < total; ++j) {
             vector_t dr = {x(i),y(j)};
             z(i,j) = kernel_C_2d(&dr);
-            integral += z(i,j) * step * step;
+            integral += kernel_C_2d(&dr) * step * step;
         }
     }
-    EXPECT_NEAR(integral, 1,1e-5);
+    EXPECT_NEAR(integral,1,1e-5);
     // check that the other one is not working
     integral = 0;
     z.setZero();
