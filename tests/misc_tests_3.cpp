@@ -637,6 +637,10 @@ TEST(IbmTest, aggregated_force_in_node) {
 
 }
 
+TEST(IbmTest, calculate_force_density) {
+
+}
+
 TEST(IbmTest, self_stream) {
     // tests the self stream in nodes that have less than 8 links
 }
