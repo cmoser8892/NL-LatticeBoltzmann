@@ -33,6 +33,41 @@ bool rhoWatchdog::check(node *n,int step) {
 }
 
 /**
+ * Constructor for the marker watchdog.
+ * @param s
+ */
+markerWatchdog::markerWatchdog(double s) {
+    sensitivity = s;
+}
+
+/**
+ * Fills the previous container for points.
+ * @param p
+ */
+void markerWatchdog::init_marker(point_t p) {
+    previous.push_back(p);
+}
+
+/**
+ * Performs a check on the markers.
+ * @param p
+ * @param pos
+ * @return
+ */
+bool markerWatchdog::check(point_t p, handle_t pos) {
+    point_t previous_position = previous[pos-1];
+    bool returns = false;
+    if(abs(previous_position.x() - p.x()) > sensitivity) {
+        returns = true;
+    }
+    if(abs(previous_position.y() - p.y()) > sensitivity) {
+        returns = true;
+    }
+    previous[pos-1] = p;
+    return returns;
+}
+
+/**
  * Put a position in the key table, floors the double value.
  * @param positions_handle
  * @param pos

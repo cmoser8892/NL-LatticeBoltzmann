@@ -23,6 +23,16 @@ class rhoWatchdog {
     bool check(node* n,int step);
 };
 
+class markerWatchdog {
+  private :
+    std::vector<point_t> previous;
+    double sensitivity = 0.1;
+  public:
+    markerWatchdog(double s);
+    void init_marker(point_t p);
+    bool check(point_t p, handle_t pos);
+};
+
 /**
  * Hashes points to be found in a neighborhood list.
  * @note works with bit interleaving floors points to a full point on the gird!
