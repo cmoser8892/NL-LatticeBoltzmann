@@ -162,7 +162,7 @@ void ibmSimulation::distribute_velocity(std::vector<handle_t> *handles,  point_t
         h-= 1;
         auto marker = markers[h];
         vector_t r = (*pos - marker->position);
-        marker->velocity += (*kernel_function)(&r) * (*v)*pow(parameters.lattice_length,3);
+        marker->velocity += (*kernel_function)(&r) * (*v);
     }
 }
 

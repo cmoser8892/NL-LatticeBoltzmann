@@ -171,7 +171,7 @@ TEST(IbmTest, marker_movement_around) {
     straightGenerator sg;
     long canvas_size = 13;
     double side_length = 6; // with a distance of 0.75 we should get 80 markers
-    double ibm_distance = 2;
+    kernelType_t kernel = KERNEL_A;
     // we put in a quader
     input.point = starter;
     input.direction = {0,1};
@@ -190,16 +190,19 @@ TEST(IbmTest, marker_movement_around) {
     input.max_t = side_length;
     sg.add_surface(input);
     sg.surface_mass_center();
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
     simulation_parameters params;
-    params.ibm_range = ibm_distance; // has to be corrected
+    params.ibm_range = kernel_id_to_lattice_search(kernel);
+    params.kernel_in_use = kernel;
     params.k = 1;
     point_t dk = {0,0};
     vector_t sizes = {canvas_size,canvas_size};
     goaForce rot(dk,sizes,1e-3);
     ibmSimulation sim(&ng, &rot,ng.markers,sizes);
+    sim.set_simulation_parameters(params);
     sim.init();
     // check right init
     int ibm_nodes = 0;
@@ -556,7 +559,6 @@ TEST(IbmTest, right_amount_kernel_nodes_B) {
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     ng.init_surface(canvas_size,ibm_distance);
-
     EXPECT_EQ( ng.node_infos.size(),225-corrector);
     int ibm = 0;
     int regular = 0;
@@ -631,6 +633,9 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     EXPECT_EQ(error, 0);
 }
 
+TEST(IbmTest, aggregated_force_in_node) {
+
+}
 
 TEST(IbmTest, self_stream) {
     // tests the self stream in nodes that have less than 8 links
