@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
     point_t starter = {13,13};
     straight_t input;
     straightGenerator sg;
-    int steps = 1000;
+    int steps = 3000;
     long canvas_size = 100;
     double side_length = 60; // with a distance of 0.75 we should get 80 markers
     kernelType_t kernel = KERNEL_C;
@@ -37,8 +37,8 @@ int main(int argc, char *argv[]) {
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
-    params.kernel_in_use = KERNEL_A;
-    params.k = 1;
+    params.kernel_in_use = kernel;
+    params.k = 0.1;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
     vector_t sizes = {canvas_size,canvas_size};

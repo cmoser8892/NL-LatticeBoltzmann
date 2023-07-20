@@ -431,14 +431,16 @@ TEST(IbmTest, kernels) {
     EXPECT_NE(1, integral); // about 1.87 so complete nonsense
 }
 
-
+/**
+ * We check values form the kernel to the test function and then the actual kernel that we are gonna us (divide the range by two)
+ */
 TEST(IbmTest, ibm_kernel_select) {
     // we test the pure kernel function and then with the application of the right function
     vector_t dk = {0,0};
     double test_x = 0.24;
     double test_y = 0.65;
     vector_t r = {test_x,test_y};
-    ibmSimulation sim(nullptr,nullptr,nullptr, dk); // we dont acutualy int the simulation
+    ibmSimulation sim(nullptr,nullptr,nullptr, dk); // we dont actually int the simulation
     simulation_parameters t;
     t.kernel_in_use = KERNEL_A;
     sim.set_simulation_parameters(t);
@@ -467,8 +469,166 @@ TEST(IbmTest, ibm_kernel_select) {
     EXPECT_EQ(sim.test_kernel_function_call(&r),0);
 }
 
-TEST(IbmTest, right_amount_kernel_nodes) {
-    // depending on the chosen kernel the ibm should be flagged or not
+/**
+ * Tests the A kernel node distribution.
+ * @test
+ */
+TEST(IbmTest, right_amount_kernel_nodes_A) {
+    point_t starter = {5,5};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 20;
+    double side_length = 6; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_A;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface(canvas_size,ibm_distance);
+    //side lenght in nodes should be 7x7 with ibm nodes
+    EXPECT_EQ( ng.node_infos.size(),121);
+    int ibm = 0;
+    int regular = 0;
+    int error = 0;
+    for(auto ni : ng.node_infos) {
+        if(ni->boundary == IBM) {
+            ++ibm;
+        }
+        else if(ni->boundary == NO_BOUNDARY) {
+            ++regular;
+        }
+        else {
+            ++error;
+        }
+    }
+    EXPECT_EQ(ibm, 4*5*side_length);
+    EXPECT_EQ(regular,1);
+    EXPECT_EQ(error, 0);
+}
+
+/**
+ * Tests the b kernel node distribution.
+ * @test
+ * @attention right now the corners get missed which is not really a mistake tbh (corrector variable)
+ */
+TEST(IbmTest, right_amount_kernel_nodes_B) {
+    int corrector = 4;
+    point_t starter = {5,5};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 20;
+    double side_length = 8; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_B;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface(canvas_size,ibm_distance);
+
+    EXPECT_EQ( ng.node_infos.size(),225-corrector);
+    int ibm = 0;
+    int regular = 0;
+    int error = 0;
+    for(auto ni : ng.node_infos) {
+        if(ni->boundary == IBM) {
+            ++ibm;
+        }
+        else if(ni->boundary == NO_BOUNDARY) {
+            ++regular;
+        }
+        else {
+            ++error;
+        }
+    }
+    EXPECT_EQ(ibm, 4*7*(side_length)-corrector);
+    EXPECT_EQ(regular,1);
+    EXPECT_EQ(error, 0);
+}
+
+/**
+ * Tests the c kernel node distribution.
+ * @test
+ * @attention right now the corners get missed which is not really a mistake tbh (corrector variable)
+ */
+TEST(IbmTest, right_amount_kernel_nodes_C) {
+    int corrector = 4;
+    point_t starter = {5,5};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 25;
+    double side_length = 10; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_C;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface(canvas_size,ibm_distance);
+    EXPECT_EQ( ng.node_infos.size(),361-corrector);
+    int ibm = 0;
+    int regular = 0;
+    int error = 0;
+    for(auto ni : ng.node_infos) {
+        if(ni->boundary == IBM) {
+            ++ibm;
+        }
+        else if(ni->boundary == NO_BOUNDARY) {
+            ++regular;
+        }
+        else {
+            ++error;
+        }
+    }
+    EXPECT_EQ(ibm, 4*9*(side_length)-corrector);
+    EXPECT_EQ(regular,1);
+    EXPECT_EQ(error, 0);
 }
 
 
