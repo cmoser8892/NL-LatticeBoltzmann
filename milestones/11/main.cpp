@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
     straightGenerator sg;
     int steps = 1000;
     long canvas_size = 100;
-    double side_length = 61; // with a distance of 0.75 we should get 80 markers
+    double side_length = 60; // with a distance of 0.75 we should get 80 markers
     kernelType_t kernel = KERNEL_C;
     // we put in a quader
     input.point = starter;
@@ -30,8 +30,10 @@ int main(int argc, char *argv[]) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
+    std::cout << ibm_distance << std::endl;
     ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
+    std::cout << ng.node_infos.size() << std::endl;
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);

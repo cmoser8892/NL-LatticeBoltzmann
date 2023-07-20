@@ -181,6 +181,11 @@ void ibmSimulation::propagate_calculate_force_marker() {
     }
 }
 
+double ibmSimulation::kernel_function_call(point_t *p) {
+    vector_t temp = *p/2;
+    return (*kernel_function)(&temp);
+}
+
 ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t s) {
     node_generator = g;
     rot_force = f;
@@ -196,6 +201,27 @@ void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
     // fix the omega parameter to th new one
     parameters.relaxation = parameters.relaxation + parameters.dt/2;
+    // set the correct kernel function
+    switch (t.kernel_in_use){
+    case KERNEL_A: {
+        kernel_function = &kernel_A_2d;
+        break;
+    }
+    case KERNEL_B: {
+        kernel_function = &kernel_B_2d;
+        break;
+    }
+    case KERNEL_C: {
+        kernel_function = &kernel_C_2d;
+        break;
+    }
+    default:
+        std::cerr << "Unknown kernel Type (IBM)" << std::endl;
+        break;
+    }
+    // set the correct range
+    // ATTENTION should not be set outside of this function
+    parameters.ibm_range =kernel_id_to_lattice_search(t.kernel_in_use);
 }
 void ibmSimulation::init() {
     // setup the basic nodes
@@ -322,4 +348,12 @@ void ibmSimulation::delete_containers() {
 
 void ibmSimulation::test_propagate_markers() {
     propagate_calculate_force_marker();
+}
+
+double ibmSimulation::test_kernel_function(point_t *p) {
+    return (*kernel_function)(p);
+}
+
+double ibmSimulation::test_kernel_function_call(point_t* p) {
+    return kernel_function_call(p);
 }

@@ -381,27 +381,27 @@ TEST(IBMTest, kernels_2d) {
  */
 TEST(IbmTest, kernels) {
     double kernel_stencil = 1;
-    point_t origin = {1,1};
-    point_t next = {0,0};
+    point_t origin = {1, 1};
+    point_t next = {0, 0};
     vector_t r = next - origin;
     //
-    double factorised_kernel = (kernel_C(r.x())* kernel_C(r.y()));
+    double factorised_kernel = (kernel_C(r.x()) * kernel_C(r.y()));
     double un_factorised_kernel = kernel_C(r.norm());
     double frac = kernel_C_2d(&r);
-    EXPECT_EQ(factorised_kernel,frac);
-    EXPECT_NE(un_factorised_kernel,factorised_kernel);
+    EXPECT_EQ(factorised_kernel, frac);
+    EXPECT_NE(un_factorised_kernel, factorised_kernel);
     // integration test
     // set up x and y
     int total = 640;
     double begin = -4.5;
     double end = 4.5;
     double range = end - begin;
-    double step = range/total;
+    double step = range / total;
     array_t x;
     x.resize(total);
     array_t y;
     y.resize(total);
-    for(int i = 0; i < total; ++i) {
+    for (int i = 0; i < total; ++i) {
         x[i] = begin;
         y[i] = begin;
         begin += step;
@@ -409,27 +409,68 @@ TEST(IbmTest, kernels) {
     // calculate z
     double integral = 0;
     flowfield_t z;
-    z.resize(total,total);
-    for(int i = 0; i < total; ++i) {
-        for(int j = 0; j < total; ++j) {
-            vector_t dr = {x(i),y(j)};
-            z(i,j) = kernel_C_2d(&dr);
+    z.resize(total, total);
+    for (int i = 0; i < total; ++i) {
+        for (int j = 0; j < total; ++j) {
+            vector_t dr = {x(i), y(j)};
+            z(i, j) = kernel_C_2d(&dr);
             integral += kernel_C_2d(&dr) * step * step;
         }
     }
-    EXPECT_NEAR(integral,1,1e-5);
+    EXPECT_NEAR(integral, 1, 1e-5);
     // check that the other one is not working
     integral = 0;
     z.setZero();
-    for(int i = 0; i < total; ++i) {
-        for(int j = 0; j < total; ++j) {
-            vector_t dr = {x(i),y(j)};
-            z(i,j) = kernel_C(dr.norm());
-            integral += z(i,j) * step * step;
+    for (int i = 0; i < total; ++i) {
+        for (int j = 0; j < total; ++j) {
+            vector_t dr = {x(i), y(j)};
+            z(i, j) = kernel_C(dr.norm());
+            integral += z(i, j) * step * step;
         }
     }
-    EXPECT_NE(1,integral); // about 1.87 so complete nonsense
+    EXPECT_NE(1, integral); // about 1.87 so complete nonsense
 }
+
+
+TEST(IbmTest, ibm_kernel_select) {
+    // we test the pure kernel function and then with the application of the right function
+    vector_t dk = {0,0};
+    double test_x = 0.24;
+    double test_y = 0.65;
+    vector_t r = {test_x,test_y};
+    ibmSimulation sim(nullptr,nullptr,nullptr, dk); // we dont acutualy int the simulation
+    simulation_parameters t;
+    t.kernel_in_use = KERNEL_A;
+    sim.set_simulation_parameters(t);
+    // call the fkt
+    EXPECT_EQ(sim.test_kernel_function(&r), kernel_A_2d(&r));
+    t.kernel_in_use = KERNEL_B;
+    sim.set_simulation_parameters(t);
+    // call the fkt
+    EXPECT_EQ(sim.test_kernel_function(&r), kernel_B_2d(&r));
+    t.kernel_in_use = KERNEL_C;
+    sim.set_simulation_parameters(t);
+    // call the fkt
+    EXPECT_EQ(sim.test_kernel_function(&r), kernel_C_2d(&r));
+    t.kernel_in_use = KERNEL_C;
+    sim.set_simulation_parameters(t);
+    // call the fkt
+    EXPECT_NE(sim.test_kernel_function(&r), kernel_A_2d(&r));
+    // test the actual use case
+    t.kernel_in_use = KERNEL_A;
+    sim.set_simulation_parameters(t);
+    r = {0,0};
+    EXPECT_EQ(sim.test_kernel_function_call(&r),1);
+    r = {-2,-2};
+    EXPECT_EQ(sim.test_kernel_function_call(&r),0);
+    r = {2,2};
+    EXPECT_EQ(sim.test_kernel_function_call(&r),0);
+}
+
+TEST(IbmTest, right_amount_kernel_nodes) {
+    // depending on the chosen kernel the ibm should be flagged or not
+}
+
 
 TEST(IbmTest, self_stream) {
     // tests the self stream in nodes that have less than 8 links

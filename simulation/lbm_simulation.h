@@ -18,6 +18,7 @@ class ibmSimulation {
     goaForce* rot_force = nullptr;
     markerIBM* original_markers = nullptr;
     rangingPointKeyHash markers_pkh;
+    double (*kernel_function)(point_t* p) = nullptr;
     // local access arrays
     inline std::tuple<double, double, double> calculate_macro(array_t * a);
     inline std::tuple<double, double, double>  calculate_macro_force(array_t* a, array_t* previous);
@@ -28,6 +29,7 @@ class ibmSimulation {
     vector_t aggregate_force(std::vector<handle_t> *handles, point_t* pos);
     void distribute_velocity(std::vector<handle_t> *handles, point_t* pos, vector_t * v);
     void propagate_calculate_force_marker();
+    double kernel_function_call(point_t* p);
   public:
     // public main variables
     int offset_sim = 1; /**< offset 1 or 0 depending on the step */
@@ -47,6 +49,8 @@ class ibmSimulation {
     void delete_containers();
     // test functions
     void test_propagate_markers();
+    double test_kernel_function_call(point_t* p);
+    double test_kernel_function(point_t* p);
 };
 
 #endif // NL_LATTICEBOLTZMANN_LBM_SIMULATION_H
