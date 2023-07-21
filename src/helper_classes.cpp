@@ -28,7 +28,22 @@ bool rhoWatchdog::check(node *n,int step) {
         std::cerr << std::endl;
         return_value = true;
     }
+    if(std::isnan(n->rho)) {
+        std::cerr << "Rho is nan" << std::endl;
+        return_value = true;
+    }
     rho(int(n->position(0)),int(n->position(1))) = n->rho;
+    return return_value;
+}
+
+bool rhoWatchdog::check_force(fNode *n, int step) {
+    double rho_old = rho(int(n->position(0)),int(n->position(1)));
+    bool return_value = false;
+    auto [rho,ux,uy] = calculate_macro_population(&n->populations);
+    if(std::isnan(rho)) {
+        std::cerr << "Rho is nan" << std::endl;
+        return_value = true;
+    }
     return return_value;
 }
 

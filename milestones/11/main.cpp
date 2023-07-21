@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
     point_t starter = {13,13};
     straight_t input;
     straightGenerator sg;
-    int steps = 1124;
+    int steps = 25;
     long canvas_size = 100;
     double side_length = 60; // with a distance of 0.75 we should get 80 markers
     kernelType_t kernel = KERNEL_C;
@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
     sim.set_simulation_parameters(params);
     sim.init();
     // put the markers in the watchdog
+    rhoWatchdog dog(0.1,sizes);
     markerWatchdog marker_watch(0.1);
     long marker_check = 0;
     for(auto m : sim.markers) {
@@ -54,6 +55,7 @@ int main(int argc, char *argv[]) {
     }
     // run the sim
     for(int i = 0; i < steps; ++i) {
+        bool once = false;
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
@@ -63,6 +65,15 @@ int main(int argc, char *argv[]) {
                 std::cout << m->position.x() << ", " << m->position.y() << "//"
                           << m->original_position.x() << ", " << m->original_position.y() << std::endl;
             }
+        }
+        // watchdog part
+        for(auto n : sim.nodes) {
+            if(dog.check_force(n,i)) {
+                once = true;
+            }
+        }
+        if(once) {
+            sim.get_data(false);
         }
     }
     sim.get_data(true);

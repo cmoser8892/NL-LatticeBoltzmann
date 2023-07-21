@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
     int size = 302;
     int steps = 10000;
     point_t p = {size,size};
-    auto dog = new rhoWatchdog(0.1,p);
     boundaryPointConstructor boundaries(p);
     boundaries.init_sliding_lid();
     // init the sim runner

@@ -4,6 +4,7 @@
 #include "types.h"
 #include "node.h"
 #include "helper_functions.h"
+#include "functions.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -21,6 +22,7 @@ class rhoWatchdog {
   public:
     rhoWatchdog(double s,point_t size);
     bool check(node* n,int step);
+    bool check_force(fNode* n, int step);
 };
 
 class markerWatchdog {
