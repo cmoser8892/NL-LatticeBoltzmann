@@ -28,7 +28,7 @@ class markerWatchdog {
     std::vector<point_t> previous;
     double sensitivity = 0.1;
   public:
-    markerWatchdog(double s);
+    explicit markerWatchdog(double s);
     void init_marker(point_t p);
     bool check(point_t p, handle_t pos);
 };

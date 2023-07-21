@@ -361,3 +361,15 @@ double ibmSimulation::test_kernel_function_call(point_t* p) {
 std::tuple<double,double,double> ibmSimulation::test_macro(array_t *a) {
     return calculate_macro(a);
 }
+
+void ibmSimulation::test_propagate_velocity() {
+    for(auto n : nodes) {
+        std::vector<handle_t> markers_in_vicinity;
+        if(n->boundary_type == IBM) {
+            // find the markers in the vicinity
+            markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
+            // ibm contribution to the velocity
+            distribute_velocity(&markers_in_vicinity,&n->position,&n->velocity);
+        }
+    }
+}

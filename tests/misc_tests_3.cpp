@@ -726,7 +726,20 @@ TEST(IbmTest,velocity_interpolation) {
     ibmSimulation sim(&ng, &rot,ng.markers,sizes);
     sim.set_simulation_parameters(params);
     sim.init();
-    //
+    // find the nodes around 55 and set their velocity
+    rangingPointKeyHash rpkh;
+    for(auto n : sim.nodes) {
+        rpkh.fill_key(n->handle,n->position);
+    }
+    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,4);
+    std::cout << relevant.size() << std::endl;
+    for(auto h : relevant) {
+
+    }
+    // set to a value and look if it makes sense
+    // put the veloctiy in the markers
+    // note the last marker is the one we are interested in as it is a 5,5
+    // test and look
 }
 
 TEST(IbmTest, aggregated_force_in_node) {
