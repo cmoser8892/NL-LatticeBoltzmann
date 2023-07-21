@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
     point_t starter = {10,10};
-    int steps = 3000;
+    int steps = 1124;
     long canvas_size = 100;
     double side_length = 60; // with a distance of 0.75 we should get 80 markers
     point_t size = {canvas_size, canvas_size};
@@ -18,11 +18,11 @@ int main(int argc, char *argv[]) {
     ng.visualize_2D_nodes();
     simulation_parameters params;
     params.relaxation = 0.5;
-    params.ibm_range = 2;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
     goaForce rot(dk,size,1e-3);
     optimizedSimulation sim(&boundaries,&ng, &rot);
+    sim.set_simulation_parameters(params);
     sim.init();
     for(int i = 0; i < steps; ++i) {
         if(i % 1000 == 0) {

@@ -80,7 +80,7 @@ class marker {
     handle_t handle; /**< Handle of the node */
     point_t position; /**< Location of the marker*/
     vector_t force; /**< Force affecting the marker */
-    vector_t velocity; // not sure
+    vector_t velocity; /**< Velocity of the marker */
     point_t original_position; /**< Original location of the marker */
     explicit marker(handle_t h, point_t pos);
 };

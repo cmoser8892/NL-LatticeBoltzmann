@@ -688,6 +688,7 @@ TEST(IbmTest,rho_init) {
 TEST(IbmTest,velocity_interpolation) {
     // init the kernel 3 variant
     point_t starter = {5,5};
+    vector_t test_velocity = {1,1};
     straight_t input;
     straightGenerator sg;
     long canvas_size = 25;
@@ -731,15 +732,22 @@ TEST(IbmTest,velocity_interpolation) {
     for(auto n : sim.nodes) {
         rpkh.fill_key(n->handle,n->position);
     }
-    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,4);
-    std::cout << relevant.size() << std::endl;
-    for(auto h : relevant) {
-
-    }
     // set to a value and look if it makes sense
     // put the veloctiy in the markers
+    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,4);
+    for(auto h : relevant) {
+        handle_t pos = h - 1;
+        sim.nodes[pos]->velocity = test_velocity;
+    }
     // note the last marker is the one we are interested in as it is a 5,5
+    // all markers around 5,5 have the velocity 1,1 so it should read 1,1 i guess ?!
+    long final = sim.markers.size() - 1;
+    EXPECT_EQ(sim.markers[final]->velocity.x(),0);
+    EXPECT_EQ(sim.markers[final]->velocity.y(),0);
+    sim.test_propagate_velocity();
     // test and look
+    EXPECT_EQ(sim.markers[final]->velocity.x(),test_velocity.x());
+    EXPECT_EQ(sim.markers[final]->velocity.y(),test_velocity.y());
 }
 
 TEST(IbmTest, aggregated_force_in_node) {
