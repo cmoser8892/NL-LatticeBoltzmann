@@ -51,6 +51,7 @@ class ibmSimulation {
     void test_propagate_markers();
     double test_kernel_function_call(point_t* p);
     double test_kernel_function(point_t* p);
+    std::tuple<double,double,double> test_macro(array_t * a);
 };
 
 #endif // NL_LATTICEBOLTZMANN_LBM_SIMULATION_H

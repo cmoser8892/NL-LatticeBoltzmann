@@ -632,6 +632,102 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     EXPECT_EQ(regular,1);
     EXPECT_EQ(error, 0);
 }
+/**
+ * Tests weather or not the nodes are setup correctly, they are.
+ * @test
+ */
+TEST(IbmTest,rho_init) {
+    // init the kernel 3 variant
+    point_t starter = {5,5};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 25;
+    double side_length = 10; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_C;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface(canvas_size,ibm_distance);
+    simulation_parameters params;
+    params.relaxation = 0.5;
+    params.ibm_range = kernel_id_to_lattice_search(kernel);
+    params.kernel_in_use = kernel;
+    params.k = 1;
+    point_t dk = {0,0};
+    // max rotation is 7.5e-3
+    vector_t sizes = {canvas_size,canvas_size};
+    goaForce rot(dk,sizes,1e-3);
+    ibmSimulation sim(&ng, &rot,ng.markers,sizes);
+    sim.set_simulation_parameters(params);
+    sim.init();
+    for(auto n : sim.nodes) {
+        auto [rho,ux,uy] = sim.test_macro(&n->populations);
+        EXPECT_NEAR(rho,1,1e-10);
+        EXPECT_NEAR(ux, 0, 1e-10);
+        EXPECT_NEAR(uy, 0 , 1e-10);
+    }
+}
+
+TEST(IbmTest,velocity_interpolation) {
+    // init the kernel 3 variant
+    point_t starter = {5,5};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 25;
+    double side_length = 10; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_C;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface(canvas_size,ibm_distance);
+    simulation_parameters params;
+    params.relaxation = 0.5;
+    params.ibm_range = kernel_id_to_lattice_search(kernel);
+    params.kernel_in_use = kernel;
+    params.k = 1;
+    point_t dk = {0,0};
+    // max rotation is 7.5e-3
+    vector_t sizes = {canvas_size,canvas_size};
+    goaForce rot(dk,sizes,1e-3);
+    ibmSimulation sim(&ng, &rot,ng.markers,sizes);
+    sim.set_simulation_parameters(params);
+    sim.init();
+    //
+}
 
 TEST(IbmTest, aggregated_force_in_node) {
 

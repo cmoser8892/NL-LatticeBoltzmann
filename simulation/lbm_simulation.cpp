@@ -357,3 +357,7 @@ double ibmSimulation::test_kernel_function(point_t *p) {
 double ibmSimulation::test_kernel_function_call(point_t* p) {
     return kernel_function_call(p);
 }
+
+std::tuple<double,double,double> ibmSimulation::test_macro(array_t *a) {
+    return calculate_macro(a);
+}
