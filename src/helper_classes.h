@@ -26,6 +26,7 @@ class rhoWatchdog {
 class markerWatchdog {
   private :
     std::vector<point_t> previous;
+    std::vector<point_t> original;
     double sensitivity = 0.1;
   public:
     explicit markerWatchdog(double s);

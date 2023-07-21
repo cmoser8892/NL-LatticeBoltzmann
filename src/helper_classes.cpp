@@ -46,6 +46,7 @@ markerWatchdog::markerWatchdog(double s) {
  */
 void markerWatchdog::init_marker(point_t p) {
     previous.push_back(p);
+    original.push_back(p);
 }
 
 /**
@@ -56,7 +57,9 @@ void markerWatchdog::init_marker(point_t p) {
  */
 bool markerWatchdog::check(point_t p, handle_t pos) {
     point_t previous_position = previous[pos-1];
+    point_t original_position = original[pos-1];
     bool returns = false;
+    // check against the previous position
     if(abs(previous_position.x() - p.x()) > sensitivity) {
         returns = true;
     }
