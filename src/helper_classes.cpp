@@ -66,6 +66,12 @@ bool markerWatchdog::check(point_t p, handle_t pos) {
     if(abs(previous_position.y() - p.y()) > sensitivity) {
         returns = true;
     }
+    if(abs(original_position.x() - p.x()) > 1) {
+        returns = true;
+    }
+    if(abs(original_position.y() - p.y()) > 1) {
+        returns = true;
+    }
     previous[pos-1] = p;
     return returns;
 }
