@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
     point_t starter = {13,13};
     straight_t input;
     straightGenerator sg;
-    int steps = 3050;
+    int steps = 10050;
     long canvas_size = 100;
     double side_length = 60; // with a distance of 0.75 we should get 80 markers
     kernelType_t kernel = KERNEL_C;
@@ -63,18 +63,19 @@ int main(int argc, char *argv[]) {
         for(auto m : sim.markers) {
             if(marker_watch.check(m->position,m->handle) == true) {
                 marker_check++;
-                std::cout << m->position.x() << ", " << m->position.y() << "//"
-                          << m->original_position.x() << ", " << m->original_position.y() << std::endl;
+                if(0) {
+                    std::cout << m->position.x() << ", " << m->position.y() << "//"
+                              << m->original_position.x() << ", " << m->original_position.y() << std::endl;
+                }
             }
         }
         // watchdog part
-        for(auto n : sim.nodes) {
-            if(dog.check_force(n,i)) {
-                once = true;
+        if(0) {
+            for(auto n : sim.nodes) {
+                if(dog.check_force(n,i)) {
+                    once = true;
+                }
             }
-        }
-        if(once) {
-            //sim.get_data(false);
         }
     }
 
