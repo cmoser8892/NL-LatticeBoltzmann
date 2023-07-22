@@ -25,11 +25,14 @@ class rhoWatchdog {
     bool check_force(fNode* n, int step);
 };
 
+/**
+ * Watchdog to make sure our markers do not move too much, will yell when they do.
+ */
 class markerWatchdog {
   private :
-    std::vector<point_t> previous;
-    std::vector<point_t> original;
-    double sensitivity = 0.1;
+    std::vector<point_t> previous; /**< container of all the previous positions */
+    std::vector<point_t> original; /**< container of all the original positions */
+    double sensitivity = 0.1; /**< sensitivity 10% */
   public:
     explicit markerWatchdog(double s);
     void init_marker(point_t p);

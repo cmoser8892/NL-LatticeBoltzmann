@@ -61,7 +61,8 @@ int main(int argc, char *argv[]) {
         }
         sim.run(i);
         for(auto m : sim.markers) {
-            if(marker_watch.check(m->position,m->handle) == true) {marker_check++;
+            if(marker_watch.check(m->position,m->handle) == true) {
+                marker_check++;
                 std::cout << m->position.x() << ", " << m->position.y() << "//"
                           << m->original_position.x() << ", " << m->original_position.y() << std::endl;
             }

@@ -324,6 +324,28 @@ std::tuple<double,double,double> calculate_macro_population(array_t* a) {
     return {rho, ux, uy};
 }
 
+/**
+ * For both possible populations we calculate rho, used in the watchdog for more complex nodes.
+ * @param p
+ * @return
+ */
+std::tuple<double, double> test_calculate_rho_both(array_t* a) {
+    long offset = 9;
+    vector_t rho = {0,0};
+    for(int i = 0; i < 2; ++i) {
+        auto p = a->begin() + i*offset;
+        rho(i)  = (p + 0).operator*() +
+                  (p + 1).operator*() +
+                  (p + 2).operator*() +
+                  (p + 3).operator*() +
+                  (p + 4).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*() +
+                  (p + 7).operator*() +
+                  (p + 8).operator*();
+    }
+    return {rho(0), rho(1)};
+}
 
 // todo implement me
 void pressure_periodic_in(oNode* node, double rho_in) {

@@ -197,10 +197,18 @@ void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double 
    vector_t distance_vector = (*p) - middle;
    double force_magnitude = distance_vector.norm()/max_distance * max_force_magnitude;
    // we determine the x component
-   distance_vector /= distance_vector.norm();
+   if(distance_vector.norm() == 0) {
+        // nop
+   }
+   else {
+       distance_vector /= distance_vector.norm();
+   }
    // change directions and multiply with the force magnitude
    force_alpha = {  distance_vector.y() * force_magnitude,
                   - distance_vector.x() * force_magnitude};
+   if(std::isnan(force_alpha(0)) || std::isnan(force_alpha(1))) {
+       std::cout << "dumb";
+   }
 }
 
 /**

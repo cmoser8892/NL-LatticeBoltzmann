@@ -26,6 +26,7 @@ void write_uy(node* node,flowfield_t* ux);
 double calculate_rho(oNode* n, int offset);
 // unified calculate method
 std::tuple<double,double,double> calculate_macro_population(array_t* p);
+std::tuple<double, double> test_calculate_rho_both(array_t* p);
 // kernel functions
 double kernel_A(double range);
 double kernel_B(double range);
