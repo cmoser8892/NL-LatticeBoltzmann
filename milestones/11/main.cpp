@@ -74,9 +74,10 @@ int main(int argc, char *argv[]) {
             }
         }
         if(once) {
-            sim.get_data(false);
+            //sim.get_data(false);
         }
     }
+
     sim.get_data(true);
     if(ng.straight_surfaces != nullptr)
         ng.straight_surfaces->write_out_surface();

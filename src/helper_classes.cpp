@@ -38,11 +38,33 @@ bool rhoWatchdog::check(node *n,int step) {
 
 bool rhoWatchdog::check_force(fNode *n, int step) {
     bool return_value = false;
+    // offset from the node
+    int offset = step & 0x1;
+    double current_rho = 0;
+    // get the old value
+    double rho_old = rho(int(n->position(0)),int(n->position(1)));
     auto [rho_1, rho_2] = test_calculate_rho_both(&n->populations);
+    if(offset == 0) {
+        current_rho = rho_1;
+    }
+    else {
+        current_rho = rho_2;
+    }
+    if((abs(rho_old-current_rho)) >= (abs(rho_old*sensitivity))) {
+        std::cerr << "Rho-diviation at " << step << std::endl;
+        std::cerr << "Position: " << n->position.x()
+                  << " ," << n->position.y()
+                  << std::endl;
+        std::cerr << "Rho previous: " << rho_old << std::endl;
+        std::cerr << "Rho now: " << current_rho << std::endl;
+        std::cerr << std::endl;
+        return_value = true;
+    }
     if(std::isnan(rho_1) || std::isnan(rho_2)) {
         std::cerr << "Rho is nan" << std::endl;
         return_value = true;
     }
+    rho(int(n->position(0)),int(n->position(1))) = current_rho;
     return return_value;
 }
 
