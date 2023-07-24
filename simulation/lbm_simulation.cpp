@@ -379,7 +379,7 @@ void ibmSimulation::run(int current_step) {
         // collision
         collision(&population,rho,ux,uy);
         // frogging
-        if(n->boundary_type == NO_BOUNDARY) {
+        if(n->boundary_type == NO_BOUNDARY || n->boundary_type == IBM_INNER) {
             f += calculate_rotation_force(&n->position,&n->velocity);
         }
         forcing_term(n,&f);

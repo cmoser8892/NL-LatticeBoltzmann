@@ -634,6 +634,7 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     EXPECT_EQ(regular,1);
     EXPECT_EQ(error, 0);
 }
+
 /**
  * Tests weather or not the nodes are setup correctly, they are.
  * @test
@@ -687,6 +688,10 @@ TEST(IbmTest,rho_init) {
     }
 }
 
+/**
+ * Tests if the velocity interpolation from node to marker works.
+ * @tests
+ */
 TEST(IbmTest,velocity_interpolation) {
     // init the kernel 3 variant
     point_t starter = {5,5};
@@ -758,22 +763,69 @@ TEST(IbmTest,velocity_interpolation) {
     EXPECT_EQ(sim.markers[final]->velocity.y(),test_velocity.y());
 }
 
-TEST(IbmTest, aggregated_force_in_node) {
-
+TEST(IbmTest, neighbors_outside_ibm) {
+    // todo not sure what the right behaviour here is
+    // prob best to stuff the links is to add an additional layer
+    int corrector = 4;
+    // init the kernel 3 variant
+    point_t starter = {5,5};
+    vector_t test_velocity = {1,1};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 25;
+    double side_length = 10; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_C;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface(canvas_size,ibm_distance);
+    // test the general ibm stuff
+    int ibm_outer = 0;
+    int ibm_inner = 0;
+    int ibm_regular = 0;
+    int ibm_error = 0;
+    // neighborhood
+    array_t neighborhood;
+    neighborhood.setZero(9);
+    for(auto ni : ng.node_infos) {
+        if(ni->boundary == IBM_OUTER) {
+            ++ibm_outer;
+        }
+        else if(ni->boundary == IBM_INNER) {
+            ++ibm_inner;
+        }
+        else if(ni->boundary == NO_BOUNDARY) {
+            ++ibm_regular;
+        }
+        else {
+            ++ibm_error;
+        }
+        ++neighborhood[(long)ni->links.size()];
+    }
+    // Test general ibm stuff
+    EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length)-corrector);
+    EXPECT_EQ(ibm_regular,1);
+    EXPECT_EQ(ibm_error, 0);
+    // Test the neighborhood
+    std::cout << neighborhood << std::endl;
 }
-
-TEST(IbmTest, calculate_force_density) {
-
-}
-
-TEST(IbmTest, self_stream) {
-    // tests the self stream in nodes that have less than 8 links
-}
-
-TEST(IbmTest, force_strength) {
-    // tests for correct values in the force implementation
-}
-
 
 // todo there are some strange cases still left -> investigate
 // todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool her
