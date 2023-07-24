@@ -1,5 +1,10 @@
 # include "lbm_simulation.h"
 
+/**
+ * Calculates the macro without forces.
+ * @param a
+ * @return
+ */
 std::tuple<double, double, double> ibmSimulation::calculate_macro(array_t* a) {
     int o = offset_node;
     auto p = a->begin() + o;
@@ -29,6 +34,12 @@ std::tuple<double, double, double> ibmSimulation::calculate_macro(array_t* a) {
     return {rho, ux, uy};
 }
 
+/**
+ * Calculates the macro with forces.
+ * @param a
+ * @param previous_force
+ * @return
+ */
 std::tuple<double, double, double> ibmSimulation::calculate_macro_force(array_t *a, array_t *previous_force) {
     // calculate rho ux and uy
     // shorthands
@@ -96,6 +107,12 @@ std::tuple<double, double, double> ibmSimulation::calculate_macro_force(array_t 
     uy = (uy+force_add.y())/rho;
     return {rho, ux, uy};
 }
+
+/**
+ * Streams forward the channels.
+ * @param a
+ * @param list
+ */
 void ibmSimulation::streaming(array_t *a, std::vector<link_pointer> *list) {
     // just the sim
     for(int i = 1; i < CHANNELS; ++i) {
@@ -104,6 +121,14 @@ void ibmSimulation::streaming(array_t *a, std::vector<link_pointer> *list) {
         (list->operator[](i-1) + offset_sim).operator*() = origin.operator*();
     }
 }
+
+/**
+ * Collision term.
+ * @param a
+ * @param rho
+ * @param ux
+ * @param uy
+ */
 void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
     // undrosed collision term
     int o = offset_node;
@@ -120,12 +145,23 @@ void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
     (p + 8).operator*() -= relaxation * ((p + 8).operator*() - weights.col(8).x()*rho*(1+ 3*ux- 3*uy- 9*ux*uy+ 3*(ux*ux +uy*uy)));
 }
 
+/**
+ * Calculates the rotation force.
+ * @param pos
+ * @param velocity
+ * @return
+ */
 vector_t ibmSimulation::calculate_rotation_force(point_t* pos, vector_t *velocity) {
     // rot_force->calculate_F_rotation(velocity->x(),velocity->y(),pos);
     rot_force->calculate_F_circle(pos,0.0001,velocity->x(),velocity->y());
     return rot_force->return_force_alpha();
 }
 
+/**
+ * Calculates and applies the truncation force term and applies it to the populations.
+ * @param n
+ * @param force
+ */
 void ibmSimulation::forcing_term(fNode* n,vector_t* force) {
     // calculate the forcing term and use add the aggregate boundary force
     // calculate fi and correct the original collision term
@@ -145,6 +181,12 @@ void ibmSimulation::forcing_term(fNode* n,vector_t* force) {
     }
 }
 
+/**
+ * Puts out the force to the markers.
+ * @param handles
+ * @param pos
+ * @return
+ */
 vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t* pos) {
     vector_t returns ={0,0};
     // we look for markers in the vicinity of our node and add up the total force
@@ -157,6 +199,12 @@ vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t*
     return returns;
 }
 
+/**
+ * Distributes the velocity from the nodes to the markers.
+ * @param handles
+ * @param pos
+ * @param v
+ */
 void ibmSimulation::distribute_velocity(std::vector<handle_t> *handles,  point_t* pos, vector_t * v) {
     // we distribute and put the velocity back into the makers
     for(auto h : *handles) {
@@ -167,6 +215,9 @@ void ibmSimulation::distribute_velocity(std::vector<handle_t> *handles,  point_t
     }
 }
 
+/**
+ * Propagates the markers and calculates the force.
+ */
 void ibmSimulation::propagate_calculate_force_marker() {
     // we do this after dealing with the force markers
     for(auto m : markers) {
@@ -182,11 +233,23 @@ void ibmSimulation::propagate_calculate_force_marker() {
     }
 }
 
+/**
+ * Calls the kernel functions that was set (Hides the ugly kernel-pointer call).
+ * @param p
+ * @return
+ */
 double ibmSimulation::kernel_function_call(point_t *p) {
     vector_t temp = *p/2;
     return (*kernel_function)(&temp);
 }
 
+/**
+ * Constructor.
+ * @param g
+ * @param f
+ * @param m
+ * @param s
+ */
 ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t s) {
     node_generator = g;
     rot_force = f;
@@ -195,9 +258,18 @@ ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector
     size.y = s.y();
 }
 
+/**
+ * Deconstructor.
+ */
 ibmSimulation::~ibmSimulation() {
     delete_containers();
 }
+
+/**
+ * Sets the simulation parameters and sets the kernel function.
+ * @attention Necessary to setup a sim as it sets the kernel function.
+ * @param t
+ */
 void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
     // fix the omega parameter to th new one
@@ -224,6 +296,10 @@ void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
     // ATTENTION should not be set outside of this function
     parameters.ibm_range =kernel_id_to_lattice_search(t.kernel_in_use);
 }
+
+/**
+ * Init the nodes form the node generator.
+ */
 void ibmSimulation::init() {
     // setup the basic nodes
     for(auto node_info : node_generator->node_infos) {
@@ -275,6 +351,10 @@ void ibmSimulation::init() {
 
 }
 
+/**
+ * Runs a step for the sim.
+ * @param current_step
+ */
 void ibmSimulation::run(int current_step) {
     // offset control
     offset_sim = ((current_step +1) & 0x1) * 9;
@@ -314,6 +394,10 @@ void ibmSimulation::run(int current_step) {
     propagate_calculate_force_marker();
 }
 
+/**
+ * Get the data and prints it to file or not.
+ * @param write_to_file
+ */
 void ibmSimulation::get_data(bool write_to_file) {
     /// flowfields
     flowfield_t ux;
@@ -338,6 +422,9 @@ void ibmSimulation::get_data(bool write_to_file) {
     write_flowfield_data(&rho, "rho_data_file",write_to_file);
 }
 
+/**
+ * Deletes the the containers.
+ */
 void ibmSimulation::delete_containers() {
     for(auto n : nodes) {
         delete n;
@@ -349,22 +436,43 @@ void ibmSimulation::delete_containers() {
     markers.clear();
 }
 
+/**
+ * Tests the propate marker function.
+ */
 void ibmSimulation::test_propagate_markers() {
     propagate_calculate_force_marker();
 }
 
+/**
+ * Tests weather or not the right kernel function is set.
+ * @param p
+ * @return
+ */
 double ibmSimulation::test_kernel_function(point_t *p) {
     return (*kernel_function)(p);
 }
 
+/**
+ * Tests a kernel function call.
+ * @param p
+ * @return
+ */
 double ibmSimulation::test_kernel_function_call(point_t* p) {
     return kernel_function_call(p);
 }
 
+/**
+ * Tests a macro call.
+ * @param a
+ * @return
+ */
 std::tuple<double,double,double> ibmSimulation::test_macro(array_t *a) {
     return calculate_macro(a);
 }
 
+/**
+ * Tests the distribute velocity functionality.
+ */
 void ibmSimulation::test_propagate_velocity() {
     for(auto n : nodes) {
         std::vector<handle_t> markers_in_vicinity;

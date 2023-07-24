@@ -36,6 +36,9 @@ bool rhoWatchdog::check(node *n,int step) {
     return return_value;
 }
 
+/**
+ * Checks that forced nodes dont exceed Rho values.
+ */
 bool rhoWatchdog::check_force(fNode *n, int step) {
     bool return_value = false;
     // offset from the node

@@ -235,9 +235,6 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
     vector3d_t velocity_vec = {velocity.x(),velocity.y(),0};
     vector3d_t result = -2 *(velocity_vec.cross(omega_vec));
     // crash in case we get a z value
-    if(result.z() != 0) {
-       std::cout<< "h";
-    }
     assert(result.z() == 0);
     force_alpha.x() += result.x();
     force_alpha.y() += result.y();
