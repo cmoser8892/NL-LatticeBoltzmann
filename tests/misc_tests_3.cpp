@@ -717,7 +717,7 @@ TEST(IbmTest,velocity_interpolation) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance+1);
+    ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
     ng.visualize_2D_nodes_labels(NO_BOUNDARY);
     ng.visualize_2D_nodes_labels(IBM_INNER);
@@ -741,7 +741,8 @@ TEST(IbmTest,velocity_interpolation) {
     }
     // set to a value and look if it makes sense
     // put the veloctiy in the markers
-    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,ibm_distance + 1);
+    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,ibm_distance);
+    std::cout << relevant.size() << std::endl;
     for(auto h : relevant) {
         handle_t pos = h - 1;
         sim.nodes[pos]->velocity = test_velocity;

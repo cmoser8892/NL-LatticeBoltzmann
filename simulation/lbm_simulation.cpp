@@ -368,7 +368,7 @@ std::tuple<double,double,double> ibmSimulation::test_macro(array_t *a) {
 void ibmSimulation::test_propagate_velocity() {
     for(auto n : nodes) {
         std::vector<handle_t> markers_in_vicinity;
-        if(n->boundary_type == IBM_OUTER) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
             // find the markers in the vicinity
             markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
             // ibm contribution to the velocity
