@@ -43,7 +43,6 @@ TEST(IbmTest, init_ibm) {
     // generator
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),81);
     // force
     point_t dk = {0,0};
@@ -101,7 +100,6 @@ TEST(IbmTest, nodes_placement_links) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
     simulation_parameters params;
     params.ibm_range = ibm_distance;
     point_t dk = {0,0};
@@ -718,10 +716,12 @@ TEST(IbmTest,velocity_interpolation) {
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
-    ng.visualize_2D_nodes_labels(NO_BOUNDARY);
-    ng.visualize_2D_nodes_labels(IBM_INNER);
-    ng.visualize_2D_nodes_labels(IBM_OUTER);
+    if(0) {
+        ng.visualize_2D_nodes();
+        ng.visualize_2D_nodes_labels(NO_BOUNDARY);
+        ng.visualize_2D_nodes_labels(IBM_INNER);
+        ng.visualize_2D_nodes_labels(IBM_OUTER);
+    }
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
@@ -742,7 +742,6 @@ TEST(IbmTest,velocity_interpolation) {
     // set to a value and look if it makes sense
     // put the veloctiy in the markers
     std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,ibm_distance);
-    std::cout << relevant.size() << std::endl;
     for(auto h : relevant) {
         handle_t pos = h - 1;
         sim.nodes[pos]->velocity = test_velocity;

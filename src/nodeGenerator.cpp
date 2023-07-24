@@ -54,7 +54,7 @@ void nodeGenerator::linear_generation() {
                 n->handle = handle_counter;
                 n->position = current;
                 n->type = WET;
-                n->boundary = INIT_NONE;
+                n->boundary = NO_BOUNDARY;
                 // dont forget to increase the handle counter each time
                 handle_counter++;
                 node_infos.push_back(n);
