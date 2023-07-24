@@ -57,7 +57,7 @@ TEST(IbmTest, init_ibm) {
     // check ibm nodes
     long ibm_numbers = 0;
     for(auto n : sim.nodes) {
-        if(n->boundary_type == IBM) {
+        if(n->boundary_type == IBM_OUTER) {
             ibm_numbers++;
         }
     }
@@ -114,7 +114,7 @@ TEST(IbmTest, nodes_placement_links) {
     int pure_nodes = 0;
     int undefined = 0;
     for(auto n : sim.nodes) {
-        if(n->boundary_type == IBM) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
             ibm_nodes++;
         }
         else if(n->boundary_type == NO_BOUNDARY) {
@@ -209,7 +209,7 @@ TEST(IbmTest, marker_movement_around) {
     int pure_nodes = 0;
     int undefined = 0;
     for(auto n : sim.nodes) {
-        if(n->boundary_type == IBM) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
             ibm_nodes++;
         }
         else if(n->boundary_type == NO_BOUNDARY) {
@@ -510,7 +510,7 @@ TEST(IbmTest, right_amount_kernel_nodes_A) {
     int regular = 0;
     int error = 0;
     for(auto ni : ng.node_infos) {
-        if(ni->boundary == IBM) {
+        if((ni->boundary == IBM_OUTER) || (ni->boundary == IBM_INNER)) {
             ++ibm;
         }
         else if(ni->boundary == NO_BOUNDARY) {
@@ -564,7 +564,7 @@ TEST(IbmTest, right_amount_kernel_nodes_B) {
     int regular = 0;
     int error = 0;
     for(auto ni : ng.node_infos) {
-        if(ni->boundary == IBM) {
+        if((ni->boundary == IBM_OUTER)  || (ni->boundary == IBM_INNER)) {
             ++ibm;
         }
         else if(ni->boundary == NO_BOUNDARY) {
@@ -618,7 +618,10 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     int regular = 0;
     int error = 0;
     for(auto ni : ng.node_infos) {
-        if(ni->boundary == IBM) {
+        if(ni->boundary == IBM_OUTER) {
+            ++ibm;
+        }
+        else if(ni->boundary == IBM_INNER) {
             ++ibm;
         }
         else if(ni->boundary == NO_BOUNDARY) {
@@ -714,7 +717,11 @@ TEST(IbmTest,velocity_interpolation) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface(canvas_size,ibm_distance+1);
+    ng.visualize_2D_nodes();
+    ng.visualize_2D_nodes_labels(NO_BOUNDARY);
+    ng.visualize_2D_nodes_labels(IBM_INNER);
+    ng.visualize_2D_nodes_labels(IBM_OUTER);
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
@@ -734,7 +741,7 @@ TEST(IbmTest,velocity_interpolation) {
     }
     // set to a value and look if it makes sense
     // put the veloctiy in the markers
-    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,4);
+    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,ibm_distance + 1);
     for(auto h : relevant) {
         handle_t pos = h - 1;
         sim.nodes[pos]->velocity = test_velocity;

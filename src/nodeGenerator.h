@@ -67,6 +67,7 @@ class nodeGenerator {
     void board_creation(unsigned int size);
     void delete_node_infos();
     void visualize_2D_nodes();
+    void visualize_2D_nodes_labels(boundaryType_t t);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODEGENERATOR_H

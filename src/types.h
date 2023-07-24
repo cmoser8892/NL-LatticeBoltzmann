@@ -5,7 +5,7 @@
 
 #define CHANNELS 9 /**< D2Q9 has 9 channels */
 #define CARDINAL_DIRECTIONS 4
-#define KERNEL_3_FACTOR 2 /**< When we give a range for IBM we have to multiply with 2 to get the correct cutoff */
+#define KERNEL_3_FACTOR 2 /**< When we give a range for IBM_OUTER we have to multiply with 2 to get the correct cutoff */
 
 using array_t = Eigen::ArrayXd; /**< Eigen redefinition, a simple array to hold data */
 using matrix_t = Eigen::ArrayXXd; /**< Eigen redefinition, an array with 2 dimensions */
@@ -46,12 +46,14 @@ typedef enum nodeIdentifier {
  * @note the existence of a tag does not guaranty that there is actual an implementation
  */
 typedef enum boundaryType {
-    NO_BOUNDARY = 0, /**<  Most likely an error or not set */
+    INIT_NONE = 0,
+    NO_BOUNDARY, /**<  Most likely an error or not set */
     BOUNCE_BACK, /**< Bounce back type boundary */
     BOUNCE_BACK_MOVING, /**<  Moving bounce back type boundary */
     PERIODIC, /**<  periodic type boundary */
     PRESSURE_PERIODIC, /**<  pressure periodic tag */
-    IBM,            /**< Immersed Boundary Method tag */
+    IBM_OUTER,          /**< Immersed Boundary Method tag, outside of the boundary markers */
+    IBM_INNER,          /**< Immersed Boundary Method tag, inside of the boundary markers */
     OPEN_INLET,
     OPEN_OUTLET
 }boundaryType_t;

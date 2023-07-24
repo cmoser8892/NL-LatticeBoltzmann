@@ -54,7 +54,7 @@ void nodeGenerator::linear_generation() {
                 n->handle = handle_counter;
                 n->position = current;
                 n->type = WET;
-                n->boundary = NO_BOUNDARY;
+                n->boundary = INIT_NONE;
                 // dont forget to increase the handle counter each time
                 handle_counter++;
                 node_infos.push_back(n);
@@ -261,7 +261,7 @@ void nodeGenerator::board_creation(unsigned int size) {
         n->handle = handle_counter;
         n->position = point;
         n->type = UNKNOWN;
-        n->boundary = NO_BOUNDARY;
+        n->boundary = INIT_NONE;
         // dont forget to increase the handle counter each time
         handle_counter++;
         // container updates
@@ -279,6 +279,7 @@ void nodeGenerator::check_nodes_inside() {
         auto n = node_infos[i];
         bool not_outside = straight_surfaces->node_inside_simple(n);
         if(!not_outside) {
+            n->type = WET;
             n->boundary = NO_BOUNDARY;
             // should not be removed after all
             to_be_removed[i] = false;
@@ -303,7 +304,16 @@ void nodeGenerator::check_nodes_ibm(double range) {
         std::vector<handle_t> affected = rpkh.ranging_key_translation(*mark,range);
         for(auto handle : affected) {
             handle = handle - 1; // handle to the guy
-            node_infos[handle]->boundary = IBM;
+            auto current_node = node_infos[handle];
+            // check if inside
+            if(current_node->boundary == NO_BOUNDARY) {
+                current_node->boundary = IBM_INNER;
+            }
+            // dont relabel
+            else if(current_node->boundary == INIT_NONE) {
+                current_node->type = DRY;
+                current_node->boundary = IBM_OUTER;
+            }
             to_be_removed[handle] = false;
         }
     }
@@ -573,4 +583,24 @@ void nodeGenerator::visualize_2D_nodes() {
     }
     std::cout << "Nodes allocated" << std::endl;
     std::cout << output << std::endl << std::endl;
+}
+
+/**
+ *
+ * @param t
+ */
+void nodeGenerator::visualize_2D_nodes_labels(boundaryType_t t) {
+    // setup the output field
+    flowfield_t output;
+    if(points != nullptr)
+        output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    else
+        output.setZero(size_canvas,size_canvas);
+    // give out based on th tag
+    for(auto b : node_infos) {
+        if(b->boundary == t)
+            ++output(int(b->position.x()),int(b->position.y()));
+    }
+    std::cout << "Nodes with that tag: " << t << std::endl;
+    std::cout << output << std::endl;
 }

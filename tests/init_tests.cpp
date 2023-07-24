@@ -927,7 +927,7 @@ TEST(InitTests, up_down_boundary) {
 }
 
 /**
- * Test/showcase of the surface variant of the boundary construction used for IBM boundaries.
+ * Test/showcase of the surface variant of the boundary construction used for IBM_OUTER boundaries.
  * @test
  */
 TEST(InitTests, basic_surface_test) {
@@ -1033,7 +1033,7 @@ TEST(InitTests, ibm_flagging) {
     // check amount of ibm flagged nodes (not really necessary they can also be flagged as no boundary the markers hold all the boundary info
     int ibm_count = 0;
     for(auto node : ng.node_infos) {
-        if(node->boundary == IBM) {
+        if(node->boundary == IBM_OUTER || node->boundary == IBM_INNER) {
             ++ibm_count;
         }
     }
@@ -1076,7 +1076,7 @@ TEST(InitTests, on_point_surface) {
     // check amount of ibm flagged nodes (not really necessary they can also be flagged as no boundary the markers hold all the boundary info
     int ibm_count = 0;
     for(auto node : ng.node_infos) {
-        if(node->boundary == IBM) {
+        if((node->boundary == IBM_OUTER) || (node->boundary == IBM_INNER)) {
             ++ibm_count;
         }
     }

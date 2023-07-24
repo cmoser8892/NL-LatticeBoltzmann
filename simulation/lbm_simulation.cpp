@@ -217,7 +217,7 @@ void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
         break;
     }
     default:
-        std::cerr << "Unknown kernel Type (IBM)" << std::endl;
+        std::cerr << "Unknown kernel Type (IBM_OUTER)" << std::endl;
         break;
     }
     // set the correct range
@@ -286,7 +286,7 @@ void ibmSimulation::run(int current_step) {
         vector_t f = {0,0};
         std::vector<handle_t> markers_in_vicinity;
         auto population = n->populations;
-        if(n->boundary_type == IBM) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
             // find the markers in the vicinity
             markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
             // ibm contribution to the force
@@ -306,7 +306,7 @@ void ibmSimulation::run(int current_step) {
         // streaming
         streaming(&population,&n->neighbors);
         // distribute the new velocity to the markers
-        if(n->boundary_type == IBM) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)){
             distribute_velocity(&markers_in_vicinity,&n->position,&n->velocity);
         }
     }
@@ -368,7 +368,7 @@ std::tuple<double,double,double> ibmSimulation::test_macro(array_t *a) {
 void ibmSimulation::test_propagate_velocity() {
     for(auto n : nodes) {
         std::vector<handle_t> markers_in_vicinity;
-        if(n->boundary_type == IBM) {
+        if(n->boundary_type == IBM_OUTER) {
             // find the markers in the vicinity
             markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
             // ibm contribution to the velocity
