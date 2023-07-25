@@ -795,7 +795,7 @@ TEST(IbmTest, neighbors_outside_ibm) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,ibm_distance);
     // test the general ibm stuff
     int ibm_outer = 0;
     int ibm_inner = 0;
@@ -832,6 +832,7 @@ TEST(IbmTest, neighbors_outside_ibm) {
             ++error;
         }
         ++neighborhood[(long)ni->links.size()];
+        EXPECT_EQ(ni->links.size(),8);
     }
     // Test general ibm stuff
     EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length)-corrector);
@@ -841,7 +842,7 @@ TEST(IbmTest, neighbors_outside_ibm) {
     EXPECT_EQ(ibm_regular + ibm_inner + ibm_outer, wet);
     EXPECT_EQ(error,0);
     // Test the neighborhood
-    std::cout << neighborhood << std::endl;
+    EXPECT_EQ(neighborhood[8],ng.node_infos.size());
 }
 
 // todo there are some strange cases still left -> investigate

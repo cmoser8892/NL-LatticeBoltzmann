@@ -466,6 +466,40 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
     }
 }
 
+void nodeGenerator::fill_neighborhood_holes() {
+    int counter = 0;
+    for(auto ni : node_infos) {
+        // find the boarder nodes
+        int link_channel = 1;
+        if(ni->links.size() < 8) {
+            counter++;
+            for(int pos = 0; pos < 8; ++pos) {
+                toLinks_t link;
+                if(pos < ni->links.size()) {
+                    link = ni->links[pos];
+                }
+                else {
+                    link.channel = 0;
+                    link.handle = 0;
+                }
+                // expected channel
+                if(link.channel == link_channel) {
+                    // nop
+                }
+                else {
+                    // create a new link and emplace it
+                    toLinks_t new_link;
+                    new_link.handle = ni->handle;
+                    int linked_channel = switch_link_dimensions(link_channel);
+                    new_link.channel = linked_channel;
+                    ni->links.insert(ni->links.begin()+pos ,new_link);
+                }
+                ++link_channel;
+            }
+        }
+    }
+}
+
 /// public
 /**
  * Set the 2D discovery vector, the function linear generation will use that vector during node discovery.
@@ -554,6 +588,27 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
         check_nodes_ibm(range);
         remove_unwanted_nodes(&handle_counter);
         determine_neighbors();
+        write_data_to_file(save);
+    }
+}
+
+void nodeGenerator::init_surface_return(unsigned int size, double range) {
+    // correct the range to
+    if(!read_data_from_file()) {
+        // create the drawing canvas
+        board_creation(size);
+        handle_t handle_counter = 1;
+        // generate the markers
+        if(markers == nullptr) {
+            markers = new markerIBM(straight_surfaces);
+            markers->distribute_markers();
+        }
+        // check and reform nodes
+        check_nodes_inside();
+        check_nodes_ibm(range);
+        remove_unwanted_nodes(&handle_counter);
+        determine_neighbors();
+        fill_neighborhood_holes();
         write_data_to_file(save);
     }
 }

@@ -50,6 +50,7 @@ class nodeGenerator {
     void add_boundary_nodes(handle_t* current);
     void reduce_boundary_neighborhood();
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
+    void fill_neighborhood_holes();
   public:
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
     std::vector<bool> to_be_removed; /**< Master control remove the node or not */
@@ -64,6 +65,7 @@ class nodeGenerator {
     void init(unsigned int size);
     void init_fused(unsigned int size);
     void init_surface(unsigned int size, double range);
+    void init_surface_return(unsigned int size, double range);
     void board_creation(unsigned int size);
     void delete_node_infos();
     void visualize_2D_nodes();
