@@ -307,11 +307,12 @@ void nodeGenerator::check_nodes_ibm(double range) {
             auto current_node = node_infos[handle];
             // check if inside
             if(current_node->boundary == NO_BOUNDARY) {
+                current_node->type = WET;
                 current_node->boundary = IBM_INNER;
             }
             // dont relabel
             else if(current_node->boundary == INIT_NONE) {
-                current_node->type = DRY;
+                current_node->type = WET;
                 current_node->boundary = IBM_OUTER;
             }
             to_be_removed[handle] = false;
@@ -336,7 +337,7 @@ void nodeGenerator::remove_unwanted_nodes(handle_t *current) {
         else {
             // add to the reformed nodes
             node->handle = *current;
-            node->type = WET;
+            // node->type = WET;
             reformed_nodes.push_back(node);
             // increment
             ++(*current);
@@ -473,6 +474,7 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
 void nodeGenerator::set_discovery_vector(vector_t set) {
     discovery_vector = set;
 }
+
 /**
  * Sets the redo save, weather or not we save to text or not.
  * @param r redo
@@ -586,7 +588,7 @@ void nodeGenerator::visualize_2D_nodes() {
 }
 
 /**
- *
+ * Visualize 2d nodes based on the label.
  * @param t
  */
 void nodeGenerator::visualize_2D_nodes_labels(boundaryType_t t) {

@@ -837,8 +837,8 @@ TEST(IbmTest, neighbors_outside_ibm) {
     EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length)-corrector);
     EXPECT_EQ(ibm_regular,1);
     EXPECT_EQ(ibm_error, 0);
-    EXPECT_EQ(ibm_outer, dry);
-    EXPECT_EQ(ibm_regular + ibm_inner, wet);
+    EXPECT_EQ(0, dry);
+    EXPECT_EQ(ibm_regular + ibm_inner + ibm_outer, wet);
     EXPECT_EQ(error,0);
     // Test the neighborhood
     std::cout << neighborhood << std::endl;
