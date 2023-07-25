@@ -801,10 +801,14 @@ TEST(IbmTest, neighbors_outside_ibm) {
     int ibm_inner = 0;
     int ibm_regular = 0;
     int ibm_error = 0;
+    int wet = 0;
+    int dry = 0;
+    int error = 0;
     // neighborhood
     array_t neighborhood;
     neighborhood.setZero(9);
     for(auto ni : ng.node_infos) {
+        // boundary
         if(ni->boundary == IBM_OUTER) {
             ++ibm_outer;
         }
@@ -817,12 +821,25 @@ TEST(IbmTest, neighbors_outside_ibm) {
         else {
             ++ibm_error;
         }
+        // type
+        if(ni->type == WET) {
+            ++wet;
+        }
+        else if(ni->type == DRY) {
+            ++dry;
+        }
+        else {
+            ++error;
+        }
         ++neighborhood[(long)ni->links.size()];
     }
     // Test general ibm stuff
     EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length)-corrector);
     EXPECT_EQ(ibm_regular,1);
     EXPECT_EQ(ibm_error, 0);
+    EXPECT_EQ(ibm_outer, dry);
+    EXPECT_EQ(ibm_regular + ibm_inner, wet);
+    EXPECT_EQ(error,0);
     // Test the neighborhood
     std::cout << neighborhood << std::endl;
 }

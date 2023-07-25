@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    std::cout << ibm_distance << std::endl;
     ng.init_surface(canvas_size,ibm_distance);
     ng.visualize_2D_nodes();
     std::cout << ng.node_infos.size() << std::endl;
@@ -55,7 +54,6 @@ int main(int argc, char *argv[]) {
     }
     // run the sim
     for(int i = 0; i < steps; ++i) {
-        bool once = false;
         if(i % 1000 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
@@ -63,17 +61,16 @@ int main(int argc, char *argv[]) {
         for(auto m : sim.markers) {
             if(marker_watch.check(m->position,m->handle) == true) {
                 marker_check++;
-                if(0) {
+                if(1) {
                     std::cout << m->position.x() << ", " << m->position.y() << "//"
                               << m->original_position.x() << ", " << m->original_position.y() << std::endl;
                 }
             }
         }
         // watchdog part
-        if(0) {
+        if(1) {
             for(auto n : sim.nodes) {
                 if(dog.check_force(n,i)) {
-                    once = true;
                 }
             }
         }
