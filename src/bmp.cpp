@@ -1,9 +1,19 @@
 #include "bmp.h"
 
+/**
+ * Constructor.
+ * @param p
+ */
 bmpReader::bmpReader(std::filesystem::path p) {
     path = p;
 }
 
+/**
+ * Alignes bmp strides.
+ * @param align_stride
+ * @param row_stride
+ * @return
+ */
 uint32_t bmpReader::make_stride_aligned(uint32_t align_stride, uint32_t row_stride) {
     uint32_t new_stride = row_stride;
     while (new_stride % align_stride != 0) {
@@ -12,6 +22,9 @@ uint32_t bmpReader::make_stride_aligned(uint32_t align_stride, uint32_t row_stri
     return new_stride;
 }
 
+/**
+ * Reads the bmp file into an internal and usable bmp file structure (bmp).
+ */
 void bmpReader::read() {
     std::filesystem::path file{path};
     if(std::filesystem::exists(file)) {
