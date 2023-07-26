@@ -5,6 +5,7 @@
 
 #define CHANNELS 9 /**< D2Q9 has 9 channels */
 #define CARDINAL_DIRECTIONS 4
+#define KERNEL_3_FACTOR 2 /**< When we give a range for IBM we have to multiply with 2 to get the correct cutoff */
 
 using array_t = Eigen::ArrayXd; /**< Eigen redefinition, a simple array to hold data */
 using matrix_t = Eigen::ArrayXXd; /**< Eigen redefinition, an array with 2 dimensions */
@@ -50,9 +51,20 @@ typedef enum boundaryType {
     BOUNCE_BACK_MOVING, /**<  Moving bounce back type boundary */
     PERIODIC, /**<  periodic type boundary */
     PRESSURE_PERIODIC, /**<  pressure periodic tag */
+    IBM,            /**< Immersed Boundary Method tag */
     OPEN_INLET,
     OPEN_OUTLET
 }boundaryType_t;
+
+/**
+ * Kernel identifiers used for LBM boundaries.
+ * @ref Viggen P.469
+ */
+typedef enum kernelType {
+    KERNEL_A = 0, /**< Phi_2(x) -> we need look 2 lattice sites around the marker */
+    KERNEL_B,     /**< Phi_3(x) -> we need look 3 lattice sites around the marker */
+    KERNEL_C      /**< Phi_4(x) -> we need look 4 lattice sites around the marker */
+}kernelType_t;
 
 /**
  * Link to other neighboring nodes
@@ -70,7 +82,23 @@ typedef struct simulation_parameters {
     double relaxation = 0.5; /**<  current relaxation */
     double u_wall = 0; /**<  u wall */
     double dt = 1; /**<  just leave it a 1, simulation will crash and burn otherwise */
+    double ibm_range = 2.1; /**< ibm_range */
+    double lattice_length = 1.0;
+    double k = 1;
+    double mean_marker_distance = 0.75;
+    kernelType_t kernel_in_use;
 }simulation_parameters_t;
+
+/**
+ * Straight definition.
+ */
+typedef struct straight {
+    // s = p + t*d
+    point_t point; /**<  Origin of the straight */
+    vector_t direction; /**<  Direction of the straight line */
+    // validity of the straight
+    double max_t = 0; /**<  Length of that line */
+}straight_t;
 
 // eigen smart pointer
 using link_pointer = Eigen::internal::pointer_based_stl_iterator<array_t>; /// link pointer directly to an array

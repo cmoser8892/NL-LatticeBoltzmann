@@ -164,6 +164,9 @@ basicSimulation::basicSimulation(boundaryPointConstructor *c, nodeGenerator *g) 
  */
 basicSimulation::~basicSimulation() {
     delete_nodes();
+    if(self_node_generator) {
+        delete node_generator;
+    }
 }
 void basicSimulation::set_simulation_parameters(const simulation_parameters_t t) {
     parameters = t;
@@ -180,6 +183,7 @@ void basicSimulation::init() {
     if(node_generator == nullptr) {
         // if the node generator hasnt run we have to run him
         node_generator = new nodeGenerator(boundary_points);
+        self_node_generator = true;
         node_generator->init();
     }
     // then rewrite the structure into the actual nodes

@@ -5,6 +5,9 @@
 #include "helper_functions.h"
 #include "neighborhood.h"
 #include "image_converter.h"
+#include "marker.h"
+#include "forces.h"
+#include "lbm_simulation.h"
 #include <gtest/gtest.h>
 // the misc file got to laggy apparently i should stop at 2000 lines
 
@@ -596,7 +599,6 @@ TEST(FunctionalTest, lagragian_use_case) {
     point_t lagragian_point = {12.2,13.2};
     int range = 2;
     std::vector<handle_t> test = pkh.ranging_key_translation(lagragian_point, range);
-    std::cout << test.size() << std::endl;
     EXPECT_EQ(test.size(),25);
 }
 
@@ -626,6 +628,31 @@ TEST(FunctionalTest, zero_ranging_pgk) {
 }
 
 /**
+ * Tests the envisioned use case for a marker force disipoation.
+ * @test
+ * @see rangingPointKeyHash::ranging_key_translation()
+ */
+TEST(FunctionalTest, simple_lagra_use_case) {
+    rangingPointKeyHash rpkh;
+    // go over vector
+    std::vector<point_t> storage_points;
+    int i = 1;
+    for(int x = 0; x < 5; ++x) {
+        for(int y = 0; y < 5; ++y) {
+            point_t c = {x,y};
+            rpkh.fill_key(i,c);
+            storage_points.push_back(c);
+            ++i;
+        }
+    }
+    // we search in a standard 2 wide search (for one of the kernel functions)
+    point_t lagragian_point = {2.5,2.5};
+    int range = 2;
+    std::vector<handle_t> test = rpkh.ranging_key_translation(lagragian_point, range);
+    EXPECT_EQ(16,test.size());
+}
+
+/**
  * Just a check weather or not adding coordinates works.
  * @test
  * @see add_coordinates()
@@ -642,7 +669,347 @@ TEST(FunctionalTest, coord_add) {
     EXPECT_EQ(c.y, 8);
 }
 
+/**
+ * Basic tests for the kernel 1 function.
+ * @test
+ * @see kernel_A()
+ */
+TEST(FunctionalTest, kernel_A) {
+    double range = 0;
+    double range_x = 1;
+    range = 0;
+    EXPECT_EQ(kernel_A(range),1);
+    range = 1;
+    EXPECT_EQ(kernel_A(range),0);
+    range = -1;
+    EXPECT_EQ(kernel_A(range),0);
+    range = 3;
+    EXPECT_EQ(kernel_A(range),0);
+    range = -4;
+    EXPECT_EQ(kernel_A(range),0);
+}
 
-// todo investiagate the odd 0 pass in the intersection tests write out a full test for that
-// todo there are some strange cases still left -> in vestigate
-// todo negative numbers in pkh?! do i even want that
+/**
+ * Basic test for the kernel 2 function.
+ * @test
+ * @see kernel_B()
+ */
+TEST(FunctionalTest, kernel_B) {
+    double range = 0;
+    double range_x = 1;
+    range = 0;
+    EXPECT_EQ(kernel_B(range),2.0/3);
+    range = -1.5;
+    EXPECT_EQ(kernel_B(range),0);
+    range = 1.5;
+    EXPECT_EQ(kernel_B(range),0);
+    range = -3;
+    EXPECT_EQ(kernel_B(range),0);
+    range = 3;
+    EXPECT_EQ(kernel_B(range),0);
+}
+
+/**
+ * Basic test for the kernel_C function.
+ * @test
+ * @see kernel_C()
+ */
+TEST(FunctionalTest, kernel_C) {
+    double range = 0;
+    double range_x = 1;
+    range = 0;
+    EXPECT_EQ(kernel_C(range),4.0/8);
+    range = 2;
+    EXPECT_EQ(kernel_C(range),0);
+    range = -2;
+    EXPECT_EQ(kernel_C(range),0);
+    range = 5;
+    EXPECT_EQ(kernel_C(range),0);
+    range = -5;
+    EXPECT_EQ(kernel_C(range),0);
+}
+
+/**
+ * Follow up test where there is no actual fluid node and everything is quite close.
+ * @test
+ * @note no fluid notes are actually found bit of a blind test
+ */
+TEST(FunctionalTest, no_fluid_boundary) {
+    unsigned int size = 2;
+    unsigned int sub_size = 2;
+    point_t c = {size,size}; // size or the canvas
+    point_t p = {sub_size,sub_size}; // size of the  quader
+    boundaryPointConstructor boundaries(c);
+    // boundaries.init_sliding_lid_side_chopped({20,10},30);
+    boundaries.init_quader({0,0},p);
+    // construct straights
+    straightGenerator s(&boundaries);
+    s.init();
+    nodeGenerator n(&boundaries);
+    n.init_fused(size);
+    EXPECT_EQ(n.node_infos.size(), 0);
+}
+
+/**
+ * We have on straight on which we distribute markers.
+ * @test
+ * @see markerIBM::distribute_markers()
+ */
+TEST(FunctionalTest, distribute_markers_base) {
+    straight_t input;
+    straightGenerator sg;
+    // we put in a quader
+    input.point = {1,1};
+    input.direction = {0,1};
+    input.max_t = 6;
+    sg.add_surface(input);
+    markerIBM m(&sg);
+    m.distribute_markers();
+    EXPECT_EQ(m.marker_points.size(),8);
+}
+
+/**
+ * We make some quaders and test weather or not the code does what it should.
+ * @test
+ * @see markerIBM::distribute_markers()
+ */
+TEST(FunctionalTest, distribute_markers_quader) {
+    double marker_dist = 0.75;
+    point_t starter = {1.4,1.4};
+    for(int i = 96; i < 120; ++i) {
+        straightGenerator sg;
+        // we want sth without any residual and % only works on int
+        double fit_in = (double) i / marker_dist;
+        double floored_fit_in = std::floor(fit_in);
+        if(std::fmod(fit_in,floored_fit_in) == 0) {
+            // side length
+            double side_length = (double) i / 4;
+            double expected_value = i;
+            straight_t input;
+            // we put in a quader
+            input.point = starter;
+            input.direction = {0,1};
+            input.max_t = side_length;
+            sg.add_surface(input);
+            input.point += input.direction * side_length;
+            input.direction = {1,0};
+            input.max_t = side_length;
+            sg.add_surface(input);
+            input.point += input.direction * side_length;
+            input.direction = {0,-1};
+            input.max_t = side_length;
+            sg.add_surface(input);
+            input.point += input.direction * side_length;
+            input.direction = {-1,0};
+            input.max_t = side_length;
+            // init the markers
+            markerIBM mibm(&sg);
+            mibm.distribute_markers();
+            EXPECT_EQ(mibm.marker_points.size(),expected_value);
+        }
+    }
+}
+/**
+ * We construct a quader that can not fit the 0.75 standard distance.
+ * @test
+ */
+TEST(FunctionalTest, odd_quader) {
+    point_t starter = {1,1};
+    straight_t input;
+    straightGenerator sg;
+    double side_length = 5;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    // tests how many will get generatored
+    markerIBM mibm(&sg);
+    mibm.distribute_markers();
+    EXPECT_EQ(mibm.marker_points.size(),26);
+    EXPECT_GT(mibm.return_marker_distance(),0.75);
+}
+
+/**
+ * Tests/Explores the functionality when we actually have two structures.
+ * @test
+ * @attention based on the result of this test one can assume that surfaces can be structure blind.
+ * @note still have to be in order otherwise results wont work (it might still be a good idea to partition thou -> parrallel)
+ */
+TEST(FunctionalTest, two_structure) {
+    point_t starter = {1,1};
+    straight_t input;
+    straightGenerator sg;
+    double side_length = 15; // with a distance of 0.75 we should get 80 markers
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    // another one
+    starter = {4,4};
+    side_length = 5;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    // main thing i do not want to see is a whole when we change the surface
+    // easiest way for this to work is to set up a ranging pkh and look for the markers
+    // number of different cases still but should be doable
+    markerIBM mibm(&sg);
+    mibm.distribute_markers();
+    EXPECT_EQ(mibm.marker_points.size(),80+26); // we got the right amount
+    array_t on_surface;
+    on_surface.resize(sg.surfaces.size());
+    on_surface.setZero();
+    double dk;
+    std::vector<int> surface_structure_1;
+    std::vector<int> surface_structure_2;
+    for(int i = 0; i < mibm.marker_points.size(); ++i) {
+        auto m = mibm.marker_points[i];
+        for(int i = 0; i < sg.surfaces.size(); ++i) {
+            auto s = sg.surfaces[i];
+            if(point_on_straight(s,m,&dk)) {
+                on_surface[i]++;
+                if(i < 4) {
+                    surface_structure_1.push_back(i);
+                }
+                else {
+                    surface_structure_2.push_back(i);
+                }
+            }
+        }
+    }
+    // check out the spacing on each individual surface
+    for(auto n : surface_structure_1) {
+        int next = (n+1) % (int)surface_structure_1.size();
+        double distance = (*mibm.marker_points[n] - *mibm.marker_points[next]).norm();
+        EXPECT_NEAR(mibm.return_marker_distance(), distance,1e-8);
+    }
+    for(auto n : surface_structure_2) {
+        int next = (n+1) % (int)surface_structure_2.size();
+        double distance = (*mibm.marker_points[n] - *mibm.marker_points[next]).norm();
+        EXPECT_NEAR(mibm.return_marker_distance(), distance,1e-8);
+    }
+}
+
+/**
+ * Point on straight test.
+ * @test
+ * @attention negatives are not tested cause they dont appear in the code
+ * @see point_on_straight()
+ */
+TEST(FunctionalTest, points_on_straights) {
+    straight_t test;
+    test.point = {0,0};
+    test.direction = {1,1};
+    test.max_t = 5;
+    // positives
+    double dk = 0;
+    point_t test_point = {0,0};
+    EXPECT_TRUE(point_on_straight(&test,&test_point, &dk));
+    test_point = {3,3};
+    EXPECT_TRUE(point_on_straight(&test,&test_point, &dk));
+    test_point = {5,5};
+    EXPECT_TRUE(point_on_straight(&test,&test_point, &dk));
+    // negatives
+    test_point = {6,6};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point, &dk));
+    EXPECT_EQ(dk, 1);
+    test_point = {2,3};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point, &dk));
+    EXPECT_EQ(dk, 1);
+    test_point = {0,3};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point, &dk));
+    EXPECT_EQ(dk, 1);
+    // different straight
+    test.direction = {2,1};
+    test.direction.normalize();
+    test_point = {2,1};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    test_point = {4,2};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    test_point = {6,3};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point,&dk));
+    test.direction = {0,1};
+    test_point = {0,2};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    test_point = {1,2};
+    EXPECT_TRUE(!point_on_straight(&test,&test_point,&dk));
+    test.direction = {1,0};
+    test_point = {2,0};
+    EXPECT_TRUE(point_on_straight(&test,&test_point,&dk));
+    // understand norm in eigen
+    vector_t n = test.direction.normalized();
+    EXPECT_NEAR(n.norm(),1,1e-8);
+}
+
+/**
+ * Not really a tests just a
+ * @test
+ */
+TEST(FunctionalTest, SpringForces) {
+    double k = 0.01;
+    double d = 0.75;
+    double dx = 1;
+    point_t original_point = {0,0};
+    point_t current_point = {-1,-1};
+    vector_t norm = current_point - original_point;
+    vector_t force = -k * d/dx * norm;
+    EXPECT_TRUE(true);
+}
+
+/**
+ * tests the truncation force.
+ * @test
+ */
+TEST(FunctionalTest, trunication_force) {
+    vector_t f = {3,5};
+    vector_t u = {2,9};
+    point_t dk = {0,0};
+    goaForce g(dk,dk,0);
+    g.set_force_alpha(f);
+    g.set_velocity(u);
+    g.calculate_F_i();
+    array_t test = calculate_truncation_array(&f,&u);
+    for(int i = 0; i < test.size(); ++i) {
+        test[i] = g.force_channels[i];
+    }
+}

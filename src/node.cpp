@@ -37,5 +37,33 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
 oNode::oNode(handle_t h, int channels, boundaryType_t type) {
     handle = h;
     boundary_type = type;
+    velocity = {0,0};
     populations.setZero(2*channels);
+}
+
+/**
+ * fNode constructor.
+ * @param h
+ * @param channels
+ * @param type
+ */
+fNode::fNode(handle_t h, int channels, boundaryType_t type) {
+    handle = h;
+    boundary_type = type;
+    velocity = {0,0};
+    populations.setZero(2*channels);
+    forces.setZero(channels);
+}
+
+/**
+ * Marker constructor.
+ * @param pos
+ * @param h
+ */
+marker::marker(handle_t h, point_t pos) {
+    handle = h;
+    position = pos;
+    force = {0,0};
+    velocity = {0,0};
+    original_position = pos;
 }

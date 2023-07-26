@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     params.relaxation = 0.8;
     point_t dk = {0,0};
     // max rotation is 7.5e-3
-    goaForce rot(dk,ic.boundaries->size,8e-3);
+    goaForce rot(dk,ic.boundaries->size,1e-3);
     forcedSimulation sim(ic.boundaries,&gen, &rot);
     sim.set_simulation_parameters(params);
     sim.init();

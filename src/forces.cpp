@@ -30,6 +30,38 @@ double calculate_truncation_force(vector_t* c, vector_t* u, vector_t* force) {
     return return_value;
 }
 
+/**
+ * Calculate truncation array.
+ * @param f
+ * @param v
+ * @return
+ */
+array_t calculate_truncation_array(vector_t * f, vector_t * v) {
+    array_t return_array;
+    return_array.resize(9);
+    vector_t velocity = *v;
+    vector_t force_alpha = *f;
+    // channel 0
+    return_array[0] = -3*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+    // channel 1 - 4
+    return_array[1] =  3*force_alpha[0] + 6*velocity[0]*force_alpha[0] - 3*velocity[1]*force_alpha[1];
+    return_array[2] = -3*velocity[0]*force_alpha[0] + 3*force_alpha[1]  + 6*velocity[1]*force_alpha[1];
+    return_array[3] = -3*force_alpha[0] + 6*velocity[0]*force_alpha[0]  - 3*velocity[1]*force_alpha[1];
+    return_array[4] = -3*velocity[0]*force_alpha[0] - 3*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    // channel 5 - 6
+    return_array[5] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                      + 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    return_array[6] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                      + 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    // channel 7 - 8
+    return_array[7] = - 3* force_alpha[0] + 6*velocity[0]*force_alpha[0] + 9*velocity[1]*force_alpha[0]
+                      - 3* force_alpha[1] + 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];
+    return_array[8] =   3* force_alpha[0] + 6*velocity[0]*force_alpha[0] - 9*velocity[1]*force_alpha[0]
+                      - 3* force_alpha[1] - 9*velocity[0]*force_alpha[1] + 6*velocity[1]*force_alpha[1];;
+    // return the array
+    return return_array;
+}
+
 /// helper and sub-classes
 /**
 * Returns a force.
@@ -165,10 +197,18 @@ void goaForce::calculate_F_circle(point_t* p, double max_force_magnitude,double 
    vector_t distance_vector = (*p) - middle;
    double force_magnitude = distance_vector.norm()/max_distance * max_force_magnitude;
    // we determine the x component
-   distance_vector /= distance_vector.norm();
+   if(distance_vector.norm() == 0) {
+        // nop
+   }
+   else {
+       distance_vector /= distance_vector.norm();
+   }
    // change directions and multiply with the force magnitude
    force_alpha = {  distance_vector.y() * force_magnitude,
                   - distance_vector.x() * force_magnitude};
+   if(std::isnan(force_alpha(0)) || std::isnan(force_alpha(1))) {
+       std::cout << "dumb";
+   }
 }
 
 /**
@@ -195,6 +235,9 @@ void goaForce::calculate_F_rotation(double ux, double uy, point_t* p) {
     vector3d_t velocity_vec = {velocity.x(),velocity.y(),0};
     vector3d_t result = -2 *(velocity_vec.cross(omega_vec));
     // crash in case we get a z value
+    if(result.z() != 0) {
+       std::cout<< "h";
+    }
     assert(result.z() == 0);
     force_alpha.x() += result.x();
     force_alpha.y() += result.y();

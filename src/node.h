@@ -46,12 +46,43 @@ class oNode {
     // handle and boundary
     handle_t handle; /**< Handle to the node */
     point_t position; /**< Position of the node */
+    vector_t velocity; /**< Velocity */
     boundaryType_t boundary_type; /**< Type of boundary (Bounce back, Moving, etc.) */
     // 2xChannels
     array_t populations; /**< 2x9 population */
     std::vector<link_pointer> neighbors; /**< The neighbors of the node */
     // constructor
     oNode(handle_t, int channels, boundaryType_t type);
+};
+
+/**
+ * fNode for ibm
+ */
+class fNode {
+  public:
+    handle_t handle;              /**< Handle to the node */
+    point_t position;             /**< Position of the node */
+    vector_t velocity;            /**< Velocity */
+    boundaryType_t boundary_type; /**< Type of boundary (Bounce back, Moving, etc.) */
+    //
+    array_t populations;                 /**< 2x9 population */
+    array_t forces;
+    std::vector<link_pointer> neighbors; /**< The neighbors of the node */
+    // constructor
+    fNode(handle_t, int channels, boundaryType_t type);
+};
+
+/**
+ * ibm marker
+ */
+class marker {
+  public:
+    handle_t handle; /**< Handle of the node */
+    point_t position; /**< Location of the marker*/
+    vector_t force; /**< Force affecting the marker */
+    vector_t velocity; /**< Velocity of the marker */
+    point_t original_position; /**< Original location of the marker */
+    explicit marker(handle_t h, point_t pos);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODE_H

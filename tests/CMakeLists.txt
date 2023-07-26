@@ -23,7 +23,8 @@ set(MY_TESTS_CPP
         init_tests.cpp
         bb_stream_tests.cpp
         extra_tests.cpp
-        misc_tests_2.cpp)
+        misc_tests_2.cpp
+        misc_tests_3.cpp)
 
 # Creating the test executable
 add_executable(my_tests ${MY_TESTS_CPP} ${MY_TESTS_HEADERS})

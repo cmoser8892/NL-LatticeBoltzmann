@@ -2,13 +2,15 @@
 set(MY_HEADERS
         one_step_simulation.h
         two_step_simulation.h
-        simulation.h)
+        simulation.h
+        lbm_simulation.h)
 
 # List of implementation files
 set(MY_CPP
         one_step_simulation.cpp
         two_step_simulation.cpp
-        simulation.cpp)
+        simulation.cpp
+        lbm_simulation.cpp)
 
 # Create a static library
 add_library(simulation_lib STATIC ${MY_CPP} ${MY_HEADERS})

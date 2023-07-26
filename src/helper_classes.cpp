@@ -28,8 +28,88 @@ bool rhoWatchdog::check(node *n,int step) {
         std::cerr << std::endl;
         return_value = true;
     }
+    if(std::isnan(n->rho)) {
+        std::cerr << "Rho is nan" << std::endl;
+        return_value = true;
+    }
     rho(int(n->position(0)),int(n->position(1))) = n->rho;
     return return_value;
+}
+
+bool rhoWatchdog::check_force(fNode *n, int step) {
+    bool return_value = false;
+    // offset from the node
+    int offset = step & 0x1;
+    double current_rho = 0;
+    // get the old value
+    double rho_old = rho(int(n->position(0)),int(n->position(1)));
+    auto [rho_1, rho_2] = test_calculate_rho_both(&n->populations);
+    if(offset == 0) {
+        current_rho = rho_1;
+    }
+    else {
+        current_rho = rho_2;
+    }
+    if((abs(rho_old-current_rho)) >= (abs(rho_old*sensitivity))) {
+        std::cerr << "Rho-diviation at " << step << std::endl;
+        std::cerr << "Position: " << n->position.x()
+                  << " ," << n->position.y()
+                  << std::endl;
+        std::cerr << "Rho previous: " << rho_old << std::endl;
+        std::cerr << "Rho now: " << current_rho << std::endl;
+        std::cerr << std::endl;
+        return_value = true;
+    }
+    if(std::isnan(rho_1) || std::isnan(rho_2)) {
+        std::cerr << "Rho is nan" << std::endl;
+        return_value = true;
+    }
+    rho(int(n->position(0)),int(n->position(1))) = current_rho;
+    return return_value;
+}
+
+/**
+ * Constructor for the marker watchdog.
+ * @param s
+ */
+markerWatchdog::markerWatchdog(double s) {
+    sensitivity = s;
+}
+
+/**
+ * Fills the previous container for points.
+ * @param p
+ */
+void markerWatchdog::init_marker(point_t p) {
+    previous.push_back(p);
+    original.push_back(p);
+}
+
+/**
+ * Performs a check on the markers.
+ * @param p
+ * @param pos
+ * @return
+ */
+bool markerWatchdog::check(point_t p, handle_t pos) {
+    point_t previous_position = previous[pos-1];
+    point_t original_position = original[pos-1];
+    bool returns = false;
+    // check against the previous position
+    if(abs(previous_position.x() - p.x()) > sensitivity) {
+        returns = true;
+    }
+    if(abs(previous_position.y() - p.y()) > sensitivity) {
+        returns = true;
+    }
+    if(abs(original_position.x() - p.x()) > 1) {
+        returns = true;
+    }
+    if(abs(original_position.y() - p.y()) > 1) {
+        returns = true;
+    }
+    previous[pos-1] = p;
+    return returns;
 }
 
 /**
@@ -102,7 +182,7 @@ std::vector<handle_t> pointKeyHash::multi_key_translation(point_t pos) {
 std::vector<handle_t> pointKeyHash::multi_key_translation(coordinate_t coord) {
     std::vector<handle_t> returns;
     handle_t search_key = bit_interleaving_2d(coord.x,coord.y);
-        auto found = keys.equal_range(search_key);
+    auto found = keys.equal_range(search_key);
     for(auto f  = found.first; f != found.second; ++f ) {
         // we dont care about the key we only care about the elements
         returns.push_back(f->second);
@@ -170,6 +250,75 @@ void pointKeyHash::clear() {
  */
 long pointKeyHash::map_size() {
     return (long)keys.size();
+}
+
+/**
+ * Sets weather or not the position is saved.
+ * @param set true => posiiton saved, false => not saved
+ */
+void rangingPointKeyHash::set_position_save(bool set) {
+    safe_position_yes_no = set;
+}
+
+/**
+ * Fills the keys and the positions.
+ * @note right now if the position handle is given out of order it will not work
+ * @param position_handle
+ * @param position
+ */
+void rangingPointKeyHash::fill_key(handle_t position_handle, point_t position) {
+    // add to the pkh and the point save
+    pkh.fill_key(position_handle,position);
+    if(safe_position_yes_no) {
+        points.push_back(position);
+    }
+}
+
+/**
+ * Clears the data saves.
+ */
+void rangingPointKeyHash::clear() {
+    pkh.clear();
+    points.clear();
+}
+
+/**
+ * Returns the size of the pkh map.
+ * @return
+ */
+long rangingPointKeyHash::size() {
+    return pkh.map_size();
+}
+
+std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, double range) {
+    std::vector<handle_t> returns;
+    std::vector<handle_t> candidates = pkh.ranging_key_translation(pos, range);
+    //
+    if(!safe_position_yes_no) {
+        std::cout << "Function can not do ranging without points" << std::endl;
+        return candidates;
+    }
+    vector_t mover = {range,range};
+    point_t lower = pos - mover;
+    point_t higher = pos + mover;
+    for(auto c : candidates) {
+        // test if actually in the search range
+        handle_t handle = c - 1;
+        point_t temp = points[handle];
+        bool add_me = true;
+        // i am drawing a circle here it should be a quader
+        point_t current = points[handle];
+        if((current.x() <  lower.x()) || (current.y() < lower.y())) {
+            add_me = false;
+        }
+        if((current.x() >  higher.x()) || (current.y() > higher.y())) {
+            add_me = false;
+        }
+        if(add_me) {
+            returns.push_back(c);
+        }
+    }
+    return returns;
 }
 
 /**

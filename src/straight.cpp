@@ -1,4 +1,5 @@
 #include "straight.h"
+#include "functions.h"
 #include <fstream>
 #include <iostream>
 
@@ -27,33 +28,6 @@ void straightGenerator::calculate_mass_center() {
     }
     // div by the total size
     mass_center /= double(points->total_boundary_nodes());
-}
-
-/**
- * Detects and moves away the mass center if it is too close to a boundary.
- */
-void straightGenerator::detect_boundary_proximity_main_mass_center() {
-    // goes over a search field and tries to find boundary nodes in close proximity
-    // we search in the full pkh for near boundaries in a 7x7 area around th point and
-    // move the center based on the proximity of the found bp
-    // floor the mc, we have to keep in mind to move the actual mass_center instead of floored on
-    array_t floored_mc;
-    floored_mc.resize(2);
-    floored_mc << std::floor(mass_center.x()),std::floor(mass_center.y());
-    for(int i = 1; i < 4; ++i) {
-        // we move the mc based on the proximity
-        int move = 4-i;
-        for(int j = 1; j < CHANNELS;++j) {
-            point_t current = floored_mc + i*velocity_set.col(j);
-            handle_t found_handle = full_pkh.key_translation(current);
-            if(found_handle > 0) {
-                // we found sth now move the actual mass center int the opposite direction of the found point
-                vector_t mover = -1*move*velocity_set.col(j);
-                mass_center += mover;
-            }
-        }
-
-    }
 }
 
 /**
@@ -537,12 +511,16 @@ straightGenerator::~straightGenerator() {
  * Calculates the mass center and all the straights.
  */
 void straightGenerator::init() {
+    if(points == nullptr) {
+        std::cerr << "Unintended straight generator usage" << std::endl;
+        return;
+    }
     // calculate main mass center and all the keys to the boundary points
     calculate_mass_center();
     // calculates hash keys for all the boundary structures
     calculate_keys();
     // see weather or not moving the mass center away from the boundaries makes sense
-    detect_boundary_proximity_main_mass_center();
+    // detect_boundary_proximity_main_mass_center();
     // loop over the boundary structures to create the straights
     for(int i = 0; i < points->boundary_structures.size(); ++i) {
         // we 1st create all possible straights in north and west direction
@@ -567,31 +545,24 @@ void straightGenerator::init() {
     }
     // old legacy method
     // calculate_all_straights();
+    // detect_boundary_proximity_main_mass_center();
 }
 
 /**
  * Calculates how many intersections there are between the node point and the mass center.
  * @param node_point
- * @todo Should be a 2 pass method needs 3 thou
  * @return number of intersections
  */
 int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
-    // todo why 3 passes should not 2 be enough
     // surface based algorithm to calculate intersections
     /*
      * 3 passes have to be made to calculate to calcuate a valid intersection
-     *  0 not a boundary point used in construction
      *  1 does the straight hit the surface in the area between the two points that define it
      *  2 how does the straight hit the surface (posetive or negative we only care about posetiv
      *  3 have we already hit an edgepoint
      */
     // 0 pass not a boundary point or point on the surface
     int number_of_intersections = 0;
-    // check if actually the boundary point, boundary points are excluded in the first pass
-    if(full_pkh.key_translation(node_point) > 0) {
-        // todo still not ideal
-        return 0;
-    }
     // determine straight to the mass center
     straight_t straight;
     straight.point = node_point; // => r
@@ -617,7 +588,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
         first_pass_surface.point = straight.point;
         first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};
         double t = calculate_intersection(surface, &first_pass_surface);
-        /// 1 pass
+        // 1 pass
         if((t >= 0) && (t <= surface->max_t)) {
             // check if direction of the finding is positive in
             // the direction of the vector outgoing from the center
@@ -625,13 +596,13 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
             second_pass_surface.point = surface->point;
             second_pass_surface.direction = {surface->direction.y(),-surface->direction.x()};
             double s = calculate_intersection(&straight,&second_pass_surface);
-            /// 2 pass
-            if(s >= 0) {
+            // 2 pass
+            if(s > 0) {
                 // compare and check if we already got the same point previously
                 // in case we intersect a node point directly ( no double counting )
                 point_t point = straight.point + s*straight.direction;
                 bool add = true;
-                /// 3 pass
+                // 3 pass
                 for (auto&  ps : already_found) {
                     if(ps == point) {
                         add = false;
@@ -644,6 +615,10 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
                     number_of_intersections++;
                 }
             }
+            // exception the point is on the surface -> ignore/outside
+            if(s == 0) {
+                return 0;
+            }
         }
     }
     return number_of_intersections;
@@ -651,6 +626,7 @@ int straightGenerator::calculate_intersections(const point_t node_point, point_t
 
 /**
  * Supposed to be a more stable alternative for the calculate intersection function.
+ * @attention the current implementation has a intermediate fix on top where the mass center is moved around the actual mass center (seems to run more stable)
  * @param point
  * @return the number of intersections detected
  */
@@ -660,8 +636,7 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     matrix_t movers = { {2,-1,-1},
                         {0, 2,-2}};
     point_t individual_mc = mass_center;
-    // 7 as a magic number
-    double mover_distance = points->size.x()/7;
+    double mover_distance = 42.0/107; // todo magic number
     std::vector<int> intersections;
     // calculate the intersections 3 times redundant
     for(int i = 0; i < 3; ++i) {
@@ -803,6 +778,37 @@ void straightGenerator::write_out_surface() {
     else {
         throw std::runtime_error("Open file has failed");
     }
+}
+
+/**
+ * Adds a surface to the surface description.
+ * @attention You should KNOW what you are doing here, no post checks exist for a surface
+ * @param start
+ * @param direction
+ * @param length
+ */
+void straightGenerator::add_surface(straight_t s) {
+    auto temp = new straight_t;
+    temp->point = s.point;
+    temp->direction = s.direction;
+    temp->max_t = s.max_t;
+    surfaces.push_back(temp);
+}
+
+/**
+ * Calculates the mass_center of a given surface structure (if we add them via add_surface).
+ */
+void straightGenerator::surface_mass_center() {
+    double point_number = 0;
+    for(auto s : surfaces) {
+        point_t current = s->point;
+        for(int i = 0; i< s->max_t; ++i) {
+            current += i*s->direction;
+            mass_center += current;
+            ++point_number;
+        }
+    }
+    mass_center /= point_number;
 }
 
 /**

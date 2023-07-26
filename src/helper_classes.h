@@ -4,6 +4,7 @@
 #include "types.h"
 #include "node.h"
 #include "helper_functions.h"
+#include "functions.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -21,11 +22,27 @@ class rhoWatchdog {
   public:
     rhoWatchdog(double s,point_t size);
     bool check(node* n,int step);
+    bool check_force(fNode* n, int step);
+};
+
+/**
+ * Watchdog to make sure our markers do not move too much, will yell when they do.
+ */
+class markerWatchdog {
+  private :
+    std::vector<point_t> previous; /**< container of all the previous positions */
+    std::vector<point_t> original; /**< container of all the original positions */
+    double sensitivity = 0.1; /**< sensitivity 10% */
+  public:
+    explicit markerWatchdog(double s);
+    void init_marker(point_t p);
+    bool check(point_t p, handle_t pos);
 };
 
 /**
  * Hashes points to be found in a neighborhood list.
  * @note works with bit interleaving floors points to a full point on the gird!
+ * @attention For bigger problems this is the hard bottleneck in the init, cells of size 1 are not ideal here.
  * @details works by reducing the position to a normal number and interleaving those number to create a classifier for that handle
  */
 class pointKeyHash {
@@ -41,6 +58,26 @@ class pointKeyHash {
     std::vector<handle_t> multi_key_translation(coordinate_t cord);
     std::vector<handle_t> ranging_key_translation(point_t pos, double range);
     std::vector<handle_t> ranging_key_translation(coordinate_t coord, double range);
+};
+
+/**
+ * Boilerplate toe hide some of the ranging functionality of ranging points.
+ * Not like the pgk this class only returns the valid point handles that are in range, that we search in.
+ * @note not part of the pointKeyHash by choice, we do not want that in there
+ * @todo gradual support for all the different type of nodes/points for false save mode
+ * @attention main difference to pkh is that there is a guaranty that only handles in the range get returned
+ */
+class rangingPointKeyHash {
+  private:
+    pointKeyHash pkh;
+    std::vector<point_t> points;
+    bool safe_position_yes_no = true;
+  public:
+    void set_position_save(bool set);
+    void fill_key(handle_t position_handle, point_t position);
+    void clear();
+    long size();
+    std::vector<handle_t> ranging_key_translation(point_t pos, double range);
 };
 
 /**

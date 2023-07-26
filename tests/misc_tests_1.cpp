@@ -61,6 +61,7 @@ TEST(FunctionalTest, correct_equilibrium) {
     EXPECT_NEAR(-2.0/36,n->population_even(6),1e-10);
     EXPECT_NEAR(22.0/36,n->population_even(7),1e-10);
     EXPECT_NEAR(-2.0/36,n->population_even(8),1e-10);
+    delete n;
 }
 
 /**
@@ -101,6 +102,7 @@ TEST(FunctionalTest,correct_macro) {
     EXPECT_NEAR(n->rho, 1, 1e-10);
     EXPECT_NEAR(n->u(0), 10, 1e-10);
     EXPECT_NEAR(n->u(1), 10, 1e-10);
+    delete n;
 }
 
 /**
@@ -133,6 +135,7 @@ TEST(FunctionalTest, equilibrium123) {
     EXPECT_EQ(n->population_even(6),rho * 1/36 *(1 - 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->population_even(7),rho * 1/36 *(1 - 3 *(ux + uy) + 9*ux*uy + 3*(ux*ux + uy*uy)));
     EXPECT_EQ(n->population_even(8),rho * 1/36 *(1 + 3 *(ux - uy) - 9*ux*uy + 3*(ux*ux + uy*uy)));
+    delete n;
 }
 
 /**
@@ -153,6 +156,7 @@ TEST(FunctionalTest, macro123) {
     EXPECT_EQ(45, n->rho);
     EXPECT_NEAR(-2.0/45,n->u(0),1e-10);
     EXPECT_NEAR(-6.0/45,n->u(1), 1e-10);
+    delete n;
 }
 
 /**
@@ -320,6 +324,7 @@ TEST(FunctionalTest, periodics_full) {
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
     boundaries.init_poiseuille_flow();
+    // boundaries.visualize_2D_boundary();
     EXPECT_EQ(boundaries.total_boundary_nodes(),(size-1)*4);
     nodeGenerator gen(&boundaries);
     gen.init_fused(size);
@@ -799,9 +804,9 @@ TEST(FunctionalTest, multiple_interruptions) {
     EXPECT_EQ(s.surfaces.size(),12);
     // node generator master test
     nodeGenerator gen(&boundaries);
-    gen.init(size);
+    gen.init_fused(size);
     // gen.visualize_2D_nodes();
-    EXPECT_EQ(gen.node_infos.size(), boundaries.total_boundary_nodes() + 8 + 2);
+    EXPECT_EQ(gen.node_infos.size(), 10);
 }
 
 /**
@@ -1213,20 +1218,21 @@ TEST(FunctionalTest,InnerCorner) {
     setter = {7,8};
     boundaries.one_direction(3,{1,0},&setter,BOUNCE_BACK);
     setter = {7,9};
-    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);
     // setter = {10,9};
-    // boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);  /// defining
+    // boundaries.one_direction(2,{1,0},&setter,BOUNCE_BACK);
     setter = {10,8};
     boundaries.one_direction(4,{0,-1},&setter,BOUNCE_BACK);
     setter = {10,4};
     boundaries.one_direction(5,{1,0},&setter,BOUNCE_BACK);
     // boundaries.visualize_2D_boundary();
     nodeGenerator gen(&boundaries);
-    gen.init_fused(size);
+    gen.init(size);
     // gen.visualize_2D_nodes();
     // as long as the test does not crash it is considered ok
     EXPECT_TRUE(true);
 }
+
 /**
  * Tests the star intersection tests.
  * @test

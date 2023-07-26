@@ -12,6 +12,19 @@
  */
 nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
     points = p;
+    if(p != nullptr) {
+        straight_surfaces = new straightGenerator(points);
+        straight_surfaces->init();
+    }
+}
+
+/**
+ * Constructor, sets a surface.
+ * @param s
+ */
+nodeGenerator::nodeGenerator(straightGenerator *s) {
+    straight_surfaces = s;
+    create_straight = false;
 }
 
 /**
@@ -19,7 +32,10 @@ nodeGenerator::nodeGenerator(boundaryPointConstructor *p) {
  */
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
-    delete straight_surfaces;
+    if(create_straight)
+        delete straight_surfaces;
+    //
+    delete markers;
 }
 
 /**
@@ -27,7 +43,7 @@ nodeGenerator::~nodeGenerator() {
  */
 void nodeGenerator::linear_generation() {
     handle_t handle_counter = 1;
-    // go throu the boundary points starting at a b point and go throu while still discovering new ones
+    // go through the boundary points starting at a b point and go throu while still discovering new ones
     for(auto bs : points->boundary_structures) {
         for(auto p : bs->boundary_points) {
             point_t current = p->point + discovery_vector;
@@ -224,6 +240,7 @@ void nodeGenerator::write_data_to_file(bool write) {
  * Create a board based on sizes given.
  */
 void nodeGenerator::board_creation(unsigned int size) {
+    size_canvas = size;
     // make the interleaved positions
     std::vector<uint64_t> interleaved_positions;
     for(uint32_t i = 0; i < size; ++i) {
@@ -247,32 +264,75 @@ void nodeGenerator::board_creation(unsigned int size) {
         n->boundary = NO_BOUNDARY;
         // dont forget to increase the handle counter each time
         handle_counter++;
+        // container updates
         node_infos.push_back(n);
+        // add/setup the to be removed control
+        to_be_removed.push_back(true);
     }
 }
 
 /**
- * Check if the node is inside the canvas defined by the straights and deletes the rest.
- * @param current
+ * Check if the node is inside the canvas defined by the straights and sets those to not be deleted.
  */
-void nodeGenerator::check_nodes(handle_t* current) {
-    straight_surfaces = new straightGenerator(points);
-    straight_surfaces->init();
-    std::vector<nodePoint_t*> reformed_nodes;
-    for(auto n : node_infos) {
-        bool c = straight_surfaces->node_inside_simple(n);
-        if(!c) {
-            n->handle = *current;
+void nodeGenerator::check_nodes_inside() {
+    for(int i = 0; i < node_infos.size(); ++i) {
+        auto n = node_infos[i];
+        bool not_outside = straight_surfaces->node_inside_simple(n);
+        if(!not_outside) {
             n->boundary = NO_BOUNDARY;
-            n->type = WET;
-            reformed_nodes.push_back(n);
-            (*current)++;
-        }
-        else {
-            // also delete element if not inside
-            delete n;
+            // should not be removed after all
+            to_be_removed[i] = false;
         }
     }
+}
+
+/**
+ * Checks the ibm relationship and flags the nodes.
+ * @param range
+ */
+void nodeGenerator::check_nodes_ibm(double range) {
+    // go over the markers and perform a range check
+    rangingPointKeyHash rpkh;
+    handle_t current = 1;
+    for(auto node : node_infos) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    // look through the markers and
+    for(auto mark : markers->marker_points) {
+        std::vector<handle_t> affected = rpkh.ranging_key_translation(*mark,range);
+        for(auto handle : affected) {
+            handle = handle - 1; // handle to the guy
+            node_infos[handle]->boundary = IBM;
+            to_be_removed[handle] = false;
+        }
+    }
+}
+
+/**
+ * Removes all the nodes that were not wanted in an abortion like process.
+ * @param current
+ */
+void nodeGenerator::remove_unwanted_nodes(handle_t *current) {
+    std::vector<nodePoint_t*> reformed_nodes;
+    for(int i = 0; i < to_be_removed.size(); ++i) {
+        auto control = to_be_removed[i];
+        auto node = node_infos[i];
+        // remove
+        if(control) {
+            delete node;
+        }
+        // keep
+        else {
+            // add to the reformed nodes
+            node->handle = *current;
+            node->type = WET;
+            reformed_nodes.push_back(node);
+            // increment
+            ++(*current);
+        }
+    }
+    // overwrite
     node_infos = reformed_nodes;
 }
 
@@ -416,6 +476,7 @@ void nodeGenerator::set_redo_save(bool r, bool s) {
 /**
  * Initializes the node generator, if there are nodes given in the form of a stored_nodes_file, will use that.
  * old legacy method
+ * @note used for liniar structures
  */
 void nodeGenerator::init() {
     if(!read_data_from_file()) {
@@ -427,13 +488,15 @@ void nodeGenerator::init() {
 
 /**
  * Init.
+ * @note Inits a bounce back structure and leaves the boundary bb nodes in.
  * @param size
  */
 void nodeGenerator::init(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
         handle_t handle_counter = 1;
-        check_nodes(&handle_counter);
+        check_nodes_inside();
+        remove_unwanted_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
         write_data_to_file(save);
@@ -442,16 +505,43 @@ void nodeGenerator::init(unsigned int size) {
 
 /**
  * Fused init, also reduces total nodes by removing boundaries.
+ * @note Same as init(), but the bounce back nodes are optimized away.
  * @param size canvas size
  */
 void nodeGenerator::init_fused(unsigned int size) {
     if(!read_data_from_file()) {
         board_creation(size);
         handle_t handle_counter = 1;
-        check_nodes(&handle_counter);
+        check_nodes_inside();
+        remove_unwanted_nodes(&handle_counter);
         add_boundary_nodes(&handle_counter);
         determine_neighbors();
         reduce_boundary_neighborhood();
+        write_data_to_file(save);
+    }
+}
+
+/**
+ * Inits the simulation based on a given surface.
+ * @param size
+ * @param range
+ */
+void nodeGenerator::init_surface(unsigned int size, double range) {
+    // correct the range to
+    if(!read_data_from_file()) {
+        // create the drawing canvas
+        board_creation(size);
+        handle_t handle_counter = 1;
+        // generate the markers
+        if(markers == nullptr) {
+            markers = new markerIBM(straight_surfaces);
+            markers->distribute_markers();
+        }
+        // check and reform nodes
+        check_nodes_inside();
+        check_nodes_ibm(range);
+        remove_unwanted_nodes(&handle_counter);
+        determine_neighbors();
         write_data_to_file(save);
     }
 }
@@ -469,12 +559,15 @@ void nodeGenerator::delete_node_infos() {
 }
 
 /**
- * Simple visualizer node points.
+ * Simple visualizer node points, if points where given uses that.
  * @param size
  */
 void nodeGenerator::visualize_2D_nodes() {
     flowfield_t output;
-    output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    if(points != nullptr)
+        output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    else
+        output.setZero(size_canvas,size_canvas);
     for(auto b : node_infos) {
         ++output(int(b->position.x()),int(b->position.y()));
     }

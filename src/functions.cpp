@@ -324,6 +324,28 @@ std::tuple<double,double,double> calculate_macro_population(array_t* a) {
     return {rho, ux, uy};
 }
 
+/**
+ * For both possible populations we calculate rho, used in the watchdog for more complex nodes.
+ * @param p
+ * @return
+ */
+std::tuple<double, double> test_calculate_rho_both(array_t* a) {
+    long offset = 9;
+    vector_t rho = {0,0};
+    for(int i = 0; i < 2; ++i) {
+        auto p = a->begin() + i*offset;
+        rho(i)  = (p + 0).operator*() +
+                  (p + 1).operator*() +
+                  (p + 2).operator*() +
+                  (p + 3).operator*() +
+                  (p + 4).operator*() +
+                  (p + 5).operator*() +
+                  (p + 6).operator*() +
+                  (p + 7).operator*() +
+                  (p + 8).operator*();
+    }
+    return {rho(0), rho(1)};
+}
 
 // todo implement me
 void pressure_periodic_in(oNode* node, double rho_in) {
@@ -342,6 +364,163 @@ void pressure_periodic_out(oNode* node , double rho_out) {
     for(int i = 0; i < CHANNELS; ++i) {
         (p+i).operator*() = 0;
     }
+}
+
+/**
+ * A kernel fucntion.
+ * @ref Viggen LBM book p.468f
+ * @param range
+ * @note we need to lattice sites for this one to work, at 1 is our second lattice site in that direction.
+ * @return
+ */
+double kernel_A(double range) {
+    double returns = 0;
+    double abs_range = abs(range);
+    if((abs_range >= 0) && (abs_range <= 1)) {
+        returns = 1 - abs_range;
+    }
+    return returns;
+}
+/**
+ * A kernel function.
+ * @ref Viggen LBM book p.468f
+ * @param range
+ * @note We need 3 lattice sites (in on direction) form 0 for this one to work max is at 1.5
+ * @return
+ */
+double kernel_B(double range) {
+    double returns = 0;
+    double abs_range = abs(range);
+    if((abs_range >= 0) &&  (abs_range< 0.5)) {
+        returns = 1.0/3 * ( 1 +  sqrt(1 - 3*abs_range*abs_range));
+    }
+    else if((abs_range >= 0.5) && (abs_range <= 1.5)) {
+        returns = 1.0/6 * ( 5 - 3*abs_range - sqrt(-2 + 6*abs_range -3*abs_range*abs_range));
+    }
+    return returns;
+}
+
+/**
+ * A kernel function.
+ * @ref Viggen LBM book p.468f
+ * @param range
+ * @note
+ * @return
+ */
+double kernel_C(double range) {
+    double returns = 0;
+    double abs_range = abs(range);
+    if((abs_range >= 0) &&  (abs_range < 1)) {
+        returns = 1.0/8 * (3 - 2*abs_range + sqrt(1 + 4*abs_range - 4*abs_range*abs_range));
+    }
+    else if((abs_range >= 1) && (abs_range <= 2)) {
+        returns = 1.0 / 8 * (5 - 2 * abs_range - sqrt(-7 + 12 * abs_range - 4 * abs_range * abs_range));
+    }
+    return returns;
+}
+
+/**
+ * Kernel A version in 2D.
+ * @param p
+ * @return
+ */
+double kernel_A_2d(vector_t* p) {
+    double returns = (kernel_A(p->x())* kernel_A(p->y()));
+    return returns;
+}
+
+/**
+ * Kernel B version in 2D.
+ * @param p
+ * @return
+ */
+double kernel_B_2d(vector_t* p) {
+    double returns = (kernel_B(p->x())* kernel_B(p->y()));
+    return returns;
+}
+
+/**
+ * Kernel 3 made ready for points aka 2D.
+ * @ref Viggen LBM book p.468f
+ * @note Between the description of the kernels the is a section, easily missable that talks about the need to modify them for 2D and 3D (roughly the middle of the page).
+ * @note We need 4 lattice sites in on direction for this to work look at the reference
+ * @param p < We need the vector between the original marker and the current on
+ * @param delta_x
+ * @return
+ */
+double kernel_C_2d(vector_t *p) {
+    double returns = (kernel_C(p->x())* kernel_C(p->y()));
+    return returns;
+}
+
+/**
+ * This function seems to be overkill, but the person that has to figure out how to incorporate sub grids might be thankful
+ * @note
+ * @param t
+ * @return
+ */
+double kernel_id_to_lattice_search(kernelType_t t) {
+    double returns = 0;
+    switch (t){
+    case KERNEL_A: {
+        returns = 2;
+        break;
+    }
+    case KERNEL_B: {
+        returns  = 3;
+        break;
+    }
+    case KERNEL_C: {
+        returns = 4;
+        break;
+    }
+    default:
+        returns = 138;
+        std::cerr << "Unknown kernel Type (IBM)" << std::endl;
+        break;
+    }
+    return returns;
+}
+
+vector_t compute_lagrangian_force() {
+    return {0,0};
+}
+
+/**
+ * Checks weather or not a point is on a straight.
+ * @param s
+ * @param p
+ * @param overshot
+ * @return true if on false if not
+ */
+bool point_on_straight(straight_t *s, point_t * p,double* overshot) {
+    // we solve some straight equations
+    std::vector<double> m;
+    bool returns = false;
+    for(int i = 0; i < p->size(); ++i) {
+        double temp = (p->operator[](i)- s->point[i])/s->direction[i];
+        m.push_back(temp);
+    }
+    // check for nans
+    for(int i = 0; i < p->size(); ++i) {
+        if(std::isnan(m[i])) {
+            if(p->operator[](i) == s->point[i]) {
+                m[i] = m[(i+1)%2];
+            }
+        }
+    }
+    // checks
+    if(m[0] == m[1]) {
+        // both agree
+        if(m[0] <= s->max_t) {
+            // still inside max
+            returns = true;
+        }
+        else {
+            *overshot = m[0]-s->max_t;
+        }
+    }
+    return returns;
 }
 
 /*
