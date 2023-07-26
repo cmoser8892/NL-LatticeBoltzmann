@@ -261,7 +261,7 @@ void nodeGenerator::board_creation(unsigned int size) {
         n->handle = handle_counter;
         n->position = point;
         n->type = UNKNOWN;
-        n->boundary = NO_BOUNDARY;
+        n->boundary = INIT_NONE;
         // dont forget to increase the handle counter each time
         handle_counter++;
         // container updates
@@ -279,6 +279,7 @@ void nodeGenerator::check_nodes_inside() {
         auto n = node_infos[i];
         bool not_outside = straight_surfaces->node_inside_simple(n);
         if(!not_outside) {
+            n->type = WET;
             n->boundary = NO_BOUNDARY;
             // should not be removed after all
             to_be_removed[i] = false;
@@ -303,7 +304,17 @@ void nodeGenerator::check_nodes_ibm(double range) {
         std::vector<handle_t> affected = rpkh.ranging_key_translation(*mark,range);
         for(auto handle : affected) {
             handle = handle - 1; // handle to the guy
-            node_infos[handle]->boundary = IBM;
+            auto current_node = node_infos[handle];
+            // check if inside
+            if(current_node->boundary == NO_BOUNDARY) {
+                current_node->type = WET;
+                current_node->boundary = IBM_INNER;
+            }
+            // dont relabel
+            else if(current_node->boundary == INIT_NONE) {
+                current_node->type = WET;
+                current_node->boundary = IBM_OUTER;
+            }
             to_be_removed[handle] = false;
         }
     }
@@ -326,7 +337,7 @@ void nodeGenerator::remove_unwanted_nodes(handle_t *current) {
         else {
             // add to the reformed nodes
             node->handle = *current;
-            node->type = WET;
+            // node->type = WET;
             reformed_nodes.push_back(node);
             // increment
             ++(*current);
@@ -455,6 +466,40 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
     }
 }
 
+void nodeGenerator::fill_neighborhood_holes() {
+    int counter = 0;
+    for(auto ni : node_infos) {
+        // find the boarder nodes
+        int link_channel = 1;
+        if(ni->links.size() < 8) {
+            counter++;
+            for(int pos = 0; pos < 8; ++pos) {
+                toLinks_t link;
+                if(pos < ni->links.size()) {
+                    link = ni->links[pos];
+                }
+                else {
+                    link.channel = 0;
+                    link.handle = 0;
+                }
+                // expected channel
+                if(link.channel == link_channel) {
+                    // nop
+                }
+                else {
+                    // create a new link and emplace it
+                    toLinks_t new_link;
+                    new_link.handle = ni->handle;
+                    int linked_channel = switch_link_dimensions(link_channel);
+                    new_link.channel = linked_channel;
+                    ni->links.insert(ni->links.begin()+pos ,new_link);
+                }
+                ++link_channel;
+            }
+        }
+    }
+}
+
 /// public
 /**
  * Set the 2D discovery vector, the function linear generation will use that vector during node discovery.
@@ -463,6 +508,7 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
 void nodeGenerator::set_discovery_vector(vector_t set) {
     discovery_vector = set;
 }
+
 /**
  * Sets the redo save, weather or not we save to text or not.
  * @param r redo
@@ -546,6 +592,27 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
     }
 }
 
+void nodeGenerator::init_surface_return(unsigned int size, double range) {
+    // correct the range to
+    if(!read_data_from_file()) {
+        // create the drawing canvas
+        board_creation(size);
+        handle_t handle_counter = 1;
+        // generate the markers
+        if(markers == nullptr) {
+            markers = new markerIBM(straight_surfaces);
+            markers->distribute_markers();
+        }
+        // check and reform nodes
+        check_nodes_inside();
+        check_nodes_ibm(range);
+        remove_unwanted_nodes(&handle_counter);
+        determine_neighbors();
+        fill_neighborhood_holes();
+        write_data_to_file(save);
+    }
+}
+
 /**
  * Deletes the content of the node_infos vector.
  */
@@ -573,4 +640,24 @@ void nodeGenerator::visualize_2D_nodes() {
     }
     std::cout << "Nodes allocated" << std::endl;
     std::cout << output << std::endl << std::endl;
+}
+
+/**
+ * Visualize 2d nodes based on the label.
+ * @param t
+ */
+void nodeGenerator::visualize_2D_nodes_labels(boundaryType_t t) {
+    // setup the output field
+    flowfield_t output;
+    if(points != nullptr)
+        output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    else
+        output.setZero(size_canvas,size_canvas);
+    // give out based on th tag
+    for(auto b : node_infos) {
+        if(b->boundary == t)
+            ++output(int(b->position.x()),int(b->position.y()));
+    }
+    std::cout << "Nodes with that tag: " << t << std::endl;
+    std::cout << output << std::endl;
 }

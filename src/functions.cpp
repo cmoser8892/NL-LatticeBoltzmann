@@ -476,7 +476,7 @@ double kernel_id_to_lattice_search(kernelType_t t) {
     }
     default:
         returns = 138;
-        std::cerr << "Unknown kernel Type (IBM)" << std::endl;
+        std::cerr << "Unknown kernel Type (IBM_OUTER)" << std::endl;
         break;
     }
     return returns;

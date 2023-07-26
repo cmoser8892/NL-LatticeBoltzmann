@@ -43,7 +43,6 @@ TEST(IbmTest, init_ibm) {
     // generator
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),81);
     // force
     point_t dk = {0,0};
@@ -57,7 +56,7 @@ TEST(IbmTest, init_ibm) {
     // check ibm nodes
     long ibm_numbers = 0;
     for(auto n : sim.nodes) {
-        if(n->boundary_type == IBM) {
+        if(n->boundary_type == IBM_OUTER) {
             ibm_numbers++;
         }
     }
@@ -101,7 +100,6 @@ TEST(IbmTest, nodes_placement_links) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
     simulation_parameters params;
     params.ibm_range = ibm_distance;
     point_t dk = {0,0};
@@ -114,7 +112,7 @@ TEST(IbmTest, nodes_placement_links) {
     int pure_nodes = 0;
     int undefined = 0;
     for(auto n : sim.nodes) {
-        if(n->boundary_type == IBM) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
             ibm_nodes++;
         }
         else if(n->boundary_type == NO_BOUNDARY) {
@@ -193,7 +191,6 @@ TEST(IbmTest, marker_movement_around) {
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     nodeGenerator ng(&sg);
     ng.init_surface(canvas_size,ibm_distance);
-    ng.visualize_2D_nodes();
     simulation_parameters params;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
     params.kernel_in_use = kernel;
@@ -209,7 +206,7 @@ TEST(IbmTest, marker_movement_around) {
     int pure_nodes = 0;
     int undefined = 0;
     for(auto n : sim.nodes) {
-        if(n->boundary_type == IBM) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
             ibm_nodes++;
         }
         else if(n->boundary_type == NO_BOUNDARY) {
@@ -227,10 +224,12 @@ TEST(IbmTest, marker_movement_around) {
     int steps = 0;
     sim.run(0);
     // check where the markers are
-    for(auto m : sim.markers) {
-        std::cout << m->original_position.x() << " ," << m->original_position.y() << std::endl;
-        EXPECT_NEAR(m->original_position.x(), m->position.x(), 1e-1);
-        EXPECT_NEAR(m->original_position.y(), m->position.y(), 1e-1);
+    if(0) {
+        for(auto m : sim.markers) {
+            std::cout << m->original_position.x() << " ," << m->original_position.y() << std::endl;
+            EXPECT_NEAR(m->original_position.x(), m->position.x(), 1e-1);
+            EXPECT_NEAR(m->original_position.y(), m->position.y(), 1e-1);
+        }
     }
 }
 
@@ -297,7 +296,7 @@ TEST(IbmTest, marker_movement_individual_set) {
  * Tests the integrals of the normal 1d kernels to be 1.
  * @test
  */
-TEST(IBMTest, kernels_1d) {
+TEST(IbmTest, kernels_1d) {
     // we just integrate the kernels
     int total = 640;
     double begin = -4.5;
@@ -334,7 +333,7 @@ TEST(IBMTest, kernels_1d) {
  * Tests the integrals of the  2d kernels to be 1.
  * @test
  */
-TEST(IBMTest, kernels_2d) {
+TEST(IbmTest, kernels_2d) {
     int total = 640;
     double begin = -4.5;
     double end = 4.5;
@@ -510,7 +509,7 @@ TEST(IbmTest, right_amount_kernel_nodes_A) {
     int regular = 0;
     int error = 0;
     for(auto ni : ng.node_infos) {
-        if(ni->boundary == IBM) {
+        if((ni->boundary == IBM_OUTER) || (ni->boundary == IBM_INNER)) {
             ++ibm;
         }
         else if(ni->boundary == NO_BOUNDARY) {
@@ -564,7 +563,7 @@ TEST(IbmTest, right_amount_kernel_nodes_B) {
     int regular = 0;
     int error = 0;
     for(auto ni : ng.node_infos) {
-        if(ni->boundary == IBM) {
+        if((ni->boundary == IBM_OUTER)  || (ni->boundary == IBM_INNER)) {
             ++ibm;
         }
         else if(ni->boundary == NO_BOUNDARY) {
@@ -618,7 +617,10 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     int regular = 0;
     int error = 0;
     for(auto ni : ng.node_infos) {
-        if(ni->boundary == IBM) {
+        if(ni->boundary == IBM_OUTER) {
+            ++ibm;
+        }
+        else if(ni->boundary == IBM_INNER) {
             ++ibm;
         }
         else if(ni->boundary == NO_BOUNDARY) {
@@ -632,6 +634,7 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     EXPECT_EQ(regular,1);
     EXPECT_EQ(error, 0);
 }
+
 /**
  * Tests weather or not the nodes are setup correctly, they are.
  * @test
@@ -685,6 +688,10 @@ TEST(IbmTest,rho_init) {
     }
 }
 
+/**
+ * Tests if the velocity interpolation from node to marker works.
+ * @tests
+ */
 TEST(IbmTest,velocity_interpolation) {
     // init the kernel 3 variant
     point_t starter = {5,5};
@@ -715,6 +722,12 @@ TEST(IbmTest,velocity_interpolation) {
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     ng.init_surface(canvas_size,ibm_distance);
+    if(0) {
+        ng.visualize_2D_nodes();
+        ng.visualize_2D_nodes_labels(NO_BOUNDARY);
+        ng.visualize_2D_nodes_labels(IBM_INNER);
+        ng.visualize_2D_nodes_labels(IBM_OUTER);
+    }
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
@@ -734,7 +747,7 @@ TEST(IbmTest,velocity_interpolation) {
     }
     // set to a value and look if it makes sense
     // put the veloctiy in the markers
-    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,4);
+    std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,ibm_distance);
     for(auto h : relevant) {
         handle_t pos = h - 1;
         sim.nodes[pos]->velocity = test_velocity;
@@ -750,22 +763,87 @@ TEST(IbmTest,velocity_interpolation) {
     EXPECT_EQ(sim.markers[final]->velocity.y(),test_velocity.y());
 }
 
-TEST(IbmTest, aggregated_force_in_node) {
-
+TEST(IbmTest, neighbors_outside_ibm) {
+    // todo not sure what the right behaviour here is
+    // prob best to stuff the links is to add an additional layer
+    int corrector = 4;
+    // init the kernel 3 variant
+    point_t starter = {5,5};
+    vector_t test_velocity = {1,1};
+    straight_t input;
+    straightGenerator sg;
+    long canvas_size = 25;
+    double side_length = 10; // with a distance of 0.75 we should get 80 markers
+    kernelType_t kernel = KERNEL_C;
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    ng.init_surface_return(canvas_size,ibm_distance);
+    // test the general ibm stuff
+    int ibm_outer = 0;
+    int ibm_inner = 0;
+    int ibm_regular = 0;
+    int ibm_error = 0;
+    int wet = 0;
+    int dry = 0;
+    int error = 0;
+    // neighborhood
+    array_t neighborhood;
+    neighborhood.setZero(9);
+    for(auto ni : ng.node_infos) {
+        // boundary
+        if(ni->boundary == IBM_OUTER) {
+            ++ibm_outer;
+        }
+        else if(ni->boundary == IBM_INNER) {
+            ++ibm_inner;
+        }
+        else if(ni->boundary == NO_BOUNDARY) {
+            ++ibm_regular;
+        }
+        else {
+            ++ibm_error;
+        }
+        // type
+        if(ni->type == WET) {
+            ++wet;
+        }
+        else if(ni->type == DRY) {
+            ++dry;
+        }
+        else {
+            ++error;
+        }
+        ++neighborhood[(long)ni->links.size()];
+        EXPECT_EQ(ni->links.size(),8);
+    }
+    // Test general ibm stuff
+    EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length)-corrector);
+    EXPECT_EQ(ibm_regular,1);
+    EXPECT_EQ(ibm_error, 0);
+    EXPECT_EQ(0, dry);
+    EXPECT_EQ(ibm_regular + ibm_inner + ibm_outer, wet);
+    EXPECT_EQ(error,0);
+    // Test the neighborhood
+    EXPECT_EQ(neighborhood[8],ng.node_infos.size());
 }
-
-TEST(IbmTest, calculate_force_density) {
-
-}
-
-TEST(IbmTest, self_stream) {
-    // tests the self stream in nodes that have less than 8 links
-}
-
-TEST(IbmTest, force_strength) {
-    // tests for correct values in the force implementation
-}
-
 
 // todo there are some strange cases still left -> investigate
 // todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool her

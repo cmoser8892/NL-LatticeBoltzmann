@@ -69,9 +69,9 @@ class pointKeyHash {
  */
 class rangingPointKeyHash {
   private:
-    pointKeyHash pkh;
-    std::vector<point_t> points;
-    bool safe_position_yes_no = true;
+    pointKeyHash pkh; /**< Point key hash stash */
+    std::vector<point_t> points;  /**< Points in the stash*/
+    bool safe_position_yes_no = true; /**< should be set to true if we want to safe the points */
   public:
     void set_position_save(bool set);
     void fill_key(handle_t position_handle, point_t position);

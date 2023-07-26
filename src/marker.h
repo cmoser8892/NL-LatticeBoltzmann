@@ -6,7 +6,7 @@
 #include "functions.h"
 
 /**
- * The marker class holds and distributes the markers on a surface for the IBM method.
+ * The marker class holds and distributes the markers on a surface for the IBM_OUTER method.
  * @note not sure yet how to handle finer grids prob fully dynamic ?!
  */
 class markerIBM {

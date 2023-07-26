@@ -158,7 +158,7 @@ inline void forcedSimulation::forcing_term_add(long pos, double ux, double uy, v
     // rot_force->calculate_F_rotation(ux,uy,&n->position);
     rot_force->calculate_F_circle(&n->position,0.000001,ux, uy);
     vector_t f = rot_force->return_force_alpha();
-    if(n->boundary_type == IBM) {
+    if(n->boundary_type == IBM_OUTER) {
         f = {0,0};
     }
     f += fa;
