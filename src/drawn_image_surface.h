@@ -5,7 +5,17 @@
 #include "types.h"
 
 class surfaceDrawer {
+  private:
+    void read();
 
+  public:
+    // public vars
+    bmpReader* bmp_reader;
+    // functions
+    explicit surfaceDrawer(std::filesystem::path p);
+    ~surfaceDrawer();
+    void init();
+    void run();
 };
 
 #endif // NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H
