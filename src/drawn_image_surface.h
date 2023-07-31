@@ -1,5 +1,11 @@
 #ifndef NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H
 #define NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H
 
+#include "bmp.h"
+#include "types.h"
+
+class surfaceDrawer {
+
+};
 
 #endif // NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H

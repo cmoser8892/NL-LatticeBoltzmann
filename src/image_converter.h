@@ -3,10 +3,6 @@
 #define NL_LATTICEBOLTZMANN_IMAGE_CONVERTER_H
 
 #include "types.h"
-#include <filesystem>
-#include <iostream>
-#include <fstream>
-#include <list>
 #include "boundary_point_generator.h"
 #include "helper_functions.h"
 #include "bmp.h"

@@ -13,6 +13,7 @@ set(MY_HEADERS
         image_converter.h
         marker.h
         bmp.h
+        drawn_image_surface.h
         )
 
 # List of implementation files
@@ -30,6 +31,7 @@ set(MY_CPP
         image_converter.cpp
         marker.cpp
         bmp.cpp
+        draw_image_surface.h.cpp
         )
 
 # Create a static library
