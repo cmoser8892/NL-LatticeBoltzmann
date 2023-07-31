@@ -12,6 +12,7 @@ set(MY_HEADERS
         node.h
         image_converter.h
         marker.h
+        bmp.h
         )
 
 # List of implementation files
@@ -28,6 +29,7 @@ set(MY_CPP
         neighborhood.cpp
         image_converter.cpp
         marker.cpp
+        bmp.cpp
         )
 
 # Create a static library
