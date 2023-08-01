@@ -4,15 +4,19 @@
 #include "bmp.h"
 #include "types.h"
 #include "functions.h"
+#include "src_foreign/spline.h"
 
 class surfaceDrawer {
   private:
     void read();
     void convert_points();
+    void spline_application();
   public:
     // public vars
     bmpReader* bmp_reader;
+    // raw points
     std::vector<point_t> points;
+    //
     // functions
     explicit surfaceDrawer(std::filesystem::path p);
     ~surfaceDrawer();

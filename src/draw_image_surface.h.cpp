@@ -35,6 +35,15 @@ void surfaceDrawer::convert_points() {
     }
 }
 
+void surfaceDrawer::spline_application() {
+    std::vector<double> X,Y;
+    for(auto point : points) {
+        X.push_back(point.x());
+        Y.push_back(point.y());
+    }
+    tk::spline s(X,Y);
+}
+
 // public
 surfaceDrawer::surfaceDrawer(std::filesystem::path p) {
     bmp_reader = new bmpReader(p);
@@ -50,5 +59,5 @@ void surfaceDrawer::init() {
 }
 
 void surfaceDrawer::run() {
-
+    spline_application();
 }
