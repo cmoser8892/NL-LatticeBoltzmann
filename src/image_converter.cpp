@@ -41,7 +41,7 @@ void imageConverter::create_raw() {
     // or directly create a 2d struct from the raw bmp data not sure yet
     // create a boundary with the basic sizes can be used in the node generator
     point_t size = {bmp_reader->bmp.info_header.width,bmp_reader->bmp.info_header.height};
-    raw = new rawPoints(size);
+    raw = new rawBoundaryPoints(size);
     point_t current ={0,0};
     // run through raw bmp data
     uint32_t full_data = 0;
@@ -61,7 +61,7 @@ void imageConverter::create_raw() {
                 // add to the raw boundaries
                 raw->read_in_bounce_back(current);
             }
-            current = update_position(current);
+            current = update_image_position(current, &size);
             // reset
             current_shift = 0;
             full_data = 0;
@@ -152,30 +152,10 @@ void imageConverter::translate_reformed_into_structure() {
 }
 
 /**
- * Updates the position of the piece of data.
- * @param p
- * @return
- */
-point_t imageConverter::update_position(point_t p) {
-    // update the postion based on strides
-    point_t size_shorthand = {bmp_reader->bmp.info_header.width,bmp_reader->bmp.info_header.height};
-    p.x()++;
-    if(p.x() >= size_shorthand.x()) {
-        p.x() = 0;
-        p.y()++;
-    }
-    if(p.y() > size_shorthand.y()) {
-        throw std::runtime_error("Image size overrun");
-    }
-    return p;
-}
-
-/**
  * Constructor of the image converter.
  * @param p
  */
-imageConverter::imageConverter(std::filesystem::path p)
-{
+imageConverter::imageConverter(std::filesystem::path p) {
     bmp_reader = new bmpReader(p);
 }
 

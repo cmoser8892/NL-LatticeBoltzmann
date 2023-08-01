@@ -8,7 +8,6 @@
 #include "bmp.h"
 
 // definition of all the different parts of a bmp file
-#define WHITE_COLOR_CODE_24_BIT     0xffffff     /**< The color of fluid nodes */
 #define TARGET_SIZE_WINDOW          4            /**< Saved windows size */
 
 /// converts a bmp image to a boundary
@@ -22,11 +21,10 @@ class imageConverter {
     void detect_colors();
     void create_raw();
     void translate_reformed_into_structure();
-    point_t update_position(point_t p);
   public:
     // public vars
     bmpReader* bmp_reader;
-    rawPoints * raw = nullptr;
+    rawBoundaryPoints * raw = nullptr;
     boundaryPointConstructor* boundaries = nullptr;
     // functions
     explicit imageConverter(std::filesystem::path p);

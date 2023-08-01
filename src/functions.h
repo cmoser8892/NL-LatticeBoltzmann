@@ -36,7 +36,8 @@ double kernel_B_2d(vector_t* p);
 double kernel_C_2d(vector_t *p);
 double kernel_id_to_lattice_search(kernelType_t t);
 bool point_on_straight(straight_t * s, point_t *p, double* overshot);
-vector_t compute_lagrangian_force();
+// image related
+point_t update_image_position(point_t p, point_t *s);
 // debug method
 void debug_node(node* node, bool printing);
 #endif // NL_LATTICEBOLTZMANN_FUNCTIONS_H

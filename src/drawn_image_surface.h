@@ -3,14 +3,16 @@
 
 #include "bmp.h"
 #include "types.h"
+#include "functions.h"
 
 class surfaceDrawer {
   private:
     void read();
-
+    void convert_points();
   public:
     // public vars
     bmpReader* bmp_reader;
+    std::vector<point_t> points;
     // functions
     explicit surfaceDrawer(std::filesystem::path p);
     ~surfaceDrawer();

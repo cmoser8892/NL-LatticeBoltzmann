@@ -845,5 +845,6 @@ TEST(IbmTest, neighbors_outside_ibm) {
     EXPECT_EQ(neighborhood[8],ng.node_infos.size());
 }
 
+// force based pressure boundaries all the other stuff is links
 // todo there are some strange cases still left -> investigate
 // todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool her
