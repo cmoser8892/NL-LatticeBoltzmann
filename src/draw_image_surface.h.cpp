@@ -115,6 +115,7 @@ void surfaceDrawer::run() {
         add_surface(current,previous);
         // switch over
         previous = current;
+        surface_direction = determine_init_surface_direction(current);
         // check for the end point
         if(look_for_last(current)) {
             break;
