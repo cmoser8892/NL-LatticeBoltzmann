@@ -4,6 +4,8 @@
 #include "bmp.h"
 #include "types.h"
 #include "functions.h"
+#include "helper_classes.h"
+#include "straight.h"
 
 class surfaceDrawer {
   private:

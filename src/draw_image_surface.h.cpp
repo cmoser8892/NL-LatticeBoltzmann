@@ -100,7 +100,7 @@ void surfaceDrawer::run() {
         // switch over
         previous = current;
         // check for the end point
-        if(look_for_last()) {
+        if(look_for_last(current)) {
             break;
         }
     }
