@@ -78,6 +78,7 @@ class rangingPointKeyHash {
     void clear();
     long size();
     std::vector<handle_t> ranging_key_translation(point_t pos, double range);
+    bool ranging_key_look_for_specific(point_t pos, double range, handle_t h);
 };
 
 /**

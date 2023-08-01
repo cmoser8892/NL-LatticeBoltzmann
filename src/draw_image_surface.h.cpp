@@ -35,14 +35,34 @@ void surfaceDrawer::convert_points() {
     }
 }
 
-void surfaceDrawer::spline_application() {
-    std::vector<double> X,Y;
+void surfaceDrawer::fill_hashtable() {
     for(auto point : points) {
-        X.push_back(point.x());
-        Y.push_back(point.y());
+        rpkh.fill_key(handle_runner,point);
+        handle_runner++;
     }
-    tk::spline s(X,Y);
-}
+ }
+
+ point_t surfaceDrawer::interpolate_around(point_t p) {
+    return p;
+ }
+
+ vector_t surfaceDrawer::determine_init_surface_direction(point_t p) {
+    return p;
+ }
+
+ bool surfaceDrawer::look_for_last(point_t current) {
+    handle_t knock_it_off = points.size()-1;
+    return rpkh.ranging_key_look_for_specific(current,range,knock_it_off);
+ }
+
+ void surfaceDrawer::add_surface(point_t current, point_t previous) {
+     vector_t direction = current - previous;
+     straight_t  s;
+     s.point = previous;
+     s.direction = direction;
+     s.max_t = direction.norm();
+     surface_storage.add_surface(s);
+ }
 
 // public
 surfaceDrawer::surfaceDrawer(std::filesystem::path p) {
@@ -56,8 +76,34 @@ surfaceDrawer::~surfaceDrawer() {
 void surfaceDrawer::init() {
     read();
     convert_points();
+    fill_hashtable();
 }
 
 void surfaceDrawer::run() {
-    spline_application();
+    point_t current = points[0];
+    int total_steps = int((double)points.size() * 2 * 1/step);
+    // determine initials
+    current = interpolate_around(current);
+    point_t previous = current;
+    // add the first point last to the points vector
+    points.push_back(current);
+    rpkh.fill_key(handle_runner,current);
+    vector_t surface_direction = determine_init_surface_direction(current);
+    // for loop
+    for(int i = 0; i < total_steps; ++i) {
+        // go step in the old direction
+        current += surface_direction.normalized()*step;
+        // look around and correct
+        current = interpolate_around(current);
+        // add as a surface
+        add_surface(current,previous);
+        // switch over
+        previous = current;
+        // check for the end point
+        if(look_for_last()) {
+            break;
+        }
+    }
+    // draw the last surface
+    add_surface(points[points.size()-1],previous);
 }

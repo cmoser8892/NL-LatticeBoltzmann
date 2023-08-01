@@ -324,6 +324,19 @@ std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, 
     return returns;
 }
 
+bool rangingPointKeyHash::ranging_key_look_for_specific(point_t pos, double range, handle_t h) {
+    bool returns = false;
+    std::vector<handle_t> candidates = ranging_key_translation(pos,range);
+    for(auto c : candidates) {
+        if(c == h) {
+            returns = true;
+            break;
+        }
+    }
+    return returns;
+}
+
+
 /**
  * Constructor set up the list with the wished for size.
  * @param s
