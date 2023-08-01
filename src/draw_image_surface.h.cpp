@@ -43,10 +43,26 @@ void surfaceDrawer::fill_hashtable() {
  }
 
  point_t surfaceDrawer::interpolate_around(point_t p) {
-    return p;
+    std::vector<handle_t> relevant_points = rpkh.ranging_key_translation(p,range);
+    point_t mid = p;
+    for(auto h : relevant_points) {
+        mid += points[h];
+    }
+    mid /= ((double)relevant_points.size() +1);
+    return mid;
  }
 
  vector_t surfaceDrawer::determine_init_surface_direction(point_t p) {
+    // go in all major directions and note the one where we find the most results
+    std::vector<unsigned long> sizes;
+    for(int k = 0; k < major_directions.cols(); ++k) {
+        vector_t current = p + point_t(major_directions.col(k));
+        std::vector<handle_t> candidates = rpkh.ranging_key_translation(current,range);
+        sizes.push_back(candidates.size());
+    }
+    // look for the on were we found the most
+    int maxElementIndex = (int)std::distance(sizes.begin(),std::max_element(sizes.begin(),sizes.end()));
+    vector_t initial = major_directions.col(maxElementIndex);
     return p;
  }
 

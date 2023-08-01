@@ -51,3 +51,14 @@ TEST(FunctionalTest, ranging_key_look) {
     rpkh.fill_key(runner,additional);
     EXPECT_TRUE(rpkh.ranging_key_look_for_specific(middle,2,runner));
 }
+
+TEST(FunctionalTest, surface_drawer_master_test) {
+    auto test_image = get_base_path();
+    test_image.append("tests");
+    test_image.append("test_images");
+    test_image.append("duck.bmp");
+    surfaceDrawer s(test_image);
+    s.init();
+    s.run();
+    s.surface_storage.write_out_surface();
+}

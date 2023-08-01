@@ -23,6 +23,7 @@ using colour_t = uint32_t; /**< placeholder for colour, whatever the right dataf
 extern matrix_t velocity_set; /**< is set as a global */
 extern matrix_t weights; /**< is set as a global */
 extern matrix_t cardinal_directions; /**< is set as a global */
+extern matrix_t major_directions; /**< is set as a global */
 
 /**
  * xy (long) coordinates as a struct
