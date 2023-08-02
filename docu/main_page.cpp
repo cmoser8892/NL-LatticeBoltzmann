@@ -6,6 +6,7 @@
  * The project is written in C++20. The main goal is to create a datastructures
  * that enables us to be quite flexible with boundaries in a Lattice Boltzmann Simulation.
  * For this we use neighborhood lists to connect a bunch of loose populations together.
+ * This work explores that idea.
  * \subsection Dependencies
  * Eigen 3.10. \n
  * C++ Standard Libraries \n
@@ -25,7 +26,10 @@
  *  Using a pre ibm node as a marker and checking weather or not one of the pre markers is actually a valid population that has to created. \n
  *  Would be also cool to try out an extreme ns based approach, right now i build the list and use a static link list in the nodes
  *  \subsection Particularities
- *  Tests are messy and not really organized in files but in the Test suits (that is why there is a number of misc-tests, I only partition them when the file gets too big)
+ *  Tests are messy and not really organized in files but in the Test suits (that is why there is a number of misc-tests, I only partition them when the file gets too big).
+ *  Also i would describe them as a bit of a italian mess, there is a lot of copy paste, but in my opinion a test should always be self complete.
+ *  Everything undocumented in doxygen should be regarded with suspicion. In my normal workflow I document a method after testing.
+ *  Anything undocumented can therefore be regarded as at least untested, maybe even non-functional.
  *  Critique on programming is very welcome :)
 */
 

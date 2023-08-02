@@ -18,7 +18,7 @@ typedef struct boundaryPoint {
 /**
  * Holds all possible points that are not part of a fluid, the class reduce those points just to boundary points on the boarder
  */
-class rawPoints {
+class rawBoundaryPoints {
     /**
      * Description of cases where a point is, inside on the boarder or at a corner.
      */
@@ -40,8 +40,8 @@ class rawPoints {
   public:
     std::vector<boundaryPoint_t*> raw_boundary_points; /**< vector of all boundary points */
     std::vector<boundaryPoint_t*> reformed_boundary_points; /**< vector of the variable boundary points */
-    explicit rawPoints(point_t size);
-    ~rawPoints();
+    explicit rawBoundaryPoints(point_t size);
+    ~rawBoundaryPoints();
     void delete_raw_boundary_points();
     void delete_reformed_boundary_points();
     void rewrite_reformed_boundary_handles();

@@ -7,6 +7,8 @@
 #include <fstream>
 #include <list>
 
+#define WHITE_COLOR_CODE_24_BIT     0xffffff     /**< The color of fluid nodes */
+
 /**
  * File header 14 byte.
  */

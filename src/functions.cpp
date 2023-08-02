@@ -482,10 +482,6 @@ double kernel_id_to_lattice_search(kernelType_t t) {
     return returns;
 }
 
-vector_t compute_lagrangian_force() {
-    return {0,0};
-}
-
 /**
  * Checks weather or not a point is on a straight.
  * @param s
@@ -523,20 +519,14 @@ bool point_on_straight(straight_t *s, point_t * p,double* overshot) {
     return returns;
 }
 
-/*
-// python stuff
-def periodic_boundary_with_pressure_variations(grid,rho_in,rho_out):
-    # get all the values
-    rho, ux, uy = caluculate_real_values(grid)
-    equilibrium = equilibrium_on_array(rho, ux, uy)
-    ##########
-    equilibrium_in = equilibrium_on_array(rho_in, ux[-2,:], uy[-2, :])
-    # inlet 1,5,8
-    grid[:, 0, :] = equilibrium_in + (grid[:, -2, :] - equilibrium[:, -2, :])
-
-# outlet 3,6,7
-equilibrium_out = equilibrium_on_array(rho_out, ux[1, :], uy[1, :])
-# check for correct sizes
-    grid[:, -1, :] = equilibrium_out + (grid[:, 1, :] - equilibrium[:, 1, :])
-
-                                           */
+point_t update_image_position(point_t p, point_t* s) {
+    p.x()++;
+    if(p.x() >= s->x()) {
+        p.x() = 0;
+        p.y()++;
+    }
+    if(p.y() > s->y()) {
+        throw std::runtime_error("Image size overrun");
+    }
+    return p;
+}

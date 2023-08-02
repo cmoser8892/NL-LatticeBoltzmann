@@ -5,7 +5,7 @@
  * Constructor, sets size and limits.
  * @param s
  */
-rawPoints::rawPoints(point_t s) {
+rawBoundaryPoints::rawBoundaryPoints(point_t s) {
     size = s;
     limits << s.x() -1, s.y() -1;
 }
@@ -13,7 +13,7 @@ rawPoints::rawPoints(point_t s) {
 /**
  * Deconstruction frees the memory in the vectors.
  */
-rawPoints::~rawPoints() {
+rawBoundaryPoints::~rawBoundaryPoints() {
     delete_raw_boundary_points();
     delete_reformed_boundary_points();
 }
@@ -22,7 +22,7 @@ rawPoints::~rawPoints() {
  * Deletes the boundary point structs saved in the raw boundary vector.
  * @attention clearing the vector prevents double deletion of dangeling pointers
  */
-void rawPoints::delete_raw_boundary_points() {
+void rawBoundaryPoints::delete_raw_boundary_points() {
     for(auto d : raw_boundary_points) {
         delete d;
     }
@@ -33,7 +33,7 @@ void rawPoints::delete_raw_boundary_points() {
  * Deletes the boundary point structs saved in the reformed boundary vector.
  * @attention clearing the vector prevents double deletion of dangeling pointers
  */
-void rawPoints::delete_reformed_boundary_points() {
+void rawBoundaryPoints::delete_reformed_boundary_points() {
     for(auto d : reformed_boundary_points) {
         delete d;
     }
@@ -43,7 +43,7 @@ void rawPoints::delete_reformed_boundary_points() {
 /**
  * For loop over rbps to fill the pointkeyhash class.
  */
-void rawPoints::fill_keys() {
+void rawBoundaryPoints::fill_keys() {
     for(auto rbp : raw_boundary_points) {
         pkh.fill_key(rbp->h,rbp->point);
     }
@@ -52,7 +52,7 @@ void rawPoints::fill_keys() {
 /**
  * Visualizer of the raw boundaries, call before deletion of the raw boundaries, not combinable with pure run.
  */
-void rawPoints::visualize_2D_boundary() {
+void rawBoundaryPoints::visualize_2D_boundary() {
     flowfield_t output;
     output.setZero(std::floor(size.x()),std::floor(size.y()));
     for(auto b : raw_boundary_points) {
@@ -65,7 +65,7 @@ void rawPoints::visualize_2D_boundary() {
 /**
  * Rewrite reformed handles to be in order again
  */
-void rawPoints::rewrite_reformed_boundary_handles() {
+void rawBoundaryPoints::rewrite_reformed_boundary_handles() {
     handle_t start = 0;
     for(auto reformed_bp : reformed_boundary_points) {
         reformed_bp->h = ++start;
@@ -77,7 +77,7 @@ void rawPoints::rewrite_reformed_boundary_handles() {
  * @param b
  * @return the correct boarder return code
  */
-rawPoints::border_return_code_t rawPoints::check_boarder(boundaryPoint_t &b) {
+rawBoundaryPoints::border_return_code_t rawBoundaryPoints::check_boarder(boundaryPoint_t &b) {
     border_return_code_t return_code = INSIDE;
     point_t short_hand = b.point;
     int counter = 0;
@@ -115,7 +115,7 @@ rawPoints::border_return_code_t rawPoints::check_boarder(boundaryPoint_t &b) {
  * @param b
  * @return the number of maximum allowed neighbors
  */
-int rawPoints::set_max_neighbors(rawPoints::border_return_code_t b) {
+int rawBoundaryPoints::set_max_neighbors(rawBoundaryPoints::border_return_code_t b) {
     int return_code = -1;
     switch (b) {
     case CORNER:
@@ -138,7 +138,7 @@ int rawPoints::set_max_neighbors(rawPoints::border_return_code_t b) {
  * @param b
  * @return
  */
-int rawPoints::set_min_neighbors(rawPoints::border_return_code_t b) {
+int rawBoundaryPoints::set_min_neighbors(rawBoundaryPoints::border_return_code_t b) {
     int return_code = -1;
     switch (b) {
     case CORNER:
@@ -159,7 +159,7 @@ int rawPoints::set_min_neighbors(rawPoints::border_return_code_t b) {
  * @param a
  * @return
  */
-bool rawPoints::judge_add_up_found_velocities_vector(vector_t a) {
+bool rawBoundaryPoints::judge_add_up_found_velocities_vector(vector_t a) {
     // we judge the length of the vector hopefully enough
     bool return_value = false;
     vector_t inter = {a.x()/a.x(), a.y()/a.y()};
@@ -173,7 +173,7 @@ bool rawPoints::judge_add_up_found_velocities_vector(vector_t a) {
  * Point read in.
  * @param p
  */
-void rawPoints::read_in_bounce_back(point_t p) {
+void rawBoundaryPoints::read_in_bounce_back(point_t p) {
     coordinate_t coordinate;
     coordinate.x = std::floor(p.x());
     coordinate.y = std::floor(p.y());
@@ -184,7 +184,7 @@ void rawPoints::read_in_bounce_back(point_t p) {
  * Coordinate read in.
  * @param coordinate
  */
-void rawPoints::read_in_bounce_back(coordinate_t coordinate) {
+void rawBoundaryPoints::read_in_bounce_back(coordinate_t coordinate) {
     auto new_bp = new boundaryPoint_t;
     new_bp->h = ++current_handle;
     // aka should have done it the other way around
@@ -200,7 +200,7 @@ void rawPoints::read_in_bounce_back(coordinate_t coordinate) {
 /**
  * Function that pushes everything that has not contact to the surface out of the raw data.
  */
-void rawPoints::reduce() {
+void rawBoundaryPoints::reduce() {
     /// todo exceptionally similar to determine neighbors in Neighborhood
     /// todo still quite a number of linear searches
     // gets rid of all the unnecessary boundary points
