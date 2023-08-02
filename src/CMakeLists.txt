@@ -14,7 +14,6 @@ set(MY_HEADERS
         marker.h
         bmp.h
         drawn_image_surface.h
-        src_foreign/spline.h
         )
 
 # List of implementation files
