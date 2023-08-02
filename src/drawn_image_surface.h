@@ -17,7 +17,7 @@ class surfaceDrawer {
     void convert_points();
     void fill_hashtable();
     point_t interpolate_around(point_t p);
-    vector_t determine_init_surface_direction(point_t p);
+    vector_t determine_init_surface_direction(point_t p, double jump);
     bool look_for_last(point_t current);
     void add_surface(point_t current, point_t previous);
   public:

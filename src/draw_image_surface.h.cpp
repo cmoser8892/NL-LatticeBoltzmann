@@ -52,18 +52,18 @@ void surfaceDrawer::fill_hashtable() {
     return mid;
  }
 
- vector_t surfaceDrawer::determine_init_surface_direction(point_t p) {
+ vector_t surfaceDrawer::determine_init_surface_direction(point_t p, double jump) {
     // go in all major directions and note the one where we find the most results
     std::vector<unsigned long> sizes;
     for(int k = 0; k < major_directions.cols(); ++k) {
-        vector_t current = p + point_t(major_directions.col(k));
+        vector_t current = p + point_t(major_directions.col(k))*jump;
         std::vector<handle_t> candidates = rpkh.ranging_key_translation(current,range);
         sizes.push_back(candidates.size());
     }
     // look for the on were we found the most
     int maxElementIndex = (int)std::distance(sizes.begin(),std::max_element(sizes.begin(),sizes.end()));
     vector_t initial = major_directions.col(maxElementIndex);
-    return p;
+    return initial;
  }
 
  bool surfaceDrawer::look_for_last(point_t current) {
@@ -104,7 +104,7 @@ void surfaceDrawer::run() {
     // add the first point last to the points vector
     points.push_back(current);
     rpkh.fill_key(handle_runner,current);
-    vector_t surface_direction = determine_init_surface_direction(current);
+    vector_t surface_direction = determine_init_surface_direction(current,1);
     // for loop
     for(int i = 0; i < total_steps; ++i) {
         // go step in the old direction
@@ -113,9 +113,13 @@ void surfaceDrawer::run() {
         current = interpolate_around(current);
         // add as a surface
         add_surface(current,previous);
+        std::cout << current.x() << " " << current.y() << std::endl;
+        std::cout << surface_direction.x() << " " << surface_direction.y() << std::endl;
         // switch over
+        surface_direction  = (current - previous).normalized();
         previous = current;
-        surface_direction = determine_init_surface_direction(current);
+        // every so often we look further
+        // surface_direction = determine_init_surface_direction(current,3);
         // check for the end point
         if(look_for_last(current)) {
             break;
