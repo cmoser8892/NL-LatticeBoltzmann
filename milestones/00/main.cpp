@@ -78,5 +78,6 @@ int main() {
     imwrite(output,image);
     waitKey(0);
 
+
     return 0;
 }
