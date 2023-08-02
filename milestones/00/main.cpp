@@ -4,21 +4,17 @@
 valgrind --tool=callgrind --dump-instr=yes (p)
  */
 
+#include <opencv2/opencv.hpp>
 #include <iostream>
-#include "helper_functions.h"
-#include "functions.h"
 
-/**
- * Test main.
- * @return
- */
-int main(int argc, char *argv[]) {
-    double range = 0;
-    double delta_range = 1;
-    if(argc > 1) {
-        range = std::stod(argv[1]);
-        delta_range = std::stod(argv[2]);
+int main() {
+    cv::Mat image = cv::imread("/home/sideproject/Downloads/IMG_20221030_131653907_MFNR.jpg");
+    if (image.empty()) {
+        std::cout << "Error: Unable to load the image." << std::endl;
+        return -1;
     }
-    std::cout << kernel_C(range);
+
+    cv::imshow("Loaded Image", image);
+    cv::waitKey(0);
     return 0;
 }

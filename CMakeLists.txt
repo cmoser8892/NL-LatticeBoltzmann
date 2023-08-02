@@ -61,6 +61,14 @@ if(USE_MPI)
   find_package(MPI 3 REQUIRED)
 endif()
 
+# opencv
+# Find OpenCV package
+find_package(OpenCV REQUIRED)
+
+# Include OpenCV headers
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+
 add_subdirectory(simulation)  # contains the different iterations of the simulation code
 add_subdirectory(src)         # Contains our common code pieces
 add_subdirectory(tests)       # Tests for the library

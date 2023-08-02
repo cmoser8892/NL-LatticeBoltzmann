@@ -44,6 +44,8 @@ target_include_directories(source_lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link against Eigen (automatically sets up the includes)
 target_link_libraries(source_lib PUBLIC Eigen3::Eigen)
 
+# Link OpenCV libraries
+target_link_libraries(source_lib PRIVATE ${OpenCV_LIBS})
 # Set up MPI includes and library linking
 # This also propagates to further targets
 if (MPI_FOUND)
