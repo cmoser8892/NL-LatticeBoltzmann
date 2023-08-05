@@ -31,7 +31,7 @@ set(MY_CPP
         image_converter.cpp
         marker.cpp
         bmp.cpp
-        draw_image_surface.h.cpp
+        draw_image_surface.cpp
         )
 
 # Create a static library

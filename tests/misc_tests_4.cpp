@@ -62,3 +62,8 @@ TEST(FunctionalTest, surface_drawer_master_test) {
     s.run();
     s.surface_storage.write_out_surface();
 }
+
+// todo
+/*
+ * https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
+ */
