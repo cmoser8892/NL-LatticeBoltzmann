@@ -70,8 +70,14 @@ int main() {
 
     // Draw the convex hull on the original image
     vector<vector<Point>> hulls = {convexHullPoints};
-    drawContours(image, hulls, 0, Scalar(255), 2);
-
+    for(auto vh : hulls) {
+        cout << "hull" << std::endl;
+        for(auto p : vh) {
+            cout << p << std::endl;
+        }
+    }
+    // drawContours(image, hulls, 0, Scalar(255), 2);
+    polylines(image, hulls, true, Scalar(0, 255, 0), 2);
     // Display the image with the detected corners and the recovered surface
     imshow("Detected Corners and Surface", image);
     string output = "out.jpg";
