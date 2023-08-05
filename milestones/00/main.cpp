@@ -40,7 +40,7 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("extra_small.bmp");
+    test_image.append("cool_duck.png");
     Mat image = imread(test_image.string(), IMREAD_GRAYSCALE);
     if (image.empty()) {
         cout << "Error: Unable to load the image." << endl;
@@ -90,7 +90,7 @@ int main() {
                 vector_t direction = intern_second - intern_first;
                 straight_t s;
                 s.point = intern_first;
-                s.direction = direction;
+                s.direction = direction.normalized();
                 s.max_t = direction.norm();
                 std::cout << i << "Point " << s.point.x() <<" ," << s.point.y()
                           << "\n Direction:" << s.direction.x() << " ," << s.direction.y() << " Length: " << s.max_t << std::endl;

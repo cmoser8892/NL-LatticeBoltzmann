@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     // init variant
     int steps = 5;
-    unsigned int size = 12;
+    unsigned int size = 200;
     point_t c = {size,size};
     boundaryPointConstructor boundaries(c);
     // boundaries.init_sliding_lid_side_chopped({20,10},30);
