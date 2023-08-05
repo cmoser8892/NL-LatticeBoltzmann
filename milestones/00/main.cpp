@@ -8,82 +8,97 @@ valgrind --tool=callgrind --dump-instr=yes (p)
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "helper_functions.h"
+#include "straight.h"
+
 using namespace cv;
 using namespace std;
+
+// Function to apply the Douglas-Peucker line simplification
+void simplifyLines(const vector<Point>& inputPoints, vector<Point>& outputPoints, double epsilon) {
+    cout << "Input points: " << inputPoints.size() << endl;
+    if (inputPoints.size() < 2) {
+        outputPoints = inputPoints;
+        return;
+    }
+
+    vector<Point> simplified;
+    simplified.push_back(inputPoints.front());
+    simplified.push_back(inputPoints.back());
+
+    for (size_t i = 2; i < inputPoints.size(); i++) {
+        double distance = pointPolygonTest(inputPoints, inputPoints[i], true);
+        if (distance > epsilon) {
+            simplified.push_back(inputPoints[i]);
+        }
+    }
+    cout << "Simplified points: " << outputPoints.size() << endl;
+    outputPoints = simplified;
+}
 
 int main() {
     // Load the image
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("cool_duck.png");
+    test_image.append("extra_small.bmp");
     Mat image = imread(test_image.string(), IMREAD_GRAYSCALE);
     if (image.empty()) {
         cout << "Error: Unable to load the image." << endl;
         return -1;
     }
+    // Apply edge detection
+    Mat edges;
+    Canny(image, edges, 50, 150);
 
-    // Parameters for Harris Corner Detection
-    int blockSize = 2; // Size of the neighborhood considered for corner detection
-    int apertureSize = 3; // Aperture parameter for Sobel operator
-    double k = 0.04; // Harris corner free parameter
-    double threshold = 0.01; // Threshold to distinguish corners from non-corners
+    // Find contours from the edges
+    vector<vector<Point>> contours;  // Ensure that Point data type is used here
+    findContours(edges, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
-    // Detect corners using Harris Corner Detection
-    Mat cornerStrength;
-    cornerHarris(image, cornerStrength, blockSize, apertureSize, k);
+    // Create a blank image to draw the surface
+    Mat surfaceImage = Mat::zeros(image.size(), CV_8UC3);
 
-    // Compute the maximum corner strength value
-    double maxStrength;
-    minMaxLoc(cornerStrength, nullptr, &maxStrength);
+    // Connect the points of the first contour to recreate the surface
+    if (!contours.empty()) {
+        const vector<Point>& contour = contours[0];
+        for (size_t i = 0; i < contour.size(); i++) {
+            int nextIndex = (i + 1) % contour.size();
+            line(surfaceImage, contour[i], contour[nextIndex], Scalar(0, 0, 255), 2);
+        }
+    }
 
-    // Create a binary image to store the corner locations
-    Mat cornerBinary = Mat::zeros(cornerStrength.size(), CV_8U);
-
-    // Iterate through the corner strength matrix and set the binary image pixels
-    // to 255 if the corresponding corner strength is above the threshold
-    for (int y = 0; y < cornerStrength.rows; ++y) {
-        for (int x = 0; x < cornerStrength.cols; ++x) {
-            if (cornerStrength.at<float>(y, x) > threshold * maxStrength) {
-                cornerBinary.at<uchar>(y, x) = 255;
+    // Display the regenerated surface
+    imshow("Regenerated Surface", surfaceImage);
+    waitKey(0);
+    // own
+    if(1) {
+        // input into the straigth generator
+        straightGenerator sg;
+        if (!contours.empty()) {
+            const vector<Point> &contour = contours[0];
+            // contour loop
+            for (size_t i = 0; i < contour.size(); i++) {
+                int nextIndex = (i + 1) % contour.size();
+                // point translation
+                Point first = contour[i];
+                Point second = contour[nextIndex];
+                point_t intern_first = {first.x,first.y};
+                point_t intern_second = {second.x,second.y};
+                if(i == 49) {
+                    std::cout << "s" << std::endl;
+                }
+                // input into the straight generator
+                vector_t direction = intern_second - intern_first;
+                straight_t s;
+                s.point = intern_first;
+                s.direction = direction;
+                s.max_t = direction.norm();
+                std::cout << i << "Point " << s.point.x() <<" ," << s.point.y()
+                          << "\n Direction:" << s.direction.x() << " ," << s.direction.y() << " Length: " << s.max_t << std::endl;
+                sg.add_surface(s);
             }
         }
+        sg.write_out_surface();
     }
-
-    // Find the non-zero (corner) locations
-    vector<Point> cornerPoints;
-    cout << cornerPoints.size() << std::endl;
-    findNonZero(cornerBinary, cornerPoints);
-    // Display the detected corners
-    if(0) {
-        // Draw circles around the detected corners
-        for (const Point& p : cornerPoints) {
-            circle(image, p, 5, Scalar(255), 2);
-        }
-        imshow("Detected Corners", image);
-        waitKey(0);
-    }
-
-    // Compute the convex hull of the detected corners
-    vector<Point> convexHullPoints;
-    convexHull(cornerPoints, convexHullPoints);
-
-    // Draw the convex hull on the original image
-    vector<vector<Point>> hulls = {convexHullPoints};
-    for(auto vh : hulls) {
-        cout << "hull" << std::endl;
-        for(auto p : vh) {
-            cout << p << std::endl;
-        }
-    }
-    // drawContours(image, hulls, 0, Scalar(255), 2);
-    polylines(image, hulls, true, Scalar(0, 255, 0), 2);
-    // Display the image with the detected corners and the recovered surface
-    imshow("Detected Corners and Surface", image);
-    string output = "out.jpg";
-    imwrite(output,image);
-    waitKey(0);
-
-
+    // end
     return 0;
 }
