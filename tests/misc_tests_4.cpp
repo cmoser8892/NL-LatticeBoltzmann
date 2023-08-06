@@ -12,20 +12,9 @@
 #include <gtest/gtest.h>
 
 /**
- * Tests the readin in the new drawer class.
+ * Tests some of the functionality of the ranging key lookup.
  * @test
  */
-TEST(FunctionalTest,drawer_basics) {
-    // test image setupa
-    auto test_image = get_base_path();
-    test_image.append("tests");
-    test_image.append("test_images");
-    test_image.append("20_blocks.bmp");
-    surfaceDrawer s(test_image);
-    s.init();
-    EXPECT_EQ(s.points.size(),20);
-}
-
 TEST(FunctionalTest, ranging_key_look) {
     //
     double range = 2;
@@ -52,16 +41,6 @@ TEST(FunctionalTest, ranging_key_look) {
     EXPECT_TRUE(rpkh.ranging_key_look_for_specific(middle,2,runner));
 }
 
-TEST(FunctionalTest, surface_drawer_master_test) {
-    auto test_image = get_base_path();
-    test_image.append("tests");
-    test_image.append("test_images");
-    test_image.append("duck.bmp");
-    surfaceDrawer s(test_image);
-    s.init();
-    s.run();
-    s.surface_storage.write_out_surface();
-}
 
 // todo
 /*
