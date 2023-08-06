@@ -44,26 +44,32 @@ void surfaceDrawer::run() {
      // detect the edges
      cv::Mat edges;
      cv::Canny(image, edges, 50, 150);
+     // cv::imshow("Edges", edges);
+     // cv::waitKey(0);
      // detect the contours
      std::vector<std::vector<cv::Point>> contours;
-     cv::findContours(edges, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+     cv::findContours(edges, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
      // input into the straigth generator
      if (!contours.empty()) {
          // we only look at the top level surface
-         const std::vector<cv::Point> &contour = contours[0];
+         // const std::vector<cv::Point> &contour = contours[0];
          // contour loop
-         for (size_t i = 0; i < contour.size(); i++) {
-             int nextIndex = (i + 1) % contour.size();
-             // point translation
-             cv::Point first = contour[i];
-             cv::Point second = contour[nextIndex];
-             point_t intern_first = {first.x,first.y};
-             point_t intern_second = {second.x,second.y};
-             if(i == 49) {
-                 std::cout << "s" << std::endl;
+         int i = 0;
+         for(auto contour : contours) {
+             ++i;
+             if(((i != 5 ) && (i != 1))) {
+                 continue;
              }
-             // input into the straight generator
-             add_surface(intern_first,intern_second);
+             for (size_t i = 0; i < contour.size(); i++) {
+                 int nextIndex = (i + 1) % contour.size();
+                 // point translation
+                 cv::Point first = contour[i];
+                 cv::Point second = contour[nextIndex];
+                 point_t intern_first = {first.x,first.y};
+                 point_t intern_second = {second.x,second.y};
+                 // input into the straight generator
+                 add_surface(intern_first,intern_second);
+             }
          }
      }
      surface_storage.write_out_surface();
