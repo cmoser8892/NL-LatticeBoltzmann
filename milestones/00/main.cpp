@@ -12,7 +12,7 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("cool_duck.png");
+    test_image.append("donut.png");
     // call the drawer
     surfaceDrawer s(test_image);
     s.run();
