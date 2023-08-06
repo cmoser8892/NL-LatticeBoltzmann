@@ -3,6 +3,14 @@
 #include "lbm_simulation.h"
 #include "drawn_image_surface.h"
 
+/**
+ * 12 main. We can change an image to be the basis of a simulation with ibm.
+ * @attention Because ibm simulations appear to be unstable (could also be that i dont relax them long enough) only circular forces should be considered for now.
+ * @note to change between used forces go the the ibmClass, you have to change it directly.
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     straight_t input;
     int steps = 10000;

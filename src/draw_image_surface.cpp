@@ -1,6 +1,11 @@
 #include <opencv2/opencv.hpp>
 #include "drawn_image_surface.h"
 
+/**
+ * Adds a surface to the surface_storage, aka the straightGenerator.
+ * @param current
+ * @param previous
+ */
  void surfaceDrawer::add_surface(point_t current, point_t previous) {
      vector_t direction = current - previous;
      straight_t  s;
@@ -15,14 +20,20 @@
      }
  }
 
-// public
+/**
+ * Constructor.
+ * @param p
+ */
 surfaceDrawer::surfaceDrawer(std::filesystem::path p) {
      path = p;
 }
 
-surfaceDrawer::~surfaceDrawer() {
-}
-
+/**
+ * Runs an opencv instance.
+ * @details https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
+ * @note we just want the contours given in our image
+ * @attention prob really specific to the given use case and how we draw in general.
+ */
 void surfaceDrawer::run() {
      // read the image
      cv::Mat image = cv::imread(path.string(), cv::IMREAD_GRAYSCALE);
@@ -38,6 +49,7 @@ void surfaceDrawer::run() {
      cv::findContours(edges, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
      // input into the straigth generator
      if (!contours.empty()) {
+         // we only look at the top level surface
          const std::vector<cv::Point> &contour = contours[0];
          // contour loop
          for (size_t i = 0; i < contour.size(); i++) {

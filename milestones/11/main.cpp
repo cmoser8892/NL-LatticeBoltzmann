@@ -2,6 +2,13 @@
 #include <chrono>
 #include "lbm_simulation.h"
 
+/**
+ * 11 main, we us the new ibmSimuationClass and test the Kernel_4/C on a quader.
+ * @note A shortcoming of ibm currently is the need to switch between forces in the ibmsim class
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     point_t starter = {13,13};
     straight_t input;

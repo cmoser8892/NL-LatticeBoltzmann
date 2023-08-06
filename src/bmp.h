@@ -68,7 +68,7 @@ class bmpReader {
     std::filesystem::path path; /**< Path to the the bmp file */
     uint32_t make_stride_aligned(uint32_t align_stride,uint32_t row_stride);
   public:
-    BMP_t bmp;
+    BMP_t bmp; /**< bmp data structure (the image) */
     explicit bmpReader(std::filesystem::path p);
     void read();
 };

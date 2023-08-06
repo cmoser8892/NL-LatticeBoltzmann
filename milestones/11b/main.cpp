@@ -2,6 +2,13 @@
 #include <chrono>
 #include "lbm_simulation.h"
 
+/**
+ * 11b main, the populations in the nodes on the edge of the simulation domain have a bounce back enable.
+ * @result No real difference to 11, when working with a circular force, disappointing.
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     point_t starter = {13,13};
     straight_t input;

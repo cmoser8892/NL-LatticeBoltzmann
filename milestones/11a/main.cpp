@@ -4,6 +4,14 @@
 #include "simulation.h"
 #include "one_step_simulation.h"
 
+/**
+ * 11a main, we compare the results from 11 and 11b to it.
+ * @note instead of ibm boundaries we have bounce back boundaries
+ * @result For whatever reason only constant forces really work in simulations with ibm, something in a rotating frame is still unstable.
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[]) {
     point_t starter = {10,10};
     int steps = 1124;
