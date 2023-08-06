@@ -10,12 +10,6 @@
  * New simulation classes are written when the current one can not without losing old features
  * be updated anymore or it just got to clunky as more and more ideas just got added on top.
  * Another benefit is backwards compatibility, which may be dropped at some point.
- * Everything not named simulation is considered to be out of data.
- * Heredity:
- * two_step_simulation (basic LB with NL works on just one array and a copy array)
- * one_step_simulation (optimized into one step algorithm
- *                      + most what is still doable without to much overhead)
- * simulation (forced second order integration)
  */
 
 // includes

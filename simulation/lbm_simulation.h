@@ -13,12 +13,12 @@
 class ibmSimulation {
   private:
     simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
-    coordinate_t size;
-    nodeGenerator* node_generator = nullptr;
-    goaForce* rot_force = nullptr;
-    markerIBM* original_markers = nullptr;
-    rangingPointKeyHash markers_pkh;
-    double (*kernel_function)(point_t* p) = nullptr;
+    coordinate_t size; /**< bust sizes lol */
+    nodeGenerator* node_generator = nullptr; /**< node generator pointer */
+    goaForce* rot_force = nullptr; /**< force pointer */
+    markerIBM* original_markers = nullptr; /**< markers from the node generator */
+    rangingPointKeyHash markers_pkh; /**< Stash of markers used in the simulation */
+    double (*kernel_function)(point_t* p) = nullptr; /**< kernel function pointer */
     // local access arrays
     inline std::tuple<double, double, double> calculate_macro(array_t * a);
     inline std::tuple<double, double, double>  calculate_macro_force(array_t* a, array_t* previous);
