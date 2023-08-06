@@ -1,11 +1,11 @@
-#include "drawn_image_surface.h"
 #include <opencv2/opencv.hpp>
+#include "drawn_image_surface.h"
 
  void surfaceDrawer::add_surface(point_t current, point_t previous) {
      vector_t direction = current - previous;
      straight_t  s;
      s.point = previous;
-     s.direction = direction;
+     s.direction = direction.normalized();
      s.max_t = direction.norm();
      surface_storage.add_surface(s);
      // printer
@@ -37,7 +37,6 @@ void surfaceDrawer::run() {
      std::vector<std::vector<cv::Point>> contours;
      cv::findContours(edges, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
      // input into the straigth generator
-     straightGenerator sg;
      if (!contours.empty()) {
          const std::vector<cv::Point> &contour = contours[0];
          // contour loop
@@ -55,5 +54,5 @@ void surfaceDrawer::run() {
              add_surface(intern_first,intern_second);
          }
      }
-     sg.write_out_surface();
+     surface_storage.write_out_surface();
 }
