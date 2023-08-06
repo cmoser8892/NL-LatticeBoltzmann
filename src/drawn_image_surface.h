@@ -14,11 +14,13 @@ class surfaceDrawer {
   private:
     std::filesystem::path path;  /**< Path to the image */
     void add_surface(point_t current, point_t next);
+    bool selector(std::vector<int> sel, int current_contour);
   public:
     straightGenerator surface_storage; /**< The surface generator we write our surface to */
     // functions
     explicit surfaceDrawer(std::filesystem::path p);
     void run();
+    void run_selective(std::vector<int> selector);
 };
 
 #endif // NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H
