@@ -13,7 +13,7 @@
  */
 int main(int argc, char *argv[]) {
     straight_t input;
-    int steps = 10000;
+    int steps = 0;
     long canvas_size = 200;
     kernelType_t kernel = KERNEL_C;
     // Load the image

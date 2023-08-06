@@ -48,6 +48,7 @@ void surfaceDrawer::run() {
      // cv::waitKey(0);
      // detect the contours
      std::vector<std::vector<cv::Point>> contours;
+     // RETR_EXTERNAL vs Tree
      cv::findContours(edges, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
      // input into the straigth generator
      if (!contours.empty()) {
