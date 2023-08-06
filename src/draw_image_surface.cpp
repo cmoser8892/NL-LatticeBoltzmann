@@ -1,75 +1,5 @@
 #include "drawn_image_surface.h"
-
-// private
-void surfaceDrawer::read() {
-    bmp_reader->read();
-}
-
-void surfaceDrawer::convert_points() {
-    // read in the points
-    point_t size = {bmp_reader->bmp.info_header.width,bmp_reader->bmp.info_header.height};
-    point_t current ={0,0};
-    // read into data structure
-    uint32_t full_data = 0;
-    int current_shift = 0;
-    int data_format = bmp_reader->bmp.info_header.bit_count/8;
-    for(auto part : bmp_reader->bmp.data) {
-        // add up the data
-        full_data |= part << (current_shift * 8);
-        // loop controles + saving and comparing
-        current_shift++;
-        if(current_shift >= data_format) {
-            // save data and update the position
-            if(full_data == WHITE_COLOR_CODE_24_BIT) {
-                // nop
-            }
-            else {
-                // save the point somewhere
-                points.push_back(current);
-            }
-            current = update_image_position(current, &size);
-            // reset
-            current_shift = 0;
-            full_data = 0;
-        }
-    }
-}
-
-void surfaceDrawer::fill_hashtable() {
-    for(auto point : points) {
-        rpkh.fill_key(handle_runner,point);
-        handle_runner++;
-    }
- }
-
- point_t surfaceDrawer::interpolate_around(point_t p) {
-    std::vector<handle_t> relevant_points = rpkh.ranging_key_translation(p,range);
-    point_t mid = p;
-    for(auto h : relevant_points) {
-        mid += points[h];
-    }
-    mid /= ((double)relevant_points.size() +1);
-    return mid;
- }
-
- vector_t surfaceDrawer::determine_init_surface_direction(point_t p, double jump) {
-    // go in all major directions and note the one where we find the most results
-    std::vector<unsigned long> sizes;
-    for(int k = 0; k < major_directions.cols(); ++k) {
-        vector_t current = p + point_t(major_directions.col(k))*jump;
-        std::vector<handle_t> candidates = rpkh.ranging_key_translation(current,range);
-        sizes.push_back(candidates.size());
-    }
-    // look for the on were we found the most
-    int maxElementIndex = (int)std::distance(sizes.begin(),std::max_element(sizes.begin(),sizes.end()));
-    vector_t initial = major_directions.col(maxElementIndex);
-    return initial;
- }
-
- bool surfaceDrawer::look_for_last(point_t current) {
-    handle_t knock_it_off = points.size()-1;
-    return rpkh.ranging_key_look_for_specific(current,range,knock_it_off);
- }
+#include <opencv2/opencv.hpp>
 
  void surfaceDrawer::add_surface(point_t current, point_t previous) {
      vector_t direction = current - previous;
@@ -78,53 +8,52 @@ void surfaceDrawer::fill_hashtable() {
      s.direction = direction;
      s.max_t = direction.norm();
      surface_storage.add_surface(s);
+     // printer
+     if(1) {
+         std::cout << "Point " << s.point.x() <<" ," << s.point.y()
+                   << "\n Direction:" << s.direction.x() << " ," << s.direction.y() << " Length: " << s.max_t << std::endl;
+     }
  }
 
 // public
 surfaceDrawer::surfaceDrawer(std::filesystem::path p) {
-    bmp_reader = new bmpReader(p);
+     path = p;
 }
 
 surfaceDrawer::~surfaceDrawer() {
-    delete bmp_reader;
-}
-
-void surfaceDrawer::init() {
-    read();
-    convert_points();
-    fill_hashtable();
 }
 
 void surfaceDrawer::run() {
-    point_t current = points[0];
-    int total_steps = int((double)points.size() * 2 * 1/step);
-    // determine initials
-    current = interpolate_around(current);
-    point_t previous = current;
-    // add the first point last to the points vector
-    points.push_back(current);
-    rpkh.fill_key(handle_runner,current);
-    vector_t surface_direction = determine_init_surface_direction(current,1);
-    // for loop
-    for(int i = 0; i < total_steps; ++i) {
-        // go step in the old direction
-        current += surface_direction.normalized()*step;
-        // look around and correct
-        current = interpolate_around(current);
-        // add as a surface
-        add_surface(current,previous);
-        std::cout << current.x() << " " << current.y() << std::endl;
-        std::cout << surface_direction.x() << " " << surface_direction.y() << std::endl;
-        // switch over
-        surface_direction  = (current - previous).normalized();
-        previous = current;
-        // every so often we look further
-        // surface_direction = determine_init_surface_direction(current,3);
-        // check for the end point
-        if(look_for_last(current)) {
-            break;
-        }
-    }
-    // draw the last surface
-    add_surface(points[points.size()-1],previous);
+     // read the image
+     cv::Mat image = cv::imread(path.string(), cv::IMREAD_GRAYSCALE);
+     // throw an runtime error in case we could not read that
+     if (image.empty()) {
+         throw std::runtime_error("Error: Unable to load the image." );
+     }
+     // detect the edges
+     cv::Mat edges;
+     cv::Canny(image, edges, 50, 150);
+     // detect the contours
+     std::vector<std::vector<cv::Point>> contours;
+     cv::findContours(edges, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+     // input into the straigth generator
+     straightGenerator sg;
+     if (!contours.empty()) {
+         const std::vector<cv::Point> &contour = contours[0];
+         // contour loop
+         for (size_t i = 0; i < contour.size(); i++) {
+             int nextIndex = (i + 1) % contour.size();
+             // point translation
+             cv::Point first = contour[i];
+             cv::Point second = contour[nextIndex];
+             point_t intern_first = {first.x,first.y};
+             point_t intern_second = {second.x,second.y};
+             if(i == 49) {
+                 std::cout << "s" << std::endl;
+             }
+             // input into the straight generator
+             add_surface(intern_first,intern_second);
+         }
+     }
+     sg.write_out_surface();
 }
