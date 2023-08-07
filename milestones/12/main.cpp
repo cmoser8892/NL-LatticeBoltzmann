@@ -13,16 +13,18 @@
  */
 int main(int argc, char *argv[]) {
     straight_t input;
-    int steps = 0;
+    int steps = 20000;
     long canvas_size = 200;
     kernelType_t kernel = KERNEL_C;
     // Load the image
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("donut.png");
+    test_image.append("blobs.png");
+    // image drawer stuff
     surfaceDrawer drawer(test_image);
-    drawer.run();
+    std::vector<int> sel = {0,4,8,12};
+    drawer.run_selective(sel);
     drawer.surface_storage.surface_mass_center();
     nodeGenerator ng(&drawer.surface_storage);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
