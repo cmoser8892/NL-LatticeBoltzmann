@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("blobs.png");
+    test_image.append("donut.png");
     // image drawer stuff
     surfaceDrawer drawer(test_image);
     std::vector<int> sel = {0,4,8,12};
