@@ -19,7 +19,7 @@ int main() {
     test_image.append("donut.png");
     // call the drawer
     surfaceDrawer s(test_image);
-    std::vector<int> sel = {0,4};
+    std::vector<int> sel = {0,1,2,3};
     s.run_selective(sel);
     // end
     return 0;
