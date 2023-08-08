@@ -29,7 +29,7 @@ bool node_position_comparison(node* n, array_t* position) {
  * Writes the data form a flow-field into a file.
  * @param field
  * @param filename
- * @param write_to_file
+ * @param write_to_file true if we want to write it
  */
 void write_flowfield_data(flowfield_t * field, std::string filename, bool write_to_file) {
     std::ofstream out;

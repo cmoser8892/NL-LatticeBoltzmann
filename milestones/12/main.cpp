@@ -12,7 +12,6 @@
  * @return
  */
 int main(int argc, char *argv[]) {
-    straight_t input;
     int steps = 20000;
     long canvas_size = 200;
     kernelType_t kernel = KERNEL_C;

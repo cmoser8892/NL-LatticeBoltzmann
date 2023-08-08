@@ -48,7 +48,7 @@ typedef enum nodeIdentifier {
  */
 typedef enum boundaryType {
     INIT_NONE = 0,
-    NO_BOUNDARY, /**<  Most likely an error or not set */
+    NO_BOUNDARY, /**<  Just a fluid node */
     BOUNCE_BACK, /**< Bounce back type boundary */
     BOUNCE_BACK_MOVING, /**<  Moving bounce back type boundary */
     PERIODIC, /**<  periodic type boundary */

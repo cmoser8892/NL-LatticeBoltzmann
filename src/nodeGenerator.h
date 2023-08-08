@@ -70,6 +70,7 @@ class nodeGenerator {
     void delete_node_infos();
     void visualize_2D_nodes();
     void visualize_2D_nodes_labels(boundaryType_t t);
+    void write_out_nodes(boundaryType_t t, bool write_file);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODEGENERATOR_H

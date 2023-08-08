@@ -56,11 +56,4 @@ double calculate_intersection(straight_t* ray, straight_t* surface);
 bool compare_bumps_sort(const std::tuple<double,double,handle_t,straight_t*> &a,
                         const std::tuple<double,double,handle_t,straight_t*> &b);
 
-// todo fix errors related to mass center placement in the check inside algorithm :)
-// also todo  make 3 mcs for a more stable algorithm
-// alternatively add a surface identifier to a surface if we cut the same surface more than once we know that we got sth convex
-// add more mass centers based on
-// how do i test sth to be convex?!
-// write one more test related to the construction oposing bumps should not be a prob thou
-// min out + general cleanup
 #endif // NL_LATTICEBOLTZMANN_STRAIGHT_H

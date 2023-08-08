@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 
 /**
  * Constructor, sets points.
@@ -660,4 +661,28 @@ void nodeGenerator::visualize_2D_nodes_labels(boundaryType_t t) {
     }
     std::cout << "Nodes with that tag: " << t << std::endl;
     std::cout << output << std::endl;
+}
+
+/**
+ * Write out the nodes in file format useful for visualization.
+ * @param t
+ * @param write_file
+ */
+void nodeGenerator::write_out_nodes(boundaryType_t t, bool write_file) {
+    // setup sizes
+    flowfield_t output;
+    if(points != nullptr)
+        output.setZero(std::floor(points->size.x()),std::floor(points->size.y()));
+    else
+        output.setZero(size_canvas,size_canvas);
+    // give ou the data
+    for(auto b : node_infos) {
+        if(b->boundary == t)
+            ++output(int(b->position.x()),int(b->position.y()));
+    }
+    // condense together
+    std::stringstream filename;
+    filename<<  "node_type_file_" << t;
+    //
+    write_flowfield_data(&output, filename.str(),write_file);
 }
