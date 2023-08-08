@@ -15,14 +15,15 @@ valgrind --tool=callgrind --dump-instr=yes (p)
  */
 int main() {
     // node generator variables
-    long canvas_size = 100;
+    long canvas_size = 50;
+    bool file_write = true;
     kernelType_t kernel = KERNEL_C;
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     // Load the image
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("test_small.png");
+    test_image.append("cub.png");
     // call the drawer
     surfaceDrawer s(test_image);
     // std::vector<int> sel = {0,4,8,12};
@@ -32,9 +33,11 @@ int main() {
     nodeGenerator ng(&s.surface_storage);
     ng.init_surface_return(canvas_size,ibm_distance);
     // write out all the boundary types found
-    ng.write_out_nodes(IBM_INNER, true);
-    ng.write_out_nodes(IBM_OUTER, true);
-    ng.write_out_nodes(NO_BOUNDARY, true);
+    ng.write_out_nodes(IBM_INNER, file_write);
+    ng.write_out_nodes(IBM_OUTER, file_write);
+    ng.write_out_nodes(NO_BOUNDARY, file_write);
+    // write out the markers
+    ng.markers->write_out_markers(file_write);
     // end
     return 0;
 }

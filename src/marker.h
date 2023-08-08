@@ -21,6 +21,7 @@ class markerIBM {
     ~markerIBM();
     void distribute_markers();
     double return_marker_distance();
+    void write_out_markers(bool write_file);
 };
 
 #endif // NL_LATTICEBOLTZMANN_MARKER_H

@@ -1,5 +1,6 @@
 #include "marker.h"
-
+#include <fstream>
+#include <iostream>
 /**
  * Constructor with lots of optional fields.
  * @param s
@@ -81,4 +82,18 @@ void markerIBM::distribute_markers() {
  */
 double markerIBM::return_marker_distance() {
     return marker_distance;
+}
+
+/**
+ * Writes out the marker points into a file or not.
+ * @param write_file
+ */
+void markerIBM::write_out_markers(bool write_file) {
+    std::ofstream out;
+    out.open("markers");
+    if(out.is_open()) {
+        for(auto m : marker_points) {
+            out << m->x() << " " << m->y() << std::endl;
+        }
+    }
 }
