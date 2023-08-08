@@ -9,7 +9,6 @@
  */
 markerIBM::markerIBM(straightGenerator *s, int kd, double md) {
     sg = s;
-    kernel_length = kd;
     marker_distance = md;
 }
 

@@ -38,6 +38,7 @@ int main() {
     ng.write_out_nodes(NO_BOUNDARY, file_write);
     // write out the markers
     ng.markers->write_out_markers(file_write);
+    std::cout << ng.markers->marker_points.size() << std::endl;
     // end
     return 0;
 }
