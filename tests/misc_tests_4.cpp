@@ -41,8 +41,36 @@ TEST(FunctionalTest, ranging_key_look) {
     EXPECT_TRUE(rpkh.ranging_key_look_for_specific(middle,2,runner));
 }
 
-
-// todo
-/*
- * https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
+/**
+ * We generate markers from a surface generated from an image, and put them into a neighborhood search thingi.
+ * @note i noticed that wider placing helps with bug hunting, not usable for actual ibm calcs !
+ * @test
  */
+TEST(FunctionalTest, markers_on_surface_too_wide) {
+    // node generator variables
+    long canvas_size = 50;
+    double marker_distance = 2; // intentionally to wide for actual ibm but easier to track
+    kernelType_t kernel = KERNEL_C;
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    // Load the image
+    auto test_image = get_base_path();
+    test_image.append("tests");
+    test_image.append("test_images");
+    test_image.append("cub.png");
+    // call the drawer
+    surfaceDrawer s(test_image);
+    // std::vector<int> sel = {0,4,8,12};
+    std::vector<int> sel = {0};
+    s.run_selective(sel);
+    s.surface_storage.surface_mass_center();
+    nodeGenerator ng(&s.surface_storage);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    // as a hard test prob best to write the markers into an
+    rangingPointKeyHash rpkh;
+    // loop over the marker points and fill the neigborhood search thingi
+    handle_t h = 0;
+    for(auto m : ng.markers->marker_points) {
+        rpkh.fill_key(h,*m);
+    }
+    // find the ones and check distances
+}

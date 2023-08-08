@@ -7,7 +7,7 @@
  * @param kd
  * @param md
  */
-markerIBM::markerIBM(straightGenerator *s, int kd, double md) {
+markerIBM::markerIBM(straightGenerator *s, double md) {
     sg = s;
     marker_distance = md;
 }

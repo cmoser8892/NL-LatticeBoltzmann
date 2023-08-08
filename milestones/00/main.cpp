@@ -16,6 +16,7 @@ valgrind --tool=callgrind --dump-instr=yes (p)
 int main() {
     // node generator variables
     long canvas_size = 50;
+    double marker_distance = 2;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
     double ibm_distance = kernel_id_to_lattice_search(kernel);
@@ -31,7 +32,7 @@ int main() {
     s.run_selective(sel);
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
-    ng.init_surface_return(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);

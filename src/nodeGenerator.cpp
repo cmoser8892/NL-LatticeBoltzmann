@@ -593,7 +593,7 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
     }
 }
 
-void nodeGenerator::init_surface_return(unsigned int size, double range) {
+void nodeGenerator::init_surface_return(unsigned int size, double range,  double marker_range) {
     // correct the range to
     if(!read_data_from_file()) {
         // create the drawing canvas
@@ -601,7 +601,7 @@ void nodeGenerator::init_surface_return(unsigned int size, double range) {
         handle_t handle_counter = 1;
         // generate the markers
         if(markers == nullptr) {
-            markers = new markerIBM(straight_surfaces);
+            markers = new markerIBM(straight_surfaces, marker_range);
             markers->distribute_markers();
         }
         // check and reform nodes

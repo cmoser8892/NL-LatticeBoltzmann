@@ -65,7 +65,7 @@ class nodeGenerator {
     void init(unsigned int size);
     void init_fused(unsigned int size);
     void init_surface(unsigned int size, double range);
-    void init_surface_return(unsigned int size, double range);
+    void init_surface_return(unsigned int size, double range, double marker_range);
     void board_creation(unsigned int size);
     void delete_node_infos();
     void visualize_2D_nodes();
