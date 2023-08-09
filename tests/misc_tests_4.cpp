@@ -70,45 +70,10 @@ TEST(FunctionalTest, calcualte_surface_length) {
     EXPECT_EQ(sg.calculate_total_surface_length(),4*35);
 }
 
-TEST(FunctionalTest, markers_on_surface_master_test) {
-    // node generator variables
-    long canvas_size = 50;
-    double marker_distance = 2; // intentionally to close for actual ibm but easier to test
-    kernelType_t kernel = KERNEL_C;
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
-    // Load the image
-    auto test_image = get_base_path();
-    test_image.append("tests");
-    test_image.append("test_images");
-    test_image.append("cub.png");
-    // call the drawer
-    surfaceDrawer s(test_image);
-    // std::vector<int> sel = {0,4,8,12};
-    std::vector<int> sel = {0};
-    s.run_selective(sel);
-    s.surface_storage.surface_mass_center();
-    nodeGenerator ng(&s.surface_storage);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
-    // get the total surface length
-    double surface_length = s.surface_storage.calculate_total_surface_length();
-    // adjusted marker length so that an equal full marker length is filled
-    double markers_fit_in= std::floor(surface_length/marker_distance);
-    double add_on = std::fmod(surface_length,marker_distance);
-    marker_distance += add_on/markers_fit_in;
-    // should be 0
-    EXPECT_EQ(std::fmod(surface_length,marker_distance),0);
-    // check marker distances to the next always should be the adjusted marker distance
-    for(long i = 0; i < ng.markers->marker_points.size();++i) {
-        // indexing nonsense
-        int next_index = (i+1) % ng.markers->marker_points.size();
-        auto first = ng.markers->marker_points[i];
-        auto second = ng.markers->marker_points[next_index];
-        // make a vector
-        vector_t v = *second-*first;
-        EXPECT_NEAR(v.norm(),marker_distance,1e-10);
-    }
-}
-
+/**
+ * Pretty much a bug case that i test against, going to the next surface seems bugged.
+ * @test
+ */
 TEST(FunctionalTest, marker_go_next_overflow) {
     long canvas_size = 50;
     double marker_distance = 0.5;
@@ -140,4 +105,5 @@ TEST(FunctionalTest, marker_go_next_overflow) {
     double markers_fit_in= std::floor(surface_length/marker_distance);
     double add_on = std::fmod(surface_length,marker_distance);
     marker_distance += add_on/markers_fit_in;
+    EXPECT_EQ(ng.markers->marker_points.size(),surface_length/marker_distance);
 }

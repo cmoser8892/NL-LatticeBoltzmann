@@ -15,8 +15,8 @@ valgrind --tool=callgrind --dump-instr=yes (p)
  */
 int main() {
     // node generator variables
-    long canvas_size = 50;
-    double marker_distance = 0.25;
+    long canvas_size = 200;
+    double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
     double ibm_distance = kernel_id_to_lattice_search(kernel);
@@ -24,11 +24,10 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("cub.png");
+    test_image.append("donut.png");
     // call the drawer
     surfaceDrawer s(test_image);
-    // std::vector<int> sel = {0,4,8,12};
-    std::vector<int> sel = {0};
+    std::vector<int> sel = {0,4,8,12};
     s.run_selective(sel);
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);

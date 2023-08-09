@@ -152,8 +152,8 @@ void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
  * @return
  */
 vector_t ibmSimulation::calculate_rotation_force(point_t* pos, vector_t *velocity) {
-    // rot_force->calculate_F_rotation(velocity->x(),velocity->y(),pos);
-    rot_force->calculate_F_circle(pos,0.0001,velocity->x(),velocity->y());
+    rot_force->calculate_F_rotation(velocity->x(),velocity->y(),pos);
+    // rot_force->calculate_F_circle(pos,0.0001,velocity->x(),velocity->y());
     return rot_force->return_force_alpha();
 }
 

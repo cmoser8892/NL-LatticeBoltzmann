@@ -506,7 +506,7 @@ bool point_on_straight(straight_t *s, point_t * p,double* overshot) {
         }
     }
     // checks
-    if(m[0] == m[1]) {
+    if((m[0] - m[1]) < 1e-5) {
         // both agree
         if(m[0] <= s->max_t) {
             // still inside max

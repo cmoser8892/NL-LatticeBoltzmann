@@ -16,7 +16,7 @@ valgrind --tool=callgrind --dump-instr=yes (p)
 int main() {
     // node generator variables
     long canvas_size = 50;
-    double marker_distance = 6;
+    double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
     double ibm_distance = kernel_id_to_lattice_search(kernel);
@@ -31,18 +31,12 @@ int main() {
     input.max_t = side_length;
     sg.add_surface(input);
     input.point += input.direction * side_length;
-    input.direction = {1,0};
-    input.max_t = side_length;
-    sg.add_surface(input);
-    input.point += input.direction * side_length;
-    input.direction = {0,-1};
-    input.max_t = side_length;
-    sg.add_surface(input);
-    input.point += input.direction * side_length;
-    input.direction = {-1,0};
-    input.max_t = side_length;
+    vector_t v = {1,1};
+    input.direction = v.normalized();
+    input.max_t = 10;
     sg.add_surface(input);
     sg.surface_mass_center();
+    // node genertor
     nodeGenerator ng(&sg);
     ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
     // write out all the boundary types found
