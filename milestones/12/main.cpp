@@ -14,6 +14,7 @@
 int main(int argc, char *argv[]) {
     int steps = 20000;
     long canvas_size = 200;
+    double marker_distance = 0.5;
     kernelType_t kernel = KERNEL_C;
     // Load the image
     auto test_image = get_base_path();
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]) {
     nodeGenerator ng(&drawer.surface_storage);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     /// todo main diff between 11 and 11b kept in 12
-    ng.init_surface_return(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
     ng.visualize_2D_nodes();
     simulation_parameters params;
     params.relaxation = 0.5;

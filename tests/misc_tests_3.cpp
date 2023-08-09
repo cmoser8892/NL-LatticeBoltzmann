@@ -763,10 +763,13 @@ TEST(IbmTest,velocity_interpolation) {
     EXPECT_EQ(sim.markers[final]->velocity.y(),test_velocity.y());
 }
 
+/**
+ * Checks for right neighborhood placement inside and outside of the surface.
+ * @test
+ */
 TEST(IbmTest, neighbors_outside_ibm) {
-    // todo not sure what the right behaviour here is
     // prob best to stuff the links is to add an additional layer
-    int corrector = 4;
+    double marker_distance = 0.5;
     // init the kernel 3 variant
     point_t starter = {5,5};
     vector_t test_velocity = {1,1};
@@ -795,7 +798,7 @@ TEST(IbmTest, neighbors_outside_ibm) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface_return(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
     // test the general ibm stuff
     int ibm_outer = 0;
     int ibm_inner = 0;
@@ -835,7 +838,7 @@ TEST(IbmTest, neighbors_outside_ibm) {
         EXPECT_EQ(ni->links.size(),8);
     }
     // Test general ibm stuff
-    EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length)-corrector);
+    EXPECT_EQ(ibm_outer + ibm_inner, 4*9*(side_length));
     EXPECT_EQ(ibm_regular,1);
     EXPECT_EQ(ibm_error, 0);
     EXPECT_EQ(0, dry);
@@ -845,6 +848,3 @@ TEST(IbmTest, neighbors_outside_ibm) {
     EXPECT_EQ(neighborhood[8],ng.node_infos.size());
 }
 
-// force based pressure boundaries all the other stuff is links
-// todo there are some strange cases still left -> investigate
-// todo refactor boundary point generators look for bumps and so on -> ranging pgk is a great tool her
