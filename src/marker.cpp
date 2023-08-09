@@ -30,10 +30,7 @@ void markerIBM::distribute_markers() {
     // start at the first surface and look
     // todo do i need to know which is the direction towards the fluid?!
     if(sg != nullptr) {
-        double total_surface = 0;
-        for(auto s : sg->surfaces) {
-            total_surface += s->direction.norm() * s->max_t;
-        }
+        double total_surface = sg->calculate_total_surface_length();
         // the markers should be equally space over the total surface
         // we dont want any rest we just want equal spacing
         // determine the number of markers in a surface

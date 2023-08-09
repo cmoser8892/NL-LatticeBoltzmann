@@ -42,14 +42,38 @@ TEST(FunctionalTest, ranging_key_look) {
 }
 
 /**
- * We generate markers from a surface generated from an image, and put them into a neighborhood search thingi.
- * @note i noticed that wider placing helps with bug hunting, not usable for actual ibm calcs !
+ * Tests the calculate  surface length function.
  * @test
  */
-TEST(FunctionalTest, markers_on_surface_too_wide) {
+TEST(FunctionalTest, calcualte_surface_length) {
+    straight_t input;
+    straightGenerator sg;
+    double side_length = 35; // with a distance of 0.75 we should get 80 markers
+    point_t starter = {5,5};
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {0,-1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    input.direction = {-1,0};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    EXPECT_EQ(sg.calculate_total_surface_length(),4*35);
+}
+
+TEST(FunctionalTest, markers_on_surface_master_test) {
     // node generator variables
     long canvas_size = 50;
-    double marker_distance = 2; // intentionally to wide for actual ibm but easier to track
+    double marker_distance = 2; // intentionally to close for actual ibm but easier to test
     kernelType_t kernel = KERNEL_C;
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     // Load the image
@@ -65,12 +89,55 @@ TEST(FunctionalTest, markers_on_surface_too_wide) {
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
     ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
-    // as a hard test prob best to write the markers into an
-    rangingPointKeyHash rpkh;
-    // loop over the marker points and fill the neigborhood search thingi
-    handle_t h = 0;
-    for(auto m : ng.markers->marker_points) {
-        rpkh.fill_key(h,*m);
+    // get the total surface length
+    double surface_length = s.surface_storage.calculate_total_surface_length();
+    // adjusted marker length so that an equal full marker length is filled
+    double markers_fit_in= std::floor(surface_length/marker_distance);
+    double add_on = std::fmod(surface_length,marker_distance);
+    marker_distance += add_on/markers_fit_in;
+    // should be 0
+    EXPECT_EQ(std::fmod(surface_length,marker_distance),0);
+    // check marker distances to the next always should be the adjusted marker distance
+    for(long i = 0; i < ng.markers->marker_points.size();++i) {
+        // indexing nonsense
+        int next_index = (i+1) % ng.markers->marker_points.size();
+        auto first = ng.markers->marker_points[i];
+        auto second = ng.markers->marker_points[next_index];
+        // make a vector
+        vector_t v = *second-*first;
+        EXPECT_NEAR(v.norm(),marker_distance,1e-10);
     }
-    // find the ones and check distances
+}
+
+TEST(FunctionalTest, marker_go_next_overflow) {
+    long canvas_size = 50;
+    double marker_distance = 0.5;
+    bool file_write = true;
+    kernelType_t kernel = KERNEL_C;
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    // Load the image
+    straight_t input;
+    straightGenerator sg;
+    double side_length = 35; // with a distance of 0.75 we should get 80 markers
+    point_t starter = {5,5};
+    // we put in a quader
+    input.point = starter;
+    input.direction = {0,1};
+    input.max_t = side_length;
+    sg.add_surface(input);
+    input.point += input.direction * side_length;
+    vector_t v = {1,1};
+    input.direction = v.normalized();
+    input.max_t = 10;
+    sg.add_surface(input);
+    sg.surface_mass_center();
+    nodeGenerator ng(&sg);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    // surface calcs
+    double surface_length = sg.calculate_total_surface_length();
+    EXPECT_NEAR(surface_length,45,1e-5);
+    // adjusted marker length so that an equal full marker length is filled
+    double markers_fit_in= std::floor(surface_length/marker_distance);
+    double add_on = std::fmod(surface_length,marker_distance);
+    marker_distance += add_on/markers_fit_in;
 }

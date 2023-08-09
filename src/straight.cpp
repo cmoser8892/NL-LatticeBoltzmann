@@ -812,6 +812,18 @@ void straightGenerator::surface_mass_center() {
 }
 
 /**
+ * Calculates the total surface length.
+ * @return
+ */
+double straightGenerator::calculate_total_surface_length() {
+    double total_surface = 0;
+    for(auto s : surfaces) {
+        total_surface += s->direction.norm() * s->max_t;
+    }
+    return total_surface;
+}
+
+/**
  * Calculates the intersection between a ray and a surface, theory is explained in the function body.
  * @param ray
  * @param surface

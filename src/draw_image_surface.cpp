@@ -88,10 +88,10 @@ void surfaceDrawer::run_selective(std::vector<int> s) {
              ++i;
              if(selector(s,i)) {
                  for (size_t i = 0; i < contour.size(); i++) {
-                     int nextIndex = (i + 1) % contour.size();
+                     int next_index = (i + 1) % contour.size();
                      // point translation
                      cv::Point first = contour[i];
-                     cv::Point second = contour[nextIndex];
+                     cv::Point second = contour[next_index];
                      point_t intern_first = {first.x,first.y};
                      point_t intern_second = {second.x,second.y};
                      // input into the straight generator

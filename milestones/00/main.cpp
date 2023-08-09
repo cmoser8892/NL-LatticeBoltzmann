@@ -16,7 +16,7 @@ valgrind --tool=callgrind --dump-instr=yes (p)
 int main() {
     // node generator variables
     long canvas_size = 50;
-    double marker_distance = 2;
+    double marker_distance = 0.25;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
     double ibm_distance = kernel_id_to_lattice_search(kernel);
