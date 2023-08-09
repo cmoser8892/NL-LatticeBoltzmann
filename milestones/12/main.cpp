@@ -12,7 +12,7 @@
  * @return
  */
 int main(int argc, char *argv[]) {
-    int steps = 20000;
+    int steps = 10000;
     long canvas_size = 200;
     double marker_distance = 0.5;
     kernelType_t kernel = KERNEL_C;
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
             if(marker_watch.check(m->position,m->handle) == true) {
                 marker_check++;
                 if(1) {
-                    std::cout << m->position.x() << ", " << m->position.y() << "//"
+                    std::cerr << m->position.x() << ", " << m->position.y() << "//"
                               << m->original_position.x() << ", " << m->original_position.y() << std::endl;
                 }
             }
