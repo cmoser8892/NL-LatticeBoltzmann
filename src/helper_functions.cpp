@@ -54,6 +54,8 @@ void write_flowfield_data(flowfield_t * field, std::string filename, bool write_
 
 /**
  * Checks weather or not a point is inside the limit defined py two points.
+ * @note we check if the point is inside a limit so > not equal cause double
+ * @see bool point_on_boarder(point_t p, vector_t canvas_size)
  * @param p
  * @param limit_lower
  * @param limit_upper
@@ -289,9 +291,40 @@ coordinate_t floor_position(point_t position) {
     return coordinate;
 }
 
+/**
+ * Adds coordinates together (and here i was expecting a spacecraft).
+ * @param a
+ * @param b
+ * @return
+ */
 coordinate_t add_coordinates(coordinate_t &a, coordinate &b) {
     coordinate_t coord;
     coord.x = a.x + b.x;
     coord.y = a.y + b.y;
     return coord;
+}
+
+/**
+ * Checks if points are on the boundary of a canvas.
+ * @attention double comparisons (in a good way)
+ * @note streamline double comparisons?
+ * @param p
+ * @param canvas_size
+ * @return
+ */
+bool point_on_boarder(point_t* p, vector_t* canvas_size) {
+    bool returns = false;
+    if((p->x() - 0) < 1e-10) {
+        returns = true;
+    }
+    if((p->y() - 0) < 1e-10) {
+        returns = true;
+    }
+    if((p->x() - canvas_size->x()) < 1e-10) {
+        returns = true;
+    }
+    if((p->y() - canvas_size->y()) < 1e-10) {
+        returns = true;
+    }
+    return returns;
 }

@@ -63,6 +63,15 @@ void surfaceDrawer::run() {
  * @param s
  */
 void surfaceDrawer::run_selective(std::vector<int> s) {
+     run_non_connecting(s,true);
+}
+
+/**
+ *
+ * @param s
+ * @param connect_start_end
+ */
+void surfaceDrawer::run_non_connecting(std::vector<int> s, bool connect_start_end) {
      // read the image
      cv::Mat image = cv::imread(path.string(), cv::IMREAD_GRAYSCALE);
      // throw an runtime error in case we could not read that
@@ -87,7 +96,11 @@ void surfaceDrawer::run_selective(std::vector<int> s) {
          for(auto contour : contours) {
              ++i;
              if(selector(s,i)) {
-                 for (size_t i = 0; i < contour.size(); i++) {
+                 size_t run = contour.size();
+                 if(!connect_start_end) {
+                     run--;
+                 }
+                 for (size_t i = 0; i < run; i++) {
                      int next_index = (i + 1) % contour.size();
                      // point translation
                      cv::Point first = contour[i];

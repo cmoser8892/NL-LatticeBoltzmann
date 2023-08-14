@@ -715,10 +715,9 @@ bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *poi
  */
 bool straightGenerator::node_inside_simple(nodePoint_t *point) {
     // even out; odd in
-    // uses a surface representation to calculate weather nodes are inside or outside
-    // int value = calculate_intersections(point->position, &mass_center);
     int value = calculate_intersections_redundant(point);
-    return ((value%2) == 0);
+    int test_value = value%2;
+    return test_value == 0;
 }
 
 /**

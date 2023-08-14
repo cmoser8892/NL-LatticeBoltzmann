@@ -31,6 +31,7 @@ int conical_delta(int a, int b);
 double calculate_angle(vector_t* v1, vector_t* v2);
 coordinate_t floor_position(point_t position);
 coordinate_t add_coordinates(coordinate_t &a, coordinate &b);
+bool point_on_boarder(point_t* p, vector_t* canvas_size);
 // base path
 std::filesystem::path get_base_path();
 // solve

@@ -9,6 +9,7 @@
 #include "forces.h"
 #include "lbm_simulation.h"
 #include "drawn_image_surface.h"
+#include "helper_functions.h"
 #include <gtest/gtest.h>
 
 /**
@@ -106,4 +107,44 @@ TEST(FunctionalTest, marker_go_next_overflow) {
     double add_on = std::fmod(surface_length,marker_distance);
     marker_distance += add_on/markers_fit_in;
     EXPECT_EQ(ng.markers->marker_points.size(),surface_length/marker_distance);
+}
+
+/**
+ * Tests out how we can identify the edges.
+ * @test
+ */
+TEST(FunctionalTest, open_boundaries_id_test) {
+    // node generator variables
+    long canvas_size = 50;
+    vector_t draw_size = {50,50};
+    double marker_distance = 0.5;
+    bool file_write = true;
+    kernelType_t kernel = KERNEL_C;
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    // Load the image
+    auto test_image = get_base_path();
+    test_image.append("tests");
+    test_image.append("test_images");
+    test_image.append("black_bars.png");
+    // call the drawer
+    surfaceDrawer s(test_image);
+    std::vector<int> sel = {0,1};
+    s.run_non_connecting(sel, false);
+    s.surface_storage.surface_mass_center();
+    nodeGenerator ng(&s.surface_storage);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    // check the
+    int counter = 0;
+    EXPECT_EQ(ng.straight_surfaces->surfaces.size(),2);
+    for(auto s : ng.straight_surfaces->surfaces) {
+        // we need to check out where they go?
+        for(int i = 0; i < s->point.size(); ++i) {
+            point_t test_point = s->point + s->direction * s->max_t * i;
+            if(point_on_boarder(&test_point,&draw_size)) {
+                counter++;
+            }
+        }
+    }
+    EXPECT_EQ(counter,4);
+
 }

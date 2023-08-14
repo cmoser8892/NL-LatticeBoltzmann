@@ -21,6 +21,7 @@ class surfaceDrawer {
     explicit surfaceDrawer(std::filesystem::path p);
     void run();
     void run_selective(std::vector<int> selector);
+    void run_non_connecting(std::vector<int> selector, bool b);
 };
 
 #endif // NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H
