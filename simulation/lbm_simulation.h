@@ -7,6 +7,7 @@
 #include "functions.h"
 #include "forces.h"
 
+// todo to test out the wierd force-fields inside need another "boundary" tag and jerry rig some of it
 /**
  * Simulations with the Immersed boundary.
  */
