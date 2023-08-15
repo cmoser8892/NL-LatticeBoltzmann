@@ -94,6 +94,7 @@ typedef struct simulation_parameters {
 
 /**
  * Straight definition.
+ * @note boundary type in surfaces is not yet fully supported
  */
 typedef struct straight {
     // s = p + t*d
@@ -101,6 +102,7 @@ typedef struct straight {
     vector_t direction; /**<  Direction of the straight line */
     // validity of the straight
     double max_t = 0; /**<  Length of that line */
+    boundaryType_t type = NO_BOUNDARY /**< Boundary type */
 }straight_t;
 
 // eigen smart pointer

@@ -115,3 +115,39 @@ void surfaceDrawer::run_non_connecting(std::vector<int> s, bool connect_start_en
      }
      surface_storage.write_out_surface();
 }
+
+/**
+ * Closes the surface if we called run_non_connecting.
+ * @param draw_size
+ */
+void surfaceDrawer::close_open_surface(vector_t draw_size) {
+     std::vector<std::vector<point_t>> endpoints;
+     endpoints.resize(4);
+     for(auto s : surface_storage.surfaces) {
+         // we need to check out where they go?
+         for(int i = 0; i < s->point.size(); ++i) {
+             point_t test_point = s->point + s->direction * s->max_t * i;
+             uint8_t test_value = point_on_boarder(&test_point,&draw_size);
+             if(test_value>0) {
+                 endpoints[i].push_back(test_point);
+             }
+         }
+     }
+     for(auto b : endpoints) {
+         if(!b.empty()) {
+             if(b.size() == 2) {
+                 point_t start = b[0];
+                 point_t end = b[1];
+                 vector_t direction = end -start;
+                 straight_t bend;
+                 bend.point = start;
+                 bend.direction = direction.normalized();
+                 bend.max_t = direction.norm();
+                 surface_storage.add_surface(bend);
+             }
+             else {
+                 throw std::runtime_error("Could not identify endpoints");
+             }
+         }
+     }
+}

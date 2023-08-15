@@ -22,6 +22,7 @@ class surfaceDrawer {
     void run();
     void run_selective(std::vector<int> selector);
     void run_non_connecting(std::vector<int> selector, bool b);
+    void close_open_surface(vector_t draw_size);
 };
 
 #endif // NL_LATTICEBOLTZMANN_DRAWN_IMAGE_SURFACE_H

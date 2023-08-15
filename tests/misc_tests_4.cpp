@@ -116,7 +116,7 @@ TEST(FunctionalTest, marker_go_next_overflow) {
 TEST(FunctionalTest, open_boundaries_id_test) {
     // node generator variables
     long canvas_size = 50;
-    vector_t draw_size = {50,50};
+    vector_t draw_size = {50-1,50-1};
     double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
@@ -130,21 +130,10 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     surfaceDrawer s(test_image);
     std::vector<int> sel = {0,1};
     s.run_non_connecting(sel, false);
+    s.close_open_surface(draw_size);
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
     ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
-    // check the
-    int counter = 0;
-    EXPECT_EQ(ng.straight_surfaces->surfaces.size(),2);
-    for(auto s : ng.straight_surfaces->surfaces) {
-        // we need to check out where they go?
-        for(int i = 0; i < s->point.size(); ++i) {
-            point_t test_point = s->point + s->direction * s->max_t * i;
-            if(point_on_boarder(&test_point,&draw_size)) {
-                counter++;
-            }
-        }
-    }
-    EXPECT_EQ(counter,4);
-
+    // check if we get the right amount of surfaces
+    EXPECT_EQ(s.surface_storage.surfaces.size(),4);
 }
