@@ -25,10 +25,10 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("black_bars.png");
+    test_image.append("stepping.png");
     // call the drawer
     surfaceDrawer s(test_image);
-    std::vector<int> sel = {0,1};
+    std::vector<int> sel = {1,3};
     s.run_non_connecting(sel, false);
     s.close_open_surface(draw_size);
     s.surface_storage.surface_mass_center();

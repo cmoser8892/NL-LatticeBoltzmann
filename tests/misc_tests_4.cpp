@@ -137,3 +137,28 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     // check if we get the right amount of surfaces
     EXPECT_EQ(s.surface_storage.surfaces.size(),4);
 }
+
+TEST(FunctionalTest, open_boundaries_step) {
+    // node generator variables
+    long canvas_size = 50;
+    vector_t draw_size = {50-1,50-1};
+    double marker_distance = 0.5;
+    bool file_write = true;
+    kernelType_t kernel = KERNEL_C;
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
+    // Load the image
+    auto test_image = get_base_path();
+    test_image.append("tests");
+    test_image.append("test_images");
+    test_image.append("stepping.png");
+    // call the drawer
+    surfaceDrawer s(test_image);
+    std::vector<int> sel = {0,1};
+    s.run_non_connecting(sel, false);
+    s.close_open_surface(draw_size);
+    s.surface_storage.surface_mass_center();
+    nodeGenerator ng(&s.surface_storage);
+    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    // check if we get the right amount of surfaces
+    EXPECT_EQ(s.surface_storage.surfaces.size(),4);
+}

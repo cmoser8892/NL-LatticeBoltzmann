@@ -129,7 +129,7 @@ void surfaceDrawer::close_open_surface(vector_t draw_size) {
              point_t test_point = s->point + s->direction * s->max_t * i;
              uint8_t test_value = point_on_boarder(&test_point,&draw_size);
              if(test_value>0) {
-                 endpoints[i].push_back(test_point);
+                 endpoints[test_value-1].push_back(test_point);
              }
          }
      }
@@ -146,7 +146,7 @@ void surfaceDrawer::close_open_surface(vector_t draw_size) {
                  surface_storage.add_surface(bend);
              }
              else {
-                 throw std::runtime_error("Could not identify endpoints");
+                 std::cerr << "Could not identify endpoints" << std::endl;
              }
          }
      }

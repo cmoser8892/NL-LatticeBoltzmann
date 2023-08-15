@@ -102,7 +102,7 @@ typedef struct straight {
     vector_t direction; /**<  Direction of the straight line */
     // validity of the straight
     double max_t = 0; /**<  Length of that line */
-    boundaryType_t type = NO_BOUNDARY /**< Boundary type */
+    boundaryType_t type = NO_BOUNDARY; /**< Boundary type */
 }straight_t;
 
 // eigen smart pointer
