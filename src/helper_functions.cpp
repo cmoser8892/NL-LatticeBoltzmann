@@ -313,7 +313,6 @@ coordinate_t add_coordinates(coordinate_t &a, coordinate &b) {
  * @return
  */
 uint8_t point_on_boarder(point_t* p, vector_t* canvas_size) {
-    std::cout << p->x() << " ," << p->y() << std::endl;
     uint8_t returns = 0;
     if(abs(p->x() - 0) < 1e-10) {
         returns = 1;
@@ -327,6 +326,5 @@ uint8_t point_on_boarder(point_t* p, vector_t* canvas_size) {
     if(abs(p->y() - canvas_size->y()) < 1e-10) {
         returns = 4;
     }
-    std::cout << int(returns) << std::endl;
     return returns;
 }
