@@ -55,6 +55,7 @@ typedef enum boundaryType {
     PRESSURE_PERIODIC, /**<  pressure periodic tag */
     IBM_OUTER,          /**< Immersed Boundary Method tag, outside of the boundary markers */
     IBM_INNER,          /**< Immersed Boundary Method tag, inside of the boundary markers */
+    FAKE_FORCEING,
     OPEN_INLET,
     OPEN_OUTLET
 }boundaryType_t;

@@ -28,7 +28,7 @@ int main() {
     test_image.append("thingi.png");
     // call the drawer
     surfaceDrawer s(test_image);
-    std::vector<int> sel = {0,2,4,6,8};
+    std::vector<int> sel = {0,2,4};
     s.run_non_connecting(sel, true);
     // s.close_open_surface(draw_size);
     s.surface_storage.surface_mass_center();
@@ -40,7 +40,6 @@ int main() {
     ng.write_out_nodes(NO_BOUNDARY, file_write);
     // write out the markers
     ng.markers->write_out_markers(file_write);
-    std::cout << ng.markers->marker_points.size() << std::endl;
     s.surface_storage.write_out_surface();
     // end
     return 0;
