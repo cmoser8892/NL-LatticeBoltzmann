@@ -55,7 +55,7 @@ class nodeGenerator {
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
     std::vector<bool> to_be_removed; /**< Master control remove the node or not */
     straightGenerator* straight_surfaces = nullptr; /**< Straight surface pointer */
-    markerIBM* markers = nullptr; /**< markers */
+    markerDistribution * markers = nullptr; /**< markers */
     explicit nodeGenerator(boundaryPointConstructor* p);
     explicit nodeGenerator(straightGenerator * s);
     ~nodeGenerator();
@@ -71,7 +71,7 @@ class nodeGenerator {
     void visualize_2D_nodes();
     void visualize_2D_nodes_labels(boundaryType_t t);
     void write_out_nodes(boundaryType_t t, bool write_file);
-    void reflag_force_nodes(markerIBM *m,double range);
+    void reflag_force_nodes(markerDistribution *m,double range);
 };
 
 #endif // NL_LATTICEBOLTZMANN_NODEGENERATOR_H

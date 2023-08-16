@@ -17,8 +17,9 @@ class ibmSimulation {
     coordinate_t size; /**< bust sizes lol */
     nodeGenerator* node_generator = nullptr; /**< node generator pointer */
     goaForce* rot_force = nullptr; /**< force pointer */
-    markerIBM* original_markers = nullptr; /**< markers from the node generator */
+    markerDistribution * original_markers = nullptr; /**< markers from the node generator */
     rangingPointKeyHash markers_pkh; /**< Stash of markers used in the simulation */
+    rangingPointKeyHash force_markers_pkh;
     double (*kernel_function)(point_t* p) = nullptr; /**< kernel function pointer */
     // local access arrays
     inline std::tuple<double, double, double> calculate_macro(array_t * a);
@@ -27,7 +28,7 @@ class ibmSimulation {
     inline void collision(array_t* a, double rho, double ux, double uy);
     vector_t calculate_rotation_force(point_t* pos, vector_t* velocity);
     inline void forcing_term(fNode* n, vector_t* force);
-    vector_t aggregate_force(std::vector<handle_t> *handles, point_t* pos);
+    vector_t aggregate_force(std::vector<handle_t> *handles, point_t* pos,bool d);
     void distribute_velocity(std::vector<handle_t> *handles, point_t* pos, vector_t * v);
     void propagate_calculate_force_marker();
     double kernel_function_call(point_t* p);
@@ -39,7 +40,7 @@ class ibmSimulation {
     std::vector<marker*> markers; /**< marker-container */
     std::vector<marker*> force_markers;
     // constructor
-    ibmSimulation(nodeGenerator* g, goaForce*f, markerIBM* m, vector_t size);
+    ibmSimulation(nodeGenerator* g, goaForce*f, markerDistribution * m, vector_t size);
     ~ibmSimulation();
     // setters
     void set_simulation_parameters(simulation_parameters_t t);
@@ -55,6 +56,7 @@ class ibmSimulation {
     double test_kernel_function(point_t* p);
     std::tuple<double,double,double> test_macro(array_t * a);
     void test_propagate_velocity();
+    void add_force_markers(markerDistribution * m,double static_force);
 };
 
 #endif // NL_LATTICEBOLTZMANN_LBM_SIMULATION_H

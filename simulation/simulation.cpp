@@ -237,7 +237,7 @@ forcedSimulation::forcedSimulation(boundaryPointConstructor *c, nodeGenerator *g
 /**
  * Alternative Constructor.
  */
-forcedSimulation::forcedSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t sizes) {
+forcedSimulation::forcedSimulation(nodeGenerator *g, goaForce *f, markerDistribution *m, vector_t sizes) {
     node_generator = g;
     rot_force = f;
     size.x = long(round(sizes.x()));

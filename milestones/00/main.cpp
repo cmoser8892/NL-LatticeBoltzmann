@@ -5,6 +5,7 @@ valgrind --tool=callgrind --dump-instr=yes (p)
  */
 
 #include "helper_functions.h"
+#include "lbm_simulation.h"
 #include "drawn_image_surface.h"
 #include "nodeGenerator.h"
 
@@ -42,13 +43,12 @@ int main() {
     surface.direction = {0,1};
     surface.max_t = 32;
     surface.type = FAKE_FORCEING;
-    s.surface_storage.add_surface(surface);
+    // s.surface_storage.add_surface(surface);
     // detect and put markers on
-    markerIBM force;
+    markerDistribution force;
     force.individual_distribute_markers(surface);
     // reflag nodes
-    ng.reflag_force_nodes(&force,2);
-    //
+    ng.reflag_force_nodes(&force,kernel_id_to_lattice_search(kernel));
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);
@@ -58,6 +58,31 @@ int main() {
     // write out the markers
     ng.markers->write_out_markers(file_write);
     s.surface_storage.write_out_surface();
+    // end init basics now add to sim
+
+    // start sim
+    simulation_parameters params;
+    int steps = 30000;
+    params.relaxation = 0.5;
+    params.ibm_range = kernel_id_to_lattice_search(kernel);
+    params.kernel_in_use = kernel;
+    params.k = 1;
+    point_t dk = {0,0};
+    // max rotation is 7.5e-3
+    vector_t sizes = {canvas_size,canvas_size};
+    goaForce rot(dk,sizes,1e-3); // i dont really need the force
+    ibmSimulation sim(&ng, &rot,ng.markers,sizes);
+    // init
+    sim.set_simulation_parameters(params);
+    sim.init();
+    sim.add_force_markers(&force,0.001);
+    for(int i = 0; i < steps; ++i) {
+        if (i % 100 == 0) {
+            std::cout << "Step: " << i << std::endl;
+        }
+        sim.run(i);
+    }
+    sim.get_data(true);
     // end
     return 0;
 }

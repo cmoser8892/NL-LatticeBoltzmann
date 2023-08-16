@@ -7,7 +7,7 @@
  * @param kd
  * @param md
  */
-markerIBM::markerIBM(straightGenerator *s, double md) {
+markerDistribution::markerDistribution(straightGenerator *s, double md) {
     sg = s;
     marker_distance = md;
 }
@@ -15,7 +15,7 @@ markerIBM::markerIBM(straightGenerator *s, double md) {
 /**
  * De-constructor gets rid of the points.
  */
-markerIBM::~markerIBM() {
+markerDistribution::~markerDistribution() {
     // delete all the info in the vector
     for(auto p : marker_points) {
         delete p;
@@ -26,7 +26,7 @@ markerIBM::~markerIBM() {
  * Marker distributor, main goal is too evenly distribute the markers on the surface.
  * @attention surface is blind of its own inner structure
  */
-void markerIBM::distribute_markers() {
+void markerDistribution::distribute_markers() {
     // start at the first surface and look
     // todo do i need to know which is the direction towards the fluid?!
     if(sg != nullptr) {
@@ -72,7 +72,7 @@ void markerIBM::distribute_markers() {
     }
 }
 
-void markerIBM::individual_distribute_markers(straight_t s) {
+void markerDistribution::individual_distribute_markers(straight_t s) {
     double length = s.max_t;
     // determine the number of markers in a surface
     double markers_fit_in= std::floor(length/marker_distance);
@@ -111,7 +111,7 @@ void markerIBM::individual_distribute_markers(straight_t s) {
  * Gives out the actual marker distance used.
  * @return
  */
-double markerIBM::return_marker_distance() {
+double markerDistribution::return_marker_distance() {
     return marker_distance;
 }
 
@@ -119,7 +119,7 @@ double markerIBM::return_marker_distance() {
  * Writes out the marker points into a file or not.
  * @param write_file
  */
-void markerIBM::write_out_markers(bool write_file) {
+void markerDistribution::write_out_markers(bool write_file) {
     std::ofstream out;
     out.open("markers");
     if(out.is_open()) {
@@ -129,6 +129,6 @@ void markerIBM::write_out_markers(bool write_file) {
     }
 }
 
-void markerIBM::set_marker_distance(double md) {
+void markerDistribution::set_marker_distance(double md) {
     marker_distance = md;
 }

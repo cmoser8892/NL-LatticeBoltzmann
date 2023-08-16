@@ -584,7 +584,7 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
         handle_t handle_counter = 1;
         // generate the markers
         if(markers == nullptr) {
-            markers = new markerIBM(straight_surfaces);
+            markers = new markerDistribution(straight_surfaces);
             markers->distribute_markers();
         }
         // check and reform nodes
@@ -610,7 +610,7 @@ void nodeGenerator::init_surface_return(unsigned int size, double range,  double
         handle_t handle_counter = 1;
         // generate the markers
         if(markers == nullptr) {
-            markers = new markerIBM(straight_surfaces, marker_range);
+            markers = new markerDistribution(straight_surfaces, marker_range);
             markers->distribute_markers();
         }
         // check and reform nodes
@@ -696,7 +696,7 @@ void nodeGenerator::write_out_nodes(boundaryType_t t, bool write_file) {
     write_flowfield_data(&output, filename.str(),write_file);
 }
 
-void nodeGenerator::reflag_force_nodes(markerIBM *m,double range) {
+void nodeGenerator::reflag_force_nodes(markerDistribution *m,double range) {
     // stash nodes
     // todo again lol
     rangingPointKeyHash rpkh;

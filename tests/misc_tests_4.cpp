@@ -155,7 +155,7 @@ TEST(FuncionalTest, markers_placing) {
     surface.max_t = length;
     surface.type = FAKE_FORCEING;
     // detect and put markers on
-    markerIBM force;
+    markerDistribution force;
     force.set_marker_distance(marker_distance);
     force.individual_distribute_markers(surface);
     // count the markers

@@ -763,7 +763,7 @@ TEST(FunctionalTest, distribute_markers_base) {
     input.direction = {0,1};
     input.max_t = 6;
     sg.add_surface(input);
-    markerIBM m(&sg);
+    markerDistribution m(&sg);
     m.distribute_markers();
     EXPECT_EQ(m.marker_points.size(),8);
 }
@@ -803,7 +803,7 @@ TEST(FunctionalTest, distribute_markers_quader) {
             input.direction = {-1,0};
             input.max_t = side_length;
             // init the markers
-            markerIBM mibm(&sg);
+            markerDistribution mibm(&sg);
             mibm.distribute_markers();
             EXPECT_EQ(mibm.marker_points.size(),expected_value);
         }
@@ -836,7 +836,7 @@ TEST(FunctionalTest, odd_quader) {
     input.max_t = side_length;
     sg.add_surface(input);
     // tests how many will get generatored
-    markerIBM mibm(&sg);
+    markerDistribution mibm(&sg);
     mibm.distribute_markers();
     EXPECT_EQ(mibm.marker_points.size(),26);
     EXPECT_GT(mibm.return_marker_distance(),0.75);
@@ -893,7 +893,7 @@ TEST(FunctionalTest, two_structure) {
     // main thing i do not want to see is a whole when we change the surface
     // easiest way for this to work is to set up a ranging pkh and look for the markers
     // number of different cases still but should be doable
-    markerIBM mibm(&sg);
+    markerDistribution mibm(&sg);
     mibm.distribute_markers();
     EXPECT_EQ(mibm.marker_points.size(),80+26); // we got the right amount
     array_t on_surface;

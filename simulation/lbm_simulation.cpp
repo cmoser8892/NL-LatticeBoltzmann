@@ -187,17 +187,21 @@ void ibmSimulation::forcing_term(fNode* n,vector_t* force) {
  * @param pos
  * @return
  */
-vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t* pos) {
+vector_t ibmSimulation::aggregate_force(std::vector<handle_t> *handles, point_t* pos,bool d) {
     vector_t returns ={0,0};
     // we look for markers in the vicinity of our node and add up the total force
     for(auto h : *handles) {
         h-= 1;
         auto marker = markers[h];
+        if(d) {
+            marker = force_markers[h];
+        }
         vector_t r = (*pos - marker->position);
         returns += (*kernel_function)(&r)* marker->force;
     }
     return returns;
 }
+
 
 /**
  * Distributes the velocity from the nodes to the markers.
@@ -250,7 +254,7 @@ double ibmSimulation::kernel_function_call(point_t *p) {
  * @param m
  * @param s
  */
-ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t s) {
+ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerDistribution *m, vector_t s) {
     node_generator = g;
     rot_force = f;
     original_markers = m;
@@ -370,7 +374,7 @@ void ibmSimulation::run(int current_step) {
             // find the markers in the vicinity
             markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
             // ibm contribution to the force
-            f = aggregate_force(&markers_in_vicinity,&n->position);
+            f = aggregate_force(&markers_in_vicinity,&n->position,false);
         }
         // calculate the macro values and do all the lbm stuff
         // macro
@@ -385,12 +389,14 @@ void ibmSimulation::run(int current_step) {
             }
         }
         // force field
+        std::vector<handle_t> force_markers_in_vicinity;
         if((n->boundary_type == FAKE_FORCEING) || (n->boundary_type == FAKE_FORCEING_INNER)) {
             // find the force markers
-
+            force_markers_in_vicinity = force_markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
             // apply the force
-
+            f += aggregate_force(&force_markers_in_vicinity,&n->position, true);
         }
+        // apply force
         forcing_term(n,&f);
         // streaming
         streaming(&population,&n->neighbors);
@@ -491,5 +497,20 @@ void ibmSimulation::test_propagate_velocity() {
             // ibm contribution to the velocity
             distribute_velocity(&markers_in_vicinity,&n->position,&n->velocity);
         }
+    }
+}
+
+void ibmSimulation::add_force_markers(markerDistribution *fm,double static_force) {
+    // set up the markers
+    vector_t direction = {1,0};
+    handle_t maker_handles = 0;
+    for (auto m : fm->marker_points) {
+        auto n = new marker(++maker_handles,*m);
+        n->force = static_force * direction;
+        force_markers.push_back(n);
+    }
+    // set up marker pkh
+    for(auto m : force_markers) {
+        force_markers_pkh.fill_key(m->handle,m->position);
     }
 }

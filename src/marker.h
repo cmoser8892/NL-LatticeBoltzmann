@@ -9,14 +9,14 @@
  * The marker class holds and distributes the markers on a surface for the IBM_OUTER method.
  * @note not sure yet how to handle finer grids prob fully dynamic ?!
  */
-class markerIBM {
+class markerDistribution {
   private:
     double marker_distance = 0.75; /**< distance between markers on the surface */
     straightGenerator *sg = nullptr; /**< straights used for generation of the marker points */
   public:
     std::vector<point_t *> marker_points;
-    explicit markerIBM(straightGenerator *s = nullptr, double md = 0.75);
-    ~markerIBM();
+    explicit markerDistribution(straightGenerator *s = nullptr, double md = 0.75);
+    ~markerDistribution();
     void distribute_markers();
     void individual_distribute_markers(straight_t s);
     double return_marker_distance();
