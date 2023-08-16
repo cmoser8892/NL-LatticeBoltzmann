@@ -360,13 +360,13 @@ void ibmSimulation::run(int current_step) {
     offset_sim = ((current_step +1) & 0x1) * 9;
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
-        // todo where does the force actually come into the picture?!
         // shorthands
         auto force = n->forces;
         vector_t f = {0,0};
         std::vector<handle_t> markers_in_vicinity;
         auto population = n->populations;
-        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)  ||
+            (n->boundary_type == FAKE_FORCEING_INNER)) {
             // find the markers in the vicinity
             markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
             // ibm contribution to the force
@@ -379,8 +379,17 @@ void ibmSimulation::run(int current_step) {
         // collision
         collision(&population,rho,ux,uy);
         // frogging
-        if(n->boundary_type == NO_BOUNDARY || n->boundary_type == IBM_INNER) {
-            f += calculate_rotation_force(&n->position,&n->velocity);
+        if(0) {
+            if(n->boundary_type == NO_BOUNDARY || n->boundary_type == IBM_INNER) {
+                f += calculate_rotation_force(&n->position,&n->velocity);
+            }
+        }
+        // force field
+        if((n->boundary_type == FAKE_FORCEING) || (n->boundary_type == FAKE_FORCEING_INNER)) {
+            // find the force markers
+
+            // apply the force
+
         }
         forcing_term(n,&f);
         // streaming

@@ -137,3 +137,32 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     // check if we get the right amount of surfaces
     EXPECT_EQ(s.surface_storage.surfaces.size(),4);
 }
+
+/**
+ * Tests the individual surface marker placement method.
+ * @test
+ */
+TEST(FuncionalTest, markers_placing) {
+    // add additional surface
+    double x = 94;
+    double y = 13;
+    point_t p = {x,y};
+    double length = 32;
+    double marker_distance = 0.5;
+    straight_t surface;
+    surface.point = p;
+    surface.direction = {0,1};
+    surface.max_t = length;
+    surface.type = FAKE_FORCEING;
+    // detect and put markers on
+    markerIBM force;
+    force.set_marker_distance(marker_distance);
+    force.individual_distribute_markers(surface);
+    // count the markers
+    EXPECT_EQ(force.marker_points.size(),32/marker_distance + 1);
+    // test the individual points
+    EXPECT_NEAR(force.marker_points[0]->x(),x, 1e-8);
+    EXPECT_NEAR(force.marker_points[0]->y(),y,1e-8);
+    EXPECT_NEAR(force.marker_points[force.marker_points.size()-1]->x(),x, 1e-8);
+    EXPECT_NEAR(force.marker_points[force.marker_points.size()-1]->y(),y+length,1e-8);
+}

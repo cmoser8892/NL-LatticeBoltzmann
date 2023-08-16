@@ -34,10 +34,27 @@ int main() {
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
     ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    // new part
+    // add additional surface
+    point_t p = {94,13};
+    straight_t surface;
+    surface.point = p;
+    surface.direction = {0,1};
+    surface.max_t = 32;
+    surface.type = FAKE_FORCEING;
+    s.surface_storage.add_surface(surface);
+    // detect and put markers on
+    markerIBM force;
+    force.individual_distribute_markers(surface);
+    // reflag nodes
+    ng.reflag_force_nodes(&force,2);
+    //
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);
     ng.write_out_nodes(NO_BOUNDARY, file_write);
+    ng.write_out_nodes(FAKE_FORCEING,file_write);
+    ng.write_out_nodes(FAKE_FORCEING_INNER,file_write);
     // write out the markers
     ng.markers->write_out_markers(file_write);
     s.surface_storage.write_out_surface();

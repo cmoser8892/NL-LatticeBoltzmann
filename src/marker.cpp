@@ -72,6 +72,41 @@ void markerIBM::distribute_markers() {
     }
 }
 
+void markerIBM::individual_distribute_markers(straight_t s) {
+    double length = s.max_t;
+    // determine the number of markers in a surface
+    double markers_fit_in= std::floor(length/marker_distance);
+    // check weather or not we have to equalize so that everything is equally spaced
+    // watch out for low marker numbers
+    double add_on = std::fmod(length,marker_distance);
+    marker_distance += add_on/markers_fit_in;
+    double walk_distance = marker_distance;
+    // in all directions just walk the distance
+    vector_t walker = s.direction.normalized() * walk_distance;
+    point_t marker = s.point;
+    bool end = false;
+    double dk = 0;
+    // go through the individual surface
+    while(!end) {
+        walker = s.direction.normalized() * walk_distance;
+        // still on
+        if(point_on_straight(&s,&marker,&dk)) {
+            // add
+            walk_distance = marker_distance;
+            // put the point into a permanent object
+            auto add_me = new point_t;
+            *add_me = marker;
+            marker_points.push_back(add_me);
+        }
+        // overshoot
+        else {
+            // overshoot processing
+            end = true;
+        }
+        marker += walker;
+    }
+}
+
 /**
  * Gives out the actual marker distance used.
  * @return
@@ -92,4 +127,8 @@ void markerIBM::write_out_markers(bool write_file) {
             out << m->x() << " " << m->y() << std::endl;
         }
     }
+}
+
+void markerIBM::set_marker_distance(double md) {
+    marker_distance = md;
 }

@@ -7,7 +7,7 @@
 #include "functions.h"
 #include "forces.h"
 
-// todo to test out the wierd force-fields inside need another "boundary" tag and jerry rig some of it
+
 /**
  * Simulations with the Immersed boundary.
  */
@@ -37,6 +37,7 @@ class ibmSimulation {
     int offset_node = 0; /**<  offset 1 or 0 depending on the step (opposite to offset_sim) */
     std::vector<fNode*> nodes; /**< nodes-container */
     std::vector<marker*> markers; /**< marker-container */
+    std::vector<marker*> force_markers;
     // constructor
     ibmSimulation(nodeGenerator* g, goaForce*f, markerIBM* m, vector_t size);
     ~ibmSimulation();

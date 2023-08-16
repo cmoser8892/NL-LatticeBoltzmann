@@ -467,6 +467,9 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
     }
 }
 
+/**
+ * Detects the nodes going to nowhere and put the populations back in.
+ */
 void nodeGenerator::fill_neighborhood_holes() {
     int counter = 0;
     for(auto ni : node_infos) {
@@ -593,6 +596,12 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
     }
 }
 
+/**
+ * Inits and the other nodes return and dont dangle.
+ * @param size
+ * @param range
+ * @param marker_range
+ */
 void nodeGenerator::init_surface_return(unsigned int size, double range,  double marker_range) {
     // correct the range to
     if(!read_data_from_file()) {
@@ -685,4 +694,32 @@ void nodeGenerator::write_out_nodes(boundaryType_t t, bool write_file) {
     filename<<  "node_type_file_" << t;
     //
     write_flowfield_data(&output, filename.str(),write_file);
+}
+
+void nodeGenerator::reflag_force_nodes(markerIBM *m,double range) {
+    // stash nodes
+    // todo again lol
+    rangingPointKeyHash rpkh;
+    handle_t current = 1;
+    for(auto node : node_infos) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    // look through the markers and
+    for(auto mark : m->marker_points) {
+        std::vector<handle_t> affected = rpkh.ranging_key_translation(*mark,range);
+        for(auto handle : affected) {
+            handle = handle - 1; // handle to the guy
+            auto current_node = node_infos[handle];
+            // check if inside
+            if(current_node->boundary == NO_BOUNDARY) {
+                current_node->boundary = FAKE_FORCEING;
+            }
+            // dont relabel
+            else if(current_node->boundary == IBM_INNER) {
+                current_node->boundary = FAKE_FORCEING_INNER;
+            }
+            to_be_removed[handle] = false;
+        }
+    }
 }
