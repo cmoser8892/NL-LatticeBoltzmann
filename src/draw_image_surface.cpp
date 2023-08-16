@@ -135,15 +135,16 @@ void surfaceDrawer::close_open_surface(vector_t draw_size) {
      }
      for(auto b : endpoints) {
          if(!b.empty()) {
-             if(b.size() == 2) {
+             if(b.size() >= 2) {
                  point_t start = b[0];
-                 point_t end = b[1];
+                 point_t end = b[b.size()-1];
                  vector_t direction = end -start;
                  straight_t bend;
                  bend.point = start;
                  bend.direction = direction.normalized();
                  bend.max_t = direction.norm();
                  surface_storage.add_surface(bend);
+                 std::cout << "added" << std::endl;
              }
              else {
                  std::cerr << "Could not identify endpoints" << std::endl;
