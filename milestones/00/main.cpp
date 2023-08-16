@@ -15,7 +15,7 @@ valgrind --tool=callgrind --dump-instr=yes (p)
  */
 int main() {
     // node generator variables
-    long canvas_size = 400;
+    long canvas_size = 200;
     vector_t draw_size = {canvas_size-1,canvas_size-1};
     double marker_distance = 0.5;
     bool file_write = true;
@@ -25,10 +25,10 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("thingi.png");
+    test_image.append("donut.png");
     // call the drawer
     surfaceDrawer s(test_image);
-    std::vector<int> sel = {0,2,4};
+    std::vector<int> sel = {0,4};
     s.run_non_connecting(sel, true);
     // s.close_open_surface(draw_size);
     s.surface_storage.surface_mass_center();
