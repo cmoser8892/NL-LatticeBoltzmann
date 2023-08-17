@@ -152,8 +152,8 @@ void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
  * @return
  */
 vector_t ibmSimulation::calculate_rotation_force(point_t* pos, vector_t *velocity) {
-    rot_force->calculate_F_rotation(velocity->x(),velocity->y(),pos);
-    // rot_force->calculate_F_circle(pos,0.0001,velocity->x(),velocity->y());
+    // rot_force->calculate_F_rotation(velocity->x(),velocity->y(),pos);
+    rot_force->calculate_F_circle(pos,0.0001,velocity->x(),velocity->y());
     return rot_force->return_force_alpha();
 }
 
@@ -383,18 +383,20 @@ void ibmSimulation::run(int current_step) {
         // collision
         collision(&population,rho,ux,uy);
         // frogging
-        if(0) {
+        if(1) {
             if(n->boundary_type == NO_BOUNDARY || n->boundary_type == IBM_INNER) {
                 f += calculate_rotation_force(&n->position,&n->velocity);
             }
         }
         // force field
-        std::vector<handle_t> force_markers_in_vicinity;
-        if((n->boundary_type == FAKE_FORCEING) || (n->boundary_type == FAKE_FORCEING_INNER)) {
-            // find the force markers
-            force_markers_in_vicinity = force_markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
-            // apply the force
-            f += aggregate_force(&force_markers_in_vicinity,&n->position, true);
+        if(0) {
+            std::vector<handle_t> force_markers_in_vicinity;
+            if((n->boundary_type == FAKE_FORCEING) || (n->boundary_type == FAKE_FORCEING_INNER)) {
+                // find the force markers
+                force_markers_in_vicinity = force_markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
+                // apply the force
+                f += aggregate_force(&force_markers_in_vicinity,&n->position, true);
+            }
         }
         // apply force
         forcing_term(n,&f);
