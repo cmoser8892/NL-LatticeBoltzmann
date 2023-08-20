@@ -14,7 +14,6 @@ node::node(handle_t h, int dimensions, int channels, array_t pos, boundaryType_t
     if(type == NO_BOUNDARY) {
         node_type = WET;
     }
-
     else {
         node_type = DRY;
     }
