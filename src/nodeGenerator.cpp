@@ -467,6 +467,9 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
     }
 }
 
+/**
+ * Approximates the outer boundary with a bb boundary.
+ */
 void nodeGenerator::fill_neighborhood_holes() {
     int counter = 0;
     for(auto ni : node_infos) {
@@ -593,6 +596,12 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
     }
 }
 
+/**
+ * Tests out weather or not adding an additional bb outside improves stability (it kinda doesnt)
+ * @param size
+ * @param range
+ * @param marker_range
+ */
 void nodeGenerator::init_surface_return(unsigned int size, double range,  double marker_range) {
     // correct the range to
     if(!read_data_from_file()) {
