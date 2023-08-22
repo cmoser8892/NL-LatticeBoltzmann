@@ -373,15 +373,16 @@ void ibmSimulation::run(int current_step) {
             f = aggregate_force(&markers_in_vicinity,&n->position);
         }
         // calculate the macro values and do all the lbm stuff
+        // frogging
+        if(n->boundary_type == NO_BOUNDARY || n->boundary_type == IBM_INNER) {
+            f += calculate_rotation_force(&n->position,&n->velocity);
+        }
         // macro
         auto [rho, ux, uy]  = calculate_macro_force(&population,&force);
         n->velocity = {ux, uy};
         // collision
         collision(&population,rho,ux,uy);
-        // frogging
-        if(n->boundary_type == NO_BOUNDARY || n->boundary_type == IBM_INNER) {
-            f += calculate_rotation_force(&n->position,&n->velocity);
-        }
+        // apply force
         forcing_term(n,&f);
         // streaming
         streaming(&population,&n->neighbors);
