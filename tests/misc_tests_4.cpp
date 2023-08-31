@@ -137,3 +137,33 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     // check if we get the right amount of surfaces
     EXPECT_EQ(s.surface_storage.surfaces.size(),4);
 }
+
+/**
+ * Compares the oldest and the newest collision implementation
+ * @todo there might be an mistake 1/relaxation somewhere and not somewhere
+ * @test
+ */
+TEST(FunctionalTest, collision_againt_test) {
+    point_t dk = {1,1};
+    node n(1,2,9,dk,NO_BOUNDARY);
+    ibmSimulation test(nullptr,nullptr,nullptr,dk);
+    double rho = 1;
+    double ux = 1;
+    double uy = 1;
+    double relaxation = 0.5;
+    test.parameters.relaxation = 1/relaxation;
+    // add a node
+    fNode fn(1,9,NO_BOUNDARY);
+    fn.position = dk;
+    // set the node variables
+    n.rho = rho;
+    n.u(0) = ux;
+    n.u(1) = uy;
+    // function calls
+    test.test_collision(&fn,rho,ux,uy);
+    collision(&n,relaxation);
+    // compare values
+    for(int i = 0; i < CHANNELS; ++i) {
+        EXPECT_NEAR(fn.populations(i),n.population_even(i),1e-10);
+    }
+}

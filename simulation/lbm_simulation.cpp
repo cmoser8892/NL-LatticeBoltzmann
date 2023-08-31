@@ -273,7 +273,7 @@ ibmSimulation::~ibmSimulation() {
 void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
     // fix the omega parameter to th new one
-    parameters.relaxation = parameters.relaxation + parameters.dt/2;
+    parameters.relaxation = 1/(parameters.relaxation + parameters.dt/2);
     // set the correct kernel function
     switch (t.kernel_in_use){
     case KERNEL_A: {
@@ -484,4 +484,15 @@ void ibmSimulation::test_propagate_velocity() {
             distribute_velocity(&markers_in_vicinity,&n->position,&n->velocity);
         }
     }
+}
+
+/**
+ * Tests the collision function.
+ * @param n
+ * @param rho
+ * @param ux
+ * @param uy
+ */
+void ibmSimulation::test_collision(fNode *n, double rho, double ux, double uy) {
+    collision(&n->populations,rho,ux,uy);
 }

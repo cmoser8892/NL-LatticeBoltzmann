@@ -13,7 +13,6 @@
  */
 class ibmSimulation {
   private:
-    simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
     coordinate_t size; /**< bust sizes lol */
     nodeGenerator* node_generator = nullptr; /**< node generator pointer */
     goaForce* rot_force = nullptr; /**< force pointer */
@@ -33,6 +32,7 @@ class ibmSimulation {
     double kernel_function_call(point_t* p);
   public:
     // public main variables
+    simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */
     int offset_sim = 1; /**< offset 1 or 0 depending on the step */
     int offset_node = 0; /**<  offset 1 or 0 depending on the step (opposite to offset_sim) */
     std::vector<fNode*> nodes; /**< nodes-container */
@@ -54,6 +54,7 @@ class ibmSimulation {
     double test_kernel_function(point_t* p);
     std::tuple<double,double,double> test_macro(array_t * a);
     void test_propagate_velocity();
+    void test_collision(fNode* n, double rho, double ux, double uy);
 };
 
 #endif // NL_LATTICEBOLTZMANN_LBM_SIMULATION_H
