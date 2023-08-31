@@ -87,7 +87,7 @@ array_t equilibrium_2d(double ux, double uy, double rho) {
  * @param relaxation
  */
 void collision(node* node, double relaxation) {
-    node->population_even -= relaxation * (node->population_even - equilibrium_general(node));
+    node->population_even -= 1/relaxation * (node->population_even - equilibrium_general(node));
 }
 
 /**

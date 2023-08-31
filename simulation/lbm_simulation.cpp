@@ -132,7 +132,7 @@ void ibmSimulation::streaming(array_t *a, std::vector<link_pointer> *list) {
 void ibmSimulation::collision(array_t *a, double rho, double ux, double uy) {
     // undrosed collision term
     int o = offset_node;
-    double relaxation = 1/parameters.relaxation;
+    double relaxation = parameters.relaxation;
     auto p = a->begin() + o;
     (p + 0).operator*() -= relaxation * ((p + 0).operator*() - weights.col(0).x()*rho*(1- 1.5*(ux*ux +uy*uy)));
     (p + 1).operator*() -= relaxation * ((p + 1).operator*() - weights.col(1).x()*rho*(1+ 3*ux+ 4.5*ux*ux- 1.5*(ux*ux +uy*uy)));
