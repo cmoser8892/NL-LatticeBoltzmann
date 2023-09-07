@@ -51,7 +51,7 @@ class optimizedSimulation {
     void streaming(oNode* n);
     void bounce_back_moving(oNode* n);
     void one_step_macro_collision_forcing(oNode* n);
-    void one_step_macro_collision(oNode* n, double relaxation);
+    void one_step_macro_collision(oNode* n);
     void one_step_macro_collision(array_t* a);
     // other stuff
     void init();

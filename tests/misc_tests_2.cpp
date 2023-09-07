@@ -762,6 +762,7 @@ TEST(FunctionalTest, distribute_markers_base) {
     input.point = {1,1};
     input.direction = {0,1};
     input.max_t = 6;
+    input.type = IBM;
     sg.add_surface(input);
     markerIBM m(&sg);
     m.distribute_markers();
@@ -784,24 +785,29 @@ TEST(FunctionalTest, distribute_markers_quader) {
         if(std::fmod(fit_in,floored_fit_in) == 0) {
             // side length
             double side_length = (double) i / 4;
-            double expected_value = i;
+            double expected_value = fit_in;
             straight_t input;
             // we put in a quader
             input.point = starter;
             input.direction = {0,1};
             input.max_t = side_length;
+            input.type = IBM;
             sg.add_surface(input);
             input.point += input.direction * side_length;
             input.direction = {1,0};
             input.max_t = side_length;
+            input.type = IBM;
             sg.add_surface(input);
             input.point += input.direction * side_length;
             input.direction = {0,-1};
             input.max_t = side_length;
+            input.type = IBM;
             sg.add_surface(input);
             input.point += input.direction * side_length;
             input.direction = {-1,0};
             input.max_t = side_length;
+            input.type = IBM;
+            sg.add_surface(input);
             // init the markers
             markerIBM mibm(&sg);
             mibm.distribute_markers();
@@ -822,18 +828,22 @@ TEST(FunctionalTest, odd_quader) {
     input.point = starter;
     input.direction = {0,1};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     input.direction = {1,0};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     input.direction = {0,-1};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     input.direction = {-1,0};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     // tests how many will get generatored
     markerIBM mibm(&sg);
@@ -857,18 +867,22 @@ TEST(FunctionalTest, two_structure) {
     input.point = starter;
     input.direction = {0,1};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     input.direction = {1,0};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     input.direction = {0,-1};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     input.direction = {-1,0};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     // another one
     starter = {4,4};

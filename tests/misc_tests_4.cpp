@@ -90,11 +90,13 @@ TEST(FunctionalTest, marker_go_next_overflow) {
     input.point = starter;
     input.direction = {0,1};
     input.max_t = side_length;
+    input.type = IBM;
     sg.add_surface(input);
     input.point += input.direction * side_length;
     vector_t v = {1,1};
     input.direction = v.normalized();
     input.max_t = 10;
+    input.type = IBM;
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);

@@ -916,6 +916,10 @@ TEST(FunctionalTest, one_step_macro_collison) {
     // test against original
     double relaxation_time = 0.5;
     optimizedSimulation oLuv(nullptr, nullptr);
+    simulation_parameters simulation_params;
+    simulation_params.relaxation = relaxation_time; // tau
+    oLuv.set_simulation_parameters(simulation_params);
+    // init stuff
     point_t pos = {0,0};
     node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
     node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
@@ -929,7 +933,7 @@ TEST(FunctionalTest, one_step_macro_collison) {
     fused_macro(&node_fused);
     collision(&node_original,relaxation_time);
     fused_collision(&node_fused, relaxation_time);
-    oLuv.one_step_macro_collision(&s_node,relaxation_time);
+    oLuv.one_step_macro_collision(&s_node);
     // compare values
     int o= 0;
     for(int i = 0; i < velocity_set.cols(); ++i) {

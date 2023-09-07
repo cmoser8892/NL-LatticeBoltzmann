@@ -133,6 +133,8 @@ void fused_macro(node * node) {
  */
 void fused_collision(node* node, double relax) {
     // convenience programming
+    // write relaxation correct
+    relax = 1/relax;
     double ux = node->u(0);
     double uy = node->u(1);
     double rho = node->rho;

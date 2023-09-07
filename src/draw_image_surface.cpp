@@ -143,8 +143,9 @@ void surfaceDrawer::close_open_surface(vector_t draw_size) {
                  bend.point = start;
                  bend.direction = direction.normalized();
                  bend.max_t = direction.norm();
+                 bend.type = PERIODIC;
                  surface_storage.add_surface(bend);
-                 std::cout << "added" << std::endl;
+                 // std::cout << "added" << std::endl;
              }
              else {
                  std::cerr << "Could not identify endpoints" << std::endl;

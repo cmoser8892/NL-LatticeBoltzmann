@@ -150,10 +150,12 @@ optimizedSimulation::~optimizedSimulation() {
 
 /**
  * Sets up the simulation parameters (given as a struct).
+ * @attention switches the relaxation time tau to omega; 1/tau = omega
  * @param t
  */
 void optimizedSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
+    parameters.relaxation = 1/parameters.relaxation;
 }
 
 /**
@@ -226,9 +228,8 @@ void optimizedSimulation::one_step_macro_collision_forcing(oNode *node) {
 /**
  * One step for all the calculations necessary.
  * @param node
- * @param relaxation
  */
-void optimizedSimulation::one_step_macro_collision(oNode* node, double relaxation) {
+void optimizedSimulation::one_step_macro_collision(oNode* node) {
     // macro calc
     one_step_macro_collision(&node->populations);
 }
@@ -297,7 +298,7 @@ void optimizedSimulation::run(int current_step ) {
     offset_node = (current_step & 0x1) * 9;
     for(auto n : nodes) {
         // macro and collision
-        one_step_macro_collision(n,parameters.relaxation);
+        one_step_macro_collision(n);
         // streaming
         streaming(n);
         // moving boundary
