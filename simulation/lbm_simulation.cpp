@@ -273,7 +273,7 @@ ibmSimulation::~ibmSimulation() {
 void ibmSimulation::set_simulation_parameters(simulation_parameters_t t) {
     parameters = t;
     // fix the omega parameter to th new one
-    parameters.relaxation = 1/(parameters.relaxation + parameters.dt/2);
+    parameters.relaxation = (parameters.relaxation + parameters.dt/2);
     // set the correct kernel function
     switch (t.kernel_in_use){
     case KERNEL_A: {

@@ -228,7 +228,7 @@ TEST(FunctionalTest, fused_collision) {
     point_t pos = {0,0};
     node node_original(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
     node node_fused(1,velocity_set.rows(),velocity_set.cols(),pos,NO_BOUNDARY);
-    collision(&node_original,relaxation_time);
+    collision(&node_original, relaxation_time);
     fused_collision(&node_fused, relaxation_time);
     // check against each other
     for(int i = 0; i < velocity_set.cols(); ++i) {

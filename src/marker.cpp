@@ -28,21 +28,26 @@ markerIBM::~markerIBM() {
  */
 void markerIBM::distribute_markers() {
     // start at the first surface and look
-    // todo do i need to know which is the direction towards the fluid?!
     if(sg != nullptr) {
-        double total_surface = sg->calculate_total_surface_length();
+        // find the length of the ibm surfaces
+        double ibm_surface = sg->calculate_total_surface_length(IBM);
+        double total = sg->calculate_total_surface_length();
         // the markers should be equally space over the total surface
         // we dont want any rest we just want equal spacing
         // determine the number of markers in a surface
-        double markers_fit_in= std::floor(total_surface/marker_distance);
+        double markers_fit_in= std::floor(ibm_surface/marker_distance);
         // check weather or not we have to equalize so that everything is equally spaced
         // watch out for low marker numbers
-        double add_on = std::fmod(total_surface,marker_distance);
+        double add_on = std::fmod(ibm_surface,marker_distance);
         marker_distance += add_on/markers_fit_in;
         // we now step through the surface again
         // setup walk distance initial
         double walk_distance = marker_distance;
         for(auto s : sg->surfaces) {
+            // only place markers on an ibm surface
+            if(s->type != IBM) {
+                continue;
+            }
             // in all directions just walk the distance
             vector_t walker = s->direction.normalized() * walk_distance;
             point_t marker = s->point;

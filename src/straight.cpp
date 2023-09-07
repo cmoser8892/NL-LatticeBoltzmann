@@ -791,6 +791,7 @@ void straightGenerator::add_surface(straight_t s) {
     temp->point = s.point;
     temp->direction = s.direction;
     temp->max_t = s.max_t;
+    temp->type = s.type;
     surfaces.push_back(temp);
 }
 
