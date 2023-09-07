@@ -63,6 +63,7 @@ void neighbourhood::snoop_max_coordinate(coordinate_t coordinate) {
 
 /**
  * Used to setup links for periodic wet boundaries.
+ * @todo rework
  * @param coordinate
  */
 void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {

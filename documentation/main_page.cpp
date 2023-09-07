@@ -17,7 +17,7 @@
  * Only positive coordinates will work for any kind of structure.
  * (The hashes in the nl must not be negative (64 bit hashes, constructed from the interleaved floored position, negative numbers are unaccounted for)).\n
  * (This results in a maximum canvas draw size of 0 to 2e32(4gb) in 2d and 0 to 2e21(2mb) in 3d)
- * Handles are start at 1.
+ * Handles to the nodes start at 1.
  * \subsection Ideas
  * Lattice Boltzmann with Neighborhood lists seems cool for strongly moving boundaries.
  *  It would be a very easy to implement a grassroot way from the nodes up instead of the hodgepotch i have now (first try is messy).
