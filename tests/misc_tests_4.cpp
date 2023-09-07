@@ -215,7 +215,8 @@ TEST(FunctionalTest, tube_no_markers) {
 }
 
 /**
- * Method to place periodic markers on a surface
+ * Method to place periodic markers on a surface.
+ * @test
  */
 TEST(FunctionalTest, periodidics_marker_placement) {
     straight_t input;
