@@ -140,6 +140,40 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     EXPECT_EQ(s.surface_storage.surfaces.size(),4);
 }
 
+/**
+ * Compares the oldest and the newest collision implementation
+ * @todo there might be an mistake 1/relaxation somewhere, it is really confusing relaxation tau and omega are used indistinguishable
+ * @test
+ */
+TEST(FunctionalTest, collision_againt_test) {
+    point_t dk = {1,1};
+    node n(1,2,9,dk,NO_BOUNDARY);
+    ibmSimulation test(nullptr,nullptr,nullptr,dk);
+    double rho = 1;
+    double ux = 1;
+    double uy = 1;
+    double relaxation = 0.5;
+    test.parameters.relaxation = 1/relaxation;
+    // add a node
+    fNode fn(1,9,NO_BOUNDARY);
+    fn.position = dk;
+    // set the node variables
+    n.rho = rho;
+    n.u(0) = ux;
+    n.u(1) = uy;
+    // function calls
+    test.test_collision(&fn,rho,ux,uy);
+    collision(&n,relaxation);
+    // compare values
+    for(int i = 0; i < CHANNELS; ++i) {
+        EXPECT_NEAR(fn.populations(i),n.population_even(i),1e-10);
+    }
+}
+
+/**
+ * Preliminary node test when working with periodics.
+ * @test
+ */
 TEST(FunctionalTest, tube_no_markers) {
     // node generator variables
     long canvas_size = 150;
@@ -181,31 +215,26 @@ TEST(FunctionalTest, tube_no_markers) {
 }
 
 /**
- * Compares the oldest and the newest collision implementation
- * @todo there might be an mistake 1/relaxation somewhere and not somewhere
- * @test
+ * Method to place periodic markers on a surface
  */
-TEST(FunctionalTest, collision_againt_test) {
-    point_t dk = {1,1};
-    node n(1,2,9,dk,NO_BOUNDARY);
-    ibmSimulation test(nullptr,nullptr,nullptr,dk);
-    double rho = 1;
-    double ux = 1;
-    double uy = 1;
-    double relaxation = 0.5;
-    test.parameters.relaxation = 1/relaxation;
-    // add a node
-    fNode fn(1,9,NO_BOUNDARY);
-    fn.position = dk;
-    // set the node variables
-    n.rho = rho;
-    n.u(0) = ux;
-    n.u(1) = uy;
-    // function calls
-    test.test_collision(&fn,rho,ux,uy);
-    collision(&n,relaxation);
-    // compare values
-    for(int i = 0; i < CHANNELS; ++i) {
-        EXPECT_NEAR(fn.populations(i),n.population_even(i),1e-10);
+TEST(FunctionalTest, periodidics_marker_placement) {
+    straight_t input;
+    input.point = {0,27.1};
+    input.direction = {0,1};
+    input.max_t = 82.8-27.1;
+    input.type = PERIODIC;
+    markerPoints periodic_markers(nullptr,1);
+    periodic_markers.distribute_markers_periodic(&input);
+    EXPECT_EQ(periodic_markers.marker_points.size(),54);
+    // check if empty and so on
+    if(!periodic_markers.marker_points.empty()) {
+        for (size_t i = 0; i < (int(periodic_markers.marker_points.size()) - 1); ++i) {
+            auto current = periodic_markers.marker_points[i];
+            auto next = periodic_markers.marker_points[i +1];
+            // test the distance between them
+            vector_t t = *next - *current;
+            // checks the distance between the marker points should be 1
+            EXPECT_NEAR(t.norm(),1,1e-10);
+        }
     }
 }

@@ -1,13 +1,20 @@
 #include "marker.h"
 #include <fstream>
 #include <iostream>
+
+// private
+void markerPoints::walking(straight_t *s, double walker_dist) {
+
+}
+
+// public
 /**
  * Constructor with lots of optional fields.
  * @param s
  * @param kd
  * @param md
  */
-markerIBM::markerIBM(straightGenerator *s, double md) {
+markerPoints::markerPoints(straightGenerator *s, double md) {
     sg = s;
     marker_distance = md;
 }
@@ -15,7 +22,7 @@ markerIBM::markerIBM(straightGenerator *s, double md) {
 /**
  * De-constructor gets rid of the points.
  */
-markerIBM::~markerIBM() {
+markerPoints::~markerPoints() {
     // delete all the info in the vector
     for(auto p : marker_points) {
         delete p;
@@ -24,9 +31,10 @@ markerIBM::~markerIBM() {
 
 /**
  * Marker distributor, main goal is too evenly distribute the markers on the surface.
+ * @note This method is purely for ibm markers.
  * @attention surface is blind of its own inner structure
  */
-void markerIBM::distribute_markers() {
+void markerPoints::distribute_markers() {
     // start at the first surface and look
     if(sg != nullptr) {
         // find the length of the ibm surfaces
@@ -77,11 +85,18 @@ void markerIBM::distribute_markers() {
     }
 }
 
+
+void markerPoints::distribute_markers_periodic(straight_t *line) {
+    // distributes markers for the use in periodic boundaries
+    // used for placing of nodes and connectivity
+
+}
+
 /**
  * Gives out the actual marker distance used.
  * @return
  */
-double markerIBM::return_marker_distance() {
+double markerPoints::return_marker_distance() {
     return marker_distance;
 }
 
@@ -89,7 +104,7 @@ double markerIBM::return_marker_distance() {
  * Writes out the marker points into a file or not.
  * @param write_file
  */
-void markerIBM::write_out_markers(bool write_file) {
+void markerPoints::write_out_markers(bool write_file) {
     std::ofstream out;
     out.open("markers");
     if(out.is_open()) {

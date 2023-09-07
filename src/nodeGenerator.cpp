@@ -584,7 +584,7 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
         handle_t handle_counter = 1;
         // generate the markers
         if(markers == nullptr) {
-            markers = new markerIBM(straight_surfaces);
+            markers = new markerPoints(straight_surfaces);
             markers->distribute_markers();
         }
         // check and reform nodes
@@ -610,7 +610,7 @@ void nodeGenerator::init_surface_return(unsigned int size, double range,  double
         handle_t handle_counter = 1;
         // generate the markers
         if(markers == nullptr) {
-            markers = new markerIBM(straight_surfaces, marker_range);
+            markers = new markerPoints(straight_surfaces, marker_range);
             markers->distribute_markers();
         }
         // check and reform nodes

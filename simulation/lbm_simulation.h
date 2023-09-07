@@ -16,7 +16,7 @@ class ibmSimulation {
     coordinate_t size; /**< bust sizes lol */
     nodeGenerator* node_generator = nullptr; /**< node generator pointer */
     goaForce* rot_force = nullptr; /**< force pointer */
-    markerIBM* original_markers = nullptr; /**< markers from the node generator */
+    markerPoints * original_markers = nullptr; /**< markers from the node generator */
     rangingPointKeyHash markers_pkh; /**< Stash of markers used in the simulation */
     double (*kernel_function)(point_t* p) = nullptr; /**< kernel function pointer */
     // local access arrays
@@ -38,7 +38,7 @@ class ibmSimulation {
     std::vector<fNode*> nodes; /**< nodes-container */
     std::vector<marker*> markers; /**< marker-container */
     // constructor
-    ibmSimulation(nodeGenerator* g, goaForce*f, markerIBM* m, vector_t size);
+    ibmSimulation(nodeGenerator* g, goaForce*f, markerPoints * m, vector_t size);
     ~ibmSimulation();
     // setters
     void set_simulation_parameters(simulation_parameters_t t);

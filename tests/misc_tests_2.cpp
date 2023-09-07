@@ -234,7 +234,7 @@ TEST(ForceTest, correct_truncation_terms) {
  * @test
  * @see conical_delta()
  */
-TEST(FuntionalTest, conical_delta) {
+TEST(FunctionalTest, conical_delta) {
     EXPECT_EQ(conical_delta(2,3),0);
     EXPECT_EQ(conical_delta(1,1),1);
 }
@@ -753,7 +753,7 @@ TEST(FunctionalTest, no_fluid_boundary) {
 /**
  * We have on straight on which we distribute markers.
  * @test
- * @see markerIBM::distribute_markers()
+ * @see markerPoints::distribute_markers()
  */
 TEST(FunctionalTest, distribute_markers_base) {
     straight_t input;
@@ -764,7 +764,7 @@ TEST(FunctionalTest, distribute_markers_base) {
     input.max_t = 6;
     input.type = IBM;
     sg.add_surface(input);
-    markerIBM m(&sg);
+    markerPoints m(&sg);
     m.distribute_markers();
     EXPECT_EQ(m.marker_points.size(),8);
 }
@@ -772,7 +772,7 @@ TEST(FunctionalTest, distribute_markers_base) {
 /**
  * We make some quaders and test weather or not the code does what it should.
  * @test
- * @see markerIBM::distribute_markers()
+ * @see markerPoints::distribute_markers()
  */
 TEST(FunctionalTest, distribute_markers_quader) {
     double marker_dist = 0.75;
@@ -809,7 +809,7 @@ TEST(FunctionalTest, distribute_markers_quader) {
             input.type = IBM;
             sg.add_surface(input);
             // init the markers
-            markerIBM mibm(&sg);
+            markerPoints mibm(&sg);
             mibm.distribute_markers();
             EXPECT_EQ(mibm.marker_points.size(),expected_value);
         }
@@ -846,7 +846,7 @@ TEST(FunctionalTest, odd_quader) {
     input.type = IBM;
     sg.add_surface(input);
     // tests how many will get generatored
-    markerIBM mibm(&sg);
+    markerPoints mibm(&sg);
     mibm.distribute_markers();
     EXPECT_EQ(mibm.marker_points.size(),26);
     EXPECT_GT(mibm.return_marker_distance(),0.75);
@@ -907,7 +907,7 @@ TEST(FunctionalTest, two_structure) {
     // main thing i do not want to see is a whole when we change the surface
     // easiest way for this to work is to set up a ranging pkh and look for the markers
     // number of different cases still but should be doable
-    markerIBM mibm(&sg);
+    markerPoints mibm(&sg);
     mibm.distribute_markers();
     EXPECT_EQ(mibm.marker_points.size(),80+26); // we got the right amount
     array_t on_surface;

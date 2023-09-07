@@ -55,7 +55,7 @@ class nodeGenerator {
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
     std::vector<bool> to_be_removed; /**< Master control remove the node or not */
     straightGenerator* straight_surfaces = nullptr; /**< Straight surface pointer */
-    markerIBM* markers = nullptr; /**< markers */
+    markerPoints * markers = nullptr; /**< markers */
     explicit nodeGenerator(boundaryPointConstructor* p);
     explicit nodeGenerator(straightGenerator * s);
     ~nodeGenerator();

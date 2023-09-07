@@ -250,7 +250,7 @@ double ibmSimulation::kernel_function_call(point_t *p) {
  * @param m
  * @param s
  */
-ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerIBM *m, vector_t s) {
+ibmSimulation::ibmSimulation(nodeGenerator *g, goaForce *f, markerPoints *m, vector_t s) {
     node_generator = g;
     rot_force = f;
     original_markers = m;
