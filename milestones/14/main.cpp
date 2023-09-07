@@ -27,10 +27,12 @@ int main() {
     input.point = {0,27.1};
     input.direction = {1,0};
     input.max_t = 149;
+    input.type = IBM;
     lines.add_surface(input);
     input.point = {149,82.8};
     input.direction = {-1,0};
     input.max_t = 149;
+    input.type = IBM;
     lines.add_surface(input);
     // introduce the containing lines will have to be manually found !
     input.point = {0,27.1};

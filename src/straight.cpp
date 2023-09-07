@@ -823,6 +823,22 @@ double straightGenerator::calculate_total_surface_length() {
 }
 
 /**
+ * Calculates the total surface length of specific surface type.
+ * @param type
+ * @return
+ */
+double straightGenerator::calculate_total_surface_length(boundaryType_t type) {
+    double total_surface = 0;
+    for(auto s : surfaces) {
+        if(s->type == type) {
+            total_surface += s->direction.norm() * s->max_t;
+        }
+    }
+    return total_surface;
+}
+
+
+/**
  * Calculates the intersection between a ray and a surface, theory is explained in the function body.
  * @param ray
  * @param surface

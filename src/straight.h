@@ -50,6 +50,7 @@ class straightGenerator {
     void add_surface(straight_t s);
     void surface_mass_center();
     double calculate_total_surface_length();
+    double calculate_total_surface_length(boundaryType_t type);
 };
 
 bool straight_better_candidate_test(straight_t* candidate, straight* partner);
