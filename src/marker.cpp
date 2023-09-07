@@ -85,10 +85,32 @@ void markerPoints::distribute_markers() {
     }
 }
 
-
+/**
+ * Places marker on the periodics line.
+ * @param line
+ */
 void markerPoints::distribute_markers_periodic(straight_t *line) {
     // distributes markers for the use in periodic boundaries
     // used for placing of nodes and connectivity
+    // pick the starter point and ceil it up
+    point_t current = {std::ceil(line->point.x()),
+                       std::ceil(line->point.y())};
+    // now lets walk the walk
+    vector_t walker = line->direction.normalized();
+    bool end = false;
+    double dk = 0;
+    while(!end) {
+        current += walker;
+        if(point_on_straight(line,&current,&dk)) {
+            // add a marker point
+            auto add_me = new point_t;
+            *add_me = current;
+            marker_points.push_back(add_me);
+        }
+        else {
+            end = true;
+        }
+    }
 
 }
 
