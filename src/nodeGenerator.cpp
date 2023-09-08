@@ -321,6 +321,10 @@ void nodeGenerator::check_nodes_ibm(double range) {
     }
 }
 
+void nodeGenerator::check_nodes_periodic() {
+
+}
+
 /**
  * Removes all the nodes that were not wanted in an abortion like process.
  * @param current
@@ -469,6 +473,7 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
 
 /**
  * Approximates the outer boundary with a bb boundary.
+ * @todo modify to  not work with periodic nodes
  */
 void nodeGenerator::fill_neighborhood_holes() {
     int counter = 0;
@@ -491,7 +496,7 @@ void nodeGenerator::fill_neighborhood_holes() {
                     // nop
                 }
                 else {
-                    // create a new link and emplace it
+                    // create a new link and insert it
                     toLinks_t new_link;
                     new_link.handle = ni->handle;
                     int linked_channel = switch_link_dimensions(link_channel);
@@ -602,7 +607,8 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
  * @param range
  * @param marker_range
  */
-void nodeGenerator::init_surface_return(unsigned int size, double range,  double marker_range) {
+void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  double marker_range) {
+    double range = kernel_id_to_lattice_search(type);
     // correct the range to
     if(!read_data_from_file()) {
         // create the drawing canvas
@@ -616,6 +622,8 @@ void nodeGenerator::init_surface_return(unsigned int size, double range,  double
         // check and reform nodes
         check_nodes_inside();
         check_nodes_ibm(range);
+        // periodic handeling
+        check_nodes_periodic();
         remove_unwanted_nodes(&handle_counter);
         determine_neighbors();
         fill_neighborhood_holes();

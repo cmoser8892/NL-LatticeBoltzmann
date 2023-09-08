@@ -37,9 +37,8 @@ int main(int argc, char *argv[]) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
     /// todo main diff between 11 and 11b
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     ng.visualize_2D_nodes();
     std::cout << ng.node_infos.size() << std::endl;
     simulation_parameters params;

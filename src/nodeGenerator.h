@@ -46,6 +46,7 @@ class nodeGenerator {
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
     void check_nodes_inside();
     void check_nodes_ibm(double range);
+    void check_nodes_periodic();
     void remove_unwanted_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
     void reduce_boundary_neighborhood();
@@ -65,7 +66,7 @@ class nodeGenerator {
     void init(unsigned int size);
     void init_fused(unsigned int size);
     void init_surface(unsigned int size, double range);
-    void init_surface_return(unsigned int size, double range, double marker_range);
+    void init_surface_return(unsigned int size, kernelType_t type, double marker_range);
     void board_creation(unsigned int size);
     void delete_node_infos();
     void visualize_2D_nodes();

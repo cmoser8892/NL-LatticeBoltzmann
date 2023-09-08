@@ -27,8 +27,7 @@ int main(int argc, char *argv[]) {
     drawer.run_non_connecting(sel, true);
     drawer.surface_storage.surface_mass_center();
     nodeGenerator ng(&drawer.surface_storage);
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);

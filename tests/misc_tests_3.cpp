@@ -833,8 +833,7 @@ TEST(IbmTest, neighbors_outside_ibm) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // test the general ibm stuff
     int ibm_outer = 0;
     int ibm_inner = 0;

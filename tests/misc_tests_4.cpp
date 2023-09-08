@@ -80,7 +80,6 @@ TEST(FunctionalTest, marker_go_next_overflow) {
     double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
     // Load the image
     straight_t input;
     straightGenerator sg;
@@ -100,7 +99,7 @@ TEST(FunctionalTest, marker_go_next_overflow) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // surface calcs
     double surface_length = sg.calculate_total_surface_length();
     EXPECT_NEAR(surface_length,45,1e-5);
@@ -122,7 +121,6 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
     // Load the image
     auto test_image = get_base_path();
     test_image.append("tests");
@@ -135,7 +133,7 @@ TEST(FunctionalTest, open_boundaries_id_test) {
     s.close_open_surface(draw_size);
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // check if we get the right amount of surfaces
     EXPECT_EQ(s.surface_storage.surfaces.size(),4);
 }
@@ -181,7 +179,6 @@ TEST(FunctionalTest, tube_no_markers) {
     double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
     // introduce a surface
     straight_t input;
     straightGenerator lines;
@@ -209,7 +206,7 @@ TEST(FunctionalTest, tube_no_markers) {
     lines.add_surface(input);
     // setup the node generator
     nodeGenerator ng(&lines);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
     ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),148*63+4*8);
 }

@@ -19,7 +19,6 @@ int main() {
     double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
     // introduce a surface
     straight_t input;
     straightGenerator lines;
@@ -47,7 +46,7 @@ int main() {
     lines.add_surface(input);
     // setup the node generator
     nodeGenerator ng(&lines);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);

@@ -20,7 +20,6 @@ int main() {
     double marker_distance = 0.5;
     bool file_write = true;
     kernelType_t kernel = KERNEL_C;
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
     // Load the image
     auto test_image = get_base_path();
     test_image.append("tests");
@@ -33,7 +32,7 @@ int main() {
     // s.close_open_surface(draw_size);
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
-    ng.init_surface_return(canvas_size,ibm_distance,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);
