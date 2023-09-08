@@ -209,6 +209,33 @@ TEST(FunctionalTest, tube_no_markers) {
     ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
     ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),150*63);
+    //
+    long counter_periodic = 0;
+    long counter_ibm_p = 0;
+    long counter_none = 0;
+    long counter_default = 0;
+    for(auto n : ng.node_infos) {
+        if(n->type == PERIODIC_CONNECT) {
+            ++counter_periodic;
+            switch(n->boundary) {
+            case INIT_NONE: {
+                counter_none++;
+                break;
+            }
+            case IBM_OUTER: {
+                counter_ibm_p++;
+                break;
+            }
+            default:
+                counter_default++;
+            }
+        }
+    }
+    // checks
+    EXPECT_EQ(2*63,counter_periodic);
+    EXPECT_EQ(4*8,counter_ibm_p);
+    EXPECT_EQ(2*63-4*8,counter_none);
+    EXPECT_EQ(counter_default,0);
 }
 
 /**
