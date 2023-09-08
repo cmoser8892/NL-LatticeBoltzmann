@@ -38,8 +38,9 @@ typedef struct coordinate {
  */
 typedef enum nodeIdentifier {
     UNKNOWN = 0, /**< Neither wet nor dry (undifined) */
-    DRY, ///
-    WET
+    DRY, /**< Well a dry node */
+    WET, /**< A wet node */
+    PERIODIC_CONNECT, /**< periodic_node */
 }nodeIdentifier_t;
 
 /**

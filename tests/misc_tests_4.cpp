@@ -208,7 +208,7 @@ TEST(FunctionalTest, tube_no_markers) {
     nodeGenerator ng(&lines);
     ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
     ng.visualize_2D_nodes();
-    EXPECT_EQ(ng.node_infos.size(),148*63+4*8);
+    EXPECT_EQ(ng.node_infos.size(),150*63);
 }
 
 /**

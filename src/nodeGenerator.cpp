@@ -375,8 +375,7 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
                 vector_t checker = point_t(current_node->position) - *m;
                 // reference goes out so if the vector from the position out +-90degrees its out
                 if(check_plus_minus_90(&checker,&reference[run_variable])) {
-                    // flag as the nonetype that gets deleted later
-                    current_node->boundary = INIT_NONE;
+                    // flag to be deleted
                     to_be_removed[handle] = true;
                 }
             }
@@ -386,6 +385,21 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     }
     // reintroduce the needed periodic nodes ( i know this is extra work but this is a computer)
     // clarity is more important
+    run_variable = 0;
+    for(auto pm: periodic_marker) {
+        for(auto m : pm->marker_points) {
+            std::vector<handle_t> affected = rpkh.ranging_key_translation(*m,0.9);
+            for(auto handle : affected) {
+                handle -= 1;
+                auto current_node = node_infos[handle];
+                point_t node_point = current_node->position;
+                if(compare_two_points(&node_point,m)) {
+                    current_node->type = PERIODIC_CONNECT;
+                    to_be_removed[handle] = false;
+                }
+            }
+        }
+    }
 }
 
 /**
