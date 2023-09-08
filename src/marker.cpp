@@ -156,13 +156,33 @@ void markerPoints::write_out_markers(bool write_file) {
     }
 }
 
-
+/**
+ * Constructor.
+ * @param in
+ * @param out
+ * @param ori
+ */
 periodicBundles::periodicBundles(markerPoints *in, markerPoints *out, bool ori)
     : inlet(in), outlet(out), orientation(ori)
 {
-    // nop
+    // check sizes
+    if(inlet->marker_points.size() != outlet->marker_points.size()) {
+        std::cerr << "Sizes of the inlet and outlet dont agree!" << std::endl;
+    }
 }
 
+/**
+ * Just makes and association between the position of the inlet/outlets position in the saving arrays.
+ */
 void periodicBundles::connect() {
-
+    // loop over inlet and outlet
+    size_t size = inlet->marker_points.size();
+    for(size_t i = 0; i < size; ++i) {
+        // when orientation is true the order is flipped
+        size_t second = i;
+        if(orientation) {
+            second = size - 1 -i;
+        }
+        associations.emplace(i,second);
+    }
 }

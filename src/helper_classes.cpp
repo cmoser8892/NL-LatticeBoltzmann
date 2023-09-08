@@ -293,6 +293,12 @@ long rangingPointKeyHash::size() {
     return pkh.map_size();
 }
 
+/**
+ * Does more of the more classical neighborhood list stuff.
+ * @param pos
+ * @param range
+ * @return
+ */
 std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, double range) {
     std::vector<handle_t> returns;
     std::vector<handle_t> candidates = pkh.ranging_key_translation(pos, range);
@@ -324,6 +330,13 @@ std::vector<handle_t> rangingPointKeyHash::ranging_key_translation(point_t pos, 
     return returns;
 }
 
+/**
+ * Looks for a specific key while ranging.
+ * @param pos
+ * @param range
+ * @param h
+ * @return
+ */
 bool rangingPointKeyHash::ranging_key_look_for_specific(point_t pos, double range, handle_t h) {
     bool returns = false;
     std::vector<handle_t> candidates = ranging_key_translation(pos,range);
