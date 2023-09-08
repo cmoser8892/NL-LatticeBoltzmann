@@ -321,6 +321,11 @@ void nodeGenerator::check_nodes_ibm(double range) {
     }
 }
 
+/**
+ * Sets up the nodes for periodic boundaries.
+ * @param t
+ * @param a
+ */
 void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     // need ibm range, to remove
     // creat markers for the surfaces affected
