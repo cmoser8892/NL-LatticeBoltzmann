@@ -31,6 +31,7 @@ std::tuple<double, double> test_calculate_rho_both(array_t* p);
 double kernel_A(double range);
 double kernel_B(double range);
 double kernel_C(double range);
+double kernel_D(double range);
 double kernel_A_2d(vector_t* p);
 double kernel_B_2d(vector_t* p);
 double kernel_C_2d(vector_t *p);

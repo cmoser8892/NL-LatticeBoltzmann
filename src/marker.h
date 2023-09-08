@@ -19,7 +19,7 @@ class markerPoints {
     explicit markerPoints(straightGenerator *s = nullptr, double md = 0.75);
     ~markerPoints();
     void distribute_markers();
-    void distribute_markers_periodic(straight_t* line);
+    void distribute_markers_periodic(straight_t* line,boundaryType_t next, kernelType_t t);
     double return_marker_distance();
     void write_out_markers(bool write_file);
 };

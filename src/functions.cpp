@@ -422,6 +422,20 @@ double kernel_C(double range) {
 }
 
 /**
+ * Aka a cheap area function its just the tip.
+ * @param range
+ * @return
+ */
+double kernel_D(double range) {
+    double returns = 0;
+    double  abs_range = abs(range);
+    if((abs_range >= 0) && (abs_range < 1e-10)) {
+        returns = 1;
+    }
+    return returns;
+}
+
+/**
  * Kernel A version in 2D.
  * @param p
  * @return

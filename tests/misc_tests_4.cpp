@@ -224,9 +224,10 @@ TEST(FunctionalTest, periodidics_marker_placement) {
     input.direction = {0,1};
     input.max_t = 82.8-27.1;
     input.type = PERIODIC;
+
     markerPoints periodic_markers(nullptr,1);
-    periodic_markers.distribute_markers_periodic(&input);
-    EXPECT_EQ(periodic_markers.marker_points.size(),54);
+    periodic_markers.distribute_markers_periodic(&input,NO_BOUNDARY,KERNEL_A);
+    EXPECT_EQ(periodic_markers.marker_points.size(),1 + 54);
     // check if empty and so on
     if(!periodic_markers.marker_points.empty()) {
         for (size_t i = 0; i < (int(periodic_markers.marker_points.size()) - 1); ++i) {
@@ -238,4 +239,41 @@ TEST(FunctionalTest, periodidics_marker_placement) {
             EXPECT_NEAR(t.norm(),1,1e-10);
         }
     }
+    // check the first point and last points
+    point_t test = {0,28};
+    EXPECT_EQ(test.y(),periodic_markers.marker_points[0]->y());
+    test = {0,82};
+    EXPECT_EQ(test.y(),periodic_markers.marker_points[periodic_markers.marker_points.size()-1]->y());
+}
+
+/**
+ * Method to place periodic markers on a surface.
+ * @test
+ */
+TEST(FunctionalTest, periodidics_marker_placement_ibm_usecase) {
+    straight_t input;
+    input.point = {0,27.1};
+    input.direction = {0,1};
+    input.max_t = 82.8-27.1;
+    input.type = PERIODIC;
+    // this and that
+    markerPoints periodic_markers(nullptr,1);
+    periodic_markers.distribute_markers_periodic(&input,IBM,KERNEL_C);
+    EXPECT_EQ(periodic_markers.marker_points.size(),1 + 54 + 8);
+    // check if empty and so on
+    if(!periodic_markers.marker_points.empty()) {
+        for (size_t i = 0; i < (int(periodic_markers.marker_points.size()) - 1); ++i) {
+            auto current = periodic_markers.marker_points[i];
+            auto next = periodic_markers.marker_points[i +1];
+            // test the distance between them
+            vector_t t = *next - *current;
+            // checks the distance between the marker points should be 1
+            EXPECT_NEAR(t.norm(),1,1e-10);
+        }
+    }
+    // check the first point and last points
+    point_t test = {0,24};
+    EXPECT_EQ(test.y(),periodic_markers.marker_points[0]->y());
+    test = {0,86};
+    EXPECT_EQ(test.y(),periodic_markers.marker_points[periodic_markers.marker_points.size()-1]->y());
 }

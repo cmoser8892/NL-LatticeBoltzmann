@@ -89,18 +89,37 @@ void markerPoints::distribute_markers() {
  * Places marker on the periodics line.
  * @param line
  */
-void markerPoints::distribute_markers_periodic(straight_t *line) {
+void markerPoints::distribute_markers_periodic(straight_t *line,boundaryType_t type, kernelType_t t) {
     // distributes markers for the use in periodic boundaries
     // used for placing of nodes and connectivity
     // pick the starter point and ceil it up
-    point_t current = {std::ceil(line->point.x()),
-                       std::ceil(line->point.y())};
+    // preliminary checks
+    point_t startpoint = {std::ceil(line->point.x()),
+                     std::ceil(line->point.y())};
+    point_t helper = line->point + line->max_t*line->direction.normalized();
+    point_t endpoint = {std::floor(helper.x()),
+                        std::floor(helper.y())};
+    // check the distance between start
+    vector_t distance = endpoint -startpoint;
+    if(distance.norm() < 1e-10) {
+        std::cerr << "The straight line given is too short to work with." << std::endl;
+        return;
+    }
+    // setup
+    point_t current = startpoint;
+    // manipulate the data based on kernel ibm
+    if(type == IBM) {
+        double ibm_range = kernel_id_to_lattice_search(t);
+        // move the startpoint
+        current = startpoint - ibm_range*line->direction;
+        // move the end
+        line->max_t += ibm_range;
+    }
     // now lets walk the walk
     vector_t walker = line->direction.normalized();
     bool end = false;
     double dk = 0;
     while(!end) {
-        current += walker;
         if(point_on_straight(line,&current,&dk)) {
             // add a marker point
             auto add_me = new point_t;
@@ -110,6 +129,7 @@ void markerPoints::distribute_markers_periodic(straight_t *line) {
         else {
             end = true;
         }
+        current += walker;
     }
 
 }
