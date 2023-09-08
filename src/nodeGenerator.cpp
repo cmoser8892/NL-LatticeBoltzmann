@@ -321,8 +321,71 @@ void nodeGenerator::check_nodes_ibm(double range) {
     }
 }
 
-void nodeGenerator::check_nodes_periodic() {
-
+void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
+    // need ibm range, to remove
+    // creat markers for the surfaces affected
+    for(int i = 0; i < 2; ++i) {
+        // create and so
+        periodic_marker[i] = new markerPoints();
+        periodic_marker[i]->distribute_markers_periodic(straight_surfaces->surfaces[a[i]],IBM,t);
+    }
+    // first pass remove the unwanted node
+    double range = kernel_id_to_lattice_search(KERNEL_C);
+    // put everything in a key hash table
+    rangingPointKeyHash rpkh;
+    handle_t current = 1;
+    for(auto node : node_infos) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    // determine fluid direction from the middle nodes
+    vector_t reference[2] = {};
+    int run_variable = 0; // r
+    for(auto pm : periodic_marker) {
+        // find the middle marker
+        auto s = double(pm->marker_points.size());
+        auto middle = size_t(std::round(s/2.0));
+        point_t midpoint = *pm->marker_points[middle];
+        // look around
+        std::vector<handle_t> found = rpkh.ranging_key_translation(midpoint,2.5);
+        // addup everything that we found
+        vector_t add_up = {0,0};
+        for(auto handle: found) {
+            handle -= 1;
+            auto current_node = node_infos[handle];
+            add_up += point_t(current_node->position) - midpoint;
+        }
+        // set the direction of the reference
+        reference[run_variable] = -1 * add_up.normalized();
+        ++run_variable;
+    }
+    // remove excessive ibm nodes
+    // loop over both
+    run_variable = 0;
+    for(auto pm : periodic_marker) {
+        // loop over marker
+        for(auto m : pm->marker_points) {
+            // find affected nodes
+            std::vector<handle_t> affected = rpkh.ranging_key_translation(*m,range);
+            for(auto handle : affected) {
+                // access to var
+                handle -= 1;
+                auto current_node = node_infos[handle];
+                // make a vector to check
+                vector_t checker = point_t(current_node->position) - *m;
+                // reference goes out so if the vector from the position out +-90degrees its out
+                if(check_plus_minus_90(&checker,&reference[run_variable])) {
+                    // flag as the nonetype that gets deleted later
+                    current_node->boundary = INIT_NONE;
+                    to_be_removed[handle] = true;
+                }
+            }
+        }
+        // increment var
+        ++run_variable;
+    }
+    // reintroduce the needed periodic nodes ( i know this is extra work but this is a computer)
+    // clarity is more important
 }
 
 /**
@@ -623,7 +686,24 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
         check_nodes_inside();
         check_nodes_ibm(range);
         // periodic handeling
-        check_nodes_periodic();
+        // loop over the surface to find the periodic ones
+        long holder[2] = {-1,-1};
+        int i = 0;
+        for(int s = 0; s < straight_surfaces->surfaces.size(); ++s) {
+            auto surface = straight_surfaces->surfaces[s];
+            if(surface->type == PERIODIC) {
+                holder[i] = s;
+                ++i;
+                if(i >2) {
+                    std::cerr << "To many periodic surfaces" << std::endl;
+                }
+            }
+        }
+        // check valid
+        if((holder[0] >= 0) && (holder[2] >= 0)) {
+            check_nodes_periodic(type,holder);
+        }
+        // remove nodes
         remove_unwanted_nodes(&handle_counter);
         determine_neighbors();
         fill_neighborhood_holes();

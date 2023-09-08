@@ -274,3 +274,33 @@ TEST(FunctionalTest, periodidics_marker_placement_ibm_usecase) {
     test = {0,86};
     EXPECT_EQ(test.y(),periodic_markers.marker_points[periodic_markers.marker_points.size()-1]->y());
 }
+
+/**
+ * Tests the check_plus_minus_90 function.
+ * @tests
+ */
+TEST(FunctionalTest, ninty_angle_off) {
+    vector_t ref = {-1,0};
+    vector_t test = {0,0};
+    // tests
+    test = {0,0};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+    test = {-1,0};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+    test = {0,1};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+    test = {0,-1};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+    test = {1,0};
+    EXPECT_TRUE(!check_plus_minus_90(&test,&ref));
+    test = {1,1};
+    EXPECT_TRUE(!check_plus_minus_90(&test,&ref));
+    test = {1,-1};
+    EXPECT_TRUE(!check_plus_minus_90(&test,&ref));
+    test = {-1,-1};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+    test = {-1,1};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+    test = {-500000,0};
+    EXPECT_TRUE(check_plus_minus_90(&test,&ref));
+}

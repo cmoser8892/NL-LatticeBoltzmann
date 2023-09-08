@@ -328,3 +328,19 @@ uint8_t point_on_boarder(point_t* p, vector_t* canvas_size) {
     }
     return returns;
 }
+
+/**
+ * Checks weather or not a vector is +-90 degrees of the reference vector.
+ * @param to_be_checked
+ * @param reference
+ * @return
+ */
+bool check_plus_minus_90(vector_t * to_be_checked, vector_t* reference) {
+    bool returns = true;
+    double angle = calculate_angle(to_be_checked,reference);
+    if(abs(angle) >= (M_PI_2 + 1e-12))
+        returns = false;
+    return returns;
+}
+
+

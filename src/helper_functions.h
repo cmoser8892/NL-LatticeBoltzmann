@@ -9,11 +9,13 @@
 #include <list>
 #include <filesystem>
 
+//vector nonsense
 bool node_position_comparison(node* n, array_t* pos);
 void write_flowfield_data(flowfield_t* field,std::string filename,bool write_to_file);
 bool check_inside_limits_upper_lower(point_t* p, point_t* limit_lower, point_t* limit_upper);
 bool compare_two_points(point_t* p1, point_t* p2 );
 std::vector<std::string> split_string (std::string s, std::string delimiter);
+bool check_plus_minus_90(vector_t * to_be_checked, vector_t* reference);
 // bit interleaving
 uint64_t bit_interleaving(uint32_t x, uint32_t y);
 uint64_t bit_interleaving_2d(uint32_t, uint32_t);

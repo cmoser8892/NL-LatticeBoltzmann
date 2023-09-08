@@ -37,6 +37,8 @@ class nodeGenerator {
     bool save = false; /**<  Should we save */
     vector_t discovery_vector = {1, 0}; /**< Only relevant for linear creation */
     long size_canvas = 0;
+    // markers for periodics
+    markerPoints* periodic_marker[2] = {};
     //
     void write_data_to_file(bool write);
     bool read_data_from_file();
@@ -46,7 +48,7 @@ class nodeGenerator {
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
     void check_nodes_inside();
     void check_nodes_ibm(double range);
-    void check_nodes_periodic();
+    void check_nodes_periodic(kernelType_t t,long* a);
     void remove_unwanted_nodes(handle_t* current);
     void add_boundary_nodes(handle_t* current);
     void reduce_boundary_neighborhood();
