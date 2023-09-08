@@ -155,3 +155,14 @@ void markerPoints::write_out_markers(bool write_file) {
         }
     }
 }
+
+
+periodicBundles::periodicBundles(markerPoints *in, markerPoints *out, bool ori)
+    : inlet(in), outlet(out), orientation(ori)
+{
+    // nop
+}
+
+void periodicBundles::connect() {
+
+}

@@ -5,6 +5,7 @@
 #include "straight.h"
 #include "functions.h"
 
+#include <map>
 /**
  * The marker class holds and distributes the markers on a surface for the IBM_OUTER method.
  * @note not sure yet how to handle finer grids prob fully dynamic ?!
@@ -22,6 +23,17 @@ class markerPoints {
     void distribute_markers_periodic(straight_t* line,boundaryType_t next, kernelType_t t);
     double return_marker_distance();
     void write_out_markers(bool write_file);
+};
+
+class periodicBundles {
+  private:
+    std::map<handle_t, handle_t> associations;
+    markerPoints* inlet;
+    markerPoints* outlet;
+    bool orientation = false;
+  public:
+    periodicBundles(markerPoints* inlet, markerPoints* outlet,bool orientation);
+    void connect();
 };
 
 #endif // NL_LATTICEBOLTZMANN_MARKER_H

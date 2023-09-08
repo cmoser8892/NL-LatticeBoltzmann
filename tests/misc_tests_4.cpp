@@ -217,6 +217,7 @@ TEST(FunctionalTest, tube_no_markers) {
     for(auto n : ng.node_infos) {
         if(n->type == PERIODIC_CONNECT) {
             ++counter_periodic;
+            EXPECT_EQ(n->links.size(),8);
             switch(n->boundary) {
             case INIT_NONE: {
                 counter_none++;
