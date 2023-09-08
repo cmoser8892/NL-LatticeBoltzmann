@@ -27,11 +27,11 @@ class markerPoints {
 
 class periodicBundles {
   private:
-    std::map<handle_t, handle_t> associations;
     markerPoints* inlet;
     markerPoints* outlet;
     bool orientation = false;
   public:
+    std::map<handle_t, handle_t> associations;
     periodicBundles(markerPoints* inlet, markerPoints* outlet,bool orientation);
     void connect();
 };

@@ -691,6 +691,7 @@ void nodeGenerator::init_surface(unsigned int size, double range) {
  */
 void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  double marker_range) {
     double range = kernel_id_to_lattice_search(type);
+    bool periodic_id = false;
     // correct the range to
     if(!read_data_from_file()) {
         // create the drawing canvas
@@ -721,11 +722,17 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
         // check valid
         if((holder[0] >= 0) && (holder[2] >= 0)) {
             check_nodes_periodic(type,holder);
+            periodic_id = true;
         }
         // remove nodes
         remove_unwanted_nodes(&handle_counter);
+        // neighborhood
         determine_neighbors();
         fill_neighborhood_holes();
+        // modify for periodic
+        // todo here
+        // create associations between inlet and outlet
+        // rewrite the connections
         write_data_to_file(save);
     }
 }
