@@ -375,3 +375,16 @@ TEST(FunctionalTest, set_to_index) {
     test = {3,0};
     EXPECT_EQ(index_of_velocity_set(test),-1);
 }
+
+/**
+ * Tests an i swap expression.
+ * @test
+ */
+TEST(FunctionalTest, little_things) {
+    int i = 0;
+    int k = (i+1)%2;
+    EXPECT_EQ(k,1);
+    i = 1;
+    k = (i+1)%2;
+    EXPECT_EQ(k,0);
+}

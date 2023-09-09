@@ -601,13 +601,13 @@ void nodeGenerator::connect_periodic_boundary() {
         handle_t inlet_location = ass.first;
         handle_t outlet_location = ass.second;
         // makers
-        point_t inlet_marker = *periodic_marker[0]->marker_points[inlet_location];
-        point_t outlet_marker = *periodic_marker[1]->marker_points[outlet_location];
+        point_t markers_relevant[2] = {*periodic_marker[0]->marker_points[inlet_location],
+                                       *periodic_marker[1]->marker_points[outlet_location]};
         // find the nodes
         std::vector<handle_t> affected_inlet
-            = rpkh.ranging_key_translation(inlet_marker,0.9);
+            = rpkh.ranging_key_translation(markers_relevant[0],0.9);
         std::vector<handle_t> affected_outlet
-            = rpkh.ranging_key_translation(outlet_marker,0.9);
+            = rpkh.ranging_key_translation(markers_relevant[1],0.9);
         if((affected_inlet.size() != 1) || (affected_outlet.size() != 1)){
             std::cerr << "Bad inlet/outlet" << std::endl;
         }
@@ -616,31 +616,48 @@ void nodeGenerator::connect_periodic_boundary() {
                                                 node_infos[affected_outlet[0]-1]};
         // for those two resolve the neighborhood list !
         // todo this feels and looks like italian pasta
-        // get the local ones
-        auto let_node = inlet_outlet_nodes[0];
-        auto reference_vector = periodic_reference[0];
-        // find the ids of the channels
-        int channel_id = index_of_velocity_set(reference_vector) - 1;
-        // write the relvant node
-        let_node->links[channel_id].channel = channel_id + 1;
-        let_node->links[channel_id].handle = affected_outlet[0]-1;
-        // resolve inlet corners are possible no boundary there
-        vector_t next = {reference_vector.y(),reference_vector.x()};
-        vector_t velocity_channel = reference_vector + next;
-        channel_id = index_of_velocity_set(reference_vector) - 1;
-        // find node handle
-        point_t position_partner = outlet_marker + next;
-        std::vector<handle_t> search = rpkh.ranging_key_translation(position_partner, 0.9);
-        // set
-        if(search.size() == 1) {
-            // set on local
-            let_node->links[channel_id].channel = channel_id + 1;
-            let_node->links[channel_id].handle = search[0] -1;
+        for(int i = 0; i < 2; ++i) {
+            // tested with the little_things suit
+            int other = (i+1)%2;
+            // init parameters
+            auto self = inlet_outlet_nodes[i];
+            auto partners_point = markers_relevant[other];
+            vector_t set_vector = periodic_reference[i];
+            // swap x and y
+            vector_t manipulator = {set_vector.y(),set_vector.x()};
+            for (int j = 0; j < 3; ++j) {
+                // manipulate partner and set vector
+                // we need a combined manipulator 0 -> 0, 1 -> 1, 2 -> -1
+                // i know this is dumb...
+                int first_manipulator = 0;
+                if(j > 0) {
+                    first_manipulator = 1;
+                }
+                int second_manipulator = 1;
+                if(j == 2) {
+                    second_manipulator = -1;
+                }
+                // calculate the velocity set vector
+                set_vector += first_manipulator*second_manipulator*manipulator;
+                // calculate the position of the partner
+                partners_point += first_manipulator*second_manipulator*manipulator;
+                // set the relevant parameters in the link fields
+                set_periodic_boundary(self,&partners_point,&set_vector);
+            }
         }
+    }
+}
 
-        // the first reference vector is the outgoing one for inlet
-
-        // second reference vector is the outgoing one for the outlet
+void nodeGenerator::set_periodic_boundary(nodePoint_t* self,
+                                          point_t* partner_position,
+                                          vector_t* set) {
+    // not sure what i need here still will program abstract for now
+    // find the handle of the partner
+    std::vector<handle_t> search = rpkh.ranging_key_translation(*partner_position,0.9);
+    int channel_id = index_of_velocity_set(*set) - 1;
+    if(search.size() == 1) {
+        self->links[channel_id].channel = channel_id +1;
+        self->links[channel_id].handle = search[0] -1;
     }
 }
 
