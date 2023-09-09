@@ -609,8 +609,8 @@ void nodeGenerator::connect_periodic_boundary() {
             std::cerr << "Bad inlet/outlet" << std::endl;
         }
         // take the first two
-        auto inlet_node = node_infos[affected_inlet[0]];
-        auto outlet_node = node_infos[affected_outlet[0]];
+        auto inlet_node = node_infos[affected_inlet[0]-1];
+        auto outlet_node = node_infos[affected_outlet[0]-1];
         // for those two resolve the neighborhood list !
 
     }

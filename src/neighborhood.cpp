@@ -89,6 +89,7 @@ void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
 
 /**
  * Calculates the z-order of the position of the neighbours and looks for them in the hash table.
+ * @todo added periodic connect to the table !! doenst really work right now
  * @param nodes
  */
 void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
