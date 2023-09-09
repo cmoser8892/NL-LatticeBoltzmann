@@ -343,5 +343,14 @@ bool check_plus_minus_90(vector_t * to_be_checked, vector_t* reference) {
     return returns;
 }
 
+vector_t vector_to_cardinal(vector_t ref) {
+    double angles[4] = {};
+    for(int i = 0; i< cardinal_directions.size(); ++i) {
+        vector_t cardinal = cardinal_directions.col(i);
+        angles[i] = calculate_angle(&cardinal,&ref);
+    }
+    // find the smallest position
+
+}
 
 
