@@ -367,4 +367,23 @@ vector_t vector_to_cardinal(vector_t ref) {
     return vector_t(cardinal_directions.col(min_index));
 }
 
+/**
+ * Returns the index in th velocity set if the vector is in the velocity set.
+ * @param set
+ * @return -1 if not in the set
+ */
+int index_of_velocity_set(vector_t set) {
+    int returns = -1;
+    int size = int(velocity_set.cols());
+    for(int i = 0; i< size;++i) {
+        // compare if match return
+        vector_t vs = velocity_set.col(i);
+        if(compare_two_points(&vs,&set)) {
+            returns = i;
+            break;
+        }
+    }
+    return returns;
+}
+
 

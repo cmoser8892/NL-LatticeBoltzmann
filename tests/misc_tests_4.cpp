@@ -334,7 +334,7 @@ TEST(FunctionalTest, ninty_angle_off) {
 }
 
 /**
- * Recenters a reference vector to a cardinal vector.
+ * Tests the recenter of a reference vector to a cardinal vector.
  * @test
  */
 TEST(FunctionalTest, min_cardinal) {
@@ -343,4 +343,35 @@ TEST(FunctionalTest, min_cardinal) {
     vector_t test = vector_to_cardinal(ref);
     // vectors and points are fundamentally the same object
     EXPECT_TRUE(compare_two_points(&expected,&test));
+}
+
+/**
+ * Tests the vector to index in the velocity set function.
+ * @test
+ */
+TEST(FunctionalTest, set_to_index) {
+    vector_t test = {0,0};
+    vector_t compare = {0,0};
+    // tests good
+    test = {0,0};
+    EXPECT_EQ(index_of_velocity_set(test),0);
+    test = {1,0};
+    EXPECT_EQ(index_of_velocity_set(test),1);
+    test = {0,1};
+    EXPECT_EQ(index_of_velocity_set(test),2);
+    test = {-1,0};
+    EXPECT_EQ(index_of_velocity_set(test),3);
+    test = {0,-1};
+    EXPECT_EQ(index_of_velocity_set(test),4);
+    test = {1,1};
+    EXPECT_EQ(index_of_velocity_set(test),5);
+    test = {-1,1};
+    EXPECT_EQ(index_of_velocity_set(test),6);
+    test = {-1,-1};
+    EXPECT_EQ(index_of_velocity_set(test),7);
+    test = {1,-1};
+    EXPECT_EQ(index_of_velocity_set(test),8);
+    // bad
+    test = {3,0};
+    EXPECT_EQ(index_of_velocity_set(test),-1);
 }

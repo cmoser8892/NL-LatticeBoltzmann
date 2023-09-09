@@ -17,6 +17,7 @@ bool compare_two_points(point_t* p1, point_t* p2 );
 std::vector<std::string> split_string (std::string s, std::string delimiter);
 bool check_plus_minus_90(vector_t * to_be_checked, vector_t* reference);
 vector_t vector_to_cardinal(vector_t reference);
+int index_of_velocity_set(vector_t set);
 // bit interleaving
 uint64_t bit_interleaving(uint32_t x, uint32_t y);
 uint64_t bit_interleaving_2d(uint32_t, uint32_t);

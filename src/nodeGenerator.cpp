@@ -359,6 +359,9 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
         }
         // set the direction of the reference
         periodic_reference[run_variable] = -1 * add_up.normalized();
+        // recenter
+        periodic_reference[run_variable] = vector_to_cardinal(periodic_reference[run_variable]);
+        // increment
         ++run_variable;
     }
     // remove excessive ibm nodes
