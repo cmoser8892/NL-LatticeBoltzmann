@@ -332,3 +332,15 @@ TEST(FunctionalTest, ninty_angle_off) {
     test = {-500000,0};
     EXPECT_TRUE(check_plus_minus_90(&test,&ref));
 }
+
+/**
+ * Recenters a reference vector to a cardinal vector.
+ * @test
+ */
+TEST(FunctionalTest, min_cardinal) {
+    vector_t ref = {0,1.001};
+    vector_t expected = {0,1};
+    vector_t test = vector_to_cardinal(ref);
+    // vectors and points are fundamentally the same object
+    EXPECT_TRUE(compare_two_points(&expected,&test));
+}
