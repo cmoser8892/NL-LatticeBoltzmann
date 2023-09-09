@@ -39,6 +39,9 @@ class nodeGenerator {
     long size_canvas = 0;
     // markers for periodics
     markerPoints* periodic_marker[2] = {};
+    vector_t periodic_reference[2] = {};
+    // node search engine
+    rangingPointKeyHash rpkh;
     //
     void write_data_to_file(bool write);
     bool read_data_from_file();
@@ -47,6 +50,7 @@ class nodeGenerator {
     void linear_generation();
     bool check_other_boundary_hit(boundaryPoint_t* p, point_t &check_point);
     void check_nodes_inside();
+    void fill_search();
     void check_nodes_ibm(double range);
     void check_nodes_periodic(kernelType_t t,long* a);
     void remove_unwanted_nodes(handle_t* current);
@@ -54,6 +58,7 @@ class nodeGenerator {
     void reduce_boundary_neighborhood();
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
     void fill_neighborhood_holes();
+    void connect_periodic_boundary();
   public:
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
     std::vector<bool> to_be_removed; /**< Master control remove the node or not */

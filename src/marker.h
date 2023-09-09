@@ -32,7 +32,7 @@ class periodicBundles {
     bool orientation = false;
   public:
     std::map<handle_t, handle_t> associations;
-    periodicBundles(markerPoints* inlet, markerPoints* outlet,bool orientation);
+    periodicBundles(markerPoints* inlet, markerPoints* outlet,bool orientation = false);
     void connect();
 };
 

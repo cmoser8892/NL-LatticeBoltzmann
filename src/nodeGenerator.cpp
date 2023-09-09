@@ -270,6 +270,7 @@ void nodeGenerator::board_creation(unsigned int size) {
         // add/setup the to be removed control
         to_be_removed.push_back(true);
     }
+    fill_search();
 }
 
 /**
@@ -293,13 +294,6 @@ void nodeGenerator::check_nodes_inside() {
  * @param range
  */
 void nodeGenerator::check_nodes_ibm(double range) {
-    // go over the markers and perform a range check
-    rangingPointKeyHash rpkh;
-    handle_t current = 1;
-    for(auto node : node_infos) {
-        rpkh.fill_key(current,node->position);
-        ++current;
-    }
     // look through the markers and
     for(auto mark : markers->marker_points) {
         std::vector<handle_t> affected = rpkh.ranging_key_translation(*mark,range);
@@ -322,6 +316,17 @@ void nodeGenerator::check_nodes_ibm(double range) {
 }
 
 /**
+ * Fills the range point key hash NL search.
+ */
+void nodeGenerator::fill_search() {
+    handle_t current = 1;
+    for(auto node : node_infos) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+}
+
+/**
  * Sets up the nodes for periodic boundaries.
  * @param t
  * @param a
@@ -336,15 +341,7 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     }
     // first pass remove the unwanted node
     double range = kernel_id_to_lattice_search(KERNEL_C);
-    // put everything in a key hash table
-    rangingPointKeyHash rpkh;
-    handle_t current = 1;
-    for(auto node : node_infos) {
-        rpkh.fill_key(current,node->position);
-        ++current;
-    }
     // determine fluid direction from the middle nodes
-    vector_t reference[2] = {};
     int run_variable = 0; // r
     for(auto pm : periodic_marker) {
         // find the middle marker
@@ -361,7 +358,7 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
             add_up += point_t(current_node->position) - midpoint;
         }
         // set the direction of the reference
-        reference[run_variable] = -1 * add_up.normalized();
+        periodic_reference[run_variable] = -1 * add_up.normalized();
         ++run_variable;
     }
     // remove excessive ibm nodes
@@ -379,7 +376,7 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
                 // make a vector to check
                 vector_t checker = point_t(current_node->position) - *m;
                 // reference goes out so if the vector from the position out +-90degrees its out
-                if(check_plus_minus_90(&checker,&reference[run_variable])) {
+                if(check_plus_minus_90(&checker,&periodic_reference[run_variable])) {
                     // flag to be deleted
                     to_be_removed[handle] = true;
                 }
@@ -555,7 +552,7 @@ void nodeGenerator::check_and_set_reduced_neighborhood(handle_t array_position, 
 
 /**
  * Approximates the outer boundary with a bb boundary.
- * @todo modify to  not work with periodic nodes
+ * @note makes sure every nodes has 8 links
  */
 void nodeGenerator::fill_neighborhood_holes() {
     int counter = 0;
@@ -588,6 +585,34 @@ void nodeGenerator::fill_neighborhood_holes() {
                 ++link_channel;
             }
         }
+    }
+}
+
+
+void nodeGenerator::connect_periodic_boundary() {
+    // it is important to keep this distinction! to be able to resolve it with the reference!
+    periodicBundles bundle(periodic_marker[0],periodic_marker[1]);
+    bundle.connect();
+    for( auto ass : bundle.associations) {
+        // resolve the association -> find both nodes
+        handle_t inlet_location = ass.first;
+        handle_t outlet_location = ass.second;
+        // makers
+        point_t inlet_marker = *periodic_marker[0]->marker_points[inlet_location];
+        point_t outlet_marker = *periodic_marker[1]->marker_points[outlet_location];
+        // find the nodes
+        std::vector<handle_t> affected_inlet
+            = rpkh.ranging_key_translation(inlet_marker,0.9);
+        std::vector<handle_t> affected_outlet
+            = rpkh.ranging_key_translation(outlet_marker,0.9);
+        if((affected_inlet.size() != 1) || (affected_outlet.size() != 1)){
+            std::cerr << "Bad inlet/outlet" << std::endl;
+        }
+        // take the first two
+        auto inlet_node = node_infos[affected_inlet[0]];
+        auto outlet_node = node_infos[affected_outlet[0]];
+        // for those two resolve the neighborhood list !
+
     }
 }
 
@@ -730,9 +755,11 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
         determine_neighbors();
         fill_neighborhood_holes();
         // modify for periodic
-        // todo here
-        // create associations between inlet and outlet
-        // rewrite the connections
+        if(periodic_id) {
+            // create associations between inlet and outlet
+            // rewrite the connections
+            connect_periodic_boundary();
+        }
         write_data_to_file(save);
     }
 }
