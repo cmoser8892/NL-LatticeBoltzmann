@@ -593,6 +593,7 @@ void nodeGenerator::connect_periodic_boundary() {
     // it is important to keep this distinction! to be able to resolve it with the reference!
     periodicBundles bundle(periodic_marker[0],periodic_marker[1]);
     bundle.connect();
+    // todo the last two are a bit special lol
     for( auto ass : bundle.associations) {
         // resolve the association -> find both nodes
         handle_t inlet_location = ass.first;

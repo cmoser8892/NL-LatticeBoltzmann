@@ -89,7 +89,6 @@ void neighbourhood::periodic_coordinate_reshuffle(coordinate_t* coordinate) {
 
 /**
  * Calculates the z-order of the position of the neighbours and looks for them in the hash table.
- * @todo added periodic connect to the table !! doenst really work right now
  * @param nodes
  */
 void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
@@ -118,13 +117,14 @@ void neighbourhood::determine_neighbors(std::vector<nodePoint_t *> &nodes) {
                if (compare_two_points(&current, &temp)) {
                    // always include all neighbours if we are a wet node
                    bool add_me = false;
-                   if (node->type == WET) {
+                   if ((node->type == WET) || (node->type == PERIODIC_CONNECT)) {
                        add_me = true;
                    }
                    // if we are a dry node only include nodes that are wet
                    else if (node->type == DRY) {
                        // add if a wet node
-                       if (nodes.at(array_position)->type == WET) {
+                       if ((nodes[array_position]->type == WET) ||
+                           (nodes[array_position]->type == PERIODIC_CONNECT)) {
                            add_me = true;
                        }
                    }
