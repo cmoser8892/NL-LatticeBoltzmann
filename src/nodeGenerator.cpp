@@ -615,15 +615,29 @@ void nodeGenerator::connect_periodic_boundary() {
         nodePoint_t  * inlet_outlet_nodes[2] = {node_infos[affected_inlet[0]-1],
                                                 node_infos[affected_outlet[0]-1]};
         // for those two resolve the neighborhood list !
-        for(int i = 0; i < 2; ++i) {
-            // get the local ones
-            auto let_node = inlet_outlet_nodes[i];
-            auto reference_vector = periodic_reference[i];
-            // find the ids of the channels
-
-            // write the relvant node
-        }
+        // todo this feels and looks like italian pasta
+        // get the local ones
+        auto let_node = inlet_outlet_nodes[0];
+        auto reference_vector = periodic_reference[0];
+        // find the ids of the channels
+        int channel_id = index_of_velocity_set(reference_vector) - 1;
+        // write the relvant node
+        let_node->links[channel_id].channel = channel_id + 1;
+        let_node->links[channel_id].handle = affected_outlet[0]-1;
         // resolve inlet corners are possible no boundary there
+        vector_t next = {reference_vector.y(),reference_vector.x()};
+        vector_t velocity_channel = reference_vector + next;
+        channel_id = index_of_velocity_set(reference_vector) - 1;
+        // find node handle
+        point_t position_partner = outlet_marker + next;
+        std::vector<handle_t> search = rpkh.ranging_key_translation(position_partner, 0.9);
+        // set
+        if(search.size() == 1) {
+            // set on local
+            let_node->links[channel_id].channel = channel_id + 1;
+            let_node->links[channel_id].handle = search[0] -1;
+        }
+
         // the first reference vector is the outgoing one for inlet
 
         // second reference vector is the outgoing one for the outlet
