@@ -593,7 +593,6 @@ void nodeGenerator::connect_periodic_boundary() {
     // it is important to keep this distinction! to be able to resolve it with the reference!
     periodicBundles bundle(periodic_marker[0],periodic_marker[1]);
     bundle.connect();
-    // todo the last two are a bit special lol
     for( auto ass : bundle.associations) {
         // resolve the association -> find both nodes
         handle_t inlet_location = ass.first;
@@ -610,10 +609,21 @@ void nodeGenerator::connect_periodic_boundary() {
             std::cerr << "Bad inlet/outlet" << std::endl;
         }
         // take the first two
-        auto inlet_node = node_infos[affected_inlet[0]-1];
-        auto outlet_node = node_infos[affected_outlet[0]-1];
+        nodePoint_t  * inlet_outlet_nodes[2] = {node_infos[affected_inlet[0]-1],
+                                                node_infos[affected_outlet[0]-1]};
         // for those two resolve the neighborhood list !
+        for(int i = 0; i < 2; ++i) {
+            // get the local ones
+            auto let_node = inlet_outlet_nodes[i];
+            auto reference_vector = periodic_reference[i];
+            // find the ids of the channels
 
+            // write the relvant node
+        }
+        // resolve inlet corners are possible no boundary there
+        // the first reference vector is the outgoing one for inlet
+
+        // second reference vector is the outgoing one for the outlet
     }
 }
 
