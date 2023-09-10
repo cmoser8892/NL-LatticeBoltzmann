@@ -46,7 +46,7 @@ TEST(IbmTest, init_ibm) {
     sg.surface_mass_center();
     // generator
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,KERNEL_A,0.75);
     EXPECT_EQ(ng.node_infos.size(),81);
     // force
     point_t dk = {0,0};
@@ -107,7 +107,7 @@ TEST(IbmTest, nodes_placement_links) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,KERNEL_A,0.75);
     simulation_parameters params;
     params.ibm_range = ibm_distance;
     point_t dk = {0,0};
@@ -157,12 +157,12 @@ TEST(IbmTest, nodes_placement_links) {
     EXPECT_EQ(link_sizes(0),0);
     EXPECT_EQ(link_sizes(1),0);
     EXPECT_EQ(link_sizes(2),0);
-    EXPECT_EQ(link_sizes(3),4);
+    EXPECT_EQ(link_sizes(3),0);
     EXPECT_EQ(link_sizes(4),0);
-    EXPECT_EQ(link_sizes(5),4*9);
+    EXPECT_EQ(link_sizes(5),0);
     EXPECT_EQ(link_sizes(6),0);
     EXPECT_EQ(link_sizes(7),0);
-    EXPECT_EQ(link_sizes(8),ng.node_infos.size()-40);
+    EXPECT_EQ(link_sizes(8),ng.node_infos.size());
 }
 
 /**
@@ -202,7 +202,7 @@ TEST(IbmTest, marker_movement_around) {
     sg.surface_mass_center();
     double ibm_distance = kernel_id_to_lattice_search(kernel);
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,kernel,0.75);
     simulation_parameters params;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
     params.kernel_in_use = kernel;
@@ -276,7 +276,7 @@ TEST(IbmTest, marker_movement_individual_set) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,KERNEL_A,0.75);
     // ng.visualize_2D_nodes();
     simulation_parameters params;
     params.ibm_range = ibm_distance;
@@ -517,8 +517,7 @@ TEST(IbmTest, right_amount_kernel_nodes_A) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,kernel,0.75);
     //side lenght in nodes should be 7x7 with ibm nodes
     EXPECT_EQ( ng.node_infos.size(),121);
     int ibm = 0;
@@ -577,7 +576,7 @@ TEST(IbmTest, right_amount_kernel_nodes_B) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,kernel,0.75);
     EXPECT_EQ( ng.node_infos.size(),225-corrector);
     int ibm = 0;
     int regular = 0;
@@ -634,8 +633,7 @@ TEST(IbmTest, right_amount_kernel_nodes_C) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,kernel,0.75);
     EXPECT_EQ( ng.node_infos.size(),361-corrector);
     int ibm = 0;
     int regular = 0;
@@ -695,7 +693,7 @@ TEST(IbmTest,rho_init) {
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
     double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,kernel,0.75);
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
@@ -752,8 +750,7 @@ TEST(IbmTest,velocity_interpolation) {
     sg.add_surface(input);
     sg.surface_mass_center();
     nodeGenerator ng(&sg);
-    double ibm_distance = kernel_id_to_lattice_search(kernel);
-    ng.init_surface(canvas_size,ibm_distance);
+    ng.init_surface_return(canvas_size,kernel,0.75);
     if(0) {
         ng.visualize_2D_nodes();
         ng.visualize_2D_nodes_labels(NO_BOUNDARY);
@@ -779,6 +776,7 @@ TEST(IbmTest,velocity_interpolation) {
     }
     // set to a value and look if it makes sense
     // put the veloctiy in the markers
+    double ibm_distance = kernel_id_to_lattice_search(kernel);
     std::vector<handle_t> relevant = rpkh.ranging_key_translation(starter,ibm_distance);
     for(auto h : relevant) {
         handle_t pos = h - 1;
