@@ -342,7 +342,6 @@ void ibmSimulation::init() {
     }
     // set up sim parameters
     parameters.mean_marker_distance = original_markers->return_marker_distance();
-
 }
 
 /**
