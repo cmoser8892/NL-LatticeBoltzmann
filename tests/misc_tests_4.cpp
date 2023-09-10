@@ -207,7 +207,7 @@ TEST(FunctionalTest, tube_no_markers) {
     // setup the node generator
     nodeGenerator ng(&lines);
     ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
-    ng.visualize_2D_nodes();
+    // ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),150*63);
     //
     long counter_periodic = 0;
@@ -426,7 +426,7 @@ TEST(FunctionalTest, inlet_to_outlet_test) {
     // setup the node generator
     nodeGenerator ng(&lines);
     ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
-    ng.visualize_2D_nodes();
+    // ng.visualize_2D_nodes();
     // check creation
     EXPECT_EQ(ng.node_infos.size(),150*63);
     // create the marker points

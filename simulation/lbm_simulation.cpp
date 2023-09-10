@@ -310,7 +310,6 @@ void ibmSimulation::init() {
         nodes.push_back(n);
     }
     // setup the links
-    std::cout << node_generator->node_infos.size() << std::endl;
     size_t total_node_info_size = node_generator->node_infos.size();
     for(int i = 0; i < total_node_info_size; ++i) {
         // get them both in here

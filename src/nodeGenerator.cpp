@@ -606,7 +606,6 @@ void nodeGenerator::connect_periodic_boundary() {
         // makers
         point_t markers_relevant[2] = {*periodic_marker[0]->marker_points[inlet_location],
                                        *periodic_marker[1]->marker_points[outlet_location]};
-        std::cout << markers_relevant[0] << std::endl << markers_relevant[1] << std::endl;
         // find the nodes
         std::vector<handle_t> affected_inlet
             = rpkh.ranging_key_translation(markers_relevant[0],0.9);
@@ -618,7 +617,6 @@ void nodeGenerator::connect_periodic_boundary() {
         // take the first two
         nodePoint_t  * inlet_outlet_nodes[2] = {node_infos[affected_inlet[0]-1],
                                                 node_infos[affected_outlet[0]-1]};
-        std::cout << inlet_outlet_nodes[0]->position << std::endl << inlet_outlet_nodes[1]->position << std::endl << std::endl;
         // for those two resolve the neighborhood list !
         // todo this feels and looks like italian pasta
         for(int i = 0; i < 2; ++i) {
