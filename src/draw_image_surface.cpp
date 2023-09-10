@@ -12,6 +12,7 @@
      s.point = previous;
      s.direction = direction.normalized();
      s.max_t = direction.norm();
+     s.type = IBM;
      surface_storage.add_surface(s);
      // printer
      if(0) {
