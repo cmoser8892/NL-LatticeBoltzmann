@@ -596,6 +596,9 @@ void nodeGenerator::connect_periodic_boundary() {
     // it is important to keep this distinction! to be able to resolve it with the reference!
     periodicBundles bundle(periodic_marker[0],periodic_marker[1]);
     bundle.connect();
+    // rebuild rpkh
+    rpkh.clear();
+    fill_search();
     for( auto ass : bundle.associations) {
         // resolve the association -> find both nodes
         handle_t inlet_location = ass.first;
@@ -640,11 +643,11 @@ void nodeGenerator::connect_periodic_boundary() {
                     second_manipulator = -1;
                 }
                 // calculate the velocity set vector
-                set_vector += first_manipulator*second_manipulator*manipulator;
+                vector_t setter_vector = set_vector + first_manipulator*second_manipulator*manipulator;
                 // calculate the position of the partner
-                partners_point += first_manipulator*second_manipulator*manipulator;
+                point_t partners_point_position = partners_point + first_manipulator*second_manipulator*manipulator;
                 // set the relevant parameters in the link fields
-                set_periodic_boundary(self,&partners_point,&set_vector);
+                set_periodic_boundary(self,&partners_point_position,&setter_vector);
             }
         }
     }
@@ -655,11 +658,12 @@ void nodeGenerator::set_periodic_boundary(nodePoint_t* self,
                                           vector_t* set) {
     // find the handle of the partner
     std::vector<handle_t> search = rpkh.ranging_key_translation(*partner_position,0.9);
-    int channel_id = index_of_velocity_set(*set) - 1;
+    int channel_id = index_of_velocity_set(*set);
     // if valid 
     if(search.size() == 1) {
-        self->links[channel_id].channel = channel_id +1;
-        self->links[channel_id].handle = search[0] -1;
+        handle_t valid_handle = search[0];
+        self->links[channel_id-1].channel = channel_id;
+        self->links[channel_id-1].handle = valid_handle;
     }
 }
 

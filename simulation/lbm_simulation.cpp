@@ -310,7 +310,9 @@ void ibmSimulation::init() {
         nodes.push_back(n);
     }
     // setup the links
-    for(int i = 0; i < node_generator->node_infos.size(); ++i) {
+    std::cout << node_generator->node_infos.size() << std::endl;
+    size_t total_node_info_size = node_generator->node_infos.size();
+    for(int i = 0; i < total_node_info_size; ++i) {
         // get them both in here
         auto node_info = node_generator->node_infos[i];
         auto node = nodes[i];
@@ -322,18 +324,10 @@ void ibmSimulation::init() {
             int channel = link.channel;
             handle_t partner_handle = link.handle;
             // actual partner
-            if(channel == j) {
-                long array_position = long(partner_handle) - 1;
-                auto link_p = nodes[array_position]->populations.begin() + channel;
-                node->neighbors.push_back(link_p);
-                ++position;
-            }
-            // set to self
-            else {
-                channel = j;
-                auto link_p = nodes[i]->populations.begin() + channel;
-                node->neighbors.push_back(link_p);
-            }
+            long array_position = long(partner_handle) - 1;
+            auto link_p = nodes[array_position]->populations.begin() + channel;
+            node->neighbors.push_back(link_p);
+            ++position;
         }
     }
     // set up the markers

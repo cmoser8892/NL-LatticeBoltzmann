@@ -464,7 +464,7 @@ TEST(FunctionalTest, inlet_to_outlet_test) {
         std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
         // put into inlet handles vector
         if(temp.size() == 1) {
-            inlet_handles.push_back(temp[0]);
+            outlet_handles.push_back(temp[0]);
         }
         else {
             // trigger error
@@ -479,12 +479,14 @@ TEST(FunctionalTest, inlet_to_outlet_test) {
     for(auto h: inlet_handles) {
         auto current_node = tester.nodes[h-1];
         // set population
-        current_node->populations.col(3) = 3;
+        current_node->populations(3) = 3;
+        current_node->populations(CHANNELS + 3) = 3;
     }
     for(auto h : outlet_handles) {
         auto current_node = tester.nodes[h-1];
         // set population
-        current_node->populations.col(1) = 1;
+        current_node->populations(1) = 1;
+        current_node->populations(CHANNELS + 1) = 1;
     }
     // do some streaming
     tester.test_streaming(0);
