@@ -4,6 +4,7 @@
 valgrind --tool=callgrind --dump-instr=yes (p)
  */
 
+#include "lbm_simulation.h"
 #include "helper_functions.h"
 #include "drawn_image_surface.h"
 #include "nodeGenerator.h"
@@ -51,11 +52,28 @@ int main() {
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);
     ng.write_out_nodes(NO_BOUNDARY, file_write);
-    ng.visualize_2D_nodes();
-    // write out the markers
-    ng.markers->write_out_markers(file_write);
-    std::cout << ng.markers->marker_points.size() << std::endl;
-    lines.write_out_surface();
+    // setup params for sim
+    int steps = 15000;
+    simulation_parameters params;
+    params.relaxation = 0.5;
+    params.ibm_range = kernel_id_to_lattice_search(kernel);
+    params.kernel_in_use = kernel;
+    params.k = 1;
+    vector_t sizes = {canvas_size,canvas_size};
+    ibmSimulation sim(&ng, nullptr,ng.markers,sizes);
+    sim.set_simulation_parameters(params);
+    sim.init();
+    // run
+    for(int i = 0; i <steps; ++i) {
+        if(i % 100 == 0) {
+            std::cout << "Step: " << i << std::endl;
+        }
+        sim.run(i);
+    }
+    //
+    sim.get_data(true);
+    if(ng.straight_surfaces != nullptr)
+        ng.straight_surfaces->write_out_surface();
     // end
     return 0;
 }

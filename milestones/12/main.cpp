@@ -86,4 +86,5 @@ int main(int argc, char *argv[]) {
     if(ng.straight_surfaces != nullptr)
         ng.straight_surfaces->write_out_surface();
     std::cout << marker_check << std::endl;
+    return 0;
 }
