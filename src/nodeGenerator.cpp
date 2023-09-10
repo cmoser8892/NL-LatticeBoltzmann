@@ -603,6 +603,7 @@ void nodeGenerator::connect_periodic_boundary() {
         // makers
         point_t markers_relevant[2] = {*periodic_marker[0]->marker_points[inlet_location],
                                        *periodic_marker[1]->marker_points[outlet_location]};
+        std::cout << markers_relevant[0] << std::endl << markers_relevant[1] << std::endl;
         // find the nodes
         std::vector<handle_t> affected_inlet
             = rpkh.ranging_key_translation(markers_relevant[0],0.9);
@@ -614,6 +615,7 @@ void nodeGenerator::connect_periodic_boundary() {
         // take the first two
         nodePoint_t  * inlet_outlet_nodes[2] = {node_infos[affected_inlet[0]-1],
                                                 node_infos[affected_outlet[0]-1]};
+        std::cout << inlet_outlet_nodes[0]->position << std::endl << inlet_outlet_nodes[1]->position << std::endl << std::endl;
         // for those two resolve the neighborhood list !
         // todo this feels and looks like italian pasta
         for(int i = 0; i < 2; ++i) {
@@ -651,10 +653,10 @@ void nodeGenerator::connect_periodic_boundary() {
 void nodeGenerator::set_periodic_boundary(nodePoint_t* self,
                                           point_t* partner_position,
                                           vector_t* set) {
-    // not sure what i need here still will program abstract for now
     // find the handle of the partner
     std::vector<handle_t> search = rpkh.ranging_key_translation(*partner_position,0.9);
     int channel_id = index_of_velocity_set(*set) - 1;
+    // if valid 
     if(search.size() == 1) {
         self->links[channel_id].channel = channel_id +1;
         self->links[channel_id].handle = search[0] -1;

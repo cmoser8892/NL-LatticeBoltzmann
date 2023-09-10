@@ -55,6 +55,7 @@ class ibmSimulation {
     std::tuple<double,double,double> test_macro(array_t * a);
     void test_propagate_velocity();
     void test_collision(fNode* n, double rho, double ux, double uy);
+    void test_streaming(long current_step);
 };
 
 #endif // NL_LATTICEBOLTZMANN_LBM_SIMULATION_H

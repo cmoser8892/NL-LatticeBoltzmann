@@ -496,3 +496,16 @@ void ibmSimulation::test_propagate_velocity() {
 void ibmSimulation::test_collision(fNode *n, double rho, double ux, double uy) {
     collision(&n->populations,rho,ux,uy);
 }
+
+/**
+ * Test streaming function.
+ */
+void ibmSimulation::test_streaming(long current_step) {
+    // offset control
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    offset_node = (current_step & 0x1) * 9;
+    for(auto n : nodes) {
+        auto population = n->populations;
+        streaming(&population,&n->neighbors);
+    }
+}

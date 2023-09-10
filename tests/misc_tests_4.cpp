@@ -388,3 +388,117 @@ TEST(FunctionalTest, little_things) {
     k = (i+1)%2;
     EXPECT_EQ(k,0);
 }
+
+TEST(FunctionalTest, inlet_to_outlet_test) {
+    // node generator variables
+    long canvas_size = 150;
+    vector_t draw_size = {canvas_size-1,canvas_size-1};
+    double marker_distance = 0.5;
+    bool file_write = true;
+    kernelType_t kernel = KERNEL_C;
+    // introduce a surface
+    straight_t input;
+    straightGenerator lines;
+    // set the input and introduce
+    input.point = {0,27.1};
+    input.direction = {1,0};
+    input.max_t = 149;
+    input.type = IBM;
+    lines.add_surface(input);
+    input.point = {149,82.8};
+    input.direction = {-1,0};
+    input.max_t = 149;
+    input.type = IBM;
+    lines.add_surface(input);
+    // introduce the containing lines will have to be manually found !
+    straight_t inlet;
+    inlet.point = {0,27.1};
+    inlet.direction = {0,1};
+    inlet.max_t = 82.8-27.1;
+    inlet.type = PERIODIC;
+    lines.add_surface(inlet);
+    straight_t outlet;
+    outlet.point = {149,27.1};
+    outlet.direction = {0,1};
+    outlet.max_t = 82.8-27.1;
+    outlet.type = PERIODIC;
+    lines.add_surface(outlet);
+    // setup the node generator
+    nodeGenerator ng(&lines);
+    ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
+    ng.visualize_2D_nodes();
+    // check creation
+    EXPECT_EQ(ng.node_infos.size(),150*63);
+    // create the marker points
+    markerPoints inlet_markers(nullptr,1);
+    inlet_markers.distribute_markers_periodic(&inlet,IBM,KERNEL_C);
+    markerPoints outlet_markers(nullptr,1);
+    outlet_markers.distribute_markers_periodic(&outlet,IBM,KERNEL_C);
+    // setup a sim
+    vector_t sizes = {canvas_size,canvas_size};
+    ibmSimulation tester(&ng, nullptr,ng.markers,sizes);
+    tester.init();
+    // get to the inlet and outlet
+    // create a ranging pkh
+    rangingPointKeyHash rpkh;
+    handle_t current = 1;
+    for(auto node : tester.nodes) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    std::vector<handle_t> inlet_handles = {};
+    for(auto point : inlet_markers.marker_points) {
+        std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
+        // put into inlet handles vector
+        if(temp.size() == 1) {
+            inlet_handles.push_back(temp[0]);
+        }
+        else {
+            // trigger error
+            EXPECT_TRUE(false);
+        }
+    }
+    // italicising pasta again
+    std::vector<handle_t> outlet_handles = {};
+    for(auto point : outlet_markers.marker_points) {
+        std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
+        // put into inlet handles vector
+        if(temp.size() == 1) {
+            inlet_handles.push_back(temp[0]);
+        }
+        else {
+            // trigger error
+            EXPECT_TRUE(false);
+        }
+    }
+    // zero stuff
+    for(auto n : tester.nodes) {
+        n->populations.setZero();
+    }
+    // set values
+    for(auto h: inlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // set population
+        current_node->populations.col(3) = 3;
+    }
+    for(auto h : outlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // set population
+        current_node->populations.col(1) = 1;
+    }
+    // do some streaming
+    tester.test_streaming(0);
+    int population_position = tester.offset_sim;
+    // do the actual testing
+    for(auto h: inlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // check
+        EXPECT_EQ(current_node->populations(population_position + 1),1);
+    }
+    for(auto h: outlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // check
+        EXPECT_EQ(current_node->populations(population_position + 3),3);
+    }
+
+}
