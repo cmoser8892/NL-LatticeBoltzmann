@@ -1,4 +1,4 @@
-# Code for the Masterthesis: Arbitary shapes in Lattice Boltzmann
+# Code to the Masterthesis: Arbitary shapes in Lattice Boltzmann
 
 The main goal is to create a datastructure that enables flexibilty with boundaries in a Lattice Boltzmann Simulation. 
 Neighborhood lists with singular nodes are used instead of the usual grids to enable simulations with just the requiered amount of fluid nodes.
