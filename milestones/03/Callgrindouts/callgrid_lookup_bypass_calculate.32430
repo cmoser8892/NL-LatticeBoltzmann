@@ -10334,7 +10334,7 @@ fn=(1400) straightGenerator::node_inside(nodePoint*)
 0xe440 109 91204
 +4 * 91204
 +4 +3 91204
-cfn=(1402) straightGenerator::calculate_intersections(nodePoint*)
+cfn=(1402) straightGenerator::calculate_number_intersections(nodePoint*)
 calls=91204 0xe1f0 -57 
 * * 1906358696
 +5 +1 91204

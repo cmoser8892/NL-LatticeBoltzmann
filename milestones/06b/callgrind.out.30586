@@ -1554,7 +1554,7 @@ fe=(166)
 +2 * 1
 +2 * 1
 
-fn=(1616) straightGenerator::calculate_intersections(Eigen::Matrix<double, 2, 1, 0, 2, 1>, Eigen::Matrix<double, 2, 1, 0, 2, 1>*)
+fn=(1616) straightGenerator::calculate_number_intersections(Eigen::Matrix<double, 2, 1, 0, 2, 1>, Eigen::Matrix<double, 2, 1, 0, 2, 1>*)
 0x16f60 587 273612
 +4 * 273612
 +2 * 273612

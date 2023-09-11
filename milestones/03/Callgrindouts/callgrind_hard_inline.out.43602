@@ -16881,7 +16881,7 @@ fe=(161)
 +2 * 2
 
 fl=(166) /home/christoph/CLionProjects/NL-LatticeBoltzmann/src/straight.cpp
-fn=(1400) straightGenerator::calculate_intersections(nodePoint*)
+fn=(1400) straightGenerator::calculate_number_intersections(nodePoint*)
 0xe0c0 75 91204
 +4 * 91204
 +2 * 91204

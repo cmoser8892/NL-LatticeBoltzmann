@@ -542,10 +542,36 @@ void straightGenerator::init() {
                      [](straight_t* s){return s != nullptr;});
         // clear temp valid too objects got added to surfaces vector
         temporary.clear();
+        // work with the surfaces for now
     }
     // old legacy method
     // calculate_all_straights();
     // detect_boundary_proximity_main_mass_center();
+}
+
+void straightGenerator::periodic_check_in() {
+    // check if we got a periodic boundary
+    int periodic_surfaces = 0;
+    std::vector<handle_t> positions;
+    handle_t m = 0;
+    for(auto s : surfaces) {
+        if(s->type == PERIODIC) {
+            periodic_surfaces++;
+            positions.push_back(m);
+        }
+        ++m;
+    }
+    // proceed if we found 2
+    if(periodic_surfaces == 2) {
+        // find the interconnections
+        for(auto p : positions) {
+            std::vector<point_t> intersections;
+            straight_t* checked_surface = surfaces[p];
+            handle_t h = 0;
+            // check surface intersection
+
+        }
+    }
 }
 
 /**
@@ -553,7 +579,7 @@ void straightGenerator::init() {
  * @param node_point
  * @return number of intersections
  */
-int straightGenerator::calculate_intersections(const point_t node_point, point_t* individual_mc) {
+int straightGenerator::calculate_number_intersections(const point_t node_point, point_t* individual_mc) {
     // surface based algorithm to calculate intersections
     /*
      * 3 passes have to be made to calculate to calcuate a valid intersection
@@ -641,7 +667,7 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     // calculate the intersections 3 times redundant
     for(int i = 0; i < 3; ++i) {
         individual_mc += mover_distance * (vector_t)movers.col(i);
-        intersections.push_back(calculate_intersections(point->position,&individual_mc));
+        intersections.push_back(calculate_number_intersections(point->position, &individual_mc));
     }
     std::vector<int> intersections_copy = intersections;
     // we can sort and search for unique values i guess
@@ -668,7 +694,7 @@ int straightGenerator::calculate_intersections_redundant(nodePoint_t *point) {
     }
     if(intersections.size() == 3) {
         // we use the original mass center here for our output
-        intersection_count = calculate_intersections(point->position,&mass_center);
+        intersection_count = calculate_number_intersections(point->position, &mass_center);
     }
     return intersection_count;
 }
@@ -695,7 +721,7 @@ bool straightGenerator::calculate_intersections_star_node_point(nodePoint_t *poi
     for(int i = 1; i < combined.cols();++i) {
          point_t current = self + combined.col(i);
         // remember postion and mc are swapped here
-        int counter = calculate_intersections(current,&self_point);
+        int counter = calculate_number_intersections(current, &self_point);
         if(counter != 0) {
             tests.push_back((counter%2) == 0);
         }
@@ -836,6 +862,28 @@ double straightGenerator::calculate_total_surface_length(boundaryType_t type) {
         }
     }
     return total_surface;
+}
+
+bool straightGenerator::calculate_straight_intersection(straight_t *to_be_checked,straight_t* reference, point_t *intersection_point, int* used_vector_length) {
+    bool returns = false;
+    // function to check weather or not the surface intersects with any of the surfaces in storage
+    straight_t first_pass_surface;
+    first_pass_surface.point = to_be_checked->point;
+    first_pass_surface.direction = {to_be_checked->direction.y(), -to_be_checked->direction.x()};
+    double t = calculate_intersection(reference, &first_pass_surface);
+    if((t >= 0) && (t <= reference->max_t)) {
+        // check if direction of the finding is positive in the direction from the to be checked surface
+        straight_t second_pass_surface;
+        second_pass_surface.point = reference->point;
+        second_pass_surface.direction = {reference->direction.y(),-reference->direction.x()};
+        double s = calculate_intersection(to_be_checked,&second_pass_surface);
+        if(s > 0) {
+            *intersection_point = to_be_checked->point + s*to_be_checked->direction;
+            *used_vector_length = int(s);
+            returns = true;
+        }
+    }
+    return returns;
 }
 
 

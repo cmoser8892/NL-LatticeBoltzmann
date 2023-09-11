@@ -396,7 +396,7 @@ TEST(InitTests, board_creation) {
 /**
  * Tests against where one node that is also the mass_center of the straghtGenerator gets lost.
  * @test
- * @see straightGenerator::calculate_intersections()
+ * @see straightGenerator::calculate_number_intersections()
  */
 TEST(InitTests, init_odd_middle) {
     // when initializing with uneven sizes the middle gets lost

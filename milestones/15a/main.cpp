@@ -31,38 +31,34 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("Snake_structure.png");
+    test_image.append("periodic_introduction.png");
     // call the drawer
     surfaceDrawer s(test_image);
-    std::vector<int> sel = {0};
+    std::vector<int> sel = {0,2,4};
     s.run_non_connecting(sel, true);
     // s.close_open_surface(draw_size);
     // add additional inlet + outlet
-    if(1) {
-        straight_t inlet;
-        inlet.type = PERIODIC;
-        inlet.point = {400,465};
-        inlet.direction = {1,0};
-        inlet.max_t = 100;
-        s.surface_storage.add_surface(inlet);
-        straight_t outlet;
-        outlet.type = PERIODIC;
-        outlet.point = {615,650};
-        outlet.direction = {0,1};
-        outlet.max_t = 100;
-        s.surface_storage.add_surface(outlet);
-    }
-    s.surface_storage.periodic_check_in();
+    straight_t inlet;
+    inlet.type = PERIODIC;
+    inlet.point = {400,465};
+    inlet.direction = {1,0};
+    inlet.max_t = 75;
+    s.surface_storage.add_surface(inlet);
+    straight_t outlet;
+    outlet.type = PERIODIC;
+    outlet.point = {615,650};
+    outlet.direction = {0,1};
+    outlet.max_t = 100;
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
-    //ng.init_surface_return(canvas_size,kernel,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);
     ng.write_out_nodes(NO_BOUNDARY, file_write);
     // write out the markers
-    // ng.markers->write_out_markers(file_write);
-    // std::cout << ng.markers->marker_points.size() << std::endl;
+    ng.markers->write_out_markers(file_write);
+    std::cout << ng.markers->marker_points.size() << std::endl;
     s.surface_storage.write_out_surface();
     // end
     return 0;

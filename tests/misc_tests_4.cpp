@@ -502,5 +502,22 @@ TEST(FunctionalTest, inlet_to_outlet_test) {
         // check
         EXPECT_EQ(current_node->populations(population_position + 3),3);
     }
+}
 
+TEST(FunctionalTest, pure_straigth_intersection) {
+    straight_t first;
+    straight_t second;
+    // set points
+    first.point = {0,0};
+    first.direction = {1,1};
+    first.max_t = 2;
+    second.point = {1,0};
+    second.direction = {-1,1};
+    second.max_t = 2;
+    straightGenerator sg;
+    point_t intersection_point = {};
+    int vector_length_used = 0;
+    EXPECT_TRUE(sg.calculate_straight_intersection(&first,&second,&intersection_point, &vector_length_used));
+    EXPECT_NEAR(intersection_point.x(),0.5,1e-10);
+    EXPECT_NEAR(intersection_point.y(),0.5,1e-10);
 }

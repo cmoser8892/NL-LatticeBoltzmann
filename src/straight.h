@@ -27,7 +27,7 @@ class straightGenerator {
     void calculate_mass_center();
     void calculate_keys();
     void calculate_all_straights(); // old simpler method only works for concave surfaces with no bumps or anything
-    int calculate_intersections(point_t node_point, point_t *individual_mc);
+    int calculate_number_intersections(const point_t node_point, point_t *individual_mc);
     int calculate_intersections_redundant(nodePoint_t* point);
     bool calculate_intersections_star_node_point(nodePoint_t* point);
     // creation related methods
@@ -42,6 +42,7 @@ class straightGenerator {
     explicit straightGenerator() = default;
     ~straightGenerator();
     void init();
+    void periodic_check_in();
     bool node_inside_simple(nodePoint_t *point);
     bool node_inside_star(nodePoint_t *point);
     void delete_vector();
@@ -51,6 +52,7 @@ class straightGenerator {
     void surface_mass_center();
     double calculate_total_surface_length();
     double calculate_total_surface_length(boundaryType_t type);
+    bool calculate_straight_intersection(straight_t* to_be_check,straight_t * reference,point_t* intersection_point, int* used_vector_length);
 };
 
 bool straight_better_candidate_test(straight_t* candidate, straight* partner);
