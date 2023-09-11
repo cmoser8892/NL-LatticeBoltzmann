@@ -8,6 +8,13 @@ valgrind --tool=callgrind --dump-instr=yes (p)
 #include "drawn_image_surface.h"
 #include "nodeGenerator.h"
 
+/*
+ * todo implement the working plan:
+ * Working plan here is to place a straight line into the surfaces
+ * and cut every surface following it, they should be in the right order
+ * till the next point is found
+ * need to implement the rhoin+out here to but that should be a nonfactor
+ */
 /**
  * 00 main, testing stuff.
  * @note good rule of thumb is all 4 contours need to be selected
