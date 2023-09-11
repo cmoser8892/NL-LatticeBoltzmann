@@ -37,6 +37,18 @@ int main() {
     std::vector<int> sel = {0,2,4};
     s.run_non_connecting(sel, true);
     // s.close_open_surface(draw_size);
+    // add additional inlet + outlet
+    straight_t inlet;
+    inlet.type = PERIODIC;
+    inlet.point = {400,465};
+    inlet.direction = {1,0};
+    inlet.max_t = 75;
+    s.surface_storage.add_surface(inlet);
+    straight_t outlet;
+    outlet.type = PERIODIC;
+    outlet.point = {615,650};
+    outlet.direction = {0,1};
+    outlet.max_t = 100;
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
     ng.init_surface_return(canvas_size,kernel,marker_distance);
