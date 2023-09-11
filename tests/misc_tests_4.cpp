@@ -504,6 +504,10 @@ TEST(FunctionalTest, inlet_to_outlet_test) {
     }
 }
 
+/**
+ * Tests the straigth intersection function.
+ * @test
+ */
 TEST(FunctionalTest, pure_straigth_intersection) {
     straight_t first;
     straight_t second;

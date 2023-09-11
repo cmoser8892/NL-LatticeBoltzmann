@@ -610,44 +610,6 @@ int straightGenerator::calculate_number_intersections(const point_t node_point, 
     for(auto surface : surfaces) {
         // in the first pass the surface is actually the ray we are using
         // we want the intersection to be between 0 and max value
-        /*
-        straight_t first_pass_surface;
-        first_pass_surface.point = straight.point;
-        first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};
-        double t = calculate_intersection(surface, &first_pass_surface);
-        // 1 pass
-        if((t >= 0) && (t <= surface->max_t)) {
-            // check if direction of the finding is positive in
-            // the direction of the vector outgoing from the center
-            straight_t second_pass_surface;
-            second_pass_surface.point = surface->point;
-            second_pass_surface.direction = {surface->direction.y(),-surface->direction.x()};
-            double s = calculate_intersection(&straight,&second_pass_surface);
-            // 2 pass
-            if(s > 0) {
-                // compare and check if we already got the same point previously
-                // in case we intersect a node point directly ( no double counting )
-                point_t point = straight.point + s*straight.direction;
-                bool add = true;
-                // 3 pass
-                for (auto&  ps : already_found) {
-                    if(ps == point) {
-                        add = false;
-                    }
-                }
-                // push the point into the already found bin
-                already_found.push_back(point);
-                // increase the numer of intersections
-                if(add) {
-                    number_of_intersections++;
-                }
-            }
-            // exception the point is on the surface -> ignore/outside
-            if(s == 0) {
-                return 0;
-            }
-        }
-        */
         point_t intersection_point = {-1,-1};
         double used_vector_length = -2;
         if(calculate_straight_intersection(&straight,surface,&intersection_point,&used_vector_length)) {
@@ -666,7 +628,9 @@ int straightGenerator::calculate_number_intersections(const point_t node_point, 
                 number_of_intersections++;
             }
         }
-        // bad double check
+        // bad double check but it works 100% of the time i tested it lol
+        // todo double check tested to work if problems thou with surface make it proper
+        // this check if the node is perfectly on the surface where it is to be 0
         if(used_vector_length == 0) {
             return 0;
         }
