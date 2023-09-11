@@ -610,6 +610,7 @@ int straightGenerator::calculate_number_intersections(const point_t node_point, 
     for(auto surface : surfaces) {
         // in the first pass the surface is actually the ray we are using
         // we want the intersection to be between 0 and max value
+        /*
         straight_t first_pass_surface;
         first_pass_surface.point = straight.point;
         first_pass_surface.direction = {straight.direction.y(), -straight.direction.x()};
@@ -646,6 +647,30 @@ int straightGenerator::calculate_number_intersections(const point_t node_point, 
                 return 0;
             }
         }
+        */
+        point_t intersection_point = {-1,-1};
+        double used_vector_length = -2;
+        if(calculate_straight_intersection(&straight,surface,&intersection_point,&used_vector_length)) {
+            // compare and check if we already got the same point previously
+            bool add = true;
+            // 3 pass
+            for (auto&  ps : already_found) {
+                if(ps == intersection_point) {
+                    add = false;
+                }
+            }
+            // push the point into the already found bin
+            already_found.push_back(intersection_point);
+            // increase the numer of intersections
+            if(add) {
+                number_of_intersections++;
+            }
+        }
+        // bad double check
+        if(used_vector_length == 0) {
+            return 0;
+        }
+
     }
     return number_of_intersections;
 }
@@ -864,7 +889,17 @@ double straightGenerator::calculate_total_surface_length(boundaryType_t type) {
     return total_surface;
 }
 
-bool straightGenerator::calculate_straight_intersection(straight_t *to_be_checked,straight_t* reference, point_t *intersection_point, int* used_vector_length) {
+/**
+ * Calculates weather or not two straights intersect.
+ * @note Gives the intersection point of the straight as well as the vector length where the intersection is on the checked surface.
+ * @param to_be_checked
+ * @param reference
+ * @param intersection_point
+ * @param used_vector_length
+ * @return
+ */
+bool straightGenerator::calculate_straight_intersection(straight_t *to_be_checked,straight_t* reference,
+                                                        point_t *intersection_point, double* used_vector_length) {
     bool returns = false;
     // function to check weather or not the surface intersects with any of the surfaces in storage
     straight_t first_pass_surface;
@@ -877,9 +912,9 @@ bool straightGenerator::calculate_straight_intersection(straight_t *to_be_checke
         second_pass_surface.point = reference->point;
         second_pass_surface.direction = {reference->direction.y(),-reference->direction.x()};
         double s = calculate_intersection(to_be_checked,&second_pass_surface);
-        if(s > 0) {
+        if(s >= 0) {
             *intersection_point = to_be_checked->point + s*to_be_checked->direction;
-            *used_vector_length = int(s);
+            *used_vector_length = s;
             returns = true;
         }
     }

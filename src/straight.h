@@ -52,7 +52,7 @@ class straightGenerator {
     void surface_mass_center();
     double calculate_total_surface_length();
     double calculate_total_surface_length(boundaryType_t type);
-    bool calculate_straight_intersection(straight_t* to_be_check,straight_t * reference,point_t* intersection_point, int* used_vector_length);
+    bool calculate_straight_intersection(straight_t* to_be_check,straight_t * reference,point_t* intersection_point, double* used_vector_length);
 };
 
 bool straight_better_candidate_test(straight_t* candidate, straight* partner);

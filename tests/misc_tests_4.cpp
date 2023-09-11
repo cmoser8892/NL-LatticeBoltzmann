@@ -509,7 +509,7 @@ TEST(FunctionalTest, pure_straigth_intersection) {
     straight_t second;
     straightGenerator sg;
     point_t intersection_point = {};
-    int vector_length_used = 0;
+    double vector_length_used = 0;
     // set points
     first.point = {0,0};
     first.direction = {1,1};
