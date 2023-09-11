@@ -20,7 +20,7 @@
 #include "functions.h"
 #include "forces.h"
 /**
- * Currently worked on simulation class that supports forcing and is optimized for that.
+ * Force based simulation class that supports forcing and is optimized for that.
  */
 class forcedSimulation {
   private:
