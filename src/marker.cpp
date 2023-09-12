@@ -31,6 +31,7 @@ markerPoints::~markerPoints() {
 
 /**
  * Marker distributor, main goal is too evenly distribute the markers on the surface.
+ * @bug marker dispersion seems uneven at times, investigate
  * @note This method is purely for ibm markers.
  * @attention surface is blind of its own inner structure
  */
