@@ -8,7 +8,7 @@ It applies OpenCV and other more manual methods to get from a simple drawing (ca
 Supported are bounce back boundaries and IBM boundaries.
 
 | Folder: | Description: |
-|----------|----------|
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | documentation |  The generation of the Doxygen documentation is described here. After being generated the files for the documentation are also located in this folder. |
 | milestones | The individual simulations shown in chapter \ref{ch:exp}, going from sliding lids over to variable structures simulated are located.  Sub variants are denoted with letters, for example 11a, which is a variant of milestone 11. For individual problems tackled it is best to check the Doxygen documentation. |
 | simulation |  This folder contains the continuous development of the simulation class. To ensure backwards compatibility once a specific simulation would have been to dissimilar to previous work in the milestones a new class was created. This was also done to reduce the bloat in this class as the in initial idea rarely was the best and was incremented upon. They represent the development form a more basic simulation with a two-step algorithm to the optimized one-step algorithm. Next forces were introduced and a new class was created. To limit the complexity and just use the best parts, it was once again rewritten into lbm-simulations. |
