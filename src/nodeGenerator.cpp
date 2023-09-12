@@ -330,7 +330,7 @@ void nodeGenerator::fill_search() {
 
 /**
  * Sets up the nodes for periodic boundaries.
- * @bug partially buggy (marked only works in the snake use case...)
+ * @bug partially buggy (marked, only works in the snake use case...)
  * @param t
  * @param a
  */
@@ -610,7 +610,10 @@ void nodeGenerator::fill_neighborhood_holes() {
     }
 }
 
-
+/**
+ * Connects nodes as described by the bundle.
+ * @bug does not work on offset boundaries
+ */
 void nodeGenerator::connect_periodic_boundary() {
     // it is important to keep this distinction! to be able to resolve it with the reference!
     periodicBundles bundle(periodic_marker[0],periodic_marker[1]);
@@ -644,9 +647,11 @@ void nodeGenerator::connect_periodic_boundary() {
             // init parameters
             auto self = inlet_outlet_nodes[i];
             auto partners_point = markers_relevant[other];
-            vector_t set_vector = periodic_reference[i];
+            vector_t self_set_vector = periodic_reference[i];
+            vector_t partner_set_vector = -periodic_reference[other];
             // swap x and y
-            vector_t manipulator = {set_vector.y(),set_vector.x()};
+            vector_t self_manipulator = {self_set_vector.y(),self_set_vector.x()};
+            vector_t partner_manipulator = {partner_set_vector.y(), partner_set_vector.x()};
             for (int j = 0; j < 3; ++j) {
                 // manipulate partner and set vector
                 // we need a combined manipulator 0 -> 0, 1 -> 1, 2 -> -1
@@ -660,11 +665,13 @@ void nodeGenerator::connect_periodic_boundary() {
                     second_manipulator = -1;
                 }
                 // calculate the velocity set vector
-                vector_t setter_vector = set_vector + first_manipulator*second_manipulator*manipulator;
+                vector_t self_setter_vector = self_set_vector + first_manipulator*second_manipulator*self_manipulator;
                 // calculate the position of the partner
-                point_t partners_point_position = partners_point + first_manipulator*second_manipulator*manipulator;
+                point_t partners_point_position = partners_point + first_manipulator*second_manipulator*partner_manipulator;
+                // calculate the velocity set vector of the partner
+                vector_t partner_setter_vector = partner_set_vector - first_manipulator*second_manipulator*partner_manipulator;
                 // set the relevant parameters in the link fields
-                set_periodic_boundary(self,&partners_point_position,&setter_vector);
+                set_periodic_boundary(self,&partners_point_position,&self_setter_vector, &partner_setter_vector);
             }
         }
     }
@@ -672,15 +679,17 @@ void nodeGenerator::connect_periodic_boundary() {
 
 void nodeGenerator::set_periodic_boundary(nodePoint_t* self,
                                           point_t* partner_position,
-                                          vector_t* set) {
+                                          vector_t* self_vector,
+                                          vector_t* partner_vector) {
     // find the handle of the partner
     std::vector<handle_t> search = rpkh.ranging_key_translation(*partner_position,0.9);
-    int channel_id = index_of_velocity_set(*set);
+    int self_channel_id = index_of_velocity_set(*self_vector);
+    int partner_channel_id = index_of_velocity_set(*partner_vector);
     // if valid 
     if(search.size() == 1) {
         handle_t valid_handle = search[0];
-        self->links[channel_id-1].channel = channel_id;
-        self->links[channel_id-1].handle = valid_handle;
+        self->links[self_channel_id-1].channel = partner_channel_id;
+        self->links[self_channel_id-1].handle = valid_handle;
     }
 }
 
@@ -828,7 +837,7 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
         if(periodic_id) {
             // create associations between inlet and outlet
             // rewrite the connections
-            // connect_periodic_boundary();
+            connect_periodic_boundary();
         }
         write_data_to_file(save);
     }

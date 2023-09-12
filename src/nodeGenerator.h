@@ -59,7 +59,8 @@ class nodeGenerator {
     void check_and_set_reduced_neighborhood(handle_t array_position, boundaryType_t b);
     void fill_neighborhood_holes();
     void connect_periodic_boundary();
-    void set_periodic_boundary(nodePoint_t* self, point_t* partner_position, vector_t* set);
+    void set_periodic_boundary(nodePoint_t* self, point_t* partner_position,
+                               vector_t* self_vector, vector_t* partner_vector);
   public:
     std::vector<nodePoint_t*> node_infos; /**<  Node point link */
     std::vector<bool> to_be_removed; /**< Master control remove the node or not */

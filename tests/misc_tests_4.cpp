@@ -559,6 +559,121 @@ TEST(FunctionalTest, same_surface_test) {
     EXPECT_TRUE(!sg.calculate_straight_intersection(&first,&second,&intersection_point, &vector_length_used));
 }
 
+TEST(FunctionalTest, surface_inlet_outlet_stream) {
+    // node generator variables
+    long canvas_size = 200;
+    vector_t draw_size = {canvas_size-1,canvas_size-1};
+    double marker_distance = 0.5;
+    bool file_write = true;
+    kernelType_t kernel = KERNEL_C;
+    // Load the image
+    auto test_image = get_base_path();
+    test_image.append("tests");
+    test_image.append("test_images");
+    test_image.append("periodic_introduction.png");
+    // call the drawer
+    surfaceDrawer s(test_image);
+    std::vector<int> sel = {0};
+    s.run_non_connecting(sel, true);
+    // s.close_open_surface(draw_size);
+    // add additional inlet + outlet
+    straight_t inlet;
+    inlet.type = PERIODIC;
+    inlet.point = {165,160};
+    inlet.direction = {0,1};
+    inlet.max_t = 25;
+    s.surface_storage.add_surface(inlet);
+    straight_t outlet;
+    outlet.type = PERIODIC;
+    outlet.point = {93,115};
+    outlet.direction = {1,0};
+    outlet.max_t = 20;
+    s.surface_storage.add_surface(outlet);
+    s.surface_storage.periodic_check_in();
+    s.surface_storage.surface_mass_center();
+    nodeGenerator ng(&s.surface_storage);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
+    // create the marker points
+    // the last two surfaces are the relvant onesd
+    size_t k = s.surface_storage.surfaces.size();
+    markerPoints inlet_markers(nullptr,1);
+    inlet_markers.distribute_markers_periodic(s.surface_storage.surfaces[k-2],IBM,KERNEL_C);
+    markerPoints outlet_markers(nullptr,1);
+    outlet_markers.distribute_markers_periodic(s.surface_storage.surfaces[k-1],IBM,KERNEL_C);
+    EXPECT_EQ(inlet_markers.marker_points.size(),20);
+    EXPECT_EQ(outlet_markers.marker_points.size(),20);
+    // setup a sim
+    vector_t sizes = {canvas_size,canvas_size};
+    ibmSimulation tester(&ng, nullptr,ng.markers,sizes);
+    tester.init();
+    // get to the inlet and outlet
+    // create a ranging pkh
+    rangingPointKeyHash rpkh;
+    handle_t current = 1;
+    for(auto node : tester.nodes) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    std::vector<handle_t> inlet_handles = {};
+    for(auto point : inlet_markers.marker_points) {
+        std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
+        // put into inlet handles vector
+        if(temp.size() == 1) {
+            inlet_handles.push_back(temp[0]);
+        }
+        else {
+            // trigger error
+            EXPECT_TRUE(false);
+        }
+    }
+    // italicising pasta again
+    std::vector<handle_t> outlet_handles = {};
+    for(auto point : outlet_markers.marker_points) {
+        std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
+        // put into inlet handles vector
+        if(temp.size() == 1) {
+            outlet_handles.push_back(temp[0]);
+        }
+        else {
+            // trigger error
+            EXPECT_TRUE(false);
+        }
+    }
+    // zero stuff
+    for(auto n : tester.nodes) {
+        n->populations.setZero();
+    }
+    // set values
+    EXPECT_EQ(inlet_handles.size(),20);
+    EXPECT_EQ(outlet_handles.size(),20);
+    for(auto h: inlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // set population
+        current_node->populations(1) = 1;
+        current_node->populations(CHANNELS + 1) = 1;
+    }
+    for(auto h : outlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // set population
+        current_node->populations(2) = 2;
+        current_node->populations(CHANNELS + 2) = 2;
+    }
+    // do some streaming
+    tester.test_streaming(0);
+    int population_position = tester.offset_sim;
+    // do the actual testing
+    for(auto h: inlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // check
+        EXPECT_EQ(current_node->populations(population_position + 3),2);
+    }
+    for(auto h: outlet_handles) {
+        auto current_node = tester.nodes[h-1];
+        // check
+        EXPECT_EQ(current_node->populations(population_position + 4),1);
+    }
+}
+
 /**
  * Random test (aka chat non sense).
  * @test
