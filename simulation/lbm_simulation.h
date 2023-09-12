@@ -19,6 +19,12 @@ class ibmSimulation {
     markerPoints * original_markers = nullptr; /**< markers from the node generator */
     rangingPointKeyHash markers_pkh; /**< Stash of markers used in the simulation */
     double (*kernel_function)(point_t* p) = nullptr; /**< kernel function pointer */
+    rangingPointKeyHash rpkh;
+    std::vector<handle_t> inlet_handles = {};
+    std::vector<handle_t> outlet_handles ={};
+    double rho = 1;
+    double rho_in = rho -0.001;
+    double rho_out = rho+0.001;
     // local access arrays
     inline std::tuple<double, double, double> calculate_macro(array_t * a);
     inline std::tuple<double, double, double>  calculate_macro_force(array_t* a, array_t* previous);
@@ -30,6 +36,8 @@ class ibmSimulation {
     void distribute_velocity(std::vector<handle_t> *handles, point_t* pos, vector_t * v);
     void propagate_calculate_force_marker();
     double kernel_function_call(point_t* p);
+    void setup_pressure_boundaries(kernelType_t k);
+    void do_pressure_boundaries();
   public:
     // public main variables
     simulation_parameters_t parameters; /**<  simulation parameters, wall velocity and relaxation */

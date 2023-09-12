@@ -245,6 +245,115 @@ double ibmSimulation::kernel_function_call(point_t *p) {
     return (*kernel_function)(&temp);
 }
 
+void ibmSimulation::setup_pressure_boundaries(kernelType_t k) {
+    // fill the rpkh hash keys
+    handle_t current = 1;
+    for(auto node : nodes) {
+        rpkh.fill_key(current,node->position);
+        ++current;
+    }
+    // get the markers on the surface
+    // the last two surfaces are the  ones we want :)
+    size_t s = node_generator->straight_surfaces->surfaces.size();
+    markerPoints inletMarkers(nullptr,1);
+    inletMarkers.distribute_markers_periodic(node_generator->straight_surfaces->surfaces.at(k-2),IBM,k);
+    markerPoints outletMarkers(nullptr,1);
+    outletMarkers.distribute_markers_periodic(node_generator->straight_surfaces->surfaces.at(k-1),IBM,k);
+    // set the handles
+    for(auto point : inletMarkers.marker_points) {
+        std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
+        // put into inlet handles vector
+        if(temp.size() == 1) {
+            inlet_handles.push_back(temp[0]);
+        }
+        else {
+            // trigger error
+            std::cerr << "Found two" << std::endl;
+        }
+    }
+    for(auto point : outletMarkers.marker_points) {
+        std::vector<handle_t> temp = rpkh.ranging_key_translation(*point,0.9);
+        // put into inlet handles vector
+        if(temp.size() == 1) {
+            outlet_handles.push_back(temp[0]);
+        }
+        else {
+            // trigger error
+            std::cerr << "Found two" << std::endl;
+        }
+    }
+
+}
+
+void ibmSimulation::do_pressure_boundaries() {
+    // loop over the nodes
+    vector_t into_inlet = {-1,0};
+    vector_t into_outlet = {0,-1};
+    // inlet
+    int runsize = inlet_handles.size();
+    for(int i = 0; i<runsize;++i) {
+        // do the thing
+        auto inlet_handle =inlet_handles[i];
+        auto outlet_handle = outlet_handles[i];
+        handle_t other_handle = 0;
+        // nodes that we need
+        auto current_node  = nodes[inlet_handle-1];
+        auto current_population = current_node->populations;
+        auto otherside_node = nodes[outlet_handle -1];
+        // find the node
+        point_t other_node_position = otherside_node->position + into_outlet;
+        std::vector<handle_t> finds = rpkh.ranging_key_translation(other_node_position,0.9);
+        if(finds.size() == 1) {
+            // we cool
+            other_handle = finds[0];
+        }
+        else {
+            std::cerr << "Crash" << std::endl;
+        }
+        auto other_node = nodes[other_handle-1];
+        auto other_population = other_node->populations;
+        // calculate the macro of th other node
+        auto [rho,ux,uy] = calculate_macro(&other_population);
+        array_t other_equilibrium = equilibrium_2d(ux,uy,rho);
+        // us the velocity an rho_in to eq_in
+        // todo prob wrong size
+        array_t eq_in = equilibrium_2d(ux,uy,rho_in);
+        // current_population = eq_in + (other_population - other equilibrium)
+        current_population = eq_in + (other_population - other_equilibrium);
+
+    }
+    // outlet
+    for(int i = 0; i<runsize;++i) {
+        // do the thing
+        auto inlet_handle =inlet_handles[i];
+        auto outlet_handle = outlet_handles[i];
+        handle_t other_handle = 0;
+        // nodes that we need
+        auto current_node  = nodes[outlet_handle-1];
+        auto current_population = current_node->populations;
+        auto otherside_node = nodes[inlet_handle -1];
+        // find the node
+        point_t other_node_position = otherside_node->position + into_inlet;
+        std::vector<handle_t> finds = rpkh.ranging_key_translation(other_node_position,0.9);
+        if(finds.size() == 1) {
+            // we cool
+            other_handle = finds[0];
+        }
+        else {
+            std::cerr << "Crash" << std::endl;
+        }
+        auto other_node = nodes[other_handle-1];
+        auto other_population = other_node->populations;
+        // calculate the macro of the other node
+        auto [rho,ux,uy] = calculate_macro(&other_population);
+        array_t other_equilibrium = equilibrium_2d(ux,uy,rho);
+        // use the velocity of the other node to calculate eq_out
+        array_t eq_out = equilibrium_2d(ux,uy,rho_out);
+        // current_population = eq_out + (other_population - other_equilibrium)
+        current_population = eq_out + (other_population - other_equilibrium);
+    }
+}
+
 /**
  * Constructor.
  * @param g
@@ -344,7 +453,10 @@ void ibmSimulation::init() {
     // set up sim parameters
     parameters.mean_marker_distance = original_markers->return_marker_distance();
     // setup periodic marker
-
+    // todo make variable
+    if(1)  {
+        setup_pressure_boundaries(KERNEL_C);
+    }
 }
 
 /**
@@ -396,7 +508,41 @@ void ibmSimulation::run(int current_step) {
  * @param current_step
  */
 void ibmSimulation::run_snake(int current_step) {
+    // offset control
+    offset_sim = ((current_step +1) & 0x1) * 9;
+    offset_node = (current_step & 0x1) * 9;
+    for(auto n : nodes) {
+        // todo where does the force actually come into the picture?!
+        // shorthands
+        auto force = n->forces;
+        vector_t f = {0,0};
+        std::vector<handle_t> markers_in_vicinity;
+        auto population = n->populations;
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)) {
+            // find the markers in the vicinity
+            markers_in_vicinity = markers_pkh.ranging_key_translation(n->position,parameters.ibm_range);
+            // ibm contribution to the force
+            f = aggregate_force(&markers_in_vicinity,&n->position);
+        }
+        // periodicity boundaries nonsense
 
+        // macro
+        auto [rho, ux, uy]  = calculate_macro(&population);
+        n->velocity = {ux, uy};
+        // collision
+        collision(&population,rho,ux,uy);
+        // apply force
+        forcing_term(n,&f);
+        // streaming
+        streaming(&population,&n->neighbors);
+        do_pressure_boundaries();
+        // distribute the new velocity to the markers
+        if((n->boundary_type == IBM_OUTER) || (n->boundary_type == IBM_INNER)){
+            distribute_velocity(&markers_in_vicinity,&n->position,&n->velocity);
+        }
+    }
+    // we propagate the markers forward and calculate the new forces based on the position of the marker
+    propagate_calculate_force_marker();
 }
 
 
