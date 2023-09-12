@@ -45,6 +45,7 @@ class ibmSimulation {
     // runners
     void init();
     void run(int current_step);
+    void run_snake(int current_step);
     // past run methods
     void get_data(bool write_to_file);
     void delete_containers();

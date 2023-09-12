@@ -343,6 +343,8 @@ void ibmSimulation::init() {
     }
     // set up sim parameters
     parameters.mean_marker_distance = original_markers->return_marker_distance();
+    // setup periodic marker
+
 }
 
 /**
@@ -388,6 +390,15 @@ void ibmSimulation::run(int current_step) {
     // we propagate the markers forward and calculate the new forces based on the position of the marker
     propagate_calculate_force_marker();
 }
+
+/**
+ * Runs a step for the sim.
+ * @param current_step
+ */
+void ibmSimulation::run_snake(int current_step) {
+
+}
+
 
 /**
  * Get the data and prints it to file or not.

@@ -68,7 +68,7 @@ int main() {
         if(i % 100 == 0) {
             std::cout << "Step: " << i << std::endl;
         }
-        sim.run(i);
+        sim.run_snake(i);
     }
     //
     sim.get_data(true);

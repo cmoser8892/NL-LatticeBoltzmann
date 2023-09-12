@@ -374,8 +374,8 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     std::cout << periodic_reference[0] << std::endl << periodic_reference[1] << std::endl;
     if(1) {
         // todo manually set reference for snake
-        periodic_reference[0] = {1,0};
-        periodic_reference[1] = {0,1};
+        periodic_reference[1] = {1,0};
+        periodic_reference[0] = {0,1};
     }
     // remove excessive ibm nodes
     // loop over both
