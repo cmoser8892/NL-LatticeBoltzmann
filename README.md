@@ -18,7 +18,7 @@ The experineced reader my dircly skip into the documentation folder of the proje
 | tests | All the tests are ordered within test suites and no one file includes all the tests of each test suite. As a reason the author refers to the fact that any file with more than 1000 lines tended to be slow to load. In general each test should be self contained with no additional functions needed but the ones for setup and testing. The individual test suits are: FunctionalTest where the simulation class, helper functions and classes are tested. All the force interactions, initialization in general, streaming, tests related to bounce back and the testing of IBM boundaries have their own suit too. |
 
 
-This was modified from the [HPC MD
+The seklton used was modified from the [HPC MD
 with C++
 project](https://imtek-simulation.github.io/MolecularDynamics/_project/general_remarks.html) made 
 with 
