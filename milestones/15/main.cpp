@@ -55,14 +55,14 @@ int main() {
     s.surface_storage.periodic_check_in();
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
-    //ng.init_surface_return(canvas_size,kernel,marker_distance);
+    ng.init_surface_return(canvas_size,kernel,marker_distance);
     // write out all the boundary types found
     ng.write_out_nodes(IBM_INNER, file_write);
     ng.write_out_nodes(IBM_OUTER, file_write);
     ng.write_out_nodes(NO_BOUNDARY, file_write);
     // write out the markers
     // ng.markers->write_out_markers(file_write);
-    // std::cout << ng.markers->marker_points.size() << std::endl;
+    std::cout << ng.markers->marker_points.size() << std::endl;
     s.surface_storage.write_out_surface();
     // end
     return 0;
