@@ -794,8 +794,10 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
             }
         }
         // check valid
+        // todo periodics fkt do something wierd
         if((holder[0] >= 0) && (holder[2] >= 0)) {
-            check_nodes_periodic(type,holder);
+            std::cout << "periodics" << std::endl;
+            // check_nodes_periodic(type,holder);
             periodic_id = true;
         }
         // remove nodes
@@ -807,7 +809,7 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
         if(periodic_id) {
             // create associations between inlet and outlet
             // rewrite the connections
-            connect_periodic_boundary();
+            // connect_periodic_boundary();
         }
         write_data_to_file(save);
     }
