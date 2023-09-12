@@ -534,5 +534,47 @@ TEST(FunctionalTest, pure_straigth_intersection) {
     second.max_t = 2;
     // test
     EXPECT_TRUE(!sg.calculate_straight_intersection(&first,&second,&intersection_point, &vector_length_used));
+}
+
+/**
+ * When the same surface is given to the algorithm it should return false.
+ * @test
+ */
+TEST(FunctionalTest, same_surface_test) {
+    straight_t first;
+    straight_t second;
+    straightGenerator sg;
+    point_t intersection_point = {};
+    double vector_length_used = -1;
+    first.point = {0,0};
+    first.direction = {1,1};
+    first.max_t = 2;
+    second.point = {0,0};
+    second.direction = {1,1};
+    second.max_t = 2;
+    // if the same surface is given the result of calc intersection is just nan, which is actually perfect
+    EXPECT_TRUE(!sg.calculate_straight_intersection(&first,&second,&intersection_point, &vector_length_used));
+}
+
+TEST(RA,ra) {
+    // Create a vector
+    std::vector<int> myVector = {1, 2, 3, 4, 5, 3, 6, 7, 3};
+
+    // Define the value you want to remove
+    int valueToRemove = 3;
+
+    // Iterate over the vector to find and erase all occurrences of the value
+    for (std::vector<int>::iterator it = myVector.begin(); it != myVector.end(); ) {
+        if (*it == valueToRemove) {
+            it = myVector.erase(it); // Erase the current element and update the iterator
+        } else {
+            ++it; // Move to the next element
+        }
+    }
+
+    // Print the modified vector
+    for (int num : myVector) {
+        std::cout << num << " ";
+    }
 
 }

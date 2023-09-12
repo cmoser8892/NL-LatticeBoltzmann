@@ -568,8 +568,34 @@ void straightGenerator::periodic_check_in() {
             std::vector<point_t> intersections;
             straight_t* checked_surface = surfaces[p];
             handle_t h = 0;
+            point_t intersection_point = {};
+            double vector_length_used = -1;
             // check surface intersection
-
+            // control variables
+            int delete_next = 0;
+            bool found_final = false;
+            for(auto it = surfaces.begin(); it != surfaces.end();) {
+                // check
+                straight_t * resolved = it.operator*();
+                if(calculate_straight_intersection(checked_surface,resolved,
+                                                    &intersection_point,&vector_length_used)) {
+                    if(vector_length_used <= checked_surface->max_t) {
+                        std::cout << "hi" << std::endl;
+                        // modify the surface
+                        delete_next++;
+                        if(delete_next > 1) {
+                            found_final = true;
+                        }
+                    }
+                }
+                if((delete_next > 0) && (!found_final)) {
+                    delete resolved;
+                    it = surfaces.erase(it);
+                }
+                else {
+                    ++it;
+                }
+            }
         }
     }
 }
