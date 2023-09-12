@@ -551,6 +551,7 @@ void straightGenerator::init() {
 
 /**
  * Method cuts of the unnecessary parts when cutting with an additional periodic boundary.
+ * @attention principally untested and only works with a snake structure!
  */
 void straightGenerator::periodic_check_in() {
     // check if we got a periodic boundary
@@ -567,7 +568,12 @@ void straightGenerator::periodic_check_in() {
     // proceed if we found 2
     if(periodic_surfaces == 2) {
         // find the interconnections
+        // todo this logic is crap
+        int break_test = 0;
         for(auto p : positions) {
+            if(break_test++ > 0) {
+                // break;
+            }
             std::vector<point_t> intersections;
             straight_t* checked_surface = surfaces[p];
             handle_t h = 0;
@@ -614,6 +620,9 @@ void straightGenerator::periodic_check_in() {
                 else {
                     ++it;
                 }
+            }
+            if(intersection_points.size() < 2) {
+                std::cerr << "about to crash cause not enough intersection were found" << std::endl;
             }
             // modify the affected straight lines
             vector_t distance = intersection_points[1] - intersection_points[0];

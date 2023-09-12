@@ -38,8 +38,8 @@ class nodeGenerator {
     vector_t discovery_vector = {1, 0}; /**< Only relevant for linear creation */
     long size_canvas = 0;
     // markers for periodics
-    markerPoints* periodic_marker[2] = {};
-    vector_t periodic_reference[2] = {};
+    markerPoints* periodic_marker[2] = {}; /**< periodic markers */
+    vector_t periodic_reference[2] = {}; /**< direction of the outward reference */
     // node search engine
     rangingPointKeyHash rpkh;
     //

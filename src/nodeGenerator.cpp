@@ -30,6 +30,7 @@ nodeGenerator::nodeGenerator(straightGenerator *s) {
 
 /**
  * Deletes all the info about the nodes.
+ * @todo node generator has definitely some mem leaks cause snakes
  */
 nodeGenerator::~nodeGenerator() {
     delete_node_infos();
@@ -37,6 +38,7 @@ nodeGenerator::~nodeGenerator() {
         delete straight_surfaces;
     //
     delete markers;
+
 }
 
 /**
@@ -339,11 +341,14 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
         periodic_marker[i] = new markerPoints();
         periodic_marker[i]->distribute_markers_periodic(straight_surfaces->surfaces[a[i]],IBM,t);
     }
+    std::cout << periodic_marker[0]->marker_points.size() << std::endl;
+    std::cout << periodic_marker[1]->marker_points.size() << std::endl;
     // first pass remove the unwanted node
     double range = kernel_id_to_lattice_search(KERNEL_C);
     // determine fluid direction from the middle nodes
     int run_variable = 0; // r
     for(auto pm : periodic_marker) {
+
         // find the middle marker
         auto s = double(pm->marker_points.size());
         auto middle = size_t(std::round(s/2.0));
@@ -363,6 +368,11 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
         periodic_reference[run_variable] = vector_to_cardinal(periodic_reference[run_variable]);
         // increment
         ++run_variable;
+    }
+    if(0) {
+        // todo manually set reference for snake
+        periodic_reference[0] = {1,0};
+        periodic_reference[1] = {0,1};
     }
     // remove excessive ibm nodes
     // loop over both
@@ -390,7 +400,7 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     }
     // reintroduce the needed periodic nodes ( i know this is extra work but this is a computer)
     // clarity is more important
-    run_variable = 0;
+    int run = 0;
     for(auto pm: periodic_marker) {
         for(auto m : pm->marker_points) {
             std::vector<handle_t> affected = rpkh.ranging_key_translation(*m,0.9);
@@ -399,12 +409,14 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
                 auto current_node = node_infos[handle];
                 point_t node_point = current_node->position;
                 if(compare_two_points(&node_point,m)) {
+                    run++;
                     current_node->type = PERIODIC_CONNECT;
                     to_be_removed[handle] = false;
                 }
             }
         }
     }
+    std::cout << run << std::endl;
 }
 
 /**
@@ -797,7 +809,7 @@ void nodeGenerator::init_surface_return(unsigned int size, kernelType_t type,  d
         // todo periodics fkt do something wierd
         if((holder[0] >= 0) && (holder[2] >= 0)) {
             std::cout << "periodics" << std::endl;
-            // check_nodes_periodic(type,holder);
+            check_nodes_periodic(type,holder);
             periodic_id = true;
         }
         // remove nodes
