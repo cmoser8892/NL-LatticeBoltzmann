@@ -280,6 +280,7 @@ TEST(FunctionalTest, periodidics_marker_placement_ibm_usecase) {
     input.point = {0,27.1};
     input.direction = {0,1};
     input.max_t = 82.8-27.1;
+    double original = input.max_t;
     input.type = PERIODIC;
     // this and that
     markerPoints periodic_markers(nullptr,1);
@@ -301,6 +302,8 @@ TEST(FunctionalTest, periodidics_marker_placement_ibm_usecase) {
     EXPECT_EQ(test.y(),periodic_markers.marker_points[0]->y());
     test = {0,86};
     EXPECT_EQ(test.y(),periodic_markers.marker_points[periodic_markers.marker_points.size()-1]->y());
+    // specific bug test
+    EXPECT_NEAR(input.max_t,original,1e-10);
 }
 
 /**
@@ -556,6 +559,10 @@ TEST(FunctionalTest, same_surface_test) {
     EXPECT_TRUE(!sg.calculate_straight_intersection(&first,&second,&intersection_point, &vector_length_used));
 }
 
+/**
+ * Random test (aka chat non sense).
+ * @test
+ */
 TEST(RA,ra) {
     // Create a vector
     std::vector<int> myVector = {1, 2, 3, 4, 5, 3, 6, 7, 3};

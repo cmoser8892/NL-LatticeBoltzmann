@@ -330,6 +330,7 @@ void nodeGenerator::fill_search() {
 
 /**
  * Sets up the nodes for periodic boundaries.
+ * @bug partially buggy (marked only works in the snake use case...)
  * @param t
  * @param a
  */
@@ -346,15 +347,16 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     // first pass remove the unwanted node
     double range = kernel_id_to_lattice_search(KERNEL_C);
     // determine fluid direction from the middle nodes
+    // todo this part just does not work
     int run_variable = 0; // r
     for(auto pm : periodic_marker) {
 
         // find the middle marker
         auto s = double(pm->marker_points.size());
-        auto middle = size_t(std::round(s/2.0));
+        auto middle = size_t(std::round(s/2.0)) - 1;
         point_t midpoint = *pm->marker_points[middle];
         // look around
-        std::vector<handle_t> found = rpkh.ranging_key_translation(midpoint,2.5);
+        std::vector<handle_t> found = rpkh.ranging_key_translation(midpoint,range + 4);
         // addup everything that we found
         vector_t add_up = {0,0};
         for(auto handle: found) {
@@ -369,7 +371,8 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
         // increment
         ++run_variable;
     }
-    if(0) {
+    std::cout << periodic_reference[0] << std::endl << periodic_reference[1] << std::endl;
+    if(1) {
         // todo manually set reference for snake
         periodic_reference[0] = {1,0};
         periodic_reference[1] = {0,1};
@@ -404,6 +407,7 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
     for(auto pm: periodic_marker) {
         for(auto m : pm->marker_points) {
             std::vector<handle_t> affected = rpkh.ranging_key_translation(*m,0.9);
+            std::cout << *m << std::endl;
             for(auto handle : affected) {
                 handle -= 1;
                 auto current_node = node_infos[handle];
@@ -411,6 +415,9 @@ void nodeGenerator::check_nodes_periodic(kernelType_t t, long* a) {
                 if(compare_two_points(&node_point,m)) {
                     run++;
                     current_node->type = PERIODIC_CONNECT;
+                    if(current_node->boundary == INIT_NONE) {
+                        current_node->boundary = NO_BOUNDARY;
+                    }
                     to_be_removed[handle] = false;
                 }
             }
