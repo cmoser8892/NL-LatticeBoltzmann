@@ -6,6 +6,8 @@ Neighborhood lists with singular nodes are used instead of the usual grids to en
 This work here explore this idea for structures with solid/liquid << 1. 
 It applies OpenCV and other more manual methods to get from a simple drawing (can be any kind of image) to a simulation more or less seamlessly.
 Supported are bounce back boundaries and IBM boundaries.
+  
+  
 
 | Folder: | Description: |
 |----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
