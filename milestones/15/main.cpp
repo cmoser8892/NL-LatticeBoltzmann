@@ -31,7 +31,7 @@ int main() {
     auto test_image = get_base_path();
     test_image.append("tests");
     test_image.append("test_images");
-    test_image.append("Snake_structure.png");
+    test_image.append("mod_snake_structure.png");
     // call the drawer
     surfaceDrawer s(test_image);
     std::vector<int> sel = {0};

@@ -549,6 +549,9 @@ void straightGenerator::init() {
     // detect_boundary_proximity_main_mass_center();
 }
 
+/**
+ * Method cuts of the unnecessary parts when cutting with an additional periodic boundary.
+ */
 void straightGenerator::periodic_check_in() {
     // check if we got a periodic boundary
     int periodic_surfaces = 0;
@@ -568,32 +571,76 @@ void straightGenerator::periodic_check_in() {
             std::vector<point_t> intersections;
             straight_t* checked_surface = surfaces[p];
             handle_t h = 0;
+            // test variables
             point_t intersection_point = {};
             double vector_length_used = -1;
-            // check surface intersection
             // control variables
             int delete_next = 0;
             bool found_final = false;
+            // points save
+            std::vector<point_t> intersection_points;
+            // straight save
+            std::vector<straight_t *> straight_save;
+            // loop
             for(auto it = surfaces.begin(); it != surfaces.end();) {
                 // check
                 straight_t * resolved = it.operator*();
                 if(calculate_straight_intersection(checked_surface,resolved,
                                                     &intersection_point,&vector_length_used)) {
                     if(vector_length_used <= checked_surface->max_t) {
-                        std::cout << "hi" << std::endl;
+                        // save the intersection point
+                        intersection_points.push_back(intersection_point);
+                        // save the straigth point
+                        straight_save.push_back(resolved);
                         // modify the surface
                         delete_next++;
                         if(delete_next > 1) {
                             found_final = true;
+                            break;
                         }
                     }
                 }
                 if((delete_next > 0) && (!found_final)) {
-                    delete resolved;
-                    it = surfaces.erase(it);
+                    // dont delete the first one
+                    if(delete_next > 1) {
+                        delete resolved;
+                        it = surfaces.erase(it);
+                    }
+                    else {
+                        ++it;
+                    }
+                    delete_next++;
                 }
                 else {
                     ++it;
+                }
+            }
+            // modify the affected straight lines
+            vector_t distance = intersection_points[1] - intersection_points[0];
+            // first modify the periods surfaces
+            checked_surface->point = intersection_points[0];
+            checked_surface->direction = distance.normalized();
+            checked_surface->max_t = distance.norm();
+            // in case the thing has to be modified
+            std::cout << distance.norm() << std::endl;
+            // modify the two other ones
+            for(int i = 0; i < 2; ++i) {
+                // shorthands
+                auto surface = straight_save[i];
+                auto point = intersection_points[i];
+                // need to compare vectors
+                // first one is in second on is out
+                if(i == 1) {
+                    vector_t new_direction = point - surface->point;
+                    surface->direction = new_direction.normalized();
+                    surface->max_t = new_direction.norm();
+                }
+                if(i == 0) {
+                    point_t endpoint = surface->point + surface->max_t* surface->direction;
+                    vector_t  new_direction = endpoint - point;
+                    surface->point = point;
+                    surface->direction = new_direction.normalized();
+                    surface->max_t = new_direction.norm();
                 }
             }
         }
