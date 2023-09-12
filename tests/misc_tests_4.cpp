@@ -170,6 +170,7 @@ TEST(FunctionalTest, collision_againt_test) {
 
 /**
  * Preliminary node test when working with periodics.
+ * @bug the directional test form markers is broken in the nodeGenerator
  * @test
  */
 TEST(FunctionalTest, tube_no_markers) {
@@ -207,7 +208,7 @@ TEST(FunctionalTest, tube_no_markers) {
     // setup the node generator
     nodeGenerator ng(&lines);
     ng.init_surface_return(canvas_size,KERNEL_C,marker_distance);
-    // ng.visualize_2D_nodes();
+    ng.visualize_2D_nodes();
     EXPECT_EQ(ng.node_infos.size(),150*63);
     //
     long counter_periodic = 0;
@@ -219,7 +220,7 @@ TEST(FunctionalTest, tube_no_markers) {
             ++counter_periodic;
             EXPECT_EQ(n->links.size(),8);
             switch(n->boundary) {
-            case INIT_NONE: {
+            case NO_BOUNDARY: {
                 counter_none++;
                 break;
             }
@@ -248,11 +249,11 @@ TEST(FunctionalTest, periodidics_marker_placement) {
     input.point = {0,27.1};
     input.direction = {0,1};
     input.max_t = 82.8-27.1;
-    input.type = PERIODIC;
+    input.type = IBM;
 
     markerPoints periodic_markers(nullptr,1);
-    periodic_markers.distribute_markers_periodic(&input,NO_BOUNDARY,KERNEL_A);
-    EXPECT_EQ(periodic_markers.marker_points.size(),1 + 54);
+    periodic_markers.distribute_markers_periodic(&input,IBM,KERNEL_A);
+    EXPECT_EQ(periodic_markers.marker_points.size(),1 + 54 + 4);
     // check if empty and so on
     if(!periodic_markers.marker_points.empty()) {
         for (size_t i = 0; i < (int(periodic_markers.marker_points.size()) - 1); ++i) {
@@ -265,9 +266,9 @@ TEST(FunctionalTest, periodidics_marker_placement) {
         }
     }
     // check the first point and last points
-    point_t test = {0,28};
+    point_t test = {0,26};
     EXPECT_EQ(test.y(),periodic_markers.marker_points[0]->y());
-    test = {0,82};
+    test = {0,84};
     EXPECT_EQ(test.y(),periodic_markers.marker_points[periodic_markers.marker_points.size()-1]->y());
 }
 
@@ -392,6 +393,11 @@ TEST(FunctionalTest, little_things) {
     EXPECT_EQ(k,0);
 }
 
+/**
+ * Test the inilet to outlet function.
+ * @bug same bug as everywhere in the nodeGenerator::check_node_periodic()
+ * @test
+ */
 TEST(FunctionalTest, inlet_to_outlet_test) {
     // node generator variables
     long canvas_size = 150;

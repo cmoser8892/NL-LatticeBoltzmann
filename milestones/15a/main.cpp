@@ -38,20 +38,18 @@ int main() {
     s.run_non_connecting(sel, true);
     // s.close_open_surface(draw_size);
     // add additional inlet + outlet
-    if(1) {
-        straight_t inlet;
-        inlet.type = PERIODIC;
-        inlet.point = {165,160};
-        inlet.direction = {0,1};
-        inlet.max_t = 25;
-        s.surface_storage.add_surface(inlet);
-        straight_t outlet;
-        outlet.type = PERIODIC;
-        outlet.point = {93,115};
-        outlet.direction = {1,0};
-        outlet.max_t = 20;
-        s.surface_storage.add_surface(outlet);
-    }
+    straight_t inlet;
+    inlet.type = PERIODIC;
+    inlet.point = {165,160};
+    inlet.direction = {0,1};
+    inlet.max_t = 25;
+    s.surface_storage.add_surface(inlet);
+    straight_t outlet;
+    outlet.type = PERIODIC;
+    outlet.point = {93,115};
+    outlet.direction = {1,0};
+    outlet.max_t = 20;
+    s.surface_storage.add_surface(outlet);
     s.surface_storage.periodic_check_in();
     s.surface_storage.surface_mass_center();
     nodeGenerator ng(&s.surface_storage);
