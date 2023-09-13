@@ -58,7 +58,7 @@ PROJECT_LOGO           =
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = docu
+OUTPUT_DIRECTORY       = documentation
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -922,6 +922,8 @@ EXCLUDE                =  cmake-build-debug
 EXCLUDE                += cmake-build-minsizerel
 EXCLUDE                += cmake-build-release
 EXCLUDE                += cmake-build-relwithdebinfo
+EXCLUDE                += cmake-build-relwithdebinfo-coverage
+EXCLUDE                += docu
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
