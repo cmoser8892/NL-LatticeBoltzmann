@@ -66,7 +66,7 @@ int main() {
     std::cout << ng.markers->marker_points.size() << std::endl;
     s.surface_storage.write_out_surface();
     // setup params for sim
-    int steps = 30000;
+    int steps = 20000;
     simulation_parameters params;
     params.relaxation = 0.5;
     params.ibm_range = kernel_id_to_lattice_search(kernel);
