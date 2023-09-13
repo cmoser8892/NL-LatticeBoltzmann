@@ -31,8 +31,9 @@ string_node_dispersions = basic_file_path + "/" + string_node_dispersions
 string_marker_surface  = basic_file_path + "/" + string_marker_surface
 ####################
 # size has to be set
-size = 800
-####################
+size = 800 # this parameter has to be set right
+##
+# @brief plots the velocity field form the datafiles
 def plotter_velocity_field():
     #
     print("Velocity field printer")
@@ -90,6 +91,9 @@ def plotter_velocity_field():
     plt.savefig('temp.png')
     plt.show()
 
+
+##
+# @brief plots the node allocation, markers and surface
 def plotter_node_allocations():
     print("Node allocation plotter")
     # the enum boundary_t gets converted into numbers this is the last relevant one
